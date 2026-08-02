@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1.0",
+  "project": "fiscal-platform",
+  "baseline": {
+    "branch": "release/1.0.0",
+    "expression": "latest release/1.0.0",
+    "commit": null
+  },
+  "phase": "BOOTSTRAP_REPOSITORY_ANALYSIS",
+  "serialGate": {
+    "itemId": "STORY-FND-001",
+    "reason": "Repository-backed analysis must determine whether a clean technical baseline is required before independent product modules can start.",
+    "prompt": ".fiscal-orchestrator/output/prompts/serial-gate-story-fnd-001.md"
+  },
+  "officialSlots": [],
+  "futureOfficialWave": [],
+  "extras": [],
+  "sharedFiles": [
+    "AGENTS.md",
+    "backend/pom.xml",
+    "frontend/package.json",
+    "frontend/package-lock.json",
+    "frontend/src/app/**",
+    "backend/src/main/resources/db/migration/**",
+    "docs/roadmap/FISCAL_PLATFORM_ROADMAP_ITEM_REGISTRY.md",
+    "docs/roadmap/FISCAL_PLATFORM_PRODUCT_BACKLOG.md",
+    "docs/roadmap/FISCAL_PLATFORM_ORCHESTRATION_BOARD.md",
+    "docs/roadmap/FISCAL_PLATFORM_DELIVERY_HISTORY.md"
+  ],
+  "decisions": ["DEC-FND-001", "DEC-SEC-001", "ENV-001"],
+  "pendingProof": [
+    "BACKEND_UNIT_TEST_PENDING",
+    "NATIVE_POSTGRESQL_PENDING",
+    "FRONTEND_FOCUSED_RETEST_REQUIRED",
+    "HTTP_RUNTIME_RETEST_REQUIRED",
+    "AUTHENTICATED_RUNTIME_RETEST_REQUIRED",
+    "CONCURRENCY_RETEST_REQUIRED",
+    "PLAYWRIGHT_PENDING_GENERAL_TEST",
+    "E2E_PENDING_GENERAL_TEST",
+    "COVERAGE_REGENERATION_PENDING"
+  ]
+}
