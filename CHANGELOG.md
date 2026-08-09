@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.4.0 — 2026-08-09
+
+### Portais estaduais de São Paulo
+
+- fluxo `SEFAZ_SP_PORTAL::CERTIDAO_SP_SEFAZ_NAO_INSCRITOS`;
+- fluxo `PGE_SP_PORTAL::CERTIDAO_SP_PGE_DIVIDA_ATIVA`;
+- CAPTCHA assistido pela sessão interativa existente;
+- captura exclusiva de PDF;
+- parsers específicos SEFAZ-SP e PGE-SP;
+- validação de CNPJ e CNPJ base;
+- SEFAZ-SP com janela operacional configurável;
+- impedimento de emissão eletrônica direcionado a fallback/manual;
+- PGE-SP consolidada por CNPJ base/matriz;
+- certidões PGE de filiais antigas inativadas sem exclusão física;
+- provider real mantido desabilitado por padrão.
+
+### Segurança e integridade
+
+- nenhum bypass de CAPTCHA;
+- nenhuma classificação fiscal conclusiva sem documento quando exigido;
+- PDF precisa possuir assinatura `%PDF-`;
+- HTML não é convertido em certidão oficial;
+- acompanhamentos inativos não aceitam nova consulta ou resultado manual.
+
+### Pendências
+
+- runtime autorizado da SEFAZ-SP e PGE-SP;
+- amostras reais/anonimizadas de PDF;
+- validação de seletores;
+- fluxo administrativo de CPEN da PGE-SP;
+- testes automatizados e E2E.
+
 ## 0.3.0 — 2026-08-09
 
 ### Automação Federal

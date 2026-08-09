@@ -3,103 +3,66 @@
 Plataforma interna de operações fiscais e contábeis em português, preparada para execução
 **on-premise first** e migração futura para nuvem.
 
-**Versão do pacote:** `0.3.0`
+**Versão do pacote:** `0.4.0`
 
-## Conteúdo desta versão
+## Destaques desta versão
 
-### Portal Federal assistido
+### Portais estaduais de São Paulo
 
-- fluxo Playwright para `CERTIDAO_FEDERAL_RFB_PGFN`;
-- rota pública de pessoa jurídica da Receita Federal;
+- fluxo Playwright assistido para a eCND da SEFAZ-SP;
+- fluxo Playwright assistido para a e-CRDA da PGE-SP;
+- CNPJ completo para SEFAZ-SP;
+- CNPJ base e um único acompanhamento ativo por empresa para PGE-SP;
+- CAPTCHA com sessão interativa humana já existente;
+- captura exclusiva de bytes PDF;
+- parsers separados por órgão;
+- validação de CNPJ/CNPJ base;
+- upload automático e resultado normalizado;
+- bloqueio funcional quando o portal não emite certidão eletrônica;
+- providers mantidos desabilitados até validação autorizada.
+
+### Portal Federal
+
+- provider assistido RFB/PGFN preservado da versão 0.3.0;
 - preenchimento de CNPJ;
-- detecção de CAPTCHA;
-- sessão interativa temporária dentro da aplicação;
-- retomada na mesma página e no mesmo lease lógico;
-- captura e validação de bytes do PDF oficial;
-- rejeição de página HTML impressa como substituto de certidão;
-- parser de CND/CPEND/positiva;
-- extração de CNPJ, emissão, validade e código de controle;
-- upload automático do documento;
-- resultado normalizado no Centro de Certidões;
-- classificação explícita de indisponibilidade, timeout e portal alterado.
+- CAPTCHA humano;
+- captura e parser de PDF.
 
-
-### Common operacional
+### Common e Centro de Certidões
 
 - Java 21 + Spring Boot;
 - React + TypeScript;
 - PostgreSQL + Flyway;
 - Keycloak/OAuth2/JWT;
-- Catálogo de Permissões no backend;
-- i18n somente `pt-BR`;
-- auditoria, notificações e `correlationId`;
-- storage local abstrato para documentos;
-- fila PostgreSQL com lease, retry, idempotência, prioridade e fallback;
-- políticas de aquisição por operação;
-- intervenções humanas;
-- busca global;
-- Console Técnica;
-- worker Playwright isolado.
-
-### Empresas
-
-- empresa e estabelecimento matriz;
-- filiais adicionais;
-- CNPJ validado;
-- regime tributário, CNAE, inscrições e endereço;
-- listagem, busca, edição e inativação da empresa;
-- Empresa 360.
-
-### Centro de Certidões
-
-- Federal RFB/PGFN;
-- SEFAZ-SP — débitos não inscritos;
-- PGE-SP — dívida ativa;
-- visão por empresa ou consolidada;
-- estados fiscal e técnico separados;
-- solicitação individual e em lote;
-- provider configurável;
-- política de prioridade, intervenção e fallback pago;
-- registro manual com documento;
-- histórico;
-- alertas e agendamento de renovação;
-- custo/protocolo disponíveis no motor de execução.
+- fila com lease, retry, idempotência e fallback;
+- empresas, matriz e filiais;
+- documentos e histórico;
+- políticas de providers;
+- intervenções e sessão interativa;
+- alertas, auditoria e Console Técnica;
+- Centro de Certidões Federal, SEFAZ-SP e PGE-SP.
 
 ## Limites explícitos
 
-Esta versão registra somente o fluxo real do **portal Federal**. SEFAZ-SP e PGE-SP continuam sem
-fluxos Playwright. Além disso:
-
-- `FEDERAL_PORTAL` permanece desabilitado por padrão até validação autorizada no ambiente do cliente;
-- Serpro e InfoSimples continuam definidos, mas sem implementação e credenciais;
-- CAPTCHA é resolvido por um operador em sessão temporária; não há bypass;
-- os seletores, o download e o parser ainda precisam de validação contra o portal e documentos reais;
-- o provider `MANUAL` continua disponível como contingência;
-- lockfiles npm devem ser gerados no ambiente com acesso ao registry;
-- testes automatizados não foram criados nem executados nesta entrega.
+- os três providers de portal permanecem desabilitados por padrão;
+- seletores, CAPTCHA e PDFs precisam de validação no ambiente real autorizado;
+- não existe bypass de CAPTCHA;
+- a emissão administrativa de certidão positiva com efeitos de negativa da PGE-SP continua manual;
+- quando a SEFAZ-SP não emite eletronicamente por impedimentos, o sistema usa fallback/manual;
+- Serpro e InfoSimples continuam definidos, mas sem credenciais/implementação real;
+- testes automatizados e E2E permanecem para tasks separadas.
 
 ## Instalação no repositório existente
 
-Leia [INSTRUCOES_INTEGRACAO.md](INSTRUCOES_INTEGRACAO.md) antes de substituir arquivos.
-
-Depois da integração:
+Leia [INSTRUCOES_INTEGRACAO.md](INSTRUCOES_INTEGRACAO.md).
 
 ```powershell
 Set-Location "C:\work\contabilidade"
-
 .\scripts\gerar-lockfiles.ps1
 .\scripts\validar.ps1
 ```
 
-Somente depois de uma validação verde:
-
-```powershell
-git add .
-git commit -m "feat: implementa portal federal assistido v0.3.0"
-git push origin main
-```
-
-## Execução local
+Suba o ambiente:
 
 ```powershell
 Copy-Item .env.example .env
@@ -112,21 +75,19 @@ Aplicação:
 http://localhost:8088
 ```
 
-O realm de desenvolvimento inclui:
+Preflight dos portais:
 
-```text
-admin@contabilidade.local
-Admin123!
+```powershell
+.\scripts\validar-portal-federal.ps1
+.\scripts\validar-portais-sp.ps1
 ```
-
-Essa credencial não pode ser usada em produção.
 
 ## Estrutura
 
 ```text
 backend/             domínio, APIs, fila e certidões
 frontend/            aplicação web em pt-BR
-automation-worker/   runtime Playwright e fluxo Federal assistido
+automation-worker/   providers Federal, SEFAZ-SP e PGE-SP
 infra/               Keycloak, PostgreSQL e seccomp
 scripts/             validação, operação e backup
 docs/                documentação canônica

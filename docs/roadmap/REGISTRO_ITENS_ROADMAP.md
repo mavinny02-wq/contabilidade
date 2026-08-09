@@ -24,8 +24,8 @@ O registro é dono da identidade permanente e do status atual.
 | `EPICO-CRT-001` | Épico | Certidões | PACOTE_V020_PREPARADO | Centro de Certidões |
 | `HIST-CRT-001` | História | Certidões | PACOTE_V020_PREPARADO | Domínio, UI e histórico |
 | `HIST-CRT-002` | História | Certidões | PACOTE_V030_RUNTIME_PENDENTE | Portal Federal assistido |
-| `HIST-CRT-003` | História | Certidões | PENDENTE_ANALISE_PORTAL | Portal SEFAZ-SP |
-| `HIST-CRT-004` | História | Certidões | PENDENTE_ANALISE_PORTAL | Portal PGE-SP |
+| `HIST-CRT-003` | História | Certidões | PACOTE_V040_RUNTIME_PENDENTE | Portal SEFAZ-SP assistido |
+| `HIST-CRT-004` | História | Certidões | PACOTE_V040_RUNTIME_PENDENTE | Portal PGE-SP assistido |
 | `HIST-CRT-005` | História | Certidões | PACOTE_V020_PREPARADO | Política/fallback/custo |
 | `HIST-CRT-006` | História | Certidões | PACOTE_V020_PREPARADO | Provider manual |
 | `EPICO-ADM-001` | Épico | Administração | PACOTE_V020_PREPARADO | Operação e administração |

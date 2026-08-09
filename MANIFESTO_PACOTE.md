@@ -1,288 +1,295 @@
-# Manifesto do pacote Contabilidade v0.3.0
+# Manifesto do pacote v0.4.0
 
-Gerado em UTC: 2026-08-09T12:54:22.850896+00:00
-Arquivos do projeto: 278
-Adicionados desde v0.2.0: 14
-Modificados desde v0.2.0: 48
-Removidos desde v0.2.0: 0
+Total de arquivos do projeto: 289
 
-Os arquivos `MANIFESTO_PACOTE.md` e `CHECKSUMS_SHA256.txt` não se auto-hash.
+Os arquivos `MANIFESTO_PACOTE.md` e `CHECKSUMS_SHA256.txt` não possuem auto-hash no manifesto.
 
-## Conteúdo
-
-- `.contabilidade-orchestrator/README.md` — `78bd3cad8bb9793fa6fb210a41b3a3ff686af8938bd5f37c6a86c8aa07061ef4`
-- `.contabilidade-orchestrator/config.json` — `5df50b8803170cf2e5ac9e6b1e2fa9a87bf3c81041a46711586f192c2cb05852`
-- `.contabilidade-orchestrator/output/plano-onda.json` — `887c79295b9c2e5a95a35399a7abaa1a1d12de95cfdc5e0a299bebd0aad399d3`
-- `.contabilidade-orchestrator/templates/prompt-analise.md` — `4f195f94f4f788db168f029fcdf996e67a80c28fdde1b4d28d3925a8ca131ff0`
-- `.contabilidade-orchestrator/templates/prompt-decisao.md` — `9fb928e342625fe80fe9e09fa52ee119f0c5183c73c566ebdf93d94e3309bd32`
-- `.contabilidade-orchestrator/templates/prompt-implementacao.md` — `45a35a9001380077db8747bd1a5e66a4d92e184242310d0b186a7d368988256f`
-- `.contabilidade-orchestrator/templates/prompt-reconciliacao.md` — `3929882e041bd2b078336a9c39a16362a6b5d2b791092ca51000a145bd067e55`
-- `.editorconfig` — `86b9f7bc5c0d80cdae94442f0ffd6cc502be30a15f3e05261d7350c119605411`
-- `.env.example` — `35942ea7395025306633102578145449ae36de88b0bc2cfe9faf2c773aede8d4`
-- `.gitattributes` — `8771b82ce7a63018d355d8fd5bc6854fb4e5b1c96980915fcecb935c45684289`
-- `.github/workflows/build.yml` — `73338f5dd28856a9ca0fff7afa64c6e707b3cfd2ce6a7df0a6962306b046dae3`
-- `.gitignore` — `acc423394a7d2f18bcdbef88a4af9662ee43cd32ee43b7006b8a68007aff9a73`
-- `AGENTS.md` — `a54e422110416dfddf5c0bc8f1deef758b664e689f6698248823a2a99db573fe`
-- `ARVORE_PROJETO.txt` — `2b05f36aa2641a8289ab103b1629ffd4c65a65874de421b655269be048c60ee4`
-- `CHANGELOG.md` — `ebf6b38d54993b92338af82bb2ec8b948749ea2a73610ce03b95fc56d5e20f15`
-- `INSTRUCOES_INTEGRACAO.md` — `3727138488a145333bf7256d44637c905fa912afd359dc4cd7ed9fc61869708c`
-- `LICENCAS_DEPENDENCIAS.md` — `6cffdf937388940dc2811f506d2e2a62f5310600e4b6925e641035361fd665d0`
-- `README.md` — `62e7d8ca47e91c1b62f346b8d0221c043876a2133250d6ec666d35adfd676a02`
-- `VALIDACAO.md` — `a44615e88edaa47ab7dce048d5e57aaaf2cdf41bacd88cd7bd3e53082b81456d`
-- `VERSION` — `d915cc95d6ca8f47ae297713ed46d4e5c5d99ddd29fc3c61e263bdf305f2b5b0`
-- `automation-worker/.dockerignore` — `6e1839377387a46ac5e161f1370f2c8021f546fb8de4ee558b81d7d2d0a94e14`
-- `automation-worker/Dockerfile` — `9bcef388961e59937eeac7ec8e8464dd9dc3a963023d56a80a66a02081b95236`
-- `automation-worker/README.md` — `cd158bbe97bf595c1434bbe3230e6409b537c319717bef7273cf81d22ac7a672`
-- `automation-worker/package.json` — `0a90bf0d46656235580b932d2135fe4aa9c1b571c0f39370b17e0d3e3abc4bd5`
-- `automation-worker/src/BackendClient.ts` — `fb2c1b4795790a32fca5e7e9312e17c991e573cc52722709fbcd3059eaa69962`
-- `automation-worker/src/BrowserRuntime.ts` — `68a3a1181c9dcc655089064a442a6cf4925e1b9ea00749744028a9b7bc413baf`
-- `automation-worker/src/FederalCertificateFlow.ts` — `5d123266eb5b51f99dd245ccd2ce3ac1898139805f1dffe2003ec2d81c490957`
-- `automation-worker/src/FluxoRegistry.ts` — `15d343edfe6774fb599554c7f53ceca356e0272c7a36e983445c7aee639b4d31`
-- `automation-worker/src/InteractiveSessionManager.ts` — `1008f743cc4709a8b79e5c42cbc7f4d1b879f66722e8055a8fa323aee05a55d2`
-- `automation-worker/src/PdfCertificateParser.ts` — `e98babf2e71c4373babb58876ca2ee764c0611f891da2ac042d403fe7cd3c49d`
-- `automation-worker/src/SessionTicket.ts` — `b2123776ba0b9584df97ad0c4d557932025a0deb17216860b2cba8e448b3b48f`
-- `automation-worker/src/WorkerLoop.ts` — `4358945243eba0d031cafb25329903b1b336ec45d3e440705d0a09a57d664412`
-- `automation-worker/src/config.ts` — `60e9af0719c1714ef17ee78ac045affe84b955d1b103cd99e721b6414872a0a8`
-- `automation-worker/src/contracts.ts` — `c8a7957e1addde7e7e379f1f45d9a5b670fff08aa14e5deb9dfb28e570d1c91e`
-- `automation-worker/src/heartbeat.ts` — `6f76de9cd7af673d2c8cad8816a0133bf20a6dc517ab0a05f9e44f81faa29ef4`
-- `automation-worker/src/index.ts` — `583e099603289f4602a41cd224f746f1a179ee5d8b5922176cb2549671cd1fe1`
-- `automation-worker/src/server.ts` — `088b358b988c09b015732e8c3720958362617476614044eac8ced5dea0b71cc5`
-- `automation-worker/tsconfig.json` — `25482d12f821eb7c11c5d13dd3d469aadd84f0c91f86b5bcec0d2b1e2701e92f`
-- `backend/.dockerignore` — `082c7a3166ababa365a9591570b6b9c5c6adea1635e57db5e073e16139e912a7`
-- `backend/Dockerfile` — `3765c2aec640e0a4d0249d5b74f7fab5874669eb6c98297cc587d10126b0c84f`
-- `backend/pom.xml` — `b653f78156ec935d341582b7f48b86f975160cc0e8419582f94d669734b61370`
-- `backend/src/main/java/br/com/contabilidade/ContabilidadeApplication.java` — `e86c1a43b6212a3dc276f978b6370bf0a4d26dae80b94e6cdad0834d1de72579`
-- `backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java` — `6800ed2b60a3940afcb1e7ff0b429e7d89d47579e4e57ab8ec2914734b7ba931`
-- `backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java` — `24b8c15944534c289618ffdd770096209a4b6c8223a116322a443cbdc2bc5d41`
-- `backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java` — `41502875e60824601f26b948b1b30c4323cf41e316b0a9d3b86582157e036d48`
-- `backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java` — `33c0f77f0ed86693cad578c809996fab7f4ae2ff61a993ba75f42aa604b5b019`
-- `backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java` — `02e1ababa2474afebad3d0164f64653e72ea8d23baeb4f438feedce11d58afc6`
-- `backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java` — `63680937164b97a759ce1a19b21fadd4c8f655d0ced9ca52b104bddd369297dd`
-- `backend/src/main/java/br/com/contabilidade/certidao/domain/SituacaoConsultaCertidao.java` — `6438282c132e592b5b194169f779b5fa909e2432190e305d5b36fb259ba1f9e9`
-- `backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java` — `29800034bc4f6b73ae52079c290aece12a366349475837a2dd970288cb1fb75c`
-- `backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java` — `da1054c1fe0831ad72bd58aaffdb71951c3179a08a30a5432eee1e1b78c918a5`
-- `backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java` — `b4d610eb476fac6068365cb04fbcdccd9428dd5fa2afc1d219e0c35c8d23e0b9`
-- `backend/src/main/java/br/com/contabilidade/certidao/repository/HistoricoCertidaoRepository.java` — `3a11aaf7be5dcb33fb87c60ee990e9508b343a119c0d99a580d784bf36182827`
-- `backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java` — `5b99853dd84708daa384f530893e9bfe544d4038eb2421c0c94067e75b73b5f9`
-- `backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoScheduler.java` — `44bca79441ad46143ae6d53eed0ae02fb41460309a0a1fa34111fd807dd75bce`
-- `backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java` — `13b623de14a39d38ad8cf8d6f2a3d8d2aaa69693920c77bae8bbee0616414a88`
-- `backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaController.java` — `89b59c89291ee8f8a22eb44e3ef5efb387fab0852747f635ae4d79cdef6b858b`
-- `backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java` — `2f92a1932d0f9f307a6151f5bbac6fbcdc5aeecbdcc66acf7a015b4fa692b97d`
-- `backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoria.java` — `cb2bdbf440723da8d0e663f21bf41fa2e526fe265bbc7eb9e483dc36048f1373`
-- `backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoriaRepository.java` — `0b02f19ce0b1c9a777e29ee395bd66e61e59ee2e54b45aae2d1d64cc3ebfe793`
-- `backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoDocumento.java` — `436aa1ab5954c3b9494d7646914d00f5d22941100de90bbe8dc58ad0f891b3b9`
-- `backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoLocalDocumento.java` — `633c8fc007df41993ad355ba3f0d32d569fec50145250b284edd64126adb8380`
-- `backend/src/main/java/br/com/contabilidade/common/document/Documento.java` — `73e1c780d3cb7ef0b3646bc048058aa3b32506ec697416efcf9e168413ec332d`
-- `backend/src/main/java/br/com/contabilidade/common/document/DocumentoController.java` — `a0241865e251fd40c3b1fb2befc5faa587f809d4f0fe331d3b2a53db1efeccb7`
-- `backend/src/main/java/br/com/contabilidade/common/document/DocumentoRepository.java` — `e359b4273f3c251c48ec7f4066068dadc285fcaf096e7cfa660595e8bce426ea`
-- `backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java` — `80b770edc12feef4adc338aa64ae8e518db5cae4a8f114c89426bb69743433de`
-- `backend/src/main/java/br/com/contabilidade/common/document/OrigemDocumento.java` — `dd490b7989a68179d066de7d9670caf2e7158be7cc33b9af493dc9ced4000f40`
-- `backend/src/main/java/br/com/contabilidade/common/error/ApiError.java` — `80b63127edfbf705f2cf1ba9c9a7e28d4a4650af0aa0049c02dd2602494c3d9e`
-- `backend/src/main/java/br/com/contabilidade/common/error/ErroCampo.java` — `d54e4c9afcd4308f38d7d30712d31814a70f534557a142c4758ab419657eda32`
-- `backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java` — `70c273863866c2628066ed9801fc2645b4b494ebdad8a64f6a03e8908dc47eb4`
-- `backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java` — `fd191902a354757942983155cf6cfe86c5e37f28aff733046683a65447e9f243`
-- `backend/src/main/java/br/com/contabilidade/common/error/TratadorGlobalExcecoes.java` — `cf95739bd5ac0c12ca09d1c4d7c06a8665225cb146a1e476918c99092e7fec31`
-- `backend/src/main/java/br/com/contabilidade/common/execution/ComandoCriarExecucao.java` — `0d3771d075342bc56073374f7d75d2044b1b5d368ea785f9035e20e757d595af`
-- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoController.java` — `326f18ee05ca1ef07c9973fae5b3c5708f821ff8dfd85408b54e63057ae13a56`
-- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java` — `2eb742e06aba52206709f07f34352994b964e6c39e25220067427a29085704f7`
-- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java` — `6e50da2235396b0af235d91dc2725caf61062a3583e3415c46f443c46b81131a`
-- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracaoRepository.java` — `b502ce732b29b49aa87c2719f2439dcdd85cd72936884a28c03e75b29bd75603`
-- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoLifecycleHandler.java` — `d2579eaa5396e047cdbae413b3ed4df13b052c5b59cb9803f7505e53ed8d13a9`
-- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoMaintenanceScheduler.java` — `f4a8e9f97fe1784ba13a2b65969c2a14726e07b598c2198eedbd31e642c3dbe1`
-- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoResponse.java` — `9d6060c8fe1589aba1b3aa57da2070a295905e7c55f4d0da24014a0cb992c1db`
-- `backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java` — `83a2c2ce7ba0433559b320cf6ea4a348e51befd3a705b919916e204d6b512b44`
-- `backend/src/main/java/br/com/contabilidade/common/info/InfoAplicacaoController.java` — `09100db7d835dcbf0225b5146d3aa591049541f9aeed697284a9e6f638f9b2d8`
-- `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java` — `b01763b8bb2d4b4e9c3feabebcc411cec034557728570a8271621236ec2be0a4`
-- `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorController.java` — `f1c097eae3725eb9cc77f1f67c43ad35f77fe6a31bc847ff2b2e7a3721c328a6`
-- `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorRepository.java` — `677a29a04d7be0a796e952edd023fc6ce5865587c704894124f674d472c13a3a`
-- `backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicao.java` — `e98f3cd80de3be21e0dde1e79fa566e4dd9700af63c251baa5902fb639e8fa68`
-- `backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoController.java` — `fc3bb21ecd663602d008bfb98e8c51ab6f078f5afc57a5c29b785fb3a0f609b6`
-- `backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoRepository.java` — `9b42c12fcc4cba6d4a8f4f2d7b682737342e792c0e179eca1b60514f0c4dd5cb`
-- `backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoService.java` — `5e2ab23ee5889a1a416eafa76575b1455a16cda7efa2d28c28200d7c2bdee256`
-- `backend/src/main/java/br/com/contabilidade/common/integration/ProvedorIntegracao.java` — `7eb0790cb87627b9b66dd0509661cd9acb6dec979aa9bea522c97cfb209210f2`
-- `backend/src/main/java/br/com/contabilidade/common/integration/RequisicaoIntegracao.java` — `075f81d8402be569e6412b3afa42d359cf14583d8fe44e3b61a38176bb0bc216`
-- `backend/src/main/java/br/com/contabilidade/common/integration/ResultadoIntegracao.java` — `d486aa14b66369522cf56cec1234edd9af883d6d31c1694369afc210d96b51b0`
-- `backend/src/main/java/br/com/contabilidade/common/integration/RoteadorProvedor.java` — `c5ca3bce929527a24807033c80ff548b63e5713a00d315d558410e5a20e87463`
-- `backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java` — `effb2eee004579c17f5cd2b8e90c33dab62bc9ac38a6087c150195a2a7d7401a`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/AutomationSessionProperties.java` — `b700b566599686c202f277b64a571108cabcc33861dac410c12607707b7144b3`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoController.java` — `1e401b5920fe7cc7df54ffddb184b253cb7a67a79677ee208bc628ad10170203`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoRegistroService.java` — `4752025378d04e4fda5eadebed220af7620232ec2ca333267b783eee5ad45d85`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java` — `430a9c7bd32c08756814f508dd1b05b6d11bcda428e4d64ce08eacb524436eeb`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/SessaoInterativaTicketService.java` — `0535fd265233e9b0b7c30860ab0b399be615919ee18200fa56265b48d3e1af51`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencao.java` — `ce2a47ae2f50953551a47248cc20f7645cc5ada6556d2b2eeb7eebeea51df8a1`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencaoRepository.java` — `7f0963e5cdfb5ffdc18d868e3bfe7c0a5754ffff19ac13c1afb5eb0eab1c6dc3`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/StatusIntervencao.java` — `92ed5ed4f16094611e6efd546ecc2c8cbee02f560514dbda2ce9d4b23bb8858c`
-- `backend/src/main/java/br/com/contabilidade/common/intervention/TipoIntervencao.java` — `8750a2cde52d3f76d2cd9c0fa752a223d1b42ebfe61267b8be2c0d85d46a7409`
-- `backend/src/main/java/br/com/contabilidade/common/notification/Notificacao.java` — `2f490015f9f5e02af5c6efead3e1c07ad0f4e7c27f483ea50a1ea3a56b7e141d`
-- `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoController.java` — `6859b7c52832b21bfa09f70521b9127b1e9722287cfbc42bb840583c31413bf0`
-- `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoRepository.java` — `dc7e00c22e6b3a88d65f5066e145eca65c7d280a0fd0b99bed43192acdb1b795`
-- `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java` — `07f57a53b09fbaf9d71ae09ea117683f22cd4c9fc1aa68a537d935526b67dbd2`
-- `backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java` — `9e1d60604c7e237de2b2c3924547a03c10250af6182f5bee03eba64e5d1dc44b`
-- `backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java` — `8f50fe61ab4919138d2123ed4c63709a91215b02ee71c08d70389a857fa377ad`
-- `backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java` — `bb489767a12b71a0c8b990d713ad1b4c2b19fec75e04d691a658417379cdba36`
-- `backend/src/main/java/br/com/contabilidade/common/security/AppSecurityProperties.java` — `8869168a68101c35566b06febbb94c96434e30ca405c109e2ece9fc21b6d4908`
-- `backend/src/main/java/br/com/contabilidade/common/security/JwtAuthoritiesConverter.java` — `e91fa2682ed013d636eb66150b4bbbd2b0fd2c225596916e4cace23214a5f864`
-- `backend/src/main/java/br/com/contabilidade/common/security/Papeis.java` — `eee993052978e0646ca468559cb9f4417070157d2a80eed2819783a66a8bef83`
-- `backend/src/main/java/br/com/contabilidade/common/security/PermissaoService.java` — `42df93dc6e8dd52eb67109d6812c5930d8fd226a2ee191c7b24ff0f65e7c8a91`
-- `backend/src/main/java/br/com/contabilidade/common/security/Permissoes.java` — `de49fa17930042e8603eadf667ea3baf90989fba622d7b4217b584bd5a090a65`
-- `backend/src/main/java/br/com/contabilidade/common/security/SecurityConfig.java` — `46d743a6c0e41ad951f3131bd784c4b0c087869d8d91511735a5ab59e9650f17`
-- `backend/src/main/java/br/com/contabilidade/common/security/UsuarioAtualController.java` — `f25ce9304feb1408e9491016db63ab8200c7faea07fabf367460b25b48f99283`
-- `backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java` — `565ab997a32c080fadcb4e152adc17c50d7257926c1d32ff021d2a8e85c61733`
-- `backend/src/main/java/br/com/contabilidade/common/web/CorrelationIdFilter.java` — `44d52fdb6e27dbdacfaa0a09d684766ce990bc27b589bd8a4bc8eb9ef942d6f7`
-- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerDocumentController.java` — `8d1869037f6e788097d547dd6d4374bc069942f749778e95373efecba3ed447e`
-- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java` — `995ab4ff5364992220c292421acd0591a47557ead166ac1b90cd691997349e8c`
-- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeat.java` — `35b1282b15d071a59ec73b9fa3f1553a475a05a01856698f06fc136ea0f90c95`
-- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatRepository.java` — `71f543f43e94db68512e6921ddc9002995d99d78e5cbe9e9bceb730325525b80`
-- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerInternalController.java` — `350446c847bf6ca40a3b1125cdef949d13398b102dfe631f301ba4f06d336724`
-- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerTokenService.java` — `e9e48937da68382ad00e5ac4b29e95d2c5d3816f1598ba008f311f7fa55a05e9`
-- `backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java` — `bc80b082b375dc1680b2ee7eaf74f440563f8da35d0b182532a52bdbed7128c1`
-- `backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaController.java` — `2f27da895e1141849e1034bd07c73e17a710c918daba68fb31af1ce1c735620d`
-- `backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaDetalheResponse.java` — `7f1e38bb40aa27196ad77dbef543a325da94d85073bef3d33e017d7d8a3faa00`
-- `backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaRequest.java` — `653865d9fad1f915790daf430826dcd1be095f3910b646d79d3895e63f09c414`
-- `backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java` — `ec4381d2df931c45e0c5d03e6e447cbb5542fc259b827567ef28763dec37afb1`
-- `backend/src/main/java/br/com/contabilidade/empresa/api/EstabelecimentoResponse.java` — `725a3886bbefb0118d7bd07f9e27e71e27cab8c09be2d3785983b98d74b15490`
-- `backend/src/main/java/br/com/contabilidade/empresa/api/FilialRequest.java` — `7f3e0bfbd9c30a3fc263a0b05a5921a7af8b381cb0d14d7ddbbe37f8c6d5089f`
-- `backend/src/main/java/br/com/contabilidade/empresa/domain/Cnpj.java` — `d9f6fd14f8ea0bfc1c7be248c8b309241eb94fcac149def50b04b669f9bdb443`
-- `backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java` — `db51f1d0e573a1fc9ef712eccfbfba057dbde7e292fa752110b44f22dd58a129`
-- `backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java` — `0fe486042fbbcbf66ca374f5e2fb6344bf4f213adba9ef411378241c45a4bc8d`
-- `backend/src/main/java/br/com/contabilidade/empresa/domain/InscricaoTributaria.java` — `7d90a17a490a444479b0efb4016ca3845d7011f8476016db9a8a68a3c6458831`
-- `backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java` — `bf247522d362b93de87dd448461f387d3864e8616ade48a5c9849cfdb00fec0f`
-- `backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java` — `f246f0a9f050571394564d2700480ff10d935ea6404aa29e4956623a96257f82`
-- `backend/src/main/java/br/com/contabilidade/empresa/domain/TipoInscricaoTributaria.java` — `7f29eb577797daf132b2e74f6169a637eb9846743e300b1256d796f654050ff0`
-- `backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java` — `e2e1888bdd3f4c819e4ade167baf372cf3c26e3993aa8e10653d9384aafe0dc2`
-- `backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java` — `69510635d4abd0f7cf6172d63b8be848baa0a03f857b2fca34b9074f97c52d1b`
-- `backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java` — `2734fbc2d5c76c15b38a5eb6d3beeb18427a81684d304d82f3c607dc5b7ec910`
-- `backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java` — `552a23c88d567e138f1879dfd4f25dfbba163a5ed27d50895e342b7e7c529a99`
-- `backend/src/main/resources/application-local.yml` — `be4d5c1a06af3b9df5f1634ffbb9af8f2f430c0ee08066c6bb7f0de178ce000b`
-- `backend/src/main/resources/application-onpremise.yml` — `80f9f59b746e15110c9104af3edca69d10331ee142591fea0b541e659ad5a6fb`
-- `backend/src/main/resources/application.yml` — `14a2e5f0c8807cf84ab201438d4d3e04471aa2ed48b975f97c462287b29d246b`
-- `backend/src/main/resources/banner.txt` — `2812fe804cf0f60467cb231ae9e17af04c66d2edab967726a124714a7cd97f17`
-- `backend/src/main/resources/db/migration/V1__baseline_common.sql` — `05a0d774373915ba39fa1900e949071cc7df437166e7ec316dc3820445a3c359`
-- `backend/src/main/resources/db/migration/V2__seed_provedores.sql` — `192dcd198d9384433341d160582623bc27dba43baaae0993512e6b9c0a09b10e`
-- `backend/src/main/resources/db/migration/V3__common_operacional.sql` — `2b6436cf7b85ee374870890aa09083a88a479192ed0cd4e5e65a8238b819db2e`
-- `backend/src/main/resources/db/migration/V4__centro_certidoes.sql` — `09248c2b932cca0a479b5ebf6e3a7331525c8fa40d6a0cf62401cd4ef910a743`
-- `backend/src/main/resources/db/migration/V5__portal_federal_assistido.sql` — `f84ef292bef0a9a0fa298d1c26d735097752ac310c839d5f511421ea4a16eda8`
-- `backend/src/main/resources/logback-spring.xml` — `22c49dd58a2324c7f48680280b705b392d51e2da8da8081040092d746a5d3970`
-- `backend/src/main/resources/messages_pt_BR.properties` — `ffbcf89872e4c52394452652aa9c3f9ded4c4c2f5eafeed2e2d1f7a5b757124f`
-- `compose.dev.yaml` — `629a86db67038012045595fe9fbde912eeccac039daaa6c1a04fb988097ddb93`
-- `compose.onpremise.yaml` — `3da507576ae79f062d0f434a48ad66013cfc4605e81c19f82634bc283d60c145`
-- `compose.yaml` — `78914d80ec9da37475379f8d98987bce728bd667ec8bbf1e4a944fcd05195863`
-- `docs/GOVERNANCA_DOCUMENTACAO.md` — `3b7a41b45f53c4398496ca1d51e95ff795a590c4cb5b55e964b9d903cc8ca59f`
-- `docs/INDICE_DOCUMENTACAO_ATIVA.md` — `1767dc6c98df55a181c2a6a202051fb95d305b3c1f573cdf55047992035aa926`
-- `docs/ai/FLUXO_TRABALHO_CODEX.md` — `eccfa5199f8cf930b8d10c8d959738eaa986a769f5123edcaa72d41fdc1c8b7b`
-- `docs/ai/PADROES_PROMPTS.md` — `8f64c88900dce5cbb0ff0e8621938a4a4aff5fae409515f8097b9fccd0876715`
-- `docs/ai/REGRAS_TASKS_CODEX.md` — `a4a15746cb3b878958bb818128cce19c94b5b564e22cc702fcaba9830a8794d4`
-- `docs/arquitetura/ARQUITETURA_BASE.md` — `7f862cd7c0b5e380bc57ce18b84382a9e5e414c2eecafaa7ebc05a448c71e073`
-- `docs/arquitetura/ARQUITETURA_INTEGRACOES.md` — `00797f8f5bb5883f3f627fa569890280d419723abb42eb38eb3155de546dcc8a`
-- `docs/arquitetura/AUTOMACAO_PLAYWRIGHT.md` — `b0bcad179608ef871a88dd2de02845082946764308ca0e52ade9841262fae993`
-- `docs/arquitetura/CENTRO_CERTIDOES.md` — `2d92b6155dcadcbfa1e1fec0f7da41d6ae929208d5b884ef0da5570bdab3f966`
-- `docs/arquitetura/DOCUMENTOS_E_EVIDENCIAS.md` — `229786dd86fba5c6fcfe07140c1de00b44fd78a3e24fe4b4f7414fd1386e4dc1`
-- `docs/arquitetura/I18N_PTBR.md` — `96814056f498b6f3dac30ea2f3081ff0d7538246f8a2dac86d36f66c7d5ffe81`
-- `docs/arquitetura/INTERVENCAO_HUMANA.md` — `b4774ac228638edb738f80b582c554c4aa5a8bc0e09e68a5fa35bed3c7818c71`
-- `docs/arquitetura/MODELO_DOMINIO.md` — `d9ae8c0eb71bd4c2979752e176ce29666fcf7ba6e7d6dabb01044b89484049bf`
-- `docs/arquitetura/MODULOS_COMMON.md` — `56425033084754c829a5f44351d9538f7fd53e484c16027624b10e84fe47bd0f`
-- `docs/arquitetura/MOTOR_EXECUCOES.md` — `913e91ef72013041283d0cad1269794a07f2ff6d82946a34a4f285b955f615d5`
-- `docs/arquitetura/OBSERVABILIDADE.md` — `e73f33ef50693ac49e3d56fb9057ad8e0d45dfd881c452c37cf0bce4cca5b58a`
-- `docs/arquitetura/SEGURANCA.md` — `e91a4dc07dd06e03fdf4edf9ea1597efc03d63be8c6e1021acda898d950873d7`
-- `docs/arquitetura/SESSAO_INTERATIVA.md` — `75d6e3f9c90d38c283a6a39410c70b9d5b7d4ea7a43f271d5f89b240e9ed9f2e`
-- `docs/decisoes/DEC-DEP-001_ON_PREMISE_FIRST.md` — `07aad5418fb4b0201c31e33ff1ffb468be78c20d1eea61f179c3538d15391ac3`
-- `docs/decisoes/INDICE_DECISOES.md` — `af40de0ee2e7f13c35d5f08240f1bb2db09ab188cb110ac1e6d0b46e209ad955`
-- `docs/discovery/PLANO_OBSERVACAO_TRIAL.md` — `e8b297538e12a67ea563f53da67e46f8f67bc4768e2b512b03facc41dc7f4514`
-- `docs/historico/INDICE.md` — `c7579d240767e9a0106ffe6fedc3d3f0e056a9a04fedaa6e9ae7b74c312dde52`
-- `docs/integracoes/PORTAL_FEDERAL_RFB_PGFN.md` — `d534f373a75059e15ed4b06c7ff1e32522ed6d3588c66a724a21c6de639f759b`
-- `docs/operacao/ATUALIZACAO_E_ROLLBACK.md` — `11c52afffb624f547383547539d25a2c911db91e46cb6ef3a7b039a49a6751de`
-- `docs/operacao/BACKUP_E_RESTAURACAO.md` — `802d59386732de0e103459fce9d391d4724395a1487afa7a0c652374006edfa3`
-- `docs/operacao/INSTALACAO_ON_PREMISE.md` — `d8fc16bc42ae05f356064943484b29388d6c4a6f95b4f2ebcc42f100e026633f`
-- `docs/operacao/RUNBOOK.md` — `1f5aed25f7db88c3abe5f9242884db61ff2e66178a12290841c0cd73c9413150`
-- `docs/operacao/RUNBOOK_PORTAL_FEDERAL.md` — `3e46b41258956c8a00c8557d2795b1efe284d1d9911bb63f85bdcac29b2d47a9`
-- `docs/operacao/VALIDACAO_V020.md` — `868a4de0530d52b67ef7f22dc2b95becfad83b16a3b5f4f2704d97f34f1643cd`
-- `docs/operacao/VALIDACAO_V030.md` — `a44615e88edaa47ab7dce048d5e57aaaf2cdf41bacd88cd7bd3e53082b81456d`
-- `docs/roadmap/BACKLOG_ADMINISTRACAO.md` — `6331879e4d5cea53c83b4b75af90c4f5a42db53398110590b24df418f18380e3`
-- `docs/roadmap/BACKLOG_AUTOMACAO.md` — `7417c5c0e4e51ee1b787dcce0b08095a32a386484cfd85edb7fa75ed30383a41`
-- `docs/roadmap/BACKLOG_CERTIDOES.md` — `e46d73618a2867c23d3c73b64660aa08c9c5b16495cf64699a076fd2b75b3261`
-- `docs/roadmap/BACKLOG_COMMON.md` — `09c566bc00162bc56adf6e9874f0f5bb460bcd6331a6f23ad5ac4b54f4af6ca4`
-- `docs/roadmap/BACKLOG_EMPRESAS.md` — `c92c0bba6ddef468f33b1c04783d9d7bf722948cc0e3a9c91ae3cb1acf235db4`
-- `docs/roadmap/BACKLOG_INTEGRACOES.md` — `c575896e62687eb76a65e9f424886dc221cbe968ad6c1531ddc53ce14d7d438d`
-- `docs/roadmap/BACKLOG_MODULOS_FUTUROS.md` — `b9899c21984cda236d383e40874592dd17d216249d237cab3d104eee7802d7a0`
-- `docs/roadmap/BOARD_ORQUESTRACAO.md` — `aedcd9a6f6fd4b140d226f5bdfa941551de5df97f8251a047d00de7fc595f395`
-- `docs/roadmap/HISTORICO_ENTREGAS.md` — `3458604ee2f8cc2be2e890cc50d416cede1244ef6700af7b9efd494dd9c52cda`
-- `docs/roadmap/REGISTRO_ITENS_ROADMAP.md` — `d0e22839ffe75636a2e5f1372a47140d56aaeb57bd98da29e050dc93addf8dc4`
-- `docs/roadmap/ROADMAP_PRODUTO.md` — `e9c1b2df260127ad2fa8b0be94f1c49c87f9441aa158add2ee95421580578dfb`
-- `docs/visao/BENCHMARK_VERI_CONTABILIZEI.md` — `255a161dc70ce50b634f69f3887e3c526f8a7374c1427c96878bebfce136597f`
-- `docs/visao/ESCOPO.md` — `0184c270770d844c1cc1668bb5cfaa2a0aa86d91b93cbc5d9a3903e9872eb8fc`
-- `docs/visao/VISAO_PRODUTO.md` — `275a39f596a5ced03fdf26f708cef16a9e9b255f45ae5af6789be8d02294351b`
-- `frontend/.dockerignore` — `5985ba75c332d6ce36a2033c285af89089cab26078cbc83d6c903103ed61ecb0`
-- `frontend/Dockerfile` — `ba36f358744dd390e1be4896a3b9793bb7ae1fc03f620b4ebf06009974a09f1a`
-- `frontend/docker-entrypoint.d/40-runtime-config.sh` — `b794934b466fc0f032236b409db7d66a104f309449e832605a8064394e7d70fe`
-- `frontend/index.html` — `7fc660c96ab47de86afb316d4ed00275aa40c68089503d2d04d3f2796bf856cd`
-- `frontend/nginx.conf` — `d07ac24a44537b722cdc0c7fbafc8cad5f6c0d7964e5a9d019910bb5ddd5b774`
-- `frontend/package.json` — `10f3b94191558f910f9a44e76d6b745cc4cc949dbbfac8fc89f808a645741d9f`
-- `frontend/public/config.js` — `1ad42c7744172343853dcfd3a1844b2e8acdc81fce77b1d00cecb41a960b96c5`
-- `frontend/scripts/validate-locale.mjs` — `015914284299b688197b0e9e583ac3f4e511bf5aa042c627e0910b6b4fcab616`
-- `frontend/src/App.tsx` — `c31711d4e0eb725d590a0be8a1978bcf0c791dfbba474bb3f67ecd5e17ef223e`
-- `frontend/src/api/http.ts` — `34915d7c420032e17da22167106057f125febc71007d6ae16305292b5dffe21d`
-- `frontend/src/api/types.ts` — `bc07465b0a15e0d93d0fa21c7493afe742101cfa7e0717ec09263979c01c2cd8`
-- `frontend/src/app/AppShell.tsx` — `3cf97a0769c87eba5e96e80ca76c93ba14944f13bb434aa3301cd7e1b545bdc2`
-- `frontend/src/app/GlobalSearch.tsx` — `180947755066bbc0ab85e8d4da4604282bad2c3575cf1155b7f8258be2eb364f`
-- `frontend/src/app/router.tsx` — `dc94ab6e7c8cee42e8966b9f23343fd892203c3cb798fa627f2709726eed8ee7`
-- `frontend/src/auth/AuthProvider.tsx` — `479a424bd34f262b4db35236f5109f5f8bb65e18f5a5922f3620fba4825475d7`
-- `frontend/src/auth/PermissionRoute.tsx` — `bdb763999abba323d39cba4af1a4dffd773327c1f5956a9671c703490d7f29f8`
-- `frontend/src/auth/ProtectedRoute.tsx` — `161715e23f01752cc744973a4951b800a45b400593e3e57e38159e365b216b79`
-- `frontend/src/auth/permissoes.ts` — `2e23844cabcf5d9366a1501cc839e45baaa9c017b36af7fba00dee5ec4b8180f`
-- `frontend/src/auth/types.ts` — `78defbcb8c9ea4004a8bdc7c27b6b2f48a47de4e2af2d437e0ee9c9ab33b00f5`
-- `frontend/src/components/Alert.tsx` — `e3680688d9b79e2e7bf2b2627aa8b6cb6d527561f3ecbec27711952dc5b5d5dd`
-- `frontend/src/components/Button.tsx` — `10ca17225c48c030a14c58addfb26f219d2e0b8bc3c7f9247f71c408a1bc87ab`
-- `frontend/src/components/Card.tsx` — `7b134551848d23f434d7451ada72255cace241daa9300eed3c619b94e563282b`
-- `frontend/src/components/EmptyState.tsx` — `56b7c4478b603a1041d26eb01f5e379e0940f5aed6e96b44da02e1e2ab2c9c80`
-- `frontend/src/components/LoadingScreen.tsx` — `3decbabc2e92e25d9dd667015e076441168eb8c3e2610d3618e1913bc5c09d52`
-- `frontend/src/components/Modal.tsx` — `b7e15edac0b507b30a5e2b573f40a45f2fa0d9e89b3a2b11f5d646d8424fd71e`
-- `frontend/src/components/ModulePending.tsx` — `36e6bbb17df650de19f4518bde8cd575a0d2a47001a71c96e01b1d3e817cda13`
-- `frontend/src/components/PageHeader.tsx` — `fc0c4f6243309c87adcfedf646c9aa88fc87f1611ae6b43e74c46a856ec05230`
-- `frontend/src/components/Pagination.tsx` — `5f6113f8115acb849784a4e2d34505b69a9a254d325ed9cefefad8a5a1e848c3`
-- `frontend/src/components/StatusBadge.tsx` — `4d7f5ad93b6434b05a963729fad28b84ba609c0239d8607edc621911a23ca0f9`
-- `frontend/src/config/runtime.ts` — `766b3e8b5439bc43c79a1be490fcfc74490a8946e2118d4ac446bd4852e7ca15`
-- `frontend/src/features/certidoes/CertidaoHistoryModal.tsx` — `f02eb6a74c17df34e21e61679a69ff75432673d278e7bfd4f45fe7fb07df897f`
-- `frontend/src/features/certidoes/CertidaoManualModal.tsx` — `5746ac383b6231a52760a9267f7a6c4aa262dab8c2ba867b1c1960075359ec99`
-- `frontend/src/features/empresas/EmpresaFormModal.tsx` — `d924a1dd2eb2f5369cd2c3c47a4fc24cee4339ec6ca45476367c0164cedbc1aa`
-- `frontend/src/features/empresas/FilialFormModal.tsx` — `c9dea43a3e573d2a827d76896ecdfba4def21c5a0314893916709b9642c0eaa9`
-- `frontend/src/features/intervencoes/InteractiveSessionModal.tsx` — `895299b4b6f2d986cd3b358da55dadf833b36769624e09f268cee4ddcdff08ea`
-- `frontend/src/i18n/index.ts` — `6bd21f135035069b4392a9cd594bafd71fb08dccd068af96d26a6e8d220dd192`
-- `frontend/src/i18n/pt-BR.json` — `7e7026a9e10fbbeb455e857c59fffc2a7f5ba463ae46211c2834f6b1ea639154`
-- `frontend/src/main.tsx` — `c6f40083e174f235ebf2acdb130db87a9c684028d01dc9fa9ef604701e90f53e`
-- `frontend/src/pages/AuditoriaPage.tsx` — `7bb152eae144bb1afa99a0ef741039f49f46b1c2d6b145c7aa05944364575ef2`
-- `frontend/src/pages/CertidoesPage.tsx` — `c4d8edceade358d053bb62a510ce25be0682b7c080f8d18be31426b5886a808d`
-- `frontend/src/pages/ConsoleTecnicaPage.tsx` — `01bbdda6a3f2c965d345492b772baba84b31dba6ea264e30e1f58fbc8eebf9cb`
-- `frontend/src/pages/DashboardPage.tsx` — `19e602568dccf76bf3d684994c03d1b783f044df80fe05dfc9dbf5d54a17a223`
-- `frontend/src/pages/DocumentosPage.tsx` — `70c1e19c171e15d40b06857b6076428b57b9226a2690f6805039c9aa7a9b7ea3`
-- `frontend/src/pages/EmpresaDetalhePage.tsx` — `f87f66bb726aea18b86ad93b1429af48c406166fc68b38b7cb33b62e2b72ac54`
-- `frontend/src/pages/EmpresasPage.tsx` — `bcc14460b07bb300f0be6e9cb2107648b410661f4d22d77fd57daf95a61b4d09`
-- `frontend/src/pages/ErrorPage.tsx` — `64a5f5b3ba5ef37baac350bf2d9d37cb990638a507b932bc7e5d887eb12006b0`
-- `frontend/src/pages/ExecucoesPage.tsx` — `d7cb0c85936c3fb6c65bc1a79a9aedc4cbdf25982bcb0a558e6d7a7d5104ee79`
-- `frontend/src/pages/IntegracoesPage.tsx` — `d37db87f34bd8f4aa430e59ad4b1add86f5768e4029e9645f68bacd775419bd0`
-- `frontend/src/pages/IntervencoesPage.tsx` — `5c81c43a8882a0640a7e5bc08b3309617b4d8037ac0f328f69e3868b8430c48c`
-- `frontend/src/pages/NotificacoesPage.tsx` — `04a753ae2754fa9d326ba18aec865af50c2892ad9b4b51c9b1affe8a5987f389`
-- `frontend/src/styles/global.css` — `b0911d442cacea3640128b349020508ef503eebfc5e202a5f763c7f23e291e3b`
-- `frontend/src/vite-env.d.ts` — `ba57d6adb2ed7fdfb7827faedb2c3f17c3217cf872f0c2f502a6c562eabee43b`
-- `frontend/tsconfig.app.json` — `a7266d1c85fa6947c70073256d9a73e4c459e97b0b4ef24b5c48dcab498ef4c5`
-- `frontend/tsconfig.json` — `770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808`
-- `frontend/tsconfig.node.json` — `e2a0a94e3dcb5570839265e36add9f88282f9374e55a0794b22e4d844ff61fcc`
-- `frontend/vite.config.ts` — `67932dc11709d7bddc3b921ca6ac3a84e18482b38778ea5f9a116abf84ee1991`
-- `infra/keycloak/realm-contabilidade-dev.json` — `ba9bef4a1211a636041e245f33509e0c24f969a70617dac690460e25610c32a9`
-- `infra/keycloak/realm-contabilidade.json` — `261761ee8e76957fc0d40215c5f854a789b3a5f6b06f25871ab971e998ae857d`
-- `infra/playwright/seccomp_profile.json` — `4abf3ba96507099e3fcc133739e06809dfcddb411871a3d79cb4c44d7ad60529`
-- `infra/postgres/init/01-create-keycloak-db.sh` — `16e3e0dfd991864708beb933b3cfac76156a22c40bb44c8e910cd72dd78c2d81`
-- `prompts/PROMPT_01_RECONCILIAR_BASELINE.md` — `0b252660ecd8802106c3c69f574f244bc60af31a722aa5d6b3c61fb66219b285`
-- `prompts/PROMPT_02_RECONCILIAR_V020.md` — `be2c2ec3483ab1d7efaed5cceabd41ffa5018faff08c5037c6ec02e2ddf88c85`
-- `prompts/PROMPT_03_RECONCILIAR_V030.md` — `a1a4ebb10f7ce8e553103b30ab2ee2647a3a35960f289ba6c5f99ee05166930b`
-- `scripts/backup.ps1` — `5c1cd8cf72d30bed00ced6eb34eac465b3642a2839063a870c60808e3912764f`
-- `scripts/backup.sh` — `c2c64ef1b5f3c59d97cbb3c29ce7c18a551672e57c8710261bed1f92df58a849`
-- `scripts/gerar-lockfiles.ps1` — `1c485212bd51205f790653d592c4daece9a1bee46f34d475905659fbe2790ef4`
-- `scripts/iniciar-dev.ps1` — `28d1a2ef54f66245b837ea1343bd2764557a3d975bd97e5ec9fe56471be6fa2b`
-- `scripts/iniciar-onpremise.ps1` — `e1de2e765ecec983d72bec64bcb5252f42767d34114c91f76920f3e51be49a02`
-- `scripts/iniciar.ps1` — `3982cc593c7f6cc3e7805965b0097d1b76f99beba0b5fa6528cfdeffa679f6ec`
-- `scripts/iniciar.sh` — `17be0802320be8e4e829f60153418f656b8528f35041d728301abe58f92f0447`
-- `scripts/logs.ps1` — `8f7bade01c66e8882f99966db6bd67a034f2fb8957db40a0819b413997ed8939`
-- `scripts/parar.ps1` — `4d0d337f858753178b8a8b2316cf0db4b7db2c0227abe41e4fe213cd3bf7813c`
-- `scripts/status.ps1` — `3db26d5b293d937aa8a9974a141f3b2eae1be3f365810be21cb2be6a14cfc81e`
-- `scripts/validar-portal-federal.ps1` — `f6b2ee04c847ae2b891dcbd172eccda09b2cb5fb8135d447ed7888846981212d`
-- `scripts/validar.ps1` — `28f573eb3cbb82ef5cfb408339988c279e00c97952c851f1be8e24d34cd6b895`
+| Arquivo | Bytes | SHA-256 |
+|---|---:|---|
+| `.contabilidade-orchestrator/README.md` | 272 | `78bd3cad8bb9793fa6fb210a41b3a3ff686af8938bd5f37c6a86c8aa07061ef4` |
+| `.contabilidade-orchestrator/config.json` | 649 | `5df50b8803170cf2e5ac9e6b1e2fa9a87bf3c81041a46711586f192c2cb05852` |
+| `.contabilidade-orchestrator/output/plano-onda.json` | 1331 | `35003c9731d4d0bfb7f431319960b42d12a574428d345b9b925604885651c413` |
+| `.contabilidade-orchestrator/templates/prompt-analise.md` | 286 | `4f195f94f4f788db168f029fcdf996e67a80c28fdde1b4d28d3925a8ca131ff0` |
+| `.contabilidade-orchestrator/templates/prompt-decisao.md` | 261 | `9fb928e342625fe80fe9e09fa52ee119f0c5183c73c566ebdf93d94e3309bd32` |
+| `.contabilidade-orchestrator/templates/prompt-implementacao.md` | 594 | `45a35a9001380077db8747bd1a5e66a4d92e184242310d0b186a7d368988256f` |
+| `.contabilidade-orchestrator/templates/prompt-reconciliacao.md` | 386 | `3929882e041bd2b078336a9c39a16362a6b5d2b791092ca51000a145bd067e55` |
+| `.editorconfig` | 261 | `86b9f7bc5c0d80cdae94442f0ffd6cc502be30a15f3e05261d7350c119605411` |
+| `.env.example` | 1295 | `407ac0b90896cf3dea607f911e4bce8cc4c59b3a02dde769701f680f1ba7885d` |
+| `.gitattributes` | 98 | `8771b82ce7a63018d355d8fd5bc6854fb4e5b1c96980915fcecb935c45684289` |
+| `.github/workflows/build.yml` | 1327 | `73338f5dd28856a9ca0fff7afa64c6e707b3cfd2ce6a7df0a6962306b046dae3` |
+| `.gitignore` | 296 | `acc423394a7d2f18bcdbef88a4af9662ee43cd32ee43b7006b8a68007aff9a73` |
+| `AGENTS.md` | 3133 | `a54e422110416dfddf5c0bc8f1deef758b664e689f6698248823a2a99db573fe` |
+| `ARVORE_PROJETO.txt` | 15146 | `cfeff093daa8ac0ef5629655f0785c4d61461997eb51f40e5ff4c1d36373aa28` |
+| `CHANGELOG.md` | 4009 | `44396219672cd8fec691091ce82023a92ec53652a834cea457c94025cc5870eb` |
+| `INSTRUCOES_INTEGRACAO.md` | 1849 | `c13a1ba02753e6f19abbfdc5df4beaea4a64e9576c62e4c0e6bd6d2426fb6a46` |
+| `LICENCAS_DEPENDENCIAS.md` | 598 | `6cffdf937388940dc2811f506d2e2a62f5310600e4b6925e641035361fd665d0` |
+| `README.md` | 2709 | `1f3384be8017b4092844bd8604543f783a6f8565958f6d06546e605906ebafd3` |
+| `VALIDACAO.md` | 1883 | `a4fb07dc430fe54d67e6c605abcac59593a2d215fb176554773ded8cee2e184a` |
+| `VERSION` | 6 | `40b8eb4000a913a7791090535f291d3d369874162a89ef3c9e3d4e887a1b9e79` |
+| `automation-worker/.dockerignore` | 32 | `6e1839377387a46ac5e161f1370f2c8021f546fb8de4ee558b81d7d2d0a94e14` |
+| `automation-worker/Dockerfile` | 591 | `9bcef388961e59937eeac7ec8e8464dd9dc3a963023d56a80a66a02081b95236` |
+| `automation-worker/README.md` | 393 | `cd158bbe97bf595c1434bbe3230e6409b537c319717bef7273cf81d22ac7a672` |
+| `automation-worker/package.json` | 517 | `9254316bf88fe28d483c6513b70fe66a4226ebc59d2493396bad00d56ef29f6b` |
+| `automation-worker/src/BackendClient.ts` | 6846 | `c9d3a634f51f748bd543304bdaab87641e79578f5e49b3b8e89c9fbc91889303` |
+| `automation-worker/src/BrowserRuntime.ts` | 964 | `68a3a1181c9dcc655089064a442a6cf4925e1b9ea00749744028a9b7bc413baf` |
+| `automation-worker/src/FederalCertificateFlow.ts` | 21597 | `5d123266eb5b51f99dd245ccd2ce3ac1898139805f1dffe2003ec2d81c490957` |
+| `automation-worker/src/FluxoRegistry.ts` | 1279 | `15d343edfe6774fb599554c7f53ceca356e0272c7a36e983445c7aee639b4d31` |
+| `automation-worker/src/InteractiveSessionManager.ts` | 13171 | `1008f743cc4709a8b79e5c42cbc7f4d1b879f66722e8055a8fa323aee05a55d2` |
+| `automation-worker/src/PdfCertificateParser.ts` | 3994 | `e98babf2e71c4373babb58876ca2ee764c0611f891da2ac042d403fe7cd3c49d` |
+| `automation-worker/src/PgeSpCertificateFlow.ts` | 13025 | `b05740f732a131b787c7db876db096793af385b8ac7faf060731e73c7ae1a1fb` |
+| `automation-worker/src/SefazSpCertificateFlow.ts` | 13826 | `e609d6f545fb4da2f035b65ae7fd0ff1686bbb114afb71ae61eedd5790535ecd` |
+| `automation-worker/src/SessionTicket.ts` | 1921 | `b2123776ba0b9584df97ad0c4d557932025a0deb17216860b2cba8e448b3b48f` |
+| `automation-worker/src/StateCertificatePdfParser.ts` | 8373 | `07c95bcaab4674a0dbea47613ae5082ec851505d526c941e4fd5291ee21ff5e2` |
+| `automation-worker/src/StateCertificateSupport.ts` | 18051 | `f941315888fa609e239bf469f8bfdc22f297557a7d43c3628ca2d55806986583` |
+| `automation-worker/src/WorkerLoop.ts` | 8351 | `4358945243eba0d031cafb25329903b1b336ec45d3e440705d0a09a57d664412` |
+| `automation-worker/src/config.ts` | 4081 | `a36784d17020da5acaf22b0db89c82aec2f760868ba80b10353edc265e548e39` |
+| `automation-worker/src/contracts.ts` | 2370 | `c8a7957e1addde7e7e379f1f45d9a5b670fff08aa14e5deb9dfb28e570d1c91e` |
+| `automation-worker/src/heartbeat.ts` | 197 | `6f76de9cd7af673d2c8cad8816a0133bf20a6dc517ab0a05f9e44f81faa29ef4` |
+| `automation-worker/src/index.ts` | 2027 | `e3ff504232ab548f161cb72b59e0a640a4500b1cb8962885dd44612cbde94d9d` |
+| `automation-worker/src/server.ts` | 7830 | `09a63451a3daa8421582a81a2f7c7a9632b61ccf7865831d4a6ebdfaf6ee7bc1` |
+| `automation-worker/tsconfig.json` | 345 | `25482d12f821eb7c11c5d13dd3d469aadd84f0c91f86b5bcec0d2b1e2701e92f` |
+| `backend/.dockerignore` | 23 | `082c7a3166ababa365a9591570b6b9c5c6adea1635e57db5e073e16139e912a7` |
+| `backend/Dockerfile` | 489 | `3765c2aec640e0a4d0249d5b74f7fab5874669eb6c98297cc587d10126b0c84f` |
+| `backend/pom.xml` | 3390 | `d95a02faed20235edd54b64cdbb1a2c1c76a48bf0d7664932b76cd5221dd628a` |
+| `backend/src/main/java/br/com/contabilidade/ContabilidadeApplication.java` | 423 | `e86c1a43b6212a3dc276f978b6370bf0a4d26dae80b94e6cdad0834d1de72579` |
+| `backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java` | 3258 | `6800ed2b60a3940afcb1e7ff0b429e7d89d47579e4e57ab8ec2914734b7ba931` |
+| `backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java` | 1747 | `24b8c15944534c289618ffdd770096209a4b6c8223a116322a443cbdc2bc5d41` |
+| `backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java` | 1322 | `41502875e60824601f26b948b1b30c4323cf41e316b0a9d3b86582157e036d48` |
+| `backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java` | 10737 | `33c0f77f0ed86693cad578c809996fab7f4ae2ff61a993ba75f42aa604b5b019` |
+| `backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java` | 3950 | `02e1ababa2474afebad3d0164f64653e72ea8d23baeb4f438feedce11d58afc6` |
+| `backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java` | 176 | `63680937164b97a759ce1a19b21fadd4c8f655d0ced9ca52b104bddd369297dd` |
+| `backend/src/main/java/br/com/contabilidade/certidao/domain/SituacaoConsultaCertidao.java` | 221 | `6438282c132e592b5b194169f779b5fa909e2432190e305d5b36fb259ba1f9e9` |
+| `backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java` | 314 | `29800034bc4f6b73ae52079c290aece12a366349475837a2dd970288cb1fb75c` |
+| `backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java` | 889 | `aae89b56883bf48a29d02f782eedb5b1310871a4b1b1529a96de52a9fe721ffe` |
+| `backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java` | 887 | `b4d610eb476fac6068365cb04fbcdccd9428dd5fa2afc1d219e0c35c8d23e0b9` |
+| `backend/src/main/java/br/com/contabilidade/certidao/repository/HistoricoCertidaoRepository.java` | 579 | `3a11aaf7be5dcb33fb87c60ee990e9508b343a119c0d99a580d784bf36182827` |
+| `backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java` | 20053 | `5b99853dd84708daa384f530893e9bfe544d4038eb2421c0c94067e75b73b5f9` |
+| `backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoScheduler.java` | 1008 | `44bca79441ad46143ae6d53eed0ae02fb41460309a0a1fa34111fd807dd75bce` |
+| `backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java` | 20515 | `769004a6db6e5c70d734e452872a08e17a16da8a9d8b969cc2b78ee2975a64c0` |
+| `backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaController.java` | 1968 | `89b59c89291ee8f8a22eb44e3ef5efb387fab0852747f635ae4d79cdef6b858b` |
+| `backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java` | 1777 | `2f92a1932d0f9f307a6151f5bbac6fbcdc5aeecbdcc66acf7a015b4fa692b97d` |
+| `backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoria.java` | 1693 | `cb2bdbf440723da8d0e663f21bf41fa2e526fe265bbc7eb9e483dc36048f1373` |
+| `backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoriaRepository.java` | 392 | `0b02f19ce0b1c9a777e29ee395bd66e61e59ee2e54b45aae2d1d64cc3ebfe793` |
+| `backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoDocumento.java` | 315 | `436aa1ab5954c3b9494d7646914d00f5d22941100de90bbe8dc58ad0f891b3b9` |
+| `backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoLocalDocumento.java` | 3359 | `633c8fc007df41993ad355ba3f0d32d569fec50145250b284edd64126adb8380` |
+| `backend/src/main/java/br/com/contabilidade/common/document/Documento.java` | 2832 | `73e1c780d3cb7ef0b3646bc048058aa3b32506ec697416efcf9e168413ec332d` |
+| `backend/src/main/java/br/com/contabilidade/common/document/DocumentoController.java` | 2871 | `a0241865e251fd40c3b1fb2befc5faa587f809d4f0fe331d3b2a53db1efeccb7` |
+| `backend/src/main/java/br/com/contabilidade/common/document/DocumentoRepository.java` | 626 | `e359b4273f3c251c48ec7f4066068dadc285fcaf096e7cfa660595e8bce426ea` |
+| `backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java` | 12385 | `80b770edc12feef4adc338aa64ae8e518db5cae4a8f114c89426bb69743433de` |
+| `backend/src/main/java/br/com/contabilidade/common/document/OrigemDocumento.java` | 199 | `dd490b7989a68179d066de7d9670caf2e7158be7cc33b9af493dc9ced4000f40` |
+| `backend/src/main/java/br/com/contabilidade/common/error/ApiError.java` | 332 | `80b63127edfbf705f2cf1ba9c9a7e28d4a4650af0aa0049c02dd2602494c3d9e` |
+| `backend/src/main/java/br/com/contabilidade/common/error/ErroCampo.java` | 103 | `d54e4c9afcd4308f38d7d30712d31814a70f534557a142c4758ab419657eda32` |
+| `backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java` | 967 | `70c273863866c2628066ed9801fc2645b4b494ebdad8a64f6a03e8908dc47eb4` |
+| `backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java` | 356 | `fd191902a354757942983155cf6cfe86c5e37f28aff733046683a65447e9f243` |
+| `backend/src/main/java/br/com/contabilidade/common/error/TratadorGlobalExcecoes.java` | 4911 | `cf95739bd5ac0c12ca09d1c4d7c06a8665225cb146a1e476918c99092e7fec31` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/ComandoCriarExecucao.java` | 332 | `0d3771d075342bc56073374f7d75d2044b1b5d368ea785f9035e20e757d595af` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoController.java` | 2078 | `326f18ee05ca1ef07c9973fae5b3c5708f821ff8dfd85408b54e63057ae13a56` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java` | 24206 | `2eb742e06aba52206709f07f34352994b964e6c39e25220067427a29085704f7` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java` | 9466 | `6e50da2235396b0af235d91dc2725caf61062a3583e3415c46f443c46b81131a` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracaoRepository.java` | 701 | `b502ce732b29b49aa87c2719f2439dcdd85cd72936884a28c03e75b29bd75603` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoLifecycleHandler.java` | 1044 | `d2579eaa5396e047cdbae413b3ed4df13b052c5b59cb9803f7505e53ed8d13a9` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoMaintenanceScheduler.java` | 1181 | `f4a8e9f97fe1784ba13a2b65969c2a14726e07b598c2198eedbd31e642c3dbe1` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoResponse.java` | 1581 | `9d6060c8fe1589aba1b3aa57da2070a295905e7c55f4d0da24014a0cb992c1db` |
+| `backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java` | 620 | `83a2c2ce7ba0433559b320cf6ea4a348e51befd3a705b919916e204d6b512b44` |
+| `backend/src/main/java/br/com/contabilidade/common/info/InfoAplicacaoController.java` | 891 | `7498bcfae666eb92c33d4742cf16d8279f2d8c4807ed279eb67dad4980d5954a` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java` | 2928 | `b01763b8bb2d4b4e9c3feabebcc411cec034557728570a8271621236ec2be0a4` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorController.java` | 3892 | `f1c097eae3725eb9cc77f1f67c43ad35f77fe6a31bc847ff2b2e7a3721c328a6` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorRepository.java` | 413 | `677a29a04d7be0a796e952edd023fc6ce5865587c704894124f674d472c13a3a` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicao.java` | 2245 | `e98f3cd80de3be21e0dde1e79fa566e4dd9700af63c251baa5902fb639e8fa68` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoController.java` | 3350 | `fc3bb21ecd663602d008bfb98e8c51ab6f078f5afc57a5c29b785fb3a0f609b6` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoRepository.java` | 324 | `9b42c12fcc4cba6d4a8f4f2d7b682737342e792c0e179eca1b60514f0c4dd5cb` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoService.java` | 7396 | `5e2ab23ee5889a1a416eafa76575b1455a16cda7efa2d28c28200d7c2bdee256` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/ProvedorIntegracao.java` | 219 | `7eb0790cb87627b9b66dd0509661cd9acb6dec979aa9bea522c97cfb209210f2` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/RequisicaoIntegracao.java` | 226 | `075f81d8402be569e6412b3afa42d359cf14583d8fe44e3b61a38176bb0bc216` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/ResultadoIntegracao.java` | 349 | `d486aa14b66369522cf56cec1234edd9af883d6d31c1694369afc210d96b51b0` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/RoteadorProvedor.java` | 966 | `c5ca3bce929527a24807033c80ff548b63e5713a00d315d558410e5a20e87463` |
+| `backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java` | 173 | `effb2eee004579c17f5cd2b8e90c33dab62bc9ac38a6087c150195a2a7d7401a` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/AutomationSessionProperties.java` | 1368 | `b700b566599686c202f277b64a571108cabcc33861dac410c12607707b7144b3` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoController.java` | 4593 | `1e401b5920fe7cc7df54ffddb184b253cb7a67a79677ee208bc628ad10170203` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoRegistroService.java` | 2939 | `4752025378d04e4fda5eadebed220af7620232ec2ca333267b783eee5ad45d85` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java` | 6675 | `430a9c7bd32c08756814f508dd1b05b6d11bcda428e4d64ce08eacb524436eeb` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/SessaoInterativaTicketService.java` | 4864 | `0535fd265233e9b0b7c30860ab0b399be615919ee18200fa56265b48d3e1af51` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencao.java` | 4826 | `ce2a47ae2f50953551a47248cc20f7645cc5ada6556d2b2eeb7eebeea51df8a1` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencaoRepository.java` | 1021 | `7f0963e5cdfb5ffdc18d868e3bfe7c0a5754ffff19ac13c1afb5eb0eab1c6dc3` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/StatusIntervencao.java` | 259 | `92ed5ed4f16094611e6efd546ecc2c8cbee02f560514dbda2ce9d4b23bb8858c` |
+| `backend/src/main/java/br/com/contabilidade/common/intervention/TipoIntervencao.java` | 188 | `8750a2cde52d3f76d2cd9c0fa752a223d1b42ebfe61267b8be2c0d85d46a7409` |
+| `backend/src/main/java/br/com/contabilidade/common/notification/Notificacao.java` | 1935 | `2f490015f9f5e02af5c6efead3e1c07ad0f4e7c27f483ea50a1ea3a56b7e141d` |
+| `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoController.java` | 1416 | `6859b7c52832b21bfa09f70521b9127b1e9722287cfbc42bb840583c31413bf0` |
+| `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoRepository.java` | 420 | `dc7e00c22e6b3a88d65f5066e145eca65c7d280a0fd0b99bed43192acdb1b795` |
+| `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java` | 2110 | `07f57a53b09fbaf9d71ae09ea117683f22cd4c9fc1aa68a537d935526b67dbd2` |
+| `backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java` | 140 | `9e1d60604c7e237de2b2c3924547a03c10250af6182f5bee03eba64e5d1dc44b` |
+| `backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java` | 1377 | `8f50fe61ab4919138d2123ed4c63709a91215b02ee71c08d70389a857fa377ad` |
+| `backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java` | 1809 | `bb489767a12b71a0c8b990d713ad1b4c2b19fec75e04d691a658417379cdba36` |
+| `backend/src/main/java/br/com/contabilidade/common/security/AppSecurityProperties.java` | 274 | `8869168a68101c35566b06febbb94c96434e30ca405c109e2ece9fc21b6d4908` |
+| `backend/src/main/java/br/com/contabilidade/common/security/JwtAuthoritiesConverter.java` | 2711 | `e91fa2682ed013d636eb66150b4bbbd2b0fd2c225596916e4cace23214a5f864` |
+| `backend/src/main/java/br/com/contabilidade/common/security/Papeis.java` | 332 | `eee993052978e0646ca468559cb9f4417070157d2a80eed2819783a66a8bef83` |
+| `backend/src/main/java/br/com/contabilidade/common/security/PermissaoService.java` | 3890 | `42df93dc6e8dd52eb67109d6812c5930d8fd226a2ee191c7b24ff0f65e7c8a91` |
+| `backend/src/main/java/br/com/contabilidade/common/security/Permissoes.java` | 1290 | `de49fa17930042e8603eadf667ea3baf90989fba622d7b4217b584bd5a090a65` |
+| `backend/src/main/java/br/com/contabilidade/common/security/SecurityConfig.java` | 4113 | `46d743a6c0e41ad951f3131bd784c4b0c087869d8d91511735a5ab59e9650f17` |
+| `backend/src/main/java/br/com/contabilidade/common/security/UsuarioAtualController.java` | 1834 | `f25ce9304feb1408e9491016db63ab8200c7faea07fabf367460b25b48f99283` |
+| `backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java` | 3961 | `565ab997a32c080fadcb4e152adc17c50d7257926c1d32ff021d2a8e85c61733` |
+| `backend/src/main/java/br/com/contabilidade/common/web/CorrelationIdFilter.java` | 1569 | `44d52fdb6e27dbdacfaa0a09d684766ce990bc27b589bd8a4bc8eb9ef942d6f7` |
+| `backend/src/main/java/br/com/contabilidade/common/worker/WorkerDocumentController.java` | 2730 | `8d1869037f6e788097d547dd6d4374bc069942f749778e95373efecba3ed447e` |
+| `backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java` | 7086 | `995ab4ff5364992220c292421acd0591a47557ead166ac1b90cd691997349e8c` |
+| `backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeat.java` | 1365 | `35b1282b15d071a59ec73b9fa3f1553a475a05a01856698f06fc136ea0f90c95` |
+| `backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatRepository.java` | 314 | `71f543f43e94db68512e6921ddc9002995d99d78e5cbe9e9bceb730325525b80` |
+| `backend/src/main/java/br/com/contabilidade/common/worker/WorkerInternalController.java` | 1816 | `350446c847bf6ca40a3b1125cdef949d13398b102dfe631f301ba4f06d336724` |
+| `backend/src/main/java/br/com/contabilidade/common/worker/WorkerTokenService.java` | 917 | `e9e48937da68382ad00e5ac4b29e95d2c5d3816f1598ba008f311f7fa55a05e9` |
+| `backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java` | 3132 | `bc80b082b375dc1680b2ee7eaf74f440563f8da35d0b182532a52bdbed7128c1` |
+| `backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaController.java` | 3174 | `2f27da895e1141849e1034bd07c73e17a710c918daba68fb31af1ce1c735620d` |
+| `backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaDetalheResponse.java` | 433 | `7f1e38bb40aa27196ad77dbef543a325da94d85073bef3d33e017d7d8a3faa00` |
+| `backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaRequest.java` | 1082 | `653865d9fad1f915790daf430826dcd1be095f3910b646d79d3895e63f09c414` |
+| `backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java` | 560 | `ec4381d2df931c45e0c5d03e6e447cbb5542fc259b827567ef28763dec37afb1` |
+| `backend/src/main/java/br/com/contabilidade/empresa/api/EstabelecimentoResponse.java` | 653 | `725a3886bbefb0118d7bd07f9e27e71e27cab8c09be2d3785983b98d74b15490` |
+| `backend/src/main/java/br/com/contabilidade/empresa/api/FilialRequest.java` | 829 | `7f3e0bfbd9c30a3fc263a0b05a5921a7af8b381cb0d14d7ddbbe37f8c6d5089f` |
+| `backend/src/main/java/br/com/contabilidade/empresa/domain/Cnpj.java` | 1442 | `d9f6fd14f8ea0bfc1c7be248c8b309241eb94fcac149def50b04b669f9bdb443` |
+| `backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java` | 3294 | `db51f1d0e573a1fc9ef712eccfbfba057dbde7e292fa752110b44f22dd58a129` |
+| `backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java` | 5045 | `0fe486042fbbcbf66ca374f5e2fb6344bf4f213adba9ef411378241c45a4bc8d` |
+| `backend/src/main/java/br/com/contabilidade/empresa/domain/InscricaoTributaria.java` | 1677 | `7d90a17a490a444479b0efb4016ca3845d7011f8476016db9a8a68a3c6458831` |
+| `backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java` | 176 | `bf247522d362b93de87dd448461f387d3864e8616ade48a5c9849cfdb00fec0f` |
+| `backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java` | 144 | `f246f0a9f050571394564d2700480ff10d935ea6404aa29e4956623a96257f82` |
+| `backend/src/main/java/br/com/contabilidade/empresa/domain/TipoInscricaoTributaria.java` | 114 | `7f29eb577797daf132b2e74f6169a637eb9846743e300b1256d796f654050ff0` |
+| `backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java` | 1986 | `e2e1888bdd3f4c819e4ade167baf372cf3c26e3993aa8e10653d9384aafe0dc2` |
+| `backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java` | 409 | `69510635d4abd0f7cf6172d63b8be848baa0a03f857b2fca34b9074f97c52d1b` |
+| `backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java` | 2723 | `2734fbc2d5c76c15b38a5eb6d3beeb18427a81684d304d82f3c607dc5b7ec910` |
+| `backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java` | 8369 | `552a23c88d567e138f1879dfd4f25dfbba163a5ed27d50895e342b7e7c529a99` |
+| `backend/src/main/resources/application-local.yml` | 101 | `be4d5c1a06af3b9df5f1634ffbb9af8f2f430c0ee08066c6bb7f0de178ce000b` |
+| `backend/src/main/resources/application-onpremise.yml` | 106 | `80f9f59b746e15110c9104af3edca69d10331ee142591fea0b541e659ad5a6fb` |
+| `backend/src/main/resources/application.yml` | 2635 | `2030e1434f25e99407114795a138abe7031b47b6e9bb26520710390d6547e1c7` |
+| `backend/src/main/resources/banner.txt` | 307 | `2812fe804cf0f60467cb231ae9e17af04c66d2edab967726a124714a7cd97f17` |
+| `backend/src/main/resources/db/migration/V1__baseline_common.sql` | 5730 | `05a0d774373915ba39fa1900e949071cc7df437166e7ec316dc3820445a3c359` |
+| `backend/src/main/resources/db/migration/V2__seed_provedores.sql` | 1121 | `192dcd198d9384433341d160582623bc27dba43baaae0993512e6b9c0a09b10e` |
+| `backend/src/main/resources/db/migration/V3__common_operacional.sql` | 4299 | `2b6436cf7b85ee374870890aa09083a88a479192ed0cd4e5e65a8238b819db2e` |
+| `backend/src/main/resources/db/migration/V4__centro_certidoes.sql` | 2847 | `09248c2b932cca0a479b5ebf6e3a7331525c8fa40d6a0cf62401cd4ef910a743` |
+| `backend/src/main/resources/db/migration/V5__portal_federal_assistido.sql` | 442 | `f84ef292bef0a9a0fa298d1c26d735097752ac310c839d5f511421ea4a16eda8` |
+| `backend/src/main/resources/db/migration/V6__portais_estaduais_sp.sql` | 1548 | `8f6db644ca07890a21f6344698558a7cf6b085c41e5c329238579187c159743d` |
+| `backend/src/main/resources/logback-spring.xml` | 446 | `22c49dd58a2324c7f48680280b705b392d51e2da8da8081040092d746a5d3970` |
+| `backend/src/main/resources/messages_pt_BR.properties` | 4134 | `a6869b17d0150aad260615b1e40648e0b476871735948f5e1a45be44c6fe2626` |
+| `compose.dev.yaml` | 318 | `629a86db67038012045595fe9fbde912eeccac039daaa6c1a04fb988097ddb93` |
+| `compose.onpremise.yaml` | 373 | `3da507576ae79f062d0f434a48ad66013cfc4605e81c19f82634bc283d60c145` |
+| `compose.yaml` | 5827 | `eb7f2012c2193f0c93950d4339b5feba14fe03e98e5c02ab7a22301ab4584503` |
+| `docs/GOVERNANCA_DOCUMENTACAO.md` | 1018 | `3b7a41b45f53c4398496ca1d51e95ff795a590c4cb5b55e964b9d903cc8ca59f` |
+| `docs/INDICE_DOCUMENTACAO_ATIVA.md` | 2805 | `f57afc2df45144d025c1e460fc436267a5a36d64e5894617323445e65ec1c702` |
+| `docs/ai/FLUXO_TRABALHO_CODEX.md` | 403 | `eccfa5199f8cf930b8d10c8d959738eaa986a769f5123edcaa72d41fdc1c8b7b` |
+| `docs/ai/PADROES_PROMPTS.md` | 543 | `8f64c88900dce5cbb0ff0e8621938a4a4aff5fae409515f8097b9fccd0876715` |
+| `docs/ai/REGRAS_TASKS_CODEX.md` | 649 | `a4a15746cb3b878958bb818128cce19c94b5b564e22cc702fcaba9830a8794d4` |
+| `docs/arquitetura/ARQUITETURA_BASE.md` | 755 | `7f862cd7c0b5e380bc57ce18b84382a9e5e414c2eecafaa7ebc05a448c71e073` |
+| `docs/arquitetura/ARQUITETURA_INTEGRACOES.md` | 990 | `00797f8f5bb5883f3f627fa569890280d419723abb42eb38eb3155de546dcc8a` |
+| `docs/arquitetura/AUTOMACAO_PLAYWRIGHT.md` | 982 | `b0bcad179608ef871a88dd2de02845082946764308ca0e52ade9841262fae993` |
+| `docs/arquitetura/CENTRO_CERTIDOES.md` | 1854 | `2d92b6155dcadcbfa1e1fec0f7da41d6ae929208d5b884ef0da5570bdab3f966` |
+| `docs/arquitetura/DOCUMENTOS_E_EVIDENCIAS.md` | 793 | `229786dd86fba5c6fcfe07140c1de00b44fd78a3e24fe4b4f7414fd1386e4dc1` |
+| `docs/arquitetura/I18N_PTBR.md` | 333 | `96814056f498b6f3dac30ea2f3081ff0d7538246f8a2dac86d36f66c7d5ffe81` |
+| `docs/arquitetura/INTERVENCAO_HUMANA.md` | 741 | `b4774ac228638edb738f80b582c554c4aa5a8bc0e09e68a5fa35bed3c7818c71` |
+| `docs/arquitetura/MODELO_DOMINIO.md` | 699 | `d9ae8c0eb71bd4c2979752e176ce29666fcf7ba6e7d6dabb01044b89484049bf` |
+| `docs/arquitetura/MODULOS_COMMON.md` | 750 | `56425033084754c829a5f44351d9538f7fd53e484c16027624b10e84fe47bd0f` |
+| `docs/arquitetura/MOTOR_EXECUCOES.md` | 1307 | `913e91ef72013041283d0cad1269794a07f2ff6d82946a34a4f285b955f615d5` |
+| `docs/arquitetura/OBSERVABILIDADE.md` | 387 | `e73f33ef50693ac49e3d56fb9057ad8e0d45dfd881c452c37cf0bce4cca5b58a` |
+| `docs/arquitetura/SEGURANCA.md` | 505 | `e91a4dc07dd06e03fdf4edf9ea1597efc03d63be8c6e1021acda898d950873d7` |
+| `docs/arquitetura/SESSAO_INTERATIVA.md` | 2110 | `75d6e3f9c90d38c283a6a39410c70b9d5b7d4ea7a43f271d5f89b240e9ed9f2e` |
+| `docs/decisoes/DEC-DEP-001_ON_PREMISE_FIRST.md` | 670 | `07aad5418fb4b0201c31e33ff1ffb468be78c20d1eea61f179c3538d15391ac3` |
+| `docs/decisoes/INDICE_DECISOES.md` | 376 | `af40de0ee2e7f13c35d5f08240f1bb2db09ab188cb110ac1e6d0b46e209ad955` |
+| `docs/discovery/PLANO_OBSERVACAO_TRIAL.md` | 539 | `e8b297538e12a67ea563f53da67e46f8f67bc4768e2b512b03facc41dc7f4514` |
+| `docs/historico/INDICE.md` | 160 | `c7579d240767e9a0106ffe6fedc3d3f0e056a9a04fedaa6e9ae7b74c312dde52` |
+| `docs/integracoes/PORTAL_FEDERAL_RFB_PGFN.md` | 2546 | `d534f373a75059e15ed4b06c7ff1e32522ed6d3588c66a724a21c6de639f759b` |
+| `docs/integracoes/PORTAL_PGE_SP_ECRDA.md` | 1644 | `3545af7e083ccecf71c26405e531a2820c581357bc7294d3c22ac1b17126b79d` |
+| `docs/integracoes/PORTAL_SEFAZ_SP_ECND.md` | 1698 | `6939eedf162af2ac0726e3b98b8692ddb41e4ea2b43913e0a4ee2d8b2219574a` |
+| `docs/operacao/ATUALIZACAO_E_ROLLBACK.md` | 497 | `11c52afffb624f547383547539d25a2c911db91e46cb6ef3a7b039a49a6751de` |
+| `docs/operacao/BACKUP_E_RESTAURACAO.md` | 740 | `802d59386732de0e103459fce9d391d4724395a1487afa7a0c652374006edfa3` |
+| `docs/operacao/INSTALACAO_ON_PREMISE.md` | 932 | `d8fc16bc42ae05f356064943484b29388d6c4a6f95b4f2ebcc42f100e026633f` |
+| `docs/operacao/RUNBOOK.md` | 658 | `1f5aed25f7db88c3abe5f9242884db61ff2e66178a12290841c0cd73c9413150` |
+| `docs/operacao/RUNBOOK_PORTAIS_SP.md` | 1332 | `35e1e600aaba769a576aaac00505c4d4a65575b7d2de45aac8e606938ea9a2d4` |
+| `docs/operacao/RUNBOOK_PORTAL_FEDERAL.md` | 1629 | `3e46b41258956c8a00c8557d2795b1efe284d1d9911bb63f85bdcac29b2d47a9` |
+| `docs/operacao/VALIDACAO_V020.md` | 3626 | `868a4de0530d52b67ef7f22dc2b95becfad83b16a3b5f4f2704d97f34f1643cd` |
+| `docs/operacao/VALIDACAO_V030.md` | 3013 | `a44615e88edaa47ab7dce048d5e57aaaf2cdf41bacd88cd7bd3e53082b81456d` |
+| `docs/operacao/VALIDACAO_V040.md` | 1883 | `a4fb07dc430fe54d67e6c605abcac59593a2d215fb176554773ded8cee2e184a` |
+| `docs/roadmap/BACKLOG_ADMINISTRACAO.md` | 358 | `6331879e4d5cea53c83b4b75af90c4f5a42db53398110590b24df418f18380e3` |
+| `docs/roadmap/BACKLOG_AUTOMACAO.md` | 1098 | `cee489174024574ad67e201e2fb261294f56782619fd093aaab8e89b406783de` |
+| `docs/roadmap/BACKLOG_CERTIDOES.md` | 1863 | `86b82203b810bd6835f72e17b44011dcf5cd282f83a8d12f51b26a4e243730e5` |
+| `docs/roadmap/BACKLOG_COMMON.md` | 489 | `09c566bc00162bc56adf6e9874f0f5bb460bcd6331a6f23ad5ac4b54f4af6ca4` |
+| `docs/roadmap/BACKLOG_EMPRESAS.md` | 452 | `c92c0bba6ddef468f33b1c04783d9d7bf722948cc0e3a9c91ae3cb1acf235db4` |
+| `docs/roadmap/BACKLOG_INTEGRACOES.md` | 1159 | `1ecdb93ffed07a5dc7160f05b09d4c276a1e776ed5b732574c354d56f3b5c246` |
+| `docs/roadmap/BACKLOG_MODULOS_FUTUROS.md` | 381 | `b9899c21984cda236d383e40874592dd17d216249d237cab3d104eee7802d7a0` |
+| `docs/roadmap/BOARD_ORQUESTRACAO.md` | 1447 | `e80cb68baba733790b7ccf44b463675e48257c5ed8b54ef1b2013125ca4878af` |
+| `docs/roadmap/HISTORICO_ENTREGAS.md` | 681 | `f391d1cc1548279f4aa06cf21118d1da372f17a0d5ec636d4d11b7abc53bb421` |
+| `docs/roadmap/REGISTRO_ITENS_ROADMAP.md` | 3217 | `dcd3e80cb467da621fa8d78a5844b9ba5483e7178789a95344054c8ad8d39a59` |
+| `docs/roadmap/ROADMAP_PRODUTO.md` | 819 | `e9c1b2df260127ad2fa8b0be94f1c49c87f9441aa158add2ee95421580578dfb` |
+| `docs/visao/BENCHMARK_VERI_CONTABILIZEI.md` | 624 | `255a161dc70ce50b634f69f3887e3c526f8a7374c1427c96878bebfce136597f` |
+| `docs/visao/ESCOPO.md` | 946 | `0184c270770d844c1cc1668bb5cfaa2a0aa86d91b93cbc5d9a3903e9872eb8fc` |
+| `docs/visao/VISAO_PRODUTO.md` | 753 | `275a39f596a5ced03fdf26f708cef16a9e9b255f45ae5af6789be8d02294351b` |
+| `frontend/.dockerignore` | 23 | `5985ba75c332d6ce36a2033c285af89089cab26078cbc83d6c903103ed61ecb0` |
+| `frontend/Dockerfile` | 503 | `ba36f358744dd390e1be4896a3b9793bb7ae1fc03f620b4ebf06009974a09f1a` |
+| `frontend/docker-entrypoint.d/40-runtime-config.sh` | 366 | `b794934b466fc0f032236b409db7d66a104f309449e832605a8064394e7d70fe` |
+| `frontend/index.html` | 379 | `7fc660c96ab47de86afb316d4ed00275aa40c68089503d2d04d3f2796bf856cd` |
+| `frontend/nginx.conf` | 1825 | `d07ac24a44537b722cdc0c7fbafc8cad5f6c0d7964e5a9d019910bb5ddd5b774` |
+| `frontend/package.json` | 884 | `be728a6eb3dbdb8aa8e1dd5ea68cd7cde9e2db76da9dc623a26f87e30338fe07` |
+| `frontend/public/config.js` | 186 | `1ad42c7744172343853dcfd3a1844b2e8acdc81fce77b1d00cecb41a960b96c5` |
+| `frontend/scripts/validate-locale.mjs` | 3773 | `015914284299b688197b0e9e583ac3f4e511bf5aa042c627e0910b6b4fcab616` |
+| `frontend/src/App.tsx` | 356 | `c31711d4e0eb725d590a0be8a1978bcf0c791dfbba474bb3f67ecd5e17ef223e` |
+| `frontend/src/api/http.ts` | 2639 | `34915d7c420032e17da22167106057f125febc71007d6ae16305292b5dffe21d` |
+| `frontend/src/api/types.ts` | 6963 | `bc07465b0a15e0d93d0fa21c7493afe742101cfa7e0717ec09263979c01c2cd8` |
+| `frontend/src/app/AppShell.tsx` | 4154 | `3cf97a0769c87eba5e96e80ca76c93ba14944f13bb434aa3301cd7e1b545bdc2` |
+| `frontend/src/app/GlobalSearch.tsx` | 2699 | `180947755066bbc0ab85e8d4da4604282bad2c3575cf1155b7f8258be2eb364f` |
+| `frontend/src/app/router.tsx` | 3240 | `dc94ab6e7c8cee42e8966b9f23343fd892203c3cb798fa627f2709726eed8ee7` |
+| `frontend/src/auth/AuthProvider.tsx` | 3044 | `479a424bd34f262b4db35236f5109f5f8bb65e18f5a5922f3620fba4825475d7` |
+| `frontend/src/auth/PermissionRoute.tsx` | 448 | `bdb763999abba323d39cba4af1a4dffd773327c1f5956a9671c703490d7f29f8` |
+| `frontend/src/auth/ProtectedRoute.tsx` | 500 | `161715e23f01752cc744973a4951b800a45b400593e3e57e38159e365b216b79` |
+| `frontend/src/auth/permissoes.ts` | 710 | `2e23844cabcf5d9366a1501cc839e45baaa9c017b36af7fba00dee5ec4b8180f` |
+| `frontend/src/auth/types.ts` | 339 | `78defbcb8c9ea4004a8bdc7c27b6b2f48a47de4e2af2d437e0ee9c9ab33b00f5` |
+| `frontend/src/components/Alert.tsx` | 649 | `e3680688d9b79e2e7bf2b2627aa8b6cb6d527561f3ecbec27711952dc5b5d5dd` |
+| `frontend/src/components/Button.tsx` | 437 | `10ca17225c48c030a14c58addfb26f219d2e0b8bc3c7f9247f71c408a1bc87ab` |
+| `frontend/src/components/Card.tsx` | 347 | `7b134551848d23f434d7451ada72255cace241daa9300eed3c619b94e563282b` |
+| `frontend/src/components/EmptyState.tsx` | 387 | `56b7c4478b603a1041d26eb01f5e379e0940f5aed6e96b44da02e1e2ab2c9c80` |
+| `frontend/src/components/LoadingScreen.tsx` | 233 | `3decbabc2e92e25d9dd667015e076441168eb8c3e2610d3618e1913bc5c09d52` |
+| `frontend/src/components/Modal.tsx` | 1548 | `b7e15edac0b507b30a5e2b573f40a45f2fa0d9e89b3a2b11f5d646d8424fd71e` |
+| `frontend/src/components/ModulePending.tsx` | 301 | `36e6bbb17df650de19f4518bde8cd575a0d2a47001a71c96e01b1d3e817cda13` |
+| `frontend/src/components/PageHeader.tsx` | 416 | `fc0c4f6243309c87adcfedf646c9aa88fc87f1611ae6b43e74c46a856ec05230` |
+| `frontend/src/components/Pagination.tsx` | 892 | `5f6113f8115acb849784a4e2d34505b69a9a254d325ed9cefefad8a5a1e848c3` |
+| `frontend/src/components/StatusBadge.tsx` | 232 | `4d7f5ad93b6434b05a963729fad28b84ba609c0239d8607edc621911a23ca0f9` |
+| `frontend/src/config/runtime.ts` | 322 | `766b3e8b5439bc43c79a1be490fcfc74490a8946e2118d4ac446bd4852e7ca15` |
+| `frontend/src/features/certidoes/CertidaoHistoryModal.tsx` | 4273 | `f02eb6a74c17df34e21e61679a69ff75432673d278e7bfd4f45fe7fb07df897f` |
+| `frontend/src/features/certidoes/CertidaoManualModal.tsx` | 5460 | `5746ac383b6231a52760a9267f7a6c4aa262dab8c2ba867b1c1960075359ec99` |
+| `frontend/src/features/empresas/EmpresaFormModal.tsx` | 8101 | `d924a1dd2eb2f5369cd2c3c47a4fc24cee4339ec6ca45476367c0164cedbc1aa` |
+| `frontend/src/features/empresas/FilialFormModal.tsx` | 6016 | `c9dea43a3e573d2a827d76896ecdfba4def21c5a0314893916709b9642c0eaa9` |
+| `frontend/src/features/intervencoes/InteractiveSessionModal.tsx` | 12001 | `895299b4b6f2d986cd3b358da55dadf833b36769624e09f268cee4ddcdff08ea` |
+| `frontend/src/i18n/index.ts` | 353 | `6bd21f135035069b4392a9cd594bafd71fb08dccd068af96d26a6e8d220dd192` |
+| `frontend/src/i18n/pt-BR.json` | 19335 | `fcd9667472641d133f8945a0e0b078f1c140b56aa2a5438e6233681b49322214` |
+| `frontend/src/main.tsx` | 349 | `c6f40083e174f235ebf2acdb130db87a9c684028d01dc9fa9ef604701e90f53e` |
+| `frontend/src/pages/AuditoriaPage.tsx` | 2185 | `7bb152eae144bb1afa99a0ef741039f49f46b1c2d6b145c7aa05944364575ef2` |
+| `frontend/src/pages/CertidoesPage.tsx` | 11212 | `c4d8edceade358d053bb62a510ce25be0682b7c080f8d18be31426b5886a808d` |
+| `frontend/src/pages/ConsoleTecnicaPage.tsx` | 3063 | `01bbdda6a3f2c965d345492b772baba84b31dba6ea264e30e1f58fbc8eebf9cb` |
+| `frontend/src/pages/DashboardPage.tsx` | 2908 | `2abc6dd0d1c631580b3cf3365d34e4764e8147fe2c34d1b0e5bab5bf79cc5cbd` |
+| `frontend/src/pages/DocumentosPage.tsx` | 7848 | `70c1e19c171e15d40b06857b6076428b57b9226a2690f6805039c9aa7a9b7ea3` |
+| `frontend/src/pages/EmpresaDetalhePage.tsx` | 7768 | `f87f66bb726aea18b86ad93b1429af48c406166fc68b38b7cb33b62e2b72ac54` |
+| `frontend/src/pages/EmpresasPage.tsx` | 5599 | `bcc14460b07bb300f0be6e9cb2107648b410661f4d22d77fd57daf95a61b4d09` |
+| `frontend/src/pages/ErrorPage.tsx` | 762 | `64a5f5b3ba5ef37baac350bf2d9d37cb990638a507b932bc7e5d887eb12006b0` |
+| `frontend/src/pages/ExecucoesPage.tsx` | 5850 | `d7cb0c85936c3fb6c65bc1a79a9aedc4cbdf25982bcb0a558e6d7a7d5104ee79` |
+| `frontend/src/pages/IntegracoesPage.tsx` | 15249 | `d37db87f34bd8f4aa430e59ad4b1add86f5768e4029e9645f68bacd775419bd0` |
+| `frontend/src/pages/IntervencoesPage.tsx` | 8893 | `5c81c43a8882a0640a7e5bc08b3309617b4d8037ac0f328f69e3868b8430c48c` |
+| `frontend/src/pages/NotificacoesPage.tsx` | 3276 | `04a753ae2754fa9d326ba18aec865af50c2892ad9b4b51c9b1affe8a5987f389` |
+| `frontend/src/styles/global.css` | 21895 | `b0911d442cacea3640128b349020508ef503eebfc5e202a5f763c7f23e291e3b` |
+| `frontend/src/vite-env.d.ts` | 281 | `ba57d6adb2ed7fdfb7827faedb2c3f17c3217cf872f0c2f502a6c562eabee43b` |
+| `frontend/tsconfig.app.json` | 507 | `a7266d1c85fa6947c70073256d9a73e4c459e97b0b4ef24b5c48dcab498ef4c5` |
+| `frontend/tsconfig.json` | 119 | `770b4140bbb581e2dfd9ea9946ffc9c75a1d86ba7d2db5f77c83e37cbdf9d808` |
+| `frontend/tsconfig.node.json` | 340 | `e2a0a94e3dcb5570839265e36add9f88282f9374e55a0794b22e4d844ff61fcc` |
+| `frontend/vite.config.ts` | 491 | `67932dc11709d7bddc3b921ca6ac3a84e18482b38778ea5f9a116abf84ee1991` |
+| `infra/keycloak/realm-contabilidade-dev.json` | 2116 | `ba9bef4a1211a636041e245f33509e0c24f969a70617dac690460e25610c32a9` |
+| `infra/keycloak/realm-contabilidade.json` | 1681 | `261761ee8e76957fc0d40215c5f854a789b3a5f6b06f25871ab971e998ae857d` |
+| `infra/playwright/seccomp_profile.json` | 207 | `4abf3ba96507099e3fcc133739e06809dfcddb411871a3d79cb4c44d7ad60529` |
+| `infra/postgres/init/01-create-keycloak-db.sh` | 328 | `16e3e0dfd991864708beb933b3cfac76156a22c40bb44c8e910cd72dd78c2d81` |
+| `prompts/PROMPT_01_RECONCILIAR_BASELINE.md` | 932 | `0b252660ecd8802106c3c69f574f244bc60af31a722aa5d6b3c61fb66219b285` |
+| `prompts/PROMPT_02_RECONCILIAR_V020.md` | 999 | `be2c2ec3483ab1d7efaed5cceabd41ffa5018faff08c5037c6ec02e2ddf88c85` |
+| `prompts/PROMPT_03_RECONCILIAR_V030.md` | 1338 | `a1a4ebb10f7ce8e553103b30ab2ee2647a3a35960f289ba6c5f99ee05166930b` |
+| `prompts/PROMPT_04_RECONCILIAR_V040.md` | 1137 | `22ea6c78e04e36d63fba4d665d343b0ad2115157b06dcc8d2e39fa9d2167cd11` |
+| `scripts/backup.ps1` | 826 | `5c1cd8cf72d30bed00ced6eb34eac465b3642a2839063a870c60808e3912764f` |
+| `scripts/backup.sh` | 492 | `c2c64ef1b5f3c59d97cbb3c29ce7c18a551672e57c8710261bed1f92df58a849` |
+| `scripts/gerar-lockfiles.ps1` | 536 | `1c485212bd51205f790653d592c4daece9a1bee46f34d475905659fbe2790ef4` |
+| `scripts/iniciar-dev.ps1` | 281 | `28d1a2ef54f66245b837ea1343bd2764557a3d975bd97e5ec9fe56471be6fa2b` |
+| `scripts/iniciar-onpremise.ps1` | 503 | `e1de2e765ecec983d72bec64bcb5252f42767d34114c91f76920f3e51be49a02` |
+| `scripts/iniciar.ps1` | 419 | `3982cc593c7f6cc3e7805965b0097d1b76f99beba0b5fa6528cfdeffa679f6ec` |
+| `scripts/iniciar.sh` | 133 | `17be0802320be8e4e829f60153418f656b8528f35041d728301abe58f92f0447` |
+| `scripts/logs.ps1` | 263 | `8f7bade01c66e8882f99966db6bd67a034f2fb8957db40a0819b413997ed8939` |
+| `scripts/parar.ps1` | 111 | `4d0d337f858753178b8a8b2316cf0db4b7db2c0227abe41e4fe213cd3bf7813c` |
+| `scripts/status.ps1` | 109 | `3db26d5b293d937aa8a9974a141f3b2eae1be3f365810be21cb2be6a14cfc81e` |
+| `scripts/validar-portais-sp.ps1` | 1268 | `083b9c0dcf10bf0d8a88aa9e9f22347360ea913bb8fff1af4f41aa5d12ffc482` |
+| `scripts/validar-portal-federal.ps1` | 1095 | `f6b2ee04c847ae2b891dcbd172eccda09b2cb5fb8135d447ed7888846981212d` |
+| `scripts/validar.ps1` | 1236 | `28f573eb3cbb82ef5cfb408339988c279e00c97952c851f1be8e24d34cd6b895` |

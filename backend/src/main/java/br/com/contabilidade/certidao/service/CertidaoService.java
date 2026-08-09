@@ -102,7 +102,7 @@ public class CertidaoService {
 
     @Transactional
     public CertidaoResponse solicitar(UUID acompanhamentoId, String idempotencyKey) {
-        CertidaoAcompanhamento acompanhamento = buscar(acompanhamentoId);
+        CertidaoAcompanhamento acompanhamento = buscarAtiva(acompanhamentoId);
         Estabelecimento estabelecimento = buscarEstabelecimento(acompanhamento.getEstabelecimentoId());
         if (acompanhamento.getUltimaExecucaoId() != null) {
             ExecucaoIntegracao ultima = filaService.buscar(acompanhamento.getUltimaExecucaoId());
@@ -179,7 +179,7 @@ public class CertidaoService {
     public CertidaoResponse registrarManual(UUID acompanhamentoId, ResultadoCertidao resultado,
                                             String numero, LocalDate emitidaEm, LocalDate validaAte,
                                             String mensagem, MultipartFile arquivo) {
-        CertidaoAcompanhamento acompanhamento = buscar(acompanhamentoId);
+        CertidaoAcompanhamento acompanhamento = buscarAtiva(acompanhamentoId);
         Estabelecimento estabelecimento = buscarEstabelecimento(acompanhamento.getEstabelecimentoId());
         validarResultadoManual(resultado, emitidaEm, validaAte, arquivo);
         UUID documentoId = null;
@@ -291,7 +291,7 @@ public class CertidaoService {
         for (Estabelecimento estabelecimento : empresa.getEstabelecimentos()) {
             if (!estabelecimento.isAtivo()) continue;
             for (TipoCertidao tipo : TipoCertidao.values()) {
-                if (!tipo.aplicavel(estabelecimento.getUf())) continue;
+                if (!tipo.aplicavel(estabelecimento.getUf(), estabelecimento.isMatriz())) continue;
                 repository.findByEstabelecimentoIdAndTipo(estabelecimento.getId(), tipo)
                         .orElseGet(() -> repository.save(new CertidaoAcompanhamento(
                                 empresa.getId(), estabelecimento.getId(), tipo)));
@@ -355,6 +355,18 @@ public class CertidaoService {
     private CertidaoAcompanhamento buscar(UUID id) {
         return repository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException(
                 "CERTIDAO_NAO_ENCONTRADA", "erros.certidaoNaoEncontrada"));
+    }
+
+    private CertidaoAcompanhamento buscarAtiva(UUID id) {
+        CertidaoAcompanhamento acompanhamento = buscar(id);
+        if (!acompanhamento.isAtiva()) {
+            throw new ExcecaoNegocio(
+                    "CERTIDAO_INATIVA",
+                    "erros.certidaoInativa",
+                    HttpStatus.CONFLICT
+            );
+        }
+        return acompanhamento;
     }
 
     private Empresa buscarEmpresa(UUID id) {

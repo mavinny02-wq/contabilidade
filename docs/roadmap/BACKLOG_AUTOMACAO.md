@@ -1,36 +1,38 @@
 # Backlog Automação
 
-## Pacote v0.3.0
+## Entregue até v0.4.0
 
 - worker isolado;
-- polling;
-- aquisição por lease;
-- renovação;
+- polling e lease;
 - heartbeat;
 - browser sandbox;
-- registro de fluxos;
-- fluxo Federal;
-- screencast CDP/SSE;
-- mouse, teclado, rolagem e envio de texto;
-- tickets HMAC temporários;
-- retomada na mesma sessão;
-- upload de documento;
-- resultado/falha/intervenção.
-
-## Entregue no pacote v0.3.0
-
-- fluxo Federal específico;
-- handoff visual por screencast CDP/SSE;
+- registry de fluxos;
+- sessão interativa CDP/SSE;
 - mouse, teclado, rolagem e texto;
-- ticket HMAC de curta duração;
-- retomada confirmada no mesmo contexto;
-- detecção de CAPTCHA e alteração de portal.
+- tickets HMAC temporários;
+- retomada no mesmo contexto;
+- upload de documento;
+- fluxo Federal;
+- fluxo SEFAZ-SP;
+- fluxo PGE-SP;
+- captura PDF por download, resposta, popup, link ou blob;
+- parsers específicos por órgão;
+- classificação de CAPTCHA, indisponibilidade, timeout e portal alterado.
+
+## Segurança preservada
+
+- nenhum bypass de CAPTCHA;
+- nenhum serviço externo de resolução;
+- nenhuma falsificação deliberada de browser humano;
+- nenhum HTML impresso como substituto do PDF oficial;
+- nenhum resultado fiscal conclusivo sem evidência exigida pelo domínio.
 
 ## Pendências
 
-- validação runtime autorizada;
+- validação runtime autorizada dos três portais;
 - revisão de segurança da sessão;
 - redaction de evidência técnica futura;
 - limite de concorrência por múltiplos workers;
 - shutdown gracioso aguardando execução;
-- testes automatizados e E2E.
+- testes automatizados e E2E;
+- telemetria histórica por portal.

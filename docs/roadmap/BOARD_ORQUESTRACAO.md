@@ -3,9 +3,9 @@
 ## Checkpoint
 
 - branch de integração: `main`;
-- baseline requerida: v0.2.0;
-- pacote candidato: v0.3.0;
-- gate serial atual: integração, build e prova autorizada do portal Federal;
+- baseline requerida: v0.3.0;
+- pacote candidato: v0.4.0;
+- gate serial atual: integração, build e prova autorizada dos portais estaduais de São Paulo;
 - onda oficial seguinte: não selecionada;
 - testes: task separada.
 
@@ -35,7 +35,7 @@
 - `E2E_PENDENTE`;
 - `BACKUP_RESTORE_PENDENTE`.
 
-## Provas específicas da versão 0.3.0
+## Provas específicas das versões 0.3.0 e 0.4.0
 
 - `FEDERAL_PORTAL_RUNTIME_PENDING`;
 - `FEDERAL_CAPTCHA_RUNTIME_PENDING`;
@@ -43,3 +43,11 @@
 - `FEDERAL_CPEND_PDF_SAMPLE_PENDING`;
 - `INTERACTIVE_SESSION_SECURITY_REVIEW_PENDING`;
 - `PLAYWRIGHT_E2E_PENDING`.
+
+- `SEFAZ_SP_PORTAL_RUNTIME_PENDING`;
+- `SEFAZ_SP_CAPTCHA_RUNTIME_PENDING`;
+- `SEFAZ_SP_PDF_SAMPLE_PENDING`;
+- `PGE_SP_PORTAL_RUNTIME_PENDING`;
+- `PGE_SP_CAPTCHA_RUNTIME_PENDING`;
+- `PGE_SP_PDF_SAMPLE_PENDING`;
+- `PGE_SP_CPEN_ADMINISTRATIVE_FLOW_PENDING`.

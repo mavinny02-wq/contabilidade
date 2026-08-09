@@ -2,33 +2,36 @@
 
 ## Definições presentes
 
-- `FEDERAL_PORTAL`;
-- `SEFAZ_SP_PORTAL`;
-- `PGE_SP_PORTAL`;
-- `SERPRO`;
-- `INFOSIMPLES`;
-- `MANUAL`.
-
-Apenas `MANUAL` inicia habilitado.
+- `FEDERAL_PORTAL` — fluxo implementado, desabilitado;
+- `SEFAZ_SP_PORTAL` — fluxo implementado, desabilitado;
+- `PGE_SP_PORTAL` — fluxo implementado, desabilitado;
+- `SERPRO` — definição sem client real;
+- `INFOSIMPLES` — definição sem client real;
+- `MANUAL` — contingência operacional.
 
 ## Regras
 
-- providers pagos dependem de prioridade/fallback;
+- providers pagos dependem de prioridade e fallback autorizados;
 - custo máximo pode bloquear provider;
-- custo desconhecido é bloqueado quando há limite;
-- moeda incompatível é bloqueada;
-- portal assistido/manual dependem de intervenção permitida;
-- segredo é referência, não valor.
+- portal assistido depende de intervenção permitida;
+- segredo é referência, não valor;
+- falha técnica não altera resultado fiscal anterior;
+- provider real permanece desabilitado até validação no ambiente autorizado.
 
-## Antes de ativar provider real
+## Antes de ativar um portal
 
-- contrato;
-- termos;
-- credencial;
-- ambiente de teste;
-- rate limit;
-- custo;
-- idempotência;
-- tratamento de indisponibilidade;
-- evidência;
-- segurança.
+- build verde;
+- worker/flow visível no preflight;
+- termos e uso autorizados;
+- CNPJ autorizado;
+- sessão CAPTCHA validada;
+- PDF real reconhecido;
+- rollback para `MANUAL` disponível;
+- monitoramento e runbook conhecidos.
+
+## Próximos providers
+
+- Serpro CND Federal;
+- InfoSimples como fallback comercial opcional;
+- canal oficial PGE/Prodesp se contratado;
+- futuros municípios somente após discovery específico.

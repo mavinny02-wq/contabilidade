@@ -11,6 +11,13 @@ export type WorkerConfig = {
   federalPortalUrl: string;
   federalNavigationTimeoutMs: number;
   federalResultTimeoutMs: number;
+  sefazSpPortalUrl: string;
+  sefazSpNavigationTimeoutMs: number;
+  sefazSpResultTimeoutMs: number;
+  sefazSpEnforceServiceWindow: boolean;
+  pgeSpPortalUrl: string;
+  pgeSpNavigationTimeoutMs: number;
+  pgeSpResultTimeoutMs: number;
   downloadDirectory: string;
 };
 
@@ -77,10 +84,50 @@ export const config: WorkerConfig = {
     15_000,
     600_000,
   ),
+  sefazSpPortalUrl: normalizedUrl(
+    process.env.SEFAZ_SP_PORTAL_URL
+      ?? 'https://www10.fazenda.sp.gov.br/CertidaoNegativaDeb/Pages/EmissaoCertidaoNegativa.aspx',
+  ),
+  sefazSpNavigationTimeoutMs: integerValue(
+    process.env.SEFAZ_SP_PORTAL_NAVIGATION_TIMEOUT_MS,
+    60_000,
+    10_000,
+    300_000,
+  ),
+  sefazSpResultTimeoutMs: integerValue(
+    process.env.SEFAZ_SP_PORTAL_RESULT_TIMEOUT_MS,
+    120_000,
+    15_000,
+    600_000,
+  ),
+  sefazSpEnforceServiceWindow: booleanValue(
+    process.env.SEFAZ_SP_ENFORCE_SERVICE_WINDOW,
+    true,
+  ),
+  pgeSpPortalUrl: normalizedUrl(
+    process.env.PGE_SP_PORTAL_URL
+      ?? 'https://www.dividaativa.pge.sp.gov.br/sc/pages/crda/emitirCrda.jsf',
+  ),
+  pgeSpNavigationTimeoutMs: integerValue(
+    process.env.PGE_SP_PORTAL_NAVIGATION_TIMEOUT_MS,
+    60_000,
+    10_000,
+    300_000,
+  ),
+  pgeSpResultTimeoutMs: integerValue(
+    process.env.PGE_SP_PORTAL_RESULT_TIMEOUT_MS,
+    120_000,
+    15_000,
+    600_000,
+  ),
   downloadDirectory: process.env.WORKER_DOWNLOAD_DIRECTORY ?? '/tmp/contabilidade-downloads',
 };
 
 function federalPortalUrl(value: string): string {
-  const clean = value.trim().replace(/\/$/, '');
+  const clean = normalizedUrl(value);
   return clean.includes('#/') ? clean : `${clean}/#/home/cnpj`;
+}
+
+function normalizedUrl(value: string): string {
+  return value.trim().replace(/\/$/, '');
 }

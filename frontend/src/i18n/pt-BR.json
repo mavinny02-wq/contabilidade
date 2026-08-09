@@ -81,7 +81,8 @@
     "certidoesTitulo": "Regularidade fiscal",
     "certidoesDescricao": "Acompanhe as certidões federais e estaduais por CNPJ.",
     "proximosPassosDescricaoV2": "A versão 0.2.0 entrega operação manual de certidões, fila de execuções, providers e intervenção humana. Os fluxos reais de portais entram na próxima fase.",
-    "proximosPassosDescricaoV3": "A versão 0.3.0 adiciona o provider Federal assistido e a sessão interativa para CAPTCHA. A validação autorizada do portal ainda é obrigatória antes da ativação em produção."
+    "proximosPassosDescricaoV3": "A versão 0.3.0 adiciona o provider Federal assistido e a sessão interativa para CAPTCHA. A validação autorizada do portal ainda é obrigatória antes da ativação em produção.",
+    "proximosPassosDescricaoV4": "A versão 0.4.0 adiciona os providers assistidos da SEFAZ-SP e da PGE-SP. Os três portais permanecem desabilitados até validação autorizada."
   },
   "empresas": {
     "titulo": "Empresas",
@@ -456,6 +457,16 @@
       "titulo": "Validação necessária no portal da Receita Federal",
       "instrucao": "Resolva somente o desafio de segurança exibido. Não clique em “Emitir”; depois use “Continuar automação”.",
       "instrucaoNovaTentativa": "O portal ainda exige validação. Resolva novamente o desafio e use “Continuar automação”."
+    },
+    "intervencaoSefazSpCaptcha": {
+      "titulo": "Validação necessária no sistema eCND da SEFAZ-SP",
+      "instrucao": "Resolva somente o desafio de segurança exibido. Não clique em “Emitir”; depois use “Continuar automação”.",
+      "instrucaoNovaTentativa": "O sistema eCND ainda exige validação. Resolva novamente o desafio e use “Continuar automação”."
+    },
+    "intervencaoPgeSpCaptcha": {
+      "titulo": "Validação necessária no portal da PGE-SP",
+      "instrucao": "Resolva somente o desafio de segurança exibido. Não clique em “Emitir e-CRDA”; depois use “Continuar automação”.",
+      "instrucaoNovaTentativa": "O portal da PGE-SP ainda exige validação. Resolva novamente o desafio e use “Continuar automação”."
     }
   }
 }

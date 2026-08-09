@@ -35,7 +35,7 @@ export function criarServidor(
         json(response, browser ? 200 : 503, {
           status: browser ? 'SAUDAVEL' : 'INDISPONIVEL',
           workerId: config.workerId,
-          versao: '0.3.0',
+          versao: '0.4.0',
           fluxosRegistrados: registry.codigos(),
           sessoesInterativasAtivas: sessions.activeCount(),
           loop: loop.state,
