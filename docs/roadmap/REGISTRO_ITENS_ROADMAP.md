@@ -20,10 +20,10 @@ O registro é dono da identidade permanente e do status atual.
 | `EPICO-AUT-001` | Épico | Automação | PARCIAL | Runtime Playwright |
 | `HIST-AUT-001` | História | Automação | PACOTE_V020_PREPARADO | Worker com polling e leases |
 | `HIST-AUT-002` | História | Automação | PACOTE_V020_PREPARADO | Intervenção backend/UI |
-| `HIST-AUT-003` | História | Automação | PENDENTE | Handoff visual de sessão |
+| `HIST-AUT-003` | História | Automação | PACOTE_V030_PREPARADO | Sessão interativa CDP/SSE com retomada confirmada |
 | `EPICO-CRT-001` | Épico | Certidões | PACOTE_V020_PREPARADO | Centro de Certidões |
 | `HIST-CRT-001` | História | Certidões | PACOTE_V020_PREPARADO | Domínio, UI e histórico |
-| `HIST-CRT-002` | História | Certidões | PENDENTE_ANALISE_PORTAL | Portal Federal |
+| `HIST-CRT-002` | História | Certidões | PACOTE_V030_RUNTIME_PENDENTE | Portal Federal assistido |
 | `HIST-CRT-003` | História | Certidões | PENDENTE_ANALISE_PORTAL | Portal SEFAZ-SP |
 | `HIST-CRT-004` | História | Certidões | PENDENTE_ANALISE_PORTAL | Portal PGE-SP |
 | `HIST-CRT-005` | História | Certidões | PACOTE_V020_PREPARADO | Política/fallback/custo |

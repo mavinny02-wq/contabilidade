@@ -1,110 +1,113 @@
-# Instruções de integração — v0.2.0
+# Integração da versão 0.3.0
 
-## Escolha do pacote
+## Pré-requisito
 
-- **Full ZIP:** substitui a árvore do projeto pela versão completa.
-- **Patch ZIP:** contém somente arquivos novos/alterados em relação à baseline v0.1.0.
-- **Patch textual:** útil para revisão, não substitui a validação local.
+Este patch pressupõe a versão `0.2.0` na pasta `C:\work\contabilidade`.
 
-## Antes de copiar
+Antes de aplicar:
 
 ```powershell
 Set-Location "C:\work\contabilidade"
-
 git status
 git pull --ff-only origin main
-git log -1 --oneline
 ```
 
-A árvore deve estar limpa. Crie também um backup local:
+A árvore deve estar limpa.
+
+## Aplicar o patch incremental
+
+Extraia `contabilidade-v0.3.0-patch.zip` dentro de `C:\work\contabilidade`. O ZIP criará a pasta
+`_patch`.
+
+Depois execute:
 
 ```powershell
-$backup = "C:\work\contabilidade-backup-$(Get-Date -Format yyyyMMdd-HHmmss)"
-Copy-Item "C:\work\contabilidade" $backup -Recurse
+Set-Location "C:\work\contabilidade"
+Set-ExecutionPolicy -Scope Process Bypass
+.\_patch\APLICAR_PATCH.ps1
+Remove-Item .\_patch -Recurse -Force
 ```
 
-## Aplicar o Full ZIP
+## Gerar lockfiles reais
 
-Extraia o conteúdo do ZIP diretamente sobre:
-
-```text
-C:\work\contabilidade
-```
-
-Permita substituir os arquivos existentes.
-
-## Aplicar o Patch ZIP
-
-Extraia o patch sobre a raiz do repositório. Depois execute:
-
-```powershell
-.\APLICAR_PATCH.ps1
-```
-
-O script remove apenas caminhos explicitamente listados em `ARQUIVOS_REMOVER.txt`.
-
-## Lockfiles obrigatórios
-
-O ambiente que gerou o pacote não conseguiu acessar o registry npm. Por isso os lockfiles não foram
-inventados nem incluídos.
-
-Em uma máquina com acesso ao registry:
+O pacote não inventa `package-lock.json`. Gere-os no ambiente que possui acesso ao registry:
 
 ```powershell
 .\scripts\gerar-lockfiles.ps1
 ```
 
-Confirme a criação de:
+## Configurar segredos
+
+Revise `.env` e defina valores próprios, especialmente:
 
 ```text
-frontend\package-lock.json
-automation-worker\package-lock.json
+APP_WORKER_TOKEN
+APP_AUTOMATION_SESSION_SIGNING_SECRET
+POSTGRES_PASSWORD
+KEYCLOAK_ADMIN_PASSWORD
 ```
 
-## Validação local
+`APP_AUTOMATION_SESSION_SIGNING_SECRET` deve possuir pelo menos 32 caracteres e precisa ser o mesmo
+no backend e no worker.
+
+## Validar build e configuração
 
 ```powershell
 .\scripts\validar.ps1
 ```
 
-Esse script:
+Nenhum erro deve ser ignorado.
 
-- compila o backend sem executar testes;
-- instala dependências;
-- valida i18n;
-- faz build do frontend;
-- faz build do worker;
-- valida o Docker Compose.
-
-Depois suba o ambiente de desenvolvimento:
+## Subir a stack
 
 ```powershell
 .\scripts\iniciar-dev.ps1
 .\scripts\status.ps1
 ```
 
-Valide manualmente:
+Aplicação:
 
-1. login/local mode;
-2. cadastro de empresa;
-3. cadastro de filial;
-4. upload e download de documento;
-5. abertura do Centro de Certidões;
-6. registro manual de uma certidão com PDF;
-7. histórico;
-8. providers e políticas;
-9. execuções;
-10. Console Técnica.
+```text
+http://localhost:8088
+```
+
+## Preflight do worker Federal
+
+```powershell
+.\scripts\validar-portal-federal.ps1
+```
+
+O resultado deve listar:
+
+```text
+FEDERAL_PORTAL::CERTIDAO_FEDERAL_RFB_PGFN
+```
+
+## Ativação controlada
+
+`FEDERAL_PORTAL` continua desabilitado por padrão. Para validar:
+
+1. use somente CNPJ autorizado;
+2. habilite o provider em **Administração → Integrações**;
+3. mantenha `MANUAL` como fallback;
+4. solicite uma certidão Federal;
+5. assuma a intervenção quando o CAPTCHA aparecer;
+6. resolva somente o desafio no screencast;
+7. clique em **Continuar automação**;
+8. confirme que o PDF oficial foi armazenado;
+9. compare CNPJ, emissão, validade, código de controle e resultado;
+10. desabilite o provider se qualquer comportamento divergir.
 
 ## Commit
 
-Somente depois de validação satisfatória:
+Após validação verde:
 
 ```powershell
 git status
 git add .
-git commit -m "feat: implementa common operacional e centro de certidoes v0.2.0"
+git commit -m "feat: implementa portal federal assistido e sessao interativa v0.3.0"
 git push origin main
+git log -1 --oneline
 ```
 
 ## Rollback antes do commit
@@ -114,16 +117,4 @@ git restore .
 git clean -fd
 ```
 
-Use `git clean -fd` apenas depois de conferir que nenhum arquivo local importante ficará perdido.
-
-## Rollback depois do commit
-
-Prefira criar um commit de reversão:
-
-```powershell
-git revert <SHA_DO_COMMIT_V020>
-git push origin main
-```
-
-Migrations V3 e V4 são novas em relação à v0.1.0. Em banco que já as executou, rollback de código não
-remove o schema; use restauração de backup ou migration corretiva.
+Use `git clean -fd` somente depois de conferir que não há arquivos locais que devam ser preservados.

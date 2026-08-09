@@ -25,6 +25,9 @@ public interface ExecucaoLifecycleHandler {
     default void aoRetomar(ExecucaoIntegracao execucao) {
     }
 
+    default void aoRetomarSessao(ExecucaoIntegracao execucao) {
+    }
+
     default void aoCancelar(ExecucaoIntegracao execucao) {
     }
 

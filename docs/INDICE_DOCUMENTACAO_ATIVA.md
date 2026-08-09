@@ -27,10 +27,15 @@
 - [Motor de Execuções](arquitetura/MOTOR_EXECUCOES.md)
 - [Centro de Certidões](arquitetura/CENTRO_CERTIDOES.md)
 - [Intervenção Humana](arquitetura/INTERVENCAO_HUMANA.md)
+- [Sessão Interativa](arquitetura/SESSAO_INTERATIVA.md)
 - [Documentos e Evidências](arquitetura/DOCUMENTOS_E_EVIDENCIAS.md)
 - [i18n pt-BR](arquitetura/I18N_PTBR.md)
 - [Segurança](arquitetura/SEGURANCA.md)
 - [Observabilidade](arquitetura/OBSERVABILIDADE.md)
+
+## Integrações
+
+- [Portal Federal RFB/PGFN](integracoes/PORTAL_FEDERAL_RFB_PGFN.md)
 
 ## Operação
 
@@ -38,6 +43,7 @@
 - [Backup e restauração](operacao/BACKUP_E_RESTAURACAO.md)
 - [Atualização e rollback](operacao/ATUALIZACAO_E_ROLLBACK.md)
 - [Runbook inicial](operacao/RUNBOOK.md)
+- [Runbook Portal Federal](operacao/RUNBOOK_PORTAL_FEDERAL.md)
 - [Validação v0.2.0](operacao/VALIDACAO_V020.md)
 
 ## Decisões

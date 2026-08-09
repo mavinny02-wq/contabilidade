@@ -36,8 +36,9 @@ Todos são substituíveis:
 - portal assistido;
 - manual.
 
-Os providers reais permanecem desabilitados nesta versão. O provider manual permite operação antes
-dos conectores.
+O fluxo Playwright Federal foi implementado, mas o provider permanece desabilitado por padrão até
+validação autorizada. SEFAZ-SP e PGE-SP continuam sem fluxo real. O provider manual permanece como
+contingência.
 
 ## Política
 
@@ -56,8 +57,9 @@ acompanhamentos ausentes para empresas ativas.
 
 ## Limites
 
-- sem parser real de PDFs governamentais;
-- sem portais reais;
+- parser Federal implementado, ainda pendente de amostras reais autorizadas;
+- portal Federal implementado, ainda pendente de validação runtime;
+- sem portais reais da SEFAZ-SP e PGE-SP;
 - sem agregação universal de “regularidade da empresa”;
 - sem IA fiscal;
 - sem inferência de pendência a partir de indisponibilidade.

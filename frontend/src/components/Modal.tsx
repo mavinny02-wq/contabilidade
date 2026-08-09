@@ -8,12 +8,14 @@ export function Modal({
   aoFechar,
   children,
   rodape,
+  className = '',
 }: {
   aberto: boolean;
   titulo: string;
   aoFechar: () => void;
   children: ReactNode;
   rodape?: ReactNode;
+  className?: string;
 }) {
   const { t } = useTranslation();
 
@@ -31,7 +33,7 @@ export function Modal({
   return createPortal(
     <div className="modal-backdrop" role="presentation" onMouseDown={aoFechar}>
       <section
-        className="modal"
+        className={`modal ${className}`.trim()}
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"

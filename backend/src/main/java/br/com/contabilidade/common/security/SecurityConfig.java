@@ -1,5 +1,7 @@
 package br.com.contabilidade.common.security;
 
+import br.com.contabilidade.common.intervention.AutomationSessionProperties;
+
 import java.util.Arrays;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableMethodSecurity
-@EnableConfigurationProperties(AppSecurityProperties.class)
+@EnableConfigurationProperties({AppSecurityProperties.class, AutomationSessionProperties.class})
 public class SecurityConfig {
 
     @Bean

@@ -3,9 +3,9 @@
 ## Checkpoint
 
 - branch de integração: `main`;
-- baseline integrada: v0.1;
-- pacote candidato: v0.2.0;
-- gate serial atual: integração e validação local da v0.2.0;
+- baseline requerida: v0.2.0;
+- pacote candidato: v0.3.0;
+- gate serial atual: integração, build e prova autorizada do portal Federal;
 - onda oficial seguinte: não selecionada;
 - testes: task separada.
 
@@ -34,3 +34,12 @@
 - `PLAYWRIGHT_TESTES_PENDENTES`;
 - `E2E_PENDENTE`;
 - `BACKUP_RESTORE_PENDENTE`.
+
+## Provas específicas da versão 0.3.0
+
+- `FEDERAL_PORTAL_RUNTIME_PENDING`;
+- `FEDERAL_CAPTCHA_RUNTIME_PENDING`;
+- `FEDERAL_CND_PDF_SAMPLE_PENDING`;
+- `FEDERAL_CPEND_PDF_SAMPLE_PENDING`;
+- `INTERACTIVE_SESSION_SECURITY_REVIEW_PENDING`;
+- `PLAYWRIGHT_E2E_PENDING`.

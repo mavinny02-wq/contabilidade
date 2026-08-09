@@ -1,7 +1,12 @@
 import { basename } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { config } from './config.js';
-import type { ExecucaoLease, ResultadoFluxo } from './contracts.js';
+import type {
+  DocumentoWorkerInput,
+  ExecucaoLease,
+  IntervencaoRequest,
+  ResultadoFluxo,
+} from './contracts.js';
 
 type HttpOptions = {
   method?: string;
@@ -15,7 +20,7 @@ export class BackendClient {
       method: 'POST',
       body: {
         workerId: config.workerId,
-        versao: '0.2.0',
+        versao: '0.3.0',
         status,
         observadoEm: new Date().toISOString(),
       },
@@ -45,17 +50,53 @@ export class BackendClient {
     });
   }
 
+  async aguardarHumano(
+    execucao: ExecucaoLease,
+    sessionId: string,
+    request: IntervencaoRequest,
+  ): Promise<void> {
+    await this.request(`/api/interno/workers/execucoes/${execucao.id}/aguardar-humano`, {
+      method: 'POST',
+      body: {
+        leaseToken: execucao.leaseToken,
+        status: request.tipo === 'CAPTCHA'
+          ? 'AGUARDANDO_CAPTCHA'
+          : request.tipo === 'AUTENTICACAO' || request.tipo === 'MFA'
+            ? 'AGUARDANDO_AUTENTICACAO'
+            : 'AGUARDANDO_HUMANO',
+        tipo: request.tipo,
+        codigo: request.codigo,
+        resumo: request.resumo ?? null,
+        tituloKey: request.tituloKey,
+        instrucaoKey: request.instrucaoKey,
+        sessaoReferencia: sessionId,
+        timeoutMinutos: request.timeoutMinutos ?? 30,
+      },
+    });
+  }
 
-  async enviarDocumento(input: {
-    empresaId: string;
-    tipo: string;
-    origem: 'API_OFICIAL' | 'API_COMERCIAL' | 'PORTAL_AUTOMATIZADO' | 'PORTAL_ASSISTIDO' | 'SISTEMA';
-    arquivoPath: string;
-    mimeType: string;
-    nomeArquivo?: string;
-    emitidoEm?: string;
-    validoAte?: string;
-  }): Promise<{ id: string }> {
+  async retomarSessao(input: {
+    execucaoId: string;
+    sessionId: string;
+    operador: string;
+    observacao?: string;
+  }): Promise<ExecucaoLease> {
+    return await this.request<ExecucaoLease>(
+      `/api/interno/workers/execucoes/${input.execucaoId}/retomar-sessao`,
+      {
+        method: 'POST',
+        body: {
+          workerId: config.workerId,
+          sessionId: input.sessionId,
+          operador: input.operador,
+          observacao: input.observacao ?? 'Etapa interativa concluída pelo operador.',
+          leaseSegundos: config.leaseSeconds,
+        },
+      },
+    );
+  }
+
+  async enviarDocumento(input: DocumentoWorkerInput): Promise<{ id: string }> {
     const conteudo = await readFile(input.arquivoPath);
     const form = new FormData();
     form.append('empresaId', input.empresaId);
@@ -128,11 +169,11 @@ export class BackendClient {
     });
   }
 
-  private async request(path: string, options: HttpOptions): Promise<unknown> {
+  private async request<T = unknown>(path: string, options: HttpOptions): Promise<T> {
     const response = await this.raw(path, options);
     if (!response.ok) throw await this.error(response);
-    if (response.status === 204) return undefined;
-    return await response.json();
+    if (response.status === 204) return undefined as T;
+    return await response.json() as T;
   }
 
   private async raw(path: string, options: HttpOptions): Promise<Response> {
@@ -154,6 +195,16 @@ export class BackendClient {
     } catch {
       body = response.statusText;
     }
-    return new Error(`Backend rejeitou a operação: HTTP ${response.status} ${body.slice(0, 500)}`);
+    return new BackendError(
+      response.status,
+      `Backend rejeitou a operação: HTTP ${response.status} ${body.slice(0, 500)}`,
+    );
+  }
+}
+
+export class BackendError extends Error {
+  constructor(readonly status: number, message: string) {
+    super(message);
+    this.name = 'BackendError';
   }
 }

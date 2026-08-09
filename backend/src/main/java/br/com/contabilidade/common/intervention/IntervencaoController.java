@@ -24,10 +24,16 @@ public class IntervencaoController {
 
     private final SolicitacaoIntervencaoRepository repository;
     private final IntervencaoService service;
+    private final SessaoInterativaTicketService ticketService;
 
-    public IntervencaoController(SolicitacaoIntervencaoRepository repository, IntervencaoService service) {
+    public IntervencaoController(
+            SolicitacaoIntervencaoRepository repository,
+            IntervencaoService service,
+            SessaoInterativaTicketService ticketService
+    ) {
         this.repository = repository;
         this.service = service;
+        this.ticketService = ticketService;
     }
 
     @GetMapping
@@ -38,6 +44,17 @@ public class IntervencaoController {
                 List.of(StatusIntervencao.PENDENTE, StatusIntervencao.EM_ATENDIMENTO),
                 PageRequest.of(Math.max(pagina, 0), Math.min(Math.max(tamanho, 1), 100)))
                 .map(IntervencaoResponse::de);
+    }
+
+
+    @GetMapping("/{id}/sessao")
+    @PreAuthorize("@permissaoService.tem('INTERVENCAO_RESOLVER')")
+    public SessaoInterativaTicketService.TicketSessaoInterativa sessao(
+            @PathVariable UUID id,
+            Authentication authentication
+    ) {
+        SolicitacaoIntervencao intervencao = service.buscar(id);
+        return ticketService.gerar(intervencao, usuario(authentication));
     }
 
     @PatchMapping("/{id}/assumir")

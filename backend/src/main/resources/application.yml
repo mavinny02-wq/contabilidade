@@ -75,7 +75,7 @@ springdoc:
 
 app:
   environment: ${APP_ENVIRONMENT:LOCAL}
-  version: ${APP_VERSION:0.2.0}
+  version: ${APP_VERSION:0.3.0}
   security:
     enabled: ${APP_SECURITY_ENABLED:false}
     resource-client-id: ${APP_SECURITY_RESOURCE_CLIENT_ID:contabilidade-backend}
@@ -85,6 +85,11 @@ app:
     max-file-size-bytes: ${APP_STORAGE_MAX_FILE_SIZE_BYTES:26214400}
   worker:
     token: ${APP_WORKER_TOKEN:token-local-altere}
+  automation:
+    session:
+      public-path: ${APP_AUTOMATION_PUBLIC_PATH:/automation}
+      signing-secret: ${APP_AUTOMATION_SESSION_SIGNING_SECRET:local-session-signing-secret-altere-1234567890}
+      ticket-ttl: ${APP_AUTOMATION_SESSION_TICKET_TTL:PT15M}
   execution:
     recovery-interval-ms: ${APP_EXECUTION_RECOVERY_INTERVAL_MS:60000}
   certificate:

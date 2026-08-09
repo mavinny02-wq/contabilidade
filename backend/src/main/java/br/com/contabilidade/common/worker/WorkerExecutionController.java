@@ -68,6 +68,28 @@ public class WorkerExecutionController {
         return new RenovarResponse(leaseAte);
     }
 
+
+    @PostMapping("/{id}/retomar-sessao")
+    @Transactional
+    public ExecucaoFilaService.ExecucaoLease retomarSessao(
+            @RequestHeader("X-Worker-Token") String token,
+            @PathVariable UUID id,
+            @Valid @RequestBody RetomarSessaoRequest request
+    ) {
+        tokenService.validar(token);
+        intervencaoService.resolverPorSessao(
+                id,
+                request.sessionId(),
+                request.operador(),
+                request.observacao()
+        );
+        return filaService.retomarNaMesmaSessao(
+                id,
+                request.workerId(),
+                Duration.ofSeconds(request.leaseSegundos())
+        );
+    }
+
     @PostMapping("/{id}/concluir")
     public ExecucaoResponse concluir(@RequestHeader("X-Worker-Token") String token,
                                      @PathVariable UUID id,
@@ -111,6 +133,15 @@ public class WorkerExecutionController {
                                  @Min(30) @Max(1800) int leaseSegundos) { }
 
     public record RenovarResponse(Instant leaseAte) { }
+
+
+    public record RetomarSessaoRequest(
+            @NotBlank String workerId,
+            @NotBlank String sessionId,
+            @NotBlank String operador,
+            String observacao,
+            @Min(30) @Max(1800) int leaseSegundos
+    ) { }
 
     public record ConcluirRequest(@NotNull UUID leaseToken, String protocoloExterno, Object resultado,
                                   BigDecimal custo, String moeda) { }

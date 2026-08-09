@@ -15,6 +15,7 @@ Baseline inicial:
 | Vite | MIT |
 | TypeScript | Apache-2.0 |
 | Playwright | Apache-2.0 |
+| pdfjs-dist | Apache-2.0 |
 | Nginx | BSD-2-Clause |
 | PostgreSQL | PostgreSQL License |
 

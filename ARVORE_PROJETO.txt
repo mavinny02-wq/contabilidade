@@ -1,329 +1,280 @@
-CONTABILIDADE — ÁRVORE DO PROJETO v0.2.0
-Gerado em UTC: 2026-08-09T06:09:42.270460+00:00
+# Árvore do projeto Contabilidade v0.3.0
 
-DIRETÓRIOS
-[D] .contabilidade-orchestrator/
-[D] .contabilidade-orchestrator/output/
-[D] .contabilidade-orchestrator/templates/
-[D] .github/workflows/
-[D] automation-worker/
-[D] automation-worker/src/
-[D] backend/
-[D] backend/src/main/java/br/com/contabilidade/
-[D] backend/src/main/java/br/com/contabilidade/certidao/api/
-[D] backend/src/main/java/br/com/contabilidade/certidao/domain/
-[D] backend/src/main/java/br/com/contabilidade/certidao/repository/
-[D] backend/src/main/java/br/com/contabilidade/certidao/service/
-[D] backend/src/main/java/br/com/contabilidade/common/audit/
-[D] backend/src/main/java/br/com/contabilidade/common/document/
-[D] backend/src/main/java/br/com/contabilidade/common/error/
-[D] backend/src/main/java/br/com/contabilidade/common/execution/
-[D] backend/src/main/java/br/com/contabilidade/common/info/
-[D] backend/src/main/java/br/com/contabilidade/common/integration/
-[D] backend/src/main/java/br/com/contabilidade/common/intervention/
-[D] backend/src/main/java/br/com/contabilidade/common/notification/
-[D] backend/src/main/java/br/com/contabilidade/common/persistence/
-[D] backend/src/main/java/br/com/contabilidade/common/search/
-[D] backend/src/main/java/br/com/contabilidade/common/security/
-[D] backend/src/main/java/br/com/contabilidade/common/technical/
-[D] backend/src/main/java/br/com/contabilidade/common/web/
-[D] backend/src/main/java/br/com/contabilidade/common/worker/
-[D] backend/src/main/java/br/com/contabilidade/dashboard/
-[D] backend/src/main/java/br/com/contabilidade/empresa/api/
-[D] backend/src/main/java/br/com/contabilidade/empresa/domain/
-[D] backend/src/main/java/br/com/contabilidade/empresa/repository/
-[D] backend/src/main/java/br/com/contabilidade/empresa/service/
-[D] backend/src/main/resources/
-[D] backend/src/main/resources/db/migration/
-[D] docs/
-[D] docs/ai/
-[D] docs/arquitetura/
-[D] docs/decisoes/
-[D] docs/discovery/
-[D] docs/historico/
-[D] docs/operacao/
-[D] docs/roadmap/
-[D] docs/visao/
-[D] frontend/
-[D] frontend/docker-entrypoint.d/
-[D] frontend/public/
-[D] frontend/scripts/
-[D] frontend/src/
-[D] frontend/src/api/
-[D] frontend/src/app/
-[D] frontend/src/auth/
-[D] frontend/src/components/
-[D] frontend/src/config/
-[D] frontend/src/features/certidoes/
-[D] frontend/src/features/empresas/
-[D] frontend/src/i18n/
-[D] frontend/src/pages/
-[D] frontend/src/styles/
-[D] infra/keycloak/
-[D] infra/playwright/
-[D] infra/postgres/init/
-[D] prompts/
-[D] scripts/
-
-ARQUIVOS
-[F] .contabilidade-orchestrator/README.md
-[F] .contabilidade-orchestrator/config.json
-[F] .contabilidade-orchestrator/output/plano-onda.json
-[F] .contabilidade-orchestrator/templates/prompt-analise.md
-[F] .contabilidade-orchestrator/templates/prompt-decisao.md
-[F] .contabilidade-orchestrator/templates/prompt-implementacao.md
-[F] .contabilidade-orchestrator/templates/prompt-reconciliacao.md
-[F] .editorconfig
-[F] .env.example
-[F] .gitattributes
-[F] .github/workflows/build.yml
-[F] .gitignore
-[F] AGENTS.md
-[F] CHANGELOG.md
-[F] INSTRUCOES_INTEGRACAO.md
-[F] LICENCAS_DEPENDENCIAS.md
-[F] README.md
-[F] VALIDACAO.md
-[F] VERSION
-[F] automation-worker/.dockerignore
-[F] automation-worker/Dockerfile
-[F] automation-worker/README.md
-[F] automation-worker/package.json
-[F] automation-worker/src/BackendClient.ts
-[F] automation-worker/src/BrowserRuntime.ts
-[F] automation-worker/src/FluxoRegistry.ts
-[F] automation-worker/src/WorkerLoop.ts
-[F] automation-worker/src/config.ts
-[F] automation-worker/src/contracts.ts
-[F] automation-worker/src/heartbeat.ts
-[F] automation-worker/src/index.ts
-[F] automation-worker/src/server.ts
-[F] automation-worker/tsconfig.json
-[F] backend/.dockerignore
-[F] backend/Dockerfile
-[F] backend/pom.xml
-[F] backend/src/main/java/br/com/contabilidade/ContabilidadeApplication.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/domain/SituacaoConsultaCertidao.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/repository/HistoricoCertidaoRepository.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoScheduler.java
-[F] backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java
-[F] backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaController.java
-[F] backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java
-[F] backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoria.java
-[F] backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoriaRepository.java
-[F] backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoDocumento.java
-[F] backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoLocalDocumento.java
-[F] backend/src/main/java/br/com/contabilidade/common/document/Documento.java
-[F] backend/src/main/java/br/com/contabilidade/common/document/DocumentoController.java
-[F] backend/src/main/java/br/com/contabilidade/common/document/DocumentoRepository.java
-[F] backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java
-[F] backend/src/main/java/br/com/contabilidade/common/document/OrigemDocumento.java
-[F] backend/src/main/java/br/com/contabilidade/common/error/ApiError.java
-[F] backend/src/main/java/br/com/contabilidade/common/error/ErroCampo.java
-[F] backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java
-[F] backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java
-[F] backend/src/main/java/br/com/contabilidade/common/error/TratadorGlobalExcecoes.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/ComandoCriarExecucao.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoController.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracaoRepository.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoLifecycleHandler.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoMaintenanceScheduler.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoResponse.java
-[F] backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java
-[F] backend/src/main/java/br/com/contabilidade/common/info/InfoAplicacaoController.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorController.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorRepository.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicao.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoController.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoRepository.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoService.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/ProvedorIntegracao.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/RequisicaoIntegracao.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/ResultadoIntegracao.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/RoteadorProvedor.java
-[F] backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java
-[F] backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoController.java
-[F] backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoRegistroService.java
-[F] backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java
-[F] backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencao.java
-[F] backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencaoRepository.java
-[F] backend/src/main/java/br/com/contabilidade/common/intervention/StatusIntervencao.java
-[F] backend/src/main/java/br/com/contabilidade/common/intervention/TipoIntervencao.java
-[F] backend/src/main/java/br/com/contabilidade/common/notification/Notificacao.java
-[F] backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoController.java
-[F] backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoRepository.java
-[F] backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java
-[F] backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java
-[F] backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java
-[F] backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java
-[F] backend/src/main/java/br/com/contabilidade/common/security/AppSecurityProperties.java
-[F] backend/src/main/java/br/com/contabilidade/common/security/JwtAuthoritiesConverter.java
-[F] backend/src/main/java/br/com/contabilidade/common/security/Papeis.java
-[F] backend/src/main/java/br/com/contabilidade/common/security/PermissaoService.java
-[F] backend/src/main/java/br/com/contabilidade/common/security/Permissoes.java
-[F] backend/src/main/java/br/com/contabilidade/common/security/SecurityConfig.java
-[F] backend/src/main/java/br/com/contabilidade/common/security/UsuarioAtualController.java
-[F] backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java
-[F] backend/src/main/java/br/com/contabilidade/common/web/CorrelationIdFilter.java
-[F] backend/src/main/java/br/com/contabilidade/common/worker/WorkerDocumentController.java
-[F] backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java
-[F] backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeat.java
-[F] backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatRepository.java
-[F] backend/src/main/java/br/com/contabilidade/common/worker/WorkerInternalController.java
-[F] backend/src/main/java/br/com/contabilidade/common/worker/WorkerTokenService.java
-[F] backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaController.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaDetalheResponse.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaRequest.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/api/EstabelecimentoResponse.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/api/FilialRequest.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/domain/Cnpj.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/domain/InscricaoTributaria.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/domain/TipoInscricaoTributaria.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java
-[F] backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java
-[F] backend/src/main/resources/application-local.yml
-[F] backend/src/main/resources/application-onpremise.yml
-[F] backend/src/main/resources/application.yml
-[F] backend/src/main/resources/banner.txt
-[F] backend/src/main/resources/db/migration/V1__baseline_common.sql
-[F] backend/src/main/resources/db/migration/V2__seed_provedores.sql
-[F] backend/src/main/resources/db/migration/V3__common_operacional.sql
-[F] backend/src/main/resources/db/migration/V4__centro_certidoes.sql
-[F] backend/src/main/resources/logback-spring.xml
-[F] backend/src/main/resources/messages_pt_BR.properties
-[F] compose.dev.yaml
-[F] compose.onpremise.yaml
-[F] compose.yaml
-[F] docs/GOVERNANCA_DOCUMENTACAO.md
-[F] docs/INDICE_DOCUMENTACAO_ATIVA.md
-[F] docs/ai/FLUXO_TRABALHO_CODEX.md
-[F] docs/ai/PADROES_PROMPTS.md
-[F] docs/ai/REGRAS_TASKS_CODEX.md
-[F] docs/arquitetura/ARQUITETURA_BASE.md
-[F] docs/arquitetura/ARQUITETURA_INTEGRACOES.md
-[F] docs/arquitetura/AUTOMACAO_PLAYWRIGHT.md
-[F] docs/arquitetura/CENTRO_CERTIDOES.md
-[F] docs/arquitetura/DOCUMENTOS_E_EVIDENCIAS.md
-[F] docs/arquitetura/I18N_PTBR.md
-[F] docs/arquitetura/INTERVENCAO_HUMANA.md
-[F] docs/arquitetura/MODELO_DOMINIO.md
-[F] docs/arquitetura/MODULOS_COMMON.md
-[F] docs/arquitetura/MOTOR_EXECUCOES.md
-[F] docs/arquitetura/OBSERVABILIDADE.md
-[F] docs/arquitetura/SEGURANCA.md
-[F] docs/decisoes/DEC-DEP-001_ON_PREMISE_FIRST.md
-[F] docs/decisoes/INDICE_DECISOES.md
-[F] docs/discovery/PLANO_OBSERVACAO_TRIAL.md
-[F] docs/historico/INDICE.md
-[F] docs/operacao/ATUALIZACAO_E_ROLLBACK.md
-[F] docs/operacao/BACKUP_E_RESTAURACAO.md
-[F] docs/operacao/INSTALACAO_ON_PREMISE.md
-[F] docs/operacao/RUNBOOK.md
-[F] docs/operacao/VALIDACAO_V020.md
-[F] docs/roadmap/BACKLOG_ADMINISTRACAO.md
-[F] docs/roadmap/BACKLOG_AUTOMACAO.md
-[F] docs/roadmap/BACKLOG_CERTIDOES.md
-[F] docs/roadmap/BACKLOG_COMMON.md
-[F] docs/roadmap/BACKLOG_EMPRESAS.md
-[F] docs/roadmap/BACKLOG_INTEGRACOES.md
-[F] docs/roadmap/BACKLOG_MODULOS_FUTUROS.md
-[F] docs/roadmap/BOARD_ORQUESTRACAO.md
-[F] docs/roadmap/HISTORICO_ENTREGAS.md
-[F] docs/roadmap/REGISTRO_ITENS_ROADMAP.md
-[F] docs/roadmap/ROADMAP_PRODUTO.md
-[F] docs/visao/BENCHMARK_VERI_CONTABILIZEI.md
-[F] docs/visao/ESCOPO.md
-[F] docs/visao/VISAO_PRODUTO.md
-[F] frontend/.dockerignore
-[F] frontend/Dockerfile
-[F] frontend/docker-entrypoint.d/40-runtime-config.sh
-[F] frontend/index.html
-[F] frontend/nginx.conf
-[F] frontend/package.json
-[F] frontend/public/config.js
-[F] frontend/scripts/validate-locale.mjs
-[F] frontend/src/App.tsx
-[F] frontend/src/api/http.ts
-[F] frontend/src/api/types.ts
-[F] frontend/src/app/AppShell.tsx
-[F] frontend/src/app/GlobalSearch.tsx
-[F] frontend/src/app/router.tsx
-[F] frontend/src/auth/AuthProvider.tsx
-[F] frontend/src/auth/PermissionRoute.tsx
-[F] frontend/src/auth/ProtectedRoute.tsx
-[F] frontend/src/auth/permissoes.ts
-[F] frontend/src/auth/types.ts
-[F] frontend/src/components/Alert.tsx
-[F] frontend/src/components/Button.tsx
-[F] frontend/src/components/Card.tsx
-[F] frontend/src/components/EmptyState.tsx
-[F] frontend/src/components/LoadingScreen.tsx
-[F] frontend/src/components/Modal.tsx
-[F] frontend/src/components/ModulePending.tsx
-[F] frontend/src/components/PageHeader.tsx
-[F] frontend/src/components/Pagination.tsx
-[F] frontend/src/components/StatusBadge.tsx
-[F] frontend/src/config/runtime.ts
-[F] frontend/src/features/certidoes/CertidaoHistoryModal.tsx
-[F] frontend/src/features/certidoes/CertidaoManualModal.tsx
-[F] frontend/src/features/empresas/EmpresaFormModal.tsx
-[F] frontend/src/features/empresas/FilialFormModal.tsx
-[F] frontend/src/i18n/index.ts
-[F] frontend/src/i18n/pt-BR.json
-[F] frontend/src/main.tsx
-[F] frontend/src/pages/AuditoriaPage.tsx
-[F] frontend/src/pages/CertidoesPage.tsx
-[F] frontend/src/pages/ConsoleTecnicaPage.tsx
-[F] frontend/src/pages/DashboardPage.tsx
-[F] frontend/src/pages/DocumentosPage.tsx
-[F] frontend/src/pages/EmpresaDetalhePage.tsx
-[F] frontend/src/pages/EmpresasPage.tsx
-[F] frontend/src/pages/ErrorPage.tsx
-[F] frontend/src/pages/ExecucoesPage.tsx
-[F] frontend/src/pages/IntegracoesPage.tsx
-[F] frontend/src/pages/IntervencoesPage.tsx
-[F] frontend/src/pages/NotificacoesPage.tsx
-[F] frontend/src/styles/global.css
-[F] frontend/src/vite-env.d.ts
-[F] frontend/tsconfig.app.json
-[F] frontend/tsconfig.json
-[F] frontend/tsconfig.node.json
-[F] frontend/vite.config.ts
-[F] infra/keycloak/realm-contabilidade-dev.json
-[F] infra/keycloak/realm-contabilidade.json
-[F] infra/playwright/seccomp_profile.json
-[F] infra/postgres/init/01-create-keycloak-db.sh
-[F] prompts/PROMPT_01_RECONCILIAR_BASELINE.md
-[F] prompts/PROMPT_02_RECONCILIAR_V020.md
-[F] scripts/backup.ps1
-[F] scripts/backup.sh
-[F] scripts/gerar-lockfiles.ps1
-[F] scripts/iniciar-dev.ps1
-[F] scripts/iniciar-onpremise.ps1
-[F] scripts/iniciar.ps1
-[F] scripts/iniciar.sh
-[F] scripts/logs.ps1
-[F] scripts/parar.ps1
-[F] scripts/status.ps1
-[F] scripts/validar.ps1
+.contabilidade-orchestrator/README.md
+.contabilidade-orchestrator/config.json
+.contabilidade-orchestrator/output/plano-onda.json
+.contabilidade-orchestrator/templates/prompt-analise.md
+.contabilidade-orchestrator/templates/prompt-decisao.md
+.contabilidade-orchestrator/templates/prompt-implementacao.md
+.contabilidade-orchestrator/templates/prompt-reconciliacao.md
+.editorconfig
+.env.example
+.gitattributes
+.github/workflows/build.yml
+.gitignore
+AGENTS.md
+ARVORE_PROJETO.txt
+CHANGELOG.md
+CHECKSUMS_SHA256.txt
+INSTRUCOES_INTEGRACAO.md
+LICENCAS_DEPENDENCIAS.md
+MANIFESTO_PACOTE.md
+README.md
+VALIDACAO.md
+VERSION
+automation-worker/.dockerignore
+automation-worker/Dockerfile
+automation-worker/README.md
+automation-worker/package.json
+automation-worker/src/BackendClient.ts
+automation-worker/src/BrowserRuntime.ts
+automation-worker/src/FederalCertificateFlow.ts
+automation-worker/src/FluxoRegistry.ts
+automation-worker/src/InteractiveSessionManager.ts
+automation-worker/src/PdfCertificateParser.ts
+automation-worker/src/SessionTicket.ts
+automation-worker/src/WorkerLoop.ts
+automation-worker/src/config.ts
+automation-worker/src/contracts.ts
+automation-worker/src/heartbeat.ts
+automation-worker/src/index.ts
+automation-worker/src/server.ts
+automation-worker/tsconfig.json
+backend/.dockerignore
+backend/Dockerfile
+backend/pom.xml
+backend/src/main/java/br/com/contabilidade/ContabilidadeApplication.java
+backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java
+backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java
+backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java
+backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java
+backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java
+backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java
+backend/src/main/java/br/com/contabilidade/certidao/domain/SituacaoConsultaCertidao.java
+backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java
+backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java
+backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java
+backend/src/main/java/br/com/contabilidade/certidao/repository/HistoricoCertidaoRepository.java
+backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java
+backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoScheduler.java
+backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java
+backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaController.java
+backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java
+backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoria.java
+backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoriaRepository.java
+backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoDocumento.java
+backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoLocalDocumento.java
+backend/src/main/java/br/com/contabilidade/common/document/Documento.java
+backend/src/main/java/br/com/contabilidade/common/document/DocumentoController.java
+backend/src/main/java/br/com/contabilidade/common/document/DocumentoRepository.java
+backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java
+backend/src/main/java/br/com/contabilidade/common/document/OrigemDocumento.java
+backend/src/main/java/br/com/contabilidade/common/error/ApiError.java
+backend/src/main/java/br/com/contabilidade/common/error/ErroCampo.java
+backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java
+backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java
+backend/src/main/java/br/com/contabilidade/common/error/TratadorGlobalExcecoes.java
+backend/src/main/java/br/com/contabilidade/common/execution/ComandoCriarExecucao.java
+backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoController.java
+backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java
+backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java
+backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracaoRepository.java
+backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoLifecycleHandler.java
+backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoMaintenanceScheduler.java
+backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoResponse.java
+backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java
+backend/src/main/java/br/com/contabilidade/common/info/InfoAplicacaoController.java
+backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java
+backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorController.java
+backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorRepository.java
+backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicao.java
+backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoController.java
+backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoRepository.java
+backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoService.java
+backend/src/main/java/br/com/contabilidade/common/integration/ProvedorIntegracao.java
+backend/src/main/java/br/com/contabilidade/common/integration/RequisicaoIntegracao.java
+backend/src/main/java/br/com/contabilidade/common/integration/ResultadoIntegracao.java
+backend/src/main/java/br/com/contabilidade/common/integration/RoteadorProvedor.java
+backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java
+backend/src/main/java/br/com/contabilidade/common/intervention/AutomationSessionProperties.java
+backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoController.java
+backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoRegistroService.java
+backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java
+backend/src/main/java/br/com/contabilidade/common/intervention/SessaoInterativaTicketService.java
+backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencao.java
+backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencaoRepository.java
+backend/src/main/java/br/com/contabilidade/common/intervention/StatusIntervencao.java
+backend/src/main/java/br/com/contabilidade/common/intervention/TipoIntervencao.java
+backend/src/main/java/br/com/contabilidade/common/notification/Notificacao.java
+backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoController.java
+backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoRepository.java
+backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java
+backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java
+backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java
+backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java
+backend/src/main/java/br/com/contabilidade/common/security/AppSecurityProperties.java
+backend/src/main/java/br/com/contabilidade/common/security/JwtAuthoritiesConverter.java
+backend/src/main/java/br/com/contabilidade/common/security/Papeis.java
+backend/src/main/java/br/com/contabilidade/common/security/PermissaoService.java
+backend/src/main/java/br/com/contabilidade/common/security/Permissoes.java
+backend/src/main/java/br/com/contabilidade/common/security/SecurityConfig.java
+backend/src/main/java/br/com/contabilidade/common/security/UsuarioAtualController.java
+backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java
+backend/src/main/java/br/com/contabilidade/common/web/CorrelationIdFilter.java
+backend/src/main/java/br/com/contabilidade/common/worker/WorkerDocumentController.java
+backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java
+backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeat.java
+backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatRepository.java
+backend/src/main/java/br/com/contabilidade/common/worker/WorkerInternalController.java
+backend/src/main/java/br/com/contabilidade/common/worker/WorkerTokenService.java
+backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java
+backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaController.java
+backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaDetalheResponse.java
+backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaRequest.java
+backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java
+backend/src/main/java/br/com/contabilidade/empresa/api/EstabelecimentoResponse.java
+backend/src/main/java/br/com/contabilidade/empresa/api/FilialRequest.java
+backend/src/main/java/br/com/contabilidade/empresa/domain/Cnpj.java
+backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java
+backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java
+backend/src/main/java/br/com/contabilidade/empresa/domain/InscricaoTributaria.java
+backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java
+backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java
+backend/src/main/java/br/com/contabilidade/empresa/domain/TipoInscricaoTributaria.java
+backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java
+backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java
+backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java
+backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java
+backend/src/main/resources/application-local.yml
+backend/src/main/resources/application-onpremise.yml
+backend/src/main/resources/application.yml
+backend/src/main/resources/banner.txt
+backend/src/main/resources/db/migration/V1__baseline_common.sql
+backend/src/main/resources/db/migration/V2__seed_provedores.sql
+backend/src/main/resources/db/migration/V3__common_operacional.sql
+backend/src/main/resources/db/migration/V4__centro_certidoes.sql
+backend/src/main/resources/db/migration/V5__portal_federal_assistido.sql
+backend/src/main/resources/logback-spring.xml
+backend/src/main/resources/messages_pt_BR.properties
+compose.dev.yaml
+compose.onpremise.yaml
+compose.yaml
+docs/GOVERNANCA_DOCUMENTACAO.md
+docs/INDICE_DOCUMENTACAO_ATIVA.md
+docs/ai/FLUXO_TRABALHO_CODEX.md
+docs/ai/PADROES_PROMPTS.md
+docs/ai/REGRAS_TASKS_CODEX.md
+docs/arquitetura/ARQUITETURA_BASE.md
+docs/arquitetura/ARQUITETURA_INTEGRACOES.md
+docs/arquitetura/AUTOMACAO_PLAYWRIGHT.md
+docs/arquitetura/CENTRO_CERTIDOES.md
+docs/arquitetura/DOCUMENTOS_E_EVIDENCIAS.md
+docs/arquitetura/I18N_PTBR.md
+docs/arquitetura/INTERVENCAO_HUMANA.md
+docs/arquitetura/MODELO_DOMINIO.md
+docs/arquitetura/MODULOS_COMMON.md
+docs/arquitetura/MOTOR_EXECUCOES.md
+docs/arquitetura/OBSERVABILIDADE.md
+docs/arquitetura/SEGURANCA.md
+docs/arquitetura/SESSAO_INTERATIVA.md
+docs/decisoes/DEC-DEP-001_ON_PREMISE_FIRST.md
+docs/decisoes/INDICE_DECISOES.md
+docs/discovery/PLANO_OBSERVACAO_TRIAL.md
+docs/historico/INDICE.md
+docs/integracoes/PORTAL_FEDERAL_RFB_PGFN.md
+docs/operacao/ATUALIZACAO_E_ROLLBACK.md
+docs/operacao/BACKUP_E_RESTAURACAO.md
+docs/operacao/INSTALACAO_ON_PREMISE.md
+docs/operacao/RUNBOOK.md
+docs/operacao/RUNBOOK_PORTAL_FEDERAL.md
+docs/operacao/VALIDACAO_V020.md
+docs/operacao/VALIDACAO_V030.md
+docs/roadmap/BACKLOG_ADMINISTRACAO.md
+docs/roadmap/BACKLOG_AUTOMACAO.md
+docs/roadmap/BACKLOG_CERTIDOES.md
+docs/roadmap/BACKLOG_COMMON.md
+docs/roadmap/BACKLOG_EMPRESAS.md
+docs/roadmap/BACKLOG_INTEGRACOES.md
+docs/roadmap/BACKLOG_MODULOS_FUTUROS.md
+docs/roadmap/BOARD_ORQUESTRACAO.md
+docs/roadmap/HISTORICO_ENTREGAS.md
+docs/roadmap/REGISTRO_ITENS_ROADMAP.md
+docs/roadmap/ROADMAP_PRODUTO.md
+docs/visao/BENCHMARK_VERI_CONTABILIZEI.md
+docs/visao/ESCOPO.md
+docs/visao/VISAO_PRODUTO.md
+frontend/.dockerignore
+frontend/Dockerfile
+frontend/docker-entrypoint.d/40-runtime-config.sh
+frontend/index.html
+frontend/nginx.conf
+frontend/package.json
+frontend/public/config.js
+frontend/scripts/validate-locale.mjs
+frontend/src/App.tsx
+frontend/src/api/http.ts
+frontend/src/api/types.ts
+frontend/src/app/AppShell.tsx
+frontend/src/app/GlobalSearch.tsx
+frontend/src/app/router.tsx
+frontend/src/auth/AuthProvider.tsx
+frontend/src/auth/PermissionRoute.tsx
+frontend/src/auth/ProtectedRoute.tsx
+frontend/src/auth/permissoes.ts
+frontend/src/auth/types.ts
+frontend/src/components/Alert.tsx
+frontend/src/components/Button.tsx
+frontend/src/components/Card.tsx
+frontend/src/components/EmptyState.tsx
+frontend/src/components/LoadingScreen.tsx
+frontend/src/components/Modal.tsx
+frontend/src/components/ModulePending.tsx
+frontend/src/components/PageHeader.tsx
+frontend/src/components/Pagination.tsx
+frontend/src/components/StatusBadge.tsx
+frontend/src/config/runtime.ts
+frontend/src/features/certidoes/CertidaoHistoryModal.tsx
+frontend/src/features/certidoes/CertidaoManualModal.tsx
+frontend/src/features/empresas/EmpresaFormModal.tsx
+frontend/src/features/empresas/FilialFormModal.tsx
+frontend/src/features/intervencoes/InteractiveSessionModal.tsx
+frontend/src/i18n/index.ts
+frontend/src/i18n/pt-BR.json
+frontend/src/main.tsx
+frontend/src/pages/AuditoriaPage.tsx
+frontend/src/pages/CertidoesPage.tsx
+frontend/src/pages/ConsoleTecnicaPage.tsx
+frontend/src/pages/DashboardPage.tsx
+frontend/src/pages/DocumentosPage.tsx
+frontend/src/pages/EmpresaDetalhePage.tsx
+frontend/src/pages/EmpresasPage.tsx
+frontend/src/pages/ErrorPage.tsx
+frontend/src/pages/ExecucoesPage.tsx
+frontend/src/pages/IntegracoesPage.tsx
+frontend/src/pages/IntervencoesPage.tsx
+frontend/src/pages/NotificacoesPage.tsx
+frontend/src/styles/global.css
+frontend/src/vite-env.d.ts
+frontend/tsconfig.app.json
+frontend/tsconfig.json
+frontend/tsconfig.node.json
+frontend/vite.config.ts
+infra/keycloak/realm-contabilidade-dev.json
+infra/keycloak/realm-contabilidade.json
+infra/playwright/seccomp_profile.json
+infra/postgres/init/01-create-keycloak-db.sh
+prompts/PROMPT_01_RECONCILIAR_BASELINE.md
+prompts/PROMPT_02_RECONCILIAR_V020.md
+prompts/PROMPT_03_RECONCILIAR_V030.md
+scripts/backup.ps1
+scripts/backup.sh
+scripts/gerar-lockfiles.ps1
+scripts/iniciar-dev.ps1
+scripts/iniciar-onpremise.ps1
+scripts/iniciar.ps1
+scripts/iniciar.sh
+scripts/logs.ps1
+scripts/parar.ps1
+scripts/status.ps1
+scripts/validar-portal-federal.ps1
+scripts/validar.ps1

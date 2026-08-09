@@ -97,6 +97,7 @@ const catalogs = {
     'OUTRA',
   ],
   'intervencoes.status': ['PENDENTE', 'EM_ATENDIMENTO', 'RESOLVIDA', 'EXPIRADA', 'CANCELADA'],
+  'intervencoes.sessao.status': ['AGUARDANDO', 'CONTINUANDO', 'RETOMADA', 'ENCERRADA', 'EXPIRADA'],
   'notificacoes.tipos': ['INFORMACAO', 'AVISO', 'ACAO_NECESSARIA', 'ERRO'],
   'certidoes.tipos': [
     'FEDERAL_RFB_PGFN',

@@ -1,6 +1,6 @@
 # Backlog Automação
 
-## Candidato v0.2.0
+## Pacote v0.3.0
 
 - worker isolado;
 - polling;
@@ -9,17 +9,28 @@
 - heartbeat;
 - browser sandbox;
 - registro de fluxos;
+- fluxo Federal;
+- screencast CDP/SSE;
+- mouse, teclado, rolagem e envio de texto;
+- tickets HMAC temporários;
+- retomada na mesma sessão;
 - upload de documento;
 - resultado/falha/intervenção.
 
-## Pendências antes de portal real
+## Entregue no pacote v0.3.0
 
-- fluxo específico por portal;
-- sessão persistida;
-- handoff visual;
-- redaction de screenshots;
-- retomada do mesmo contexto;
-- limite de concorrência;
-- detecção de alteração;
-- evidência runtime;
-- shutdown gracioso aguardando execução.
+- fluxo Federal específico;
+- handoff visual por screencast CDP/SSE;
+- mouse, teclado, rolagem e texto;
+- ticket HMAC de curta duração;
+- retomada confirmada no mesmo contexto;
+- detecção de CAPTCHA e alteração de portal.
+
+## Pendências
+
+- validação runtime autorizada;
+- revisão de segurança da sessão;
+- redaction de evidência técnica futura;
+- limite de concorrência por múltiplos workers;
+- shutdown gracioso aguardando execução;
+- testes automatizados e E2E.

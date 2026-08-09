@@ -80,7 +80,8 @@
     "certidoesAcaoManual": "Ações manuais",
     "certidoesTitulo": "Regularidade fiscal",
     "certidoesDescricao": "Acompanhe as certidões federais e estaduais por CNPJ.",
-    "proximosPassosDescricaoV2": "A versão 0.2.0 entrega operação manual de certidões, fila de execuções, providers e intervenção humana. Os fluxos reais de portais entram na próxima fase."
+    "proximosPassosDescricaoV2": "A versão 0.2.0 entrega operação manual de certidões, fila de execuções, providers e intervenção humana. Os fluxos reais de portais entram na próxima fase.",
+    "proximosPassosDescricaoV3": "A versão 0.3.0 adiciona o provider Federal assistido e a sessão interativa para CAPTCHA. A validação autorizada do portal ainda é obrigatória antes da ativação em produção."
   },
   "empresas": {
     "titulo": "Empresas",
@@ -235,6 +236,33 @@
       "RESOLVIDA": "Resolvida",
       "EXPIRADA": "Expirada",
       "CANCELADA": "Cancelada"
+    },
+    "sessao": {
+      "titulo": "Interação com o portal",
+      "resolverAgora": "Resolver agora",
+      "carregando": "Preparando a sessão segura do navegador...",
+      "conectada": "Conectada",
+      "desconectada": "Desconectada",
+      "naoDisponivel": "A sessão interativa não está disponível ou expirou.",
+      "eventoInvalido": "O worker enviou um evento de sessão inválido.",
+      "expirada": "A sessão interativa expirou antes da conclusão.",
+      "viewport": "Visualização interativa do portal externo",
+      "aguardandoImagem": "Aguardando a imagem do navegador...",
+      "enviarTexto": "Enviar texto ao campo selecionado no portal",
+      "enviarTextoPlaceholder": "Clique primeiro no campo do portal e digite aqui",
+      "enviar": "Enviar texto",
+      "continuarAutomacao": "Continuar automação",
+      "automacaoRetomada": "A validação foi enviada e a automação continuará na mesma sessão.",
+      "resolucao": "Resolução da sessão",
+      "ticketExpira": "Acesso expira em",
+      "avisoPrivacidade": "A visualização é temporária e não deve ser usada para digitar segredos não solicitados pelo fluxo.",
+      "status": {
+        "AGUARDANDO": "Aguardando operador",
+        "CONTINUANDO": "Retomando automação",
+        "ENCERRADA": "Encerrada",
+        "EXPIRADA": "Expirada",
+        "RETOMADA": "Retomada confirmada"
+      }
     }
   },
   "notificacoes": {
@@ -423,6 +451,11 @@
       "irregularMensagem": "Uma certidão foi classificada como irregular e precisa de análise.",
       "fonteIndisponivelTitulo": "Fonte de certidão indisponível",
       "fonteIndisponivelMensagem": "Uma fonte externa não respondeu. A situação fiscal anterior foi preservada e haverá nova tentativa."
+    },
+    "intervencaoFederalCaptcha": {
+      "titulo": "Validação necessária no portal da Receita Federal",
+      "instrucao": "Resolva somente o desafio de segurança exibido. Não clique em “Emitir”; depois use “Continuar automação”.",
+      "instrucaoNovaTentativa": "O portal ainda exige validação. Resolva novamente o desafio e use “Continuar automação”."
     }
   }
 }

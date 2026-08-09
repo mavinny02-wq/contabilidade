@@ -213,6 +213,14 @@ public class CertidaoExecucaoHandler implements ExecucaoLifecycleHandler {
         historicoRepository.save(new HistoricoCertidao(acompanhamento));
     }
 
+
+    @Override
+    public void aoRetomarSessao(ExecucaoIntegracao execucao) {
+        CertidaoAcompanhamento acompanhamento = acompanhamento(execucao);
+        acompanhamento.marcarProcessando(execucao.getId());
+        historicoRepository.save(new HistoricoCertidao(acompanhamento));
+    }
+
     @Override
     public void aoCancelar(ExecucaoIntegracao execucao) {
         CertidaoAcompanhamento acompanhamento = acompanhamento(execucao);

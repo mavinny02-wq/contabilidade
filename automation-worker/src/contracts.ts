@@ -9,6 +9,44 @@ export type TipoIntervencao =
   | 'PORTAL_ALTERADO'
   | 'OUTRA';
 
+export type IntervencaoRequest = {
+  tipo: TipoIntervencao;
+  codigo: string;
+  resumo?: string;
+  tituloKey: string;
+  instrucaoKey: string;
+  timeoutMinutos?: number;
+};
+
+export type ContinuacaoIntervencao = {
+  sessionId: string;
+  operator: string;
+};
+
+export type IntervencaoRuntime = {
+  aguardar(request: IntervencaoRequest): Promise<ContinuacaoIntervencao>;
+};
+
+export type DocumentoWorkerInput = {
+  empresaId: string;
+  tipo: string;
+  origem:
+    | 'API_OFICIAL'
+    | 'API_COMERCIAL'
+    | 'PORTAL_AUTOMATIZADO'
+    | 'PORTAL_ASSISTIDO'
+    | 'SISTEMA';
+  arquivoPath: string;
+  mimeType: string;
+  nomeArquivo?: string;
+  emitidoEm?: string;
+  validoAte?: string;
+};
+
+export type DocumentoRuntime = {
+  enviar(input: DocumentoWorkerInput): Promise<{ id: string }>;
+};
+
 export type ResultadoFluxo =
   | {
       status: 'SUCESSO';
@@ -18,6 +56,7 @@ export type ResultadoFluxo =
       moeda?: string;
     }
   | {
+      /** Compatibilidade com fluxos que ainda encerram no primeiro handoff humano. */
       status: 'AGUARDANDO_HUMANO';
       tipoIntervencao: TipoIntervencao;
       codigo: string;
@@ -42,6 +81,8 @@ export type ContextoFluxo = {
   parametros: Record<string, unknown>;
   browserContext: BrowserContext;
   page: Page;
+  intervencao: IntervencaoRuntime;
+  documentos: DocumentoRuntime;
 };
 
 export interface FluxoPortal {

@@ -170,6 +170,30 @@ public class ExecucaoIntegracao extends EntidadeBase {
         limparErro();
     }
 
+
+    public void retomarNaMesmaSessao(
+            String workerId,
+            UUID novoLeaseToken,
+            Instant novoLeaseAte
+    ) {
+        if (!status.esperaHumana()) {
+            throw new IllegalStateException("Execução não aguarda intervenção");
+        }
+        if (workerId == null || workerId.isBlank()
+                || novoLeaseToken == null
+                || novoLeaseAte == null
+                || !novoLeaseAte.isAfter(Instant.now())) {
+            throw new IllegalArgumentException("Dados de lease da sessão são inválidos");
+        }
+        this.status = StatusExecucao.EXECUTANDO;
+        this.workerId = workerId.trim();
+        this.leaseToken = novoLeaseToken;
+        this.leaseAte = novoLeaseAte;
+        this.proximaTentativaEm = null;
+        this.finalizadaEm = null;
+        limparErro();
+    }
+
     public void cancelar(String motivo) {
         if (status.terminal()) {
             throw new IllegalStateException("Execução terminal não pode ser cancelada");

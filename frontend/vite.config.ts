@@ -9,6 +9,15 @@ export default defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true,
       },
+      '/automation': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        timeout: 1_800_000,
+      },
+      '/auth': {
+        target: 'http://localhost:8088',
+        changeOrigin: true,
+      },
     },
   },
 });

@@ -3,12 +3,13 @@
   "baseline": {
     "branch": "main",
     "commit": null,
-    "integratedVersion": "0.1.0"
+    "requiredVersion": "0.2.0",
+    "candidateVersion": "0.3.0"
   },
-  "fase": "PACOTE_V020_AGUARDANDO_VALIDACAO_E_INTEGRACAO",
+  "fase": "PACOTE_V030_AGUARDANDO_VALIDACAO_RUNTIME_E_INTEGRACAO",
   "gateSerial": {
-    "itemId": "HIST-FND-001-V020-INTEGRATION",
-    "descricao": "Gerar lockfiles, compilar com dependências reais, validar runtime e integrar v0.2.0"
+    "itemId": "HIST-CRT-002-V030-INTEGRATION",
+    "descricao": "Aplicar a v0.3.0 sobre a v0.2.0, gerar lockfiles, compilar, validar Docker e executar prova autorizada do portal Federal"
   },
   "slotsOficiais": [],
   "decisoesAbertas": [
@@ -24,10 +25,13 @@
     "DOCKER_COMPOSE_PENDING",
     "POSTGRESQL_FLYWAY_PENDING",
     "KEYCLOAK_RUNTIME_PENDING",
+    "FEDERAL_PORTAL_RUNTIME_PENDING",
+    "FEDERAL_CAPTCHA_RUNTIME_PENDING",
+    "FEDERAL_CND_PDF_SAMPLE_PENDING",
+    "FEDERAL_CPEND_PDF_SAMPLE_PENDING",
+    "INTERACTIVE_SESSION_SECURITY_REVIEW_PENDING",
+    "PLAYWRIGHT_E2E_PENDING",
     "BACKEND_TESTES_PENDENTES",
-    "CONCORRENCIA_RETEST_REQUIRED",
-    "PLAYWRIGHT_TESTES_PENDENTES",
-    "E2E_PENDENTE",
-    "BACKUP_RESTORE_PENDENTE"
+    "E2E_PENDENTE"
   ]
 }

@@ -1,7 +1,7 @@
 {
   "name": "contabilidade-automation-worker",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "engines": {
     "node": ">=22.12.0"
@@ -13,7 +13,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "playwright": "1.60.0"
+    "playwright": "1.60.0",
+    "pdfjs-dist": "6.1.200"
   },
   "devDependencies": {
     "@types/node": "22.20.1",

@@ -88,6 +88,60 @@ public class IntervencaoService {
         });
     }
 
+
+    @Transactional
+    public SolicitacaoIntervencao resolverPorSessao(
+            UUID execucaoId,
+            String sessaoReferencia,
+            String usuario,
+            String observacao
+    ) {
+        SolicitacaoIntervencao item = repository
+                .findFirstByExecucaoIdAndStatusIn(execucaoId, ABERTAS)
+                .orElseThrow(() -> new RecursoNaoEncontradoException(
+                        "INTERVENCAO_NAO_ENCONTRADA",
+                        "erros.intervencaoNaoEncontrada"
+                ));
+        if (sessaoReferencia == null
+                || !sessaoReferencia.equals(item.getSessaoReferencia())) {
+            throw new ExcecaoNegocio(
+                    "SESSAO_INTERATIVA_DIVERGENTE",
+                    "erros.sessaoInterativaDivergente",
+                    HttpStatus.CONFLICT
+            );
+        }
+        if (item.getStatus() != StatusIntervencao.EM_ATENDIMENTO
+                || item.getAtribuidaPara() == null
+                || !item.getAtribuidaPara().equals(usuario)) {
+            throw new ExcecaoNegocio(
+                    "INTERVENCAO_NAO_ATRIBUIDA_AO_USUARIO",
+                    "erros.intervencaoNaoAtribuidaAoUsuario",
+                    HttpStatus.CONFLICT
+            );
+        }
+        try {
+            item.resolver(usuario, observacao);
+        } catch (IllegalStateException exception) {
+            throw new ExcecaoNegocio(
+                    "INTERVENCAO_INDISPONIVEL",
+                    "erros.intervencaoIndisponivel",
+                    HttpStatus.CONFLICT,
+                    exception
+            );
+        }
+        auditoriaService.registrar(
+                "INTERVENCAO_RESOLVIDA_NA_SESSAO",
+                "SOLICITACAO_INTERVENCAO",
+                item.getId(),
+                Map.of(
+                        "execucaoId", execucaoId,
+                        "sessaoReferencia", sessaoReferencia,
+                        "usuario", usuario
+                )
+        );
+        return item;
+    }
+
     @Transactional
     public int expirarPendentes() {
         List<SolicitacaoIntervencao> expiradas = repository.findByStatusInAndExpiraEmBefore(

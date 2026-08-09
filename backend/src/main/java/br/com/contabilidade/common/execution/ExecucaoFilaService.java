@@ -193,6 +193,54 @@ public class ExecucaoFilaService {
         return leaseAte;
     }
 
+
+    @Transactional
+    public ExecucaoLease retomarNaMesmaSessao(
+            UUID id,
+            String workerId,
+            Duration duracaoLease
+    ) {
+        ExecucaoIntegracao execucao = buscar(id);
+        String workerSeguro = limitar(workerId, 120);
+        if (workerSeguro == null) {
+            throw new ExcecaoNegocio(
+                    "WORKER_ID_OBRIGATORIO",
+                    "erros.workerIdObrigatorio",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+        Duration efetiva = duracaoLease == null
+                || duracaoLease.isNegative()
+                || duracaoLease.isZero()
+                ? Duration.ofMinutes(2)
+                : duracaoLease;
+        UUID token = UUID.randomUUID();
+        Instant leaseAte = Instant.now().plus(efetiva);
+        try {
+            execucao.retomarNaMesmaSessao(workerSeguro, token, leaseAte);
+        } catch (IllegalArgumentException | IllegalStateException exception) {
+            throw transicaoInvalida(exception);
+        }
+        acionar(execucao, handler -> handler.aoRetomarSessao(execucao));
+        auditoriaService.registrar(
+                "EXECUCAO_RETOMADA_NA_MESMA_SESSAO",
+                "EXECUCAO_INTEGRACAO",
+                id,
+                Map.of("workerId", workerSeguro)
+        );
+        return new ExecucaoLease(
+                execucao.getId(),
+                execucao.getEmpresaId(),
+                execucao.getOperacao(),
+                execucao.getProvedorCodigo(),
+                execucao.getPayloadJson(),
+                token,
+                leaseAte,
+                execucao.getTentativas(),
+                execucao.getMaxTentativas()
+        );
+    }
+
     @Transactional
     public ExecucaoIntegracao concluir(
             UUID id,
