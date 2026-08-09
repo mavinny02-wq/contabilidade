@@ -2,17 +2,29 @@
   "schemaVersion": "1.0",
   "projeto": {
     "nome": "Contabilidade",
-    "idioma": "pt-BR"
+    "identificador": "contabilidade",
+    "idioma": "pt-BR",
+    "implantacao": "ON_PREMISE_FIRST"
   },
   "git": {
-    "branchIntegracao": "main"
+    "branchIntegracao": "main",
+    "usuarioFazMerge": true
   },
   "ondas": {
     "slotsOficiais": 5,
     "dependenciaMesmaOndaPermitida": false,
-    "reconciliacaoSerial": true
+    "extrasUrgentesPermitidos": true,
+    "reconciliacaoCompartilhadaSerial": true
   },
   "testes": {
     "somenteTaskExplicita": true
-  }
+  },
+  "validacaoImplementacao": [
+    "compilacao_backend",
+    "build_frontend",
+    "build_worker",
+    "validacao_i18n",
+    "docker_compose_config",
+    "git_diff_check"
+  ]
 }

@@ -1,0 +1,22 @@
+services:
+  keycloak:
+    command:
+      - start
+      - --import-realm
+      - --http-enabled=true
+      - --http-relative-path=/auth
+      - --proxy-headers=xforwarded
+      - --hostname-strict=false
+
+  postgres:
+    ports: []
+
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: onpremise
+
+  frontend:
+    restart: always
+
+  automation-worker:
+    restart: always

@@ -1,7 +1,25 @@
 # Backlog Empresas
 
-## HIST-EMP-001
-Cadastro de empresa/estabelecimento com razão social, nome fantasia, CNPJ, matriz/filial, status, CNAE/regime quando conhecidos, endereço, município/UF, IE, IM e responsável.
+## Baseline
 
-## HIST-EMP-002
-Empresa 360 com abas futuras: Resumo, Certidões, Obrigações, Pendências, Mensagens, Guias, Documentos, Automação e Histórico.
+- Empresa;
+- estabelecimento principal;
+- CNPJ validado;
+- situação;
+- regime;
+- CNAE;
+- endereço;
+- inscrições;
+- responsável;
+- listagem, busca, criação, edição e inativação;
+- Empresa 360.
+
+## Próximos itens
+
+- filiais adicionais;
+- importação CSV/Excel;
+- histórico de alterações cadastrais;
+- enriquecimento por fonte oficial;
+- validações jurisdicionais de IE/IM;
+- responsável por módulo;
+- tags/grupos internos.

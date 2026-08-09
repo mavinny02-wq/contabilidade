@@ -1,0 +1,15 @@
+<configuration>
+  <property name="PADRAO"
+            value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} level=%-5level correlationId=%X{correlationId:-} logger=%logger{36} message=%msg%n"/>
+
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${PADRAO}</pattern>
+      <charset>UTF-8</charset>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>

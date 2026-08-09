@@ -1,5 +1,31 @@
 # Fluxo de trabalho Codex
 
-`baseline → reconciliação → task bounded → PR → review/merge usuário → reconciliação → nova onda`.
+```text
+baseline integrado
+  ↓
+reconciliação documental
+  ↓
+seleção de item
+  ↓
+prompt bounded
+  ↓
+PR
+  ↓
+review/merge pelo usuário
+  ↓
+reconciliação
+  ↓
+próxima onda segura
+```
 
-Tipos separados: análise, decisão, implementação, bug fix, teste, reconciliação e ambiente.
+Tipos separados:
+
+- análise;
+- decisão;
+- implementação;
+- bug fix;
+- teste;
+- reconciliação;
+- ambiente.
+
+Uma onda oficial possui exatamente cinco slots independentes.

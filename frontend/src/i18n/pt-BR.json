@@ -1,0 +1,266 @@
+{
+  "app": {
+    "nome": "Contabilidade",
+    "subtitulo": "Operações fiscais e contábeis",
+    "carregando": "Carregando aplicação...",
+    "sair": "Sair",
+    "usuarioLocal": "Usuário local",
+    "ambienteLocal": "Modo local"
+  },
+  "menu": {
+    "visaoGeral": "Visão geral",
+    "empresas": "Empresas",
+    "documentos": "Documentos",
+    "operacao": "Operação",
+    "execucoes": "Execuções",
+    "intervencoes": "Intervenções",
+    "notificacoes": "Notificações",
+    "administracao": "Administração",
+    "integracoes": "Integrações",
+    "auditoria": "Auditoria",
+    "consoleTecnica": "Console técnica"
+  },
+  "acoes": {
+    "novo": "Novo",
+    "novaEmpresa": "Nova empresa",
+    "salvar": "Salvar",
+    "cancelar": "Cancelar",
+    "editar": "Editar",
+    "buscar": "Buscar",
+    "limpar": "Limpar",
+    "voltar": "Voltar",
+    "abrir": "Abrir",
+    "baixar": "Baixar",
+    "enviar": "Enviar",
+    "atualizar": "Atualizar",
+    "continuar": "Continuar",
+    "resolver": "Resolver",
+    "fechar": "Fechar",
+    "anterior": "Anterior",
+    "proxima": "Próxima",
+    "marcarLida": "Marcar como lida",
+    "ativar": "Ativar",
+    "inativar": "Inativar"
+  },
+  "comum": {
+    "sim": "Sim",
+    "nao": "Não",
+    "naoInformado": "Não informado",
+    "nenhumResultado": "Nenhum resultado encontrado.",
+    "pagina": "Página {{atual}} de {{total}}",
+    "itens": "{{quantidade}} itens",
+    "erroCarregamento": "Não foi possível carregar os dados.",
+    "salvoComSucesso": "Alterações salvas com sucesso.",
+    "emDesenvolvimento": "Módulo ainda não implementado.",
+    "emDesenvolvimentoDescricao": "A estrutura de navegação está pronta, mas este recurso será entregue em uma fase posterior.",
+    "dadosAtualizados": "Dados atualizados.",
+    "data": "Data",
+    "status": "Status",
+    "tipo": "Tipo",
+    "empresa": "Empresa",
+    "detalhes": "Detalhes"
+  },
+  "dashboard": {
+    "titulo": "Visão geral",
+    "descricao": "Acompanhe a base operacional da plataforma.",
+    "empresasAtivas": "Empresas ativas",
+    "documentosAtivos": "Documentos",
+    "execucoesAbertas": "Execuções abertas",
+    "intervencoesPendentes": "Intervenções pendentes",
+    "notificacoesNaoLidas": "Notificações não lidas",
+    "proximosPassos": "Próximos passos",
+    "proximosPassosDescricao": "A fundação Common está preparada para receber o Centro de Certidões."
+  },
+  "empresas": {
+    "titulo": "Empresas",
+    "descricao": "Cadastre empresas, CNPJs e dados fiscais básicos.",
+    "buscarPlaceholder": "Razão social, nome fantasia ou CNPJ",
+    "listaVazia": "Nenhuma empresa cadastrada.",
+    "listaVaziaDescricao": "Cadastre a primeira empresa para habilitar os próximos módulos.",
+    "cadastroTitulo": "Cadastrar empresa",
+    "edicaoTitulo": "Editar empresa",
+    "detalheTitulo": "Empresa 360",
+    "campos": {
+      "razaoSocial": "Razão social",
+      "nomeFantasia": "Nome fantasia",
+      "cnpj": "CNPJ",
+      "status": "Situação",
+      "regimeTributario": "Regime tributário",
+      "cnaePrincipal": "CNAE principal",
+      "inscricaoEstadual": "Inscrição estadual",
+      "inscricaoMunicipal": "Inscrição municipal",
+      "logradouro": "Logradouro",
+      "numero": "Número",
+      "complemento": "Complemento",
+      "bairro": "Bairro",
+      "municipio": "Município",
+      "uf": "UF",
+      "cep": "CEP",
+      "responsavelNome": "Responsável interno",
+      "responsavelEmail": "E-mail do responsável",
+      "ativa": "Empresa ativa",
+      "atualizadoEm": "Atualizado em"
+    },
+    "abas": {
+      "resumo": "Resumo",
+      "certidoes": "Certidões",
+      "obrigacoes": "Obrigações",
+      "pendencias": "Pendências",
+      "mensagens": "Mensagens",
+      "guias": "Guias",
+      "documentos": "Documentos",
+      "automacao": "Automação",
+      "historico": "Histórico"
+    },
+    "status": {
+      "ATIVA": "Ativa",
+      "INATIVA": "Inativa",
+      "SUSPENSA": "Suspensa",
+      "BAIXADA": "Baixada",
+      "DESCONHECIDA": "Desconhecida"
+    },
+    "regimes": {
+      "MEI": "MEI",
+      "SIMPLES_NACIONAL": "Simples Nacional",
+      "LUCRO_PRESUMIDO": "Lucro Presumido",
+      "LUCRO_REAL": "Lucro Real",
+      "OUTRO": "Outro",
+      "NAO_INFORMADO": "Não informado"
+    },
+    "mensagens": {
+      "criada": "Empresa cadastrada com sucesso.",
+      "atualizada": "Empresa atualizada com sucesso.",
+      "inativada": "Empresa inativada.",
+      "ativada": "Empresa ativada."
+    }
+  },
+  "documentos": {
+    "titulo": "Documentos",
+    "descricao": "Armazene documentos e evidências vinculados a uma empresa.",
+    "selecionarEmpresa": "Selecione uma empresa",
+    "selecionarArquivo": "Selecione um arquivo",
+    "tipoDocumento": "Classificação",
+    "emitidoEm": "Emitido em",
+    "validoAte": "Válido até",
+    "enviarTitulo": "Enviar documento",
+    "listaVazia": "Nenhum documento encontrado para esta empresa.",
+    "mensagemEnviado": "Documento armazenado com sucesso.",
+    "tamanho": "Tamanho",
+    "origem": "Origem",
+    "tipos": {
+      "OUTRO": "Outro",
+      "CERTIDAO": "Certidão",
+      "GUIA": "Guia",
+      "COMPROVANTE": "Comprovante",
+      "DECLARACAO": "Declaração",
+      "PROTOCOLO": "Protocolo"
+    }
+  },
+  "execucoes": {
+    "titulo": "Execuções",
+    "descricao": "Acompanhe jobs e integrações assíncronas.",
+    "listaVazia": "Nenhuma execução foi criada.",
+    "operacao": "Operação",
+    "provedor": "Provider",
+    "tentativas": "Tentativas",
+    "iniciadaEm": "Iniciada em",
+    "finalizadaEm": "Finalizada em",
+    "status": {
+      "NA_FILA": "Na fila",
+      "EXECUTANDO": "Executando",
+      "RETRY_AGENDADO": "Nova tentativa agendada",
+      "AGUARDANDO_HUMANO": "Aguardando intervenção",
+      "AGUARDANDO_CAPTCHA": "Aguardando CAPTCHA",
+      "AGUARDANDO_AUTENTICACAO": "Aguardando autenticação",
+      "SUCESSO": "Concluída",
+      "PARCIAL": "Parcial",
+      "FALHA": "Falha",
+      "FONTE_INDISPONIVEL": "Fonte indisponível",
+      "CANCELADO": "Cancelada"
+    }
+  },
+  "intervencoes": {
+    "titulo": "Intervenções",
+    "descricao": "Ações humanas necessárias para continuar uma automação.",
+    "listaVazia": "Não há intervenções pendentes.",
+    "resolverConfirmacao": "Confirme apenas depois de concluir a etapa solicitada no portal.",
+    "mensagemResolvida": "Intervenção marcada como resolvida.",
+    "tipos": {
+      "CAPTCHA": "CAPTCHA",
+      "AUTENTICACAO": "Autenticação",
+      "MFA": "Autenticação multifator",
+      "CERTIFICADO": "Certificado digital",
+      "CONFIRMACAO": "Confirmação",
+      "PORTAL_ALTERADO": "Portal alterado",
+      "OUTRA": "Outra"
+    }
+  },
+  "notificacoes": {
+    "titulo": "Notificações",
+    "descricao": "Avisos e ações necessárias da plataforma.",
+    "listaVazia": "Não há notificações.",
+    "tipos": {
+      "INFORMACAO": "Informação",
+      "AVISO": "Aviso",
+      "ACAO_NECESSARIA": "Ação necessária",
+      "ERRO": "Erro"
+    }
+  },
+  "integracoes": {
+    "titulo": "Integrações",
+    "descricao": "Configure providers sem expor segredos no frontend.",
+    "listaVazia": "Nenhum provider cadastrado.",
+    "habilitado": "Habilitado",
+    "prioridade": "Prioridade",
+    "timeout": "Timeout (s)",
+    "retries": "Retries",
+    "baseUrl": "URL base",
+    "referenciaSegredo": "Referência do segredo",
+    "mensagemAtualizada": "Provider atualizado.",
+    "tipos": {
+      "API_OFICIAL": "API oficial",
+      "API_COMERCIAL": "API comercial",
+      "PORTAL_AUTOMATIZADO": "Portal automatizado",
+      "PORTAL_ASSISTIDO": "Portal assistido",
+      "MANUAL": "Manual"
+    }
+  },
+  "consoleTecnica": {
+    "titulo": "Console técnica",
+    "descricao": "Saúde da aplicação, banco, storage e filas.",
+    "observadoEm": "Observado em",
+    "banco": "PostgreSQL",
+    "storage": "Documentos",
+    "saudavel": "Saudável",
+    "degradado": "Degradado",
+    "indisponivel": "Indisponível",
+    "falhas": "Execuções com falha",
+    "livreBytes": "Espaço disponível: {{valor}}"
+  },
+  "auditoria": {
+    "titulo": "Auditoria",
+    "descricao": "Eventos relevantes e rastreáveis da aplicação.",
+    "listaVazia": "Nenhum evento de auditoria registrado.",
+    "acao": "Ação",
+    "recurso": "Recurso",
+    "ator": "Ator",
+    "correlationId": "Correlation ID"
+  },
+  "busca": {
+    "placeholder": "Buscar empresa ou CNPJ",
+    "semResultados": "Nenhum resultado.",
+    "digiteMais": "Digite pelo menos dois caracteres."
+  },
+  "auth": {
+    "redirecionando": "Redirecionando para autenticação...",
+    "erro": "Não foi possível iniciar a autenticação.",
+    "semPermissao": "Você não possui permissão para acessar este recurso."
+  },
+  "erros": {
+    "titulo": "Não foi possível concluir a operação",
+    "inesperado": "Ocorreu um erro inesperado.",
+    "fonteIndisponivel": "A fonte externa está indisponível.",
+    "naoEncontrado": "Página não encontrada.",
+    "correlationId": "Código de rastreio: {{valor}}"
+  }
+}

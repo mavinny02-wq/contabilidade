@@ -1,0 +1,8 @@
+app:
+  environment: ON_PREMISE
+  security:
+    enabled: true
+
+springdoc:
+  swagger-ui:
+    enabled: false

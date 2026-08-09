@@ -1,7 +1,16 @@
 # i18n pt-BR
 
-Mesmo sendo somente português, usar chave para todo texto visível.
+Todo texto visível usa chaves i18n mesmo com apenas um idioma.
 
-Exemplos: `menu.empresas`, `empresas.lista.titulo`, `certidoes.status.regular`, `execucoes.status.aguardandoHumano`, `erros.fonteIndisponivel`.
+Bundle inicial: `frontend/src/i18n/pt-BR.json`.
 
-Bundle inicial único: `pt-BR`. Não manter EN/DE sem requisito.
+Exemplos:
+
+```text
+menu.empresas
+empresas.campos.razaoSocial
+execucoes.status.aguardandoHumano
+erros.fonteIndisponivel
+```
+
+O script `npm run locale:validate` verifica chaves literais usadas por `t(...)`.

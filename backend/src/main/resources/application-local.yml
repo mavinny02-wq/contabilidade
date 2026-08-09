@@ -1,0 +1,8 @@
+app:
+  environment: LOCAL
+  security:
+    enabled: false
+
+springdoc:
+  swagger-ui:
+    enabled: true

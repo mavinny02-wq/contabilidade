@@ -1,10 +1,15 @@
 # Segurança
 
-Segredos, certificados, tokens, documentos fiscais e dados pessoais são sensíveis.
+- autenticação Keycloak/OIDC;
+- autorização backend pelo Catálogo de Permissões;
+- modo sem autenticação apenas para desenvolvimento;
+- segredos fora do frontend;
+- documentos autorizados antes do download;
+- logs com correlationId e sem payload sensível;
+- token interno do worker;
+- CORS configurável;
+- realm de desenvolvimento separado;
+- HTTPS obrigatório na instalação real;
+- nenhum bypass de CAPTCHA.
 
-- secrets fora de tabelas em plaintext;
-- autorização backend antes de dados sensíveis;
-- logs com redaction;
-- auditoria de comandos/downloads;
-- sem CAPTCHA bypass;
-- sem decisão fiscal autoritativa baseada apenas em IA.
+O arquivo `.env` deve ter permissão restrita e não ser commitado.

@@ -1,0 +1,29 @@
+INSERT INTO definicoes_provedor (
+    id, versao, codigo, nome, tipo, habilitado, prioridade,
+    timeout_segundos, max_retries, base_url, referencia_segredo, criado_em, atualizado_em
+) VALUES
+(
+    '10000000-0000-0000-0000-000000000001', 0,
+    'FEDERAL_PORTAL', 'Portal Federal RFB/PGFN', 'PORTAL_ASSISTIDO',
+    FALSE, 10, 120, 1, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+),
+(
+    '10000000-0000-0000-0000-000000000002', 0,
+    'SEFAZ_SP_PORTAL', 'Portal SEFAZ-SP', 'PORTAL_ASSISTIDO',
+    FALSE, 20, 120, 1, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+),
+(
+    '10000000-0000-0000-0000-000000000003', 0,
+    'PGE_SP_PORTAL', 'Portal PGE-SP', 'PORTAL_ASSISTIDO',
+    FALSE, 30, 120, 1, NULL, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+),
+(
+    '10000000-0000-0000-0000-000000000004', 0,
+    'SERPRO', 'Serpro', 'API_OFICIAL',
+    FALSE, 40, 60, 2, NULL, 'secret://serpro', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+),
+(
+    '10000000-0000-0000-0000-000000000005', 0,
+    'INFOSIMPLES', 'InfoSimples', 'API_COMERCIAL',
+    FALSE, 50, 90, 2, NULL, 'secret://infosimples', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+);

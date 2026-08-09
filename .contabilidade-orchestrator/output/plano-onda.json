@@ -1,16 +1,26 @@
 {
   "schemaVersion": "1.0",
-  "fase": "BOOTSTRAP_FUNDACAO",
   "baseline": {
     "branch": "main",
     "commit": null
   },
-  "gateSerial": "HIST-FND-001",
+  "fase": "BASELINE_0_1_AGUARDANDO_INTEGRACAO",
+  "gateSerial": {
+    "itemId": "HIST-FND-001",
+    "descricao": "Extrair, validar, commitar e integrar a baseline 0.1"
+  },
   "slotsOficiais": [],
   "decisoesAbertas": [
-    "DEC-001",
     "DEC-002",
     "DEC-003",
-    "AMB-001"
+    "DEC-004"
+  ],
+  "provasPendentes": [
+    "BACKEND_TESTES_PENDENTES",
+    "POSTGRESQL_NATIVO_PENDENTE",
+    "FRONTEND_TESTES_FOCADOS_PENDENTES",
+    "PLAYWRIGHT_TESTES_PENDENTES",
+    "E2E_PENDENTE",
+    "BACKUP_RESTORE_PENDENTE"
   ]
 }

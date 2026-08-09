@@ -1,0 +1,271 @@
+contabilidade-esqueleto-onpremise/
+├── .contabilidade-orchestrator
+│   ├── output
+│   │   └── plano-onda.json
+│   ├── templates
+│   │   ├── prompt-analise.md
+│   │   ├── prompt-decisao.md
+│   │   ├── prompt-implementacao.md
+│   │   └── prompt-reconciliacao.md
+│   ├── config.json
+│   └── README.md
+├── .github
+│   └── workflows
+│       └── build.yml
+├── automation-worker
+│   ├── src
+│   │   ├── BrowserRuntime.ts
+│   │   ├── config.ts
+│   │   ├── contracts.ts
+│   │   ├── FluxoRegistry.ts
+│   │   ├── heartbeat.ts
+│   │   ├── index.ts
+│   │   └── server.ts
+│   ├── .dockerignore
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── README.md
+│   └── tsconfig.json
+├── backend
+│   ├── src
+│   │   └── main
+│   │       ├── java
+│   │       │   └── br
+│   │       │       └── com
+│   │       │           └── contabilidade
+│   │       │               ├── common
+│   │       │               │   ├── audit
+│   │       │               │   │   ├── AuditoriaController.java
+│   │       │               │   │   ├── AuditoriaService.java
+│   │       │               │   │   ├── EventoAuditoria.java
+│   │       │               │   │   └── EventoAuditoriaRepository.java
+│   │       │               │   ├── document
+│   │       │               │   │   ├── ArmazenamentoDocumento.java
+│   │       │               │   │   ├── ArmazenamentoLocalDocumento.java
+│   │       │               │   │   ├── Documento.java
+│   │       │               │   │   ├── DocumentoController.java
+│   │       │               │   │   ├── DocumentoRepository.java
+│   │       │               │   │   ├── DocumentoService.java
+│   │       │               │   │   └── OrigemDocumento.java
+│   │       │               │   ├── error
+│   │       │               │   │   ├── ApiError.java
+│   │       │               │   │   ├── ErroCampo.java
+│   │       │               │   │   ├── ExcecaoNegocio.java
+│   │       │               │   │   ├── RecursoNaoEncontradoException.java
+│   │       │               │   │   └── TratadorGlobalExcecoes.java
+│   │       │               │   ├── execution
+│   │       │               │   │   ├── ExecucaoController.java
+│   │       │               │   │   ├── ExecucaoIntegracao.java
+│   │       │               │   │   ├── ExecucaoIntegracaoRepository.java
+│   │       │               │   │   └── StatusExecucao.java
+│   │       │               │   ├── info
+│   │       │               │   │   └── InfoAplicacaoController.java
+│   │       │               │   ├── integration
+│   │       │               │   │   ├── DefinicaoProvedor.java
+│   │       │               │   │   ├── DefinicaoProvedorController.java
+│   │       │               │   │   ├── DefinicaoProvedorRepository.java
+│   │       │               │   │   ├── ProvedorIntegracao.java
+│   │       │               │   │   ├── RequisicaoIntegracao.java
+│   │       │               │   │   ├── ResultadoIntegracao.java
+│   │       │               │   │   ├── RoteadorProvedor.java
+│   │       │               │   │   └── TipoProvedor.java
+│   │       │               │   ├── intervention
+│   │       │               │   │   ├── IntervencaoController.java
+│   │       │               │   │   ├── SolicitacaoIntervencao.java
+│   │       │               │   │   ├── SolicitacaoIntervencaoRepository.java
+│   │       │               │   │   ├── StatusIntervencao.java
+│   │       │               │   │   └── TipoIntervencao.java
+│   │       │               │   ├── notification
+│   │       │               │   │   ├── Notificacao.java
+│   │       │               │   │   ├── NotificacaoController.java
+│   │       │               │   │   ├── NotificacaoRepository.java
+│   │       │               │   │   ├── NotificacaoService.java
+│   │       │               │   │   └── TipoNotificacao.java
+│   │       │               │   ├── persistence
+│   │       │               │   │   └── EntidadeBase.java
+│   │       │               │   ├── search
+│   │       │               │   │   └── BuscaGlobalController.java
+│   │       │               │   ├── security
+│   │       │               │   │   ├── AppSecurityProperties.java
+│   │       │               │   │   ├── JwtAuthoritiesConverter.java
+│   │       │               │   │   ├── Papeis.java
+│   │       │               │   │   ├── PermissaoService.java
+│   │       │               │   │   ├── Permissoes.java
+│   │       │               │   │   ├── SecurityConfig.java
+│   │       │               │   │   └── UsuarioAtualController.java
+│   │       │               │   ├── technical
+│   │       │               │   │   └── ConsoleTecnicaController.java
+│   │       │               │   ├── web
+│   │       │               │   │   └── CorrelationIdFilter.java
+│   │       │               │   └── worker
+│   │       │               │       ├── WorkerHeartbeat.java
+│   │       │               │       ├── WorkerHeartbeatRepository.java
+│   │       │               │       └── WorkerInternalController.java
+│   │       │               ├── dashboard
+│   │       │               │   └── DashboardController.java
+│   │       │               └── ContabilidadeApplication.java
+│   │       └── resources
+│   │           ├── db
+│   │           │   └── migration
+│   │           │       ├── V1__baseline_common.sql
+│   │           │       └── V2__seed_provedores.sql
+│   │           ├── application-local.yml
+│   │           ├── application-onpremise.yml
+│   │           ├── application.yml
+│   │           ├── banner.txt
+│   │           ├── logback-spring.xml
+│   │           └── messages_pt_BR.properties
+│   ├── .dockerignore
+│   ├── Dockerfile
+│   └── pom.xml
+├── docs
+│   ├── ai
+│   │   ├── FLUXO_TRABALHO_CODEX.md
+│   │   ├── PADROES_PROMPTS.md
+│   │   └── REGRAS_TASKS_CODEX.md
+│   ├── arquitetura
+│   │   ├── ARQUITETURA_BASE.md
+│   │   ├── ARQUITETURA_INTEGRACOES.md
+│   │   ├── AUTOMACAO_PLAYWRIGHT.md
+│   │   ├── DOCUMENTOS_E_EVIDENCIAS.md
+│   │   ├── I18N_PTBR.md
+│   │   ├── INTERVENCAO_HUMANA.md
+│   │   ├── MODELO_DOMINIO.md
+│   │   ├── MODULOS_COMMON.md
+│   │   ├── OBSERVABILIDADE.md
+│   │   └── SEGURANCA.md
+│   ├── decisoes
+│   │   ├── DEC-DEP-001_ON_PREMISE_FIRST.md
+│   │   └── INDICE_DECISOES.md
+│   ├── discovery
+│   │   └── PLANO_OBSERVACAO_TRIAL.md
+│   ├── historico
+│   │   └── INDICE.md
+│   ├── operacao
+│   │   ├── ATUALIZACAO_E_ROLLBACK.md
+│   │   ├── BACKUP_E_RESTAURACAO.md
+│   │   ├── INSTALACAO_ON_PREMISE.md
+│   │   └── RUNBOOK.md
+│   ├── roadmap
+│   │   ├── BACKLOG_ADMINISTRACAO.md
+│   │   ├── BACKLOG_AUTOMACAO.md
+│   │   ├── BACKLOG_CERTIDOES.md
+│   │   ├── BACKLOG_COMMON.md
+│   │   ├── BACKLOG_EMPRESAS.md
+│   │   ├── BACKLOG_INTEGRACOES.md
+│   │   ├── BACKLOG_MODULOS_FUTUROS.md
+│   │   ├── BOARD_ORQUESTRACAO.md
+│   │   ├── HISTORICO_ENTREGAS.md
+│   │   ├── REGISTRO_ITENS_ROADMAP.md
+│   │   └── ROADMAP_PRODUTO.md
+│   ├── visao
+│   │   ├── BENCHMARK_VERI_CONTABILIZEI.md
+│   │   ├── ESCOPO.md
+│   │   └── VISAO_PRODUTO.md
+│   ├── GOVERNANCA_DOCUMENTACAO.md
+│   └── INDICE_DOCUMENTACAO_ATIVA.md
+├── frontend
+│   ├── docker-entrypoint.d
+│   │   └── 40-runtime-config.sh
+│   ├── public
+│   │   └── config.js
+│   ├── scripts
+│   │   └── validate-locale.mjs
+│   ├── src
+│   │   ├── api
+│   │   │   ├── http.ts
+│   │   │   └── types.ts
+│   │   ├── app
+│   │   │   ├── AppShell.tsx
+│   │   │   ├── GlobalSearch.tsx
+│   │   │   └── router.tsx
+│   │   ├── auth
+│   │   │   ├── AuthProvider.tsx
+│   │   │   ├── PermissionRoute.tsx
+│   │   │   ├── permissoes.ts
+│   │   │   ├── ProtectedRoute.tsx
+│   │   │   └── types.ts
+│   │   ├── components
+│   │   │   ├── Alert.tsx
+│   │   │   ├── Button.tsx
+│   │   │   ├── Card.tsx
+│   │   │   ├── EmptyState.tsx
+│   │   │   ├── LoadingScreen.tsx
+│   │   │   ├── Modal.tsx
+│   │   │   ├── ModulePending.tsx
+│   │   │   ├── PageHeader.tsx
+│   │   │   ├── Pagination.tsx
+│   │   │   └── StatusBadge.tsx
+│   │   ├── config
+│   │   │   └── runtime.ts
+│   │   ├── features
+│   │   │   └── empresas
+│   │   │       └── EmpresaFormModal.tsx
+│   │   ├── i18n
+│   │   │   ├── index.ts
+│   │   │   └── pt-BR.json
+│   │   ├── pages
+│   │   │   ├── AuditoriaPage.tsx
+│   │   │   ├── ConsoleTecnicaPage.tsx
+│   │   │   ├── DashboardPage.tsx
+│   │   │   ├── DocumentosPage.tsx
+│   │   │   ├── EmpresaDetalhePage.tsx
+│   │   │   ├── EmpresasPage.tsx
+│   │   │   ├── ErrorPage.tsx
+│   │   │   ├── ExecucoesPage.tsx
+│   │   │   ├── IntegracoesPage.tsx
+│   │   │   ├── IntervencoesPage.tsx
+│   │   │   └── NotificacoesPage.tsx
+│   │   ├── styles
+│   │   │   └── global.css
+│   │   ├── App.tsx
+│   │   ├── main.tsx
+│   │   └── vite-env.d.ts
+│   ├── .dockerignore
+│   ├── Dockerfile
+│   ├── index.html
+│   ├── nginx.conf
+│   ├── package.json
+│   ├── tsconfig.app.json
+│   ├── tsconfig.app.tsbuildinfo
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   ├── tsconfig.node.tsbuildinfo
+│   ├── vite.config.d.ts
+│   ├── vite.config.js
+│   └── vite.config.ts
+├── infra
+│   ├── keycloak
+│   │   ├── realm-contabilidade-dev.json
+│   │   └── realm-contabilidade.json
+│   └── postgres
+│       └── init
+│           └── 01-create-keycloak-db.sh
+├── prompts
+│   └── PROMPT_01_RECONCILIAR_BASELINE.md
+├── scripts
+│   ├── backup.ps1
+│   ├── backup.sh
+│   ├── iniciar-dev.ps1
+│   ├── iniciar-onpremise.ps1
+│   ├── iniciar.ps1
+│   ├── iniciar.sh
+│   ├── logs.ps1
+│   ├── parar.ps1
+│   ├── status.ps1
+│   └── validar.ps1
+├── .editorconfig
+├── .env.example
+├── .gitattributes
+├── .gitignore
+├── AGENTS.md
+├── ARVORE_PROJETO.txt
+├── CHANGELOG.md
+├── compose.dev.yaml
+├── compose.onpremise.yaml
+├── compose.yaml
+├── INSTRUCOES_INTEGRACAO.md
+├── LICENCAS_DEPENDENCIAS.md
+├── README.md
+├── VALIDACAO.md
+└── VERSION

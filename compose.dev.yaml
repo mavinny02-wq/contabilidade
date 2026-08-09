@@ -1,0 +1,19 @@
+services:
+  postgres:
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      APP_SECURITY_ENABLED: "false"
+    ports:
+      - "8080:8080"
+
+  frontend:
+    environment:
+      APP_AUTH_ENABLED: "false"
+
+  automation-worker:
+    ports:
+      - "3001:3001"

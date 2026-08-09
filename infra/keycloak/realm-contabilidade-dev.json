@@ -1,0 +1,86 @@
+{
+  "realm": "contabilidade",
+  "enabled": true,
+  "displayName": "Contabilidade",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": true,
+  "rememberMe": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "sslRequired": "none",
+  "roles": {
+    "realm": [
+      {
+        "name": "contabilidade_admin",
+        "description": "Acesso administrativo completo"
+      },
+      {
+        "name": "contabilidade_operador",
+        "description": "Operação fiscal e documental"
+      },
+      {
+        "name": "contabilidade_leitor",
+        "description": "Consulta sem alterações"
+      },
+      {
+        "name": "contabilidade_tecnico",
+        "description": "Operação técnica e integrações"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "contabilidade-frontend",
+      "name": "Contabilidade Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:8088/*",
+        "http://localhost:5173/*",
+        "http://contabilidade.local/*",
+        "https://contabilidade.local/*"
+      ],
+      "webOrigins": [
+        "http://localhost:8088",
+        "http://localhost:5173",
+        "http://contabilidade.local",
+        "https://contabilidade.local"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "+"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "email"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin@contabilidade.local",
+      "email": "admin@contabilidade.local",
+      "firstName": "Administrador",
+      "lastName": "Local",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": [
+        "contabilidade_admin"
+      ],
+      "credentials": [
+        {
+          "type": "password",
+          "value": "Admin123!",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

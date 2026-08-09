@@ -1,3 +1,11 @@
 # Orquestrador Contabilidade
 
-Contrato de ondas no padrão PRIMA: 5 slots independentes, sem merge automático, testes separados e reconciliação serial.
+Contrato humano/máquina para ondas no padrão PRIMA.
+
+- cinco slots oficiais;
+- mesmo baseline;
+- sem dependência dentro da onda;
+- propriedade explícita;
+- testes separados;
+- reconciliação serial;
+- sem merge ou seleção automática.

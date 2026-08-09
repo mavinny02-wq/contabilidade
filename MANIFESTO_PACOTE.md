@@ -1,33 +1,228 @@
-# Manifesto
+# Manifesto do pacote
 
-- `.contabilidade-orchestrator/README.md`
-- `.contabilidade-orchestrator/config.json`
-- `.contabilidade-orchestrator/output/plano-onda.json`
-- `.gitignore`
-- `AGENTS.md`
-- `README.md`
-- `docs/GOVERNANCA_DOCUMENTACAO.md`
-- `docs/INDICE_DOCUMENTACAO_ATIVA.md`
-- `docs/ai/FLUXO_TRABALHO_CODEX.md`
-- `docs/ai/REGRAS_TASKS_CODEX.md`
-- `docs/arquitetura/ARQUITETURA_BASE.md`
-- `docs/arquitetura/ARQUITETURA_INTEGRACOES.md`
-- `docs/arquitetura/AUTOMACAO_PLAYWRIGHT.md`
-- `docs/arquitetura/I18N_PTBR.md`
-- `docs/arquitetura/INTERVENCAO_HUMANA.md`
-- `docs/arquitetura/MODELO_DOMINIO.md`
-- `docs/arquitetura/MODULOS_COMMON.md`
-- `docs/arquitetura/SEGURANCA.md`
-- `docs/roadmap/BACKLOG_AUTOMACAO.md`
-- `docs/roadmap/BACKLOG_CERTIDOES.md`
-- `docs/roadmap/BACKLOG_COMMON.md`
-- `docs/roadmap/BACKLOG_EMPRESAS.md`
-- `docs/roadmap/BACKLOG_MODULOS_FUTUROS.md`
-- `docs/roadmap/BOARD_ORQUESTRACAO.md`
-- `docs/roadmap/HISTORICO_ENTREGAS.md`
-- `docs/roadmap/REGISTRO_ITENS_ROADMAP.md`
-- `docs/roadmap/ROADMAP_PRODUTO.md`
-- `docs/visao/BENCHMARK_VERI_CONTABILIZEI.md`
-- `docs/visao/CATALOGO_MODULOS_FUNCIONAIS.md`
-- `docs/visao/VISAO_PRODUTO.md`
-- `prompts/PROMPT_00_BOOTSTRAP_COMMON.md`
+**Produto:** Contabilidade
+**Versão:** 0.1.0
+**Modelo:** on-premise first / cloud-compatible
+**Idioma:** pt-BR com i18n obrigatório
+**Gerado em UTC:** 2026-08-09T04:18:23.648630+00:00
+**Validação obrigatória:** CONSULTE_VALIDACAO_MD
+
+## Conteúdo
+
+- backend Spring Boot / PostgreSQL / Flyway / Keycloak;
+- frontend React / TypeScript / i18n pt-BR;
+- cadastro funcional de empresas e Empresa 360;
+- documentos, auditoria, notificações, execuções, providers e intervenções;
+- worker Playwright isolado sem fluxos reais;
+- Docker Compose e scripts on-premise;
+- documentação, roadmap e orquestração.
+
+## Arquivos
+
+- `.contabilidade-orchestrator/README.md` — 272 bytes
+- `.contabilidade-orchestrator/config.json` — 648 bytes
+- `.contabilidade-orchestrator/output/plano-onda.json` — 578 bytes
+- `.contabilidade-orchestrator/templates/prompt-analise.md` — 286 bytes
+- `.contabilidade-orchestrator/templates/prompt-decisao.md` — 261 bytes
+- `.contabilidade-orchestrator/templates/prompt-implementacao.md` — 594 bytes
+- `.contabilidade-orchestrator/templates/prompt-reconciliacao.md` — 386 bytes
+- `.editorconfig` — 261 bytes
+- `.env.example` — 511 bytes
+- `.gitattributes` — 98 bytes
+- `.github/workflows/build.yml` — 1302 bytes
+- `.gitignore` — 296 bytes
+- `AGENTS.md` — 3133 bytes
+- `ARVORE_PROJETO.txt` — 12489 bytes
+- `CHANGELOG.md` — 504 bytes
+- `INSTRUCOES_INTEGRACAO.md` — 1207 bytes
+- `LICENCAS_DEPENDENCIAS.md` — 570 bytes
+- `README.md` — 2267 bytes
+- `VALIDACAO.md` — 19185 bytes
+- `VERSION` — 6 bytes
+- `automation-worker/.dockerignore` — 32 bytes
+- `automation-worker/Dockerfile` — 384 bytes
+- `automation-worker/README.md` — 393 bytes
+- `automation-worker/package.json` — 488 bytes
+- `automation-worker/src/BrowserRuntime.ts` — 964 bytes
+- `automation-worker/src/FluxoRegistry.ts` — 505 bytes
+- `automation-worker/src/config.ts` — 776 bytes
+- `automation-worker/src/contracts.ts` — 556 bytes
+- `automation-worker/src/heartbeat.ts` — 613 bytes
+- `automation-worker/src/index.ts` — 1148 bytes
+- `automation-worker/src/server.ts` — 2880 bytes
+- `automation-worker/tsconfig.json` — 345 bytes
+- `backend/.dockerignore` — 23 bytes
+- `backend/Dockerfile` — 489 bytes
+- `backend/pom.xml` — 3389 bytes
+- `backend/src/main/java/br/com/contabilidade/ContabilidadeApplication.java` — 423 bytes
+- `backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaController.java` — 1968 bytes
+- `backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java` — 1880 bytes
+- `backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoria.java` — 1693 bytes
+- `backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoriaRepository.java` — 392 bytes
+- `backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoDocumento.java` — 315 bytes
+- `backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoLocalDocumento.java` — 3359 bytes
+- `backend/src/main/java/br/com/contabilidade/common/document/Documento.java` — 2832 bytes
+- `backend/src/main/java/br/com/contabilidade/common/document/DocumentoController.java` — 2871 bytes
+- `backend/src/main/java/br/com/contabilidade/common/document/DocumentoRepository.java` — 626 bytes
+- `backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java` — 9132 bytes
+- `backend/src/main/java/br/com/contabilidade/common/document/OrigemDocumento.java` — 187 bytes
+- `backend/src/main/java/br/com/contabilidade/common/error/ApiError.java` — 332 bytes
+- `backend/src/main/java/br/com/contabilidade/common/error/ErroCampo.java` — 103 bytes
+- `backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java` — 913 bytes
+- `backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java` — 302 bytes
+- `backend/src/main/java/br/com/contabilidade/common/error/TratadorGlobalExcecoes.java` — 4911 bytes
+- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoController.java` — 2563 bytes
+- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java` — 4006 bytes
+- `backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracaoRepository.java` — 498 bytes
+- `backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java` — 279 bytes
+- `backend/src/main/java/br/com/contabilidade/common/info/InfoAplicacaoController.java` — 891 bytes
+- `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java` — 2309 bytes
+- `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorController.java` — 3987 bytes
+- `backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorRepository.java` — 413 bytes
+- `backend/src/main/java/br/com/contabilidade/common/integration/ProvedorIntegracao.java` — 219 bytes
+- `backend/src/main/java/br/com/contabilidade/common/integration/RequisicaoIntegracao.java` — 226 bytes
+- `backend/src/main/java/br/com/contabilidade/common/integration/ResultadoIntegracao.java` — 349 bytes
+- `backend/src/main/java/br/com/contabilidade/common/integration/RoteadorProvedor.java` — 966 bytes
+- `backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java` — 173 bytes
+- `backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoController.java` — 3845 bytes
+- `backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencao.java` — 2125 bytes
+- `backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencaoRepository.java` — 591 bytes
+- `backend/src/main/java/br/com/contabilidade/common/intervention/StatusIntervencao.java` — 162 bytes
+- `backend/src/main/java/br/com/contabilidade/common/intervention/TipoIntervencao.java` — 188 bytes
+- `backend/src/main/java/br/com/contabilidade/common/notification/Notificacao.java` — 1935 bytes
+- `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoController.java` — 1416 bytes
+- `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoRepository.java` — 420 bytes
+- `backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java` — 2111 bytes
+- `backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java` — 140 bytes
+- `backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java` — 1377 bytes
+- `backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java` — 1809 bytes
+- `backend/src/main/java/br/com/contabilidade/common/security/AppSecurityProperties.java` — 274 bytes
+- `backend/src/main/java/br/com/contabilidade/common/security/JwtAuthoritiesConverter.java` — 2711 bytes
+- `backend/src/main/java/br/com/contabilidade/common/security/Papeis.java` — 332 bytes
+- `backend/src/main/java/br/com/contabilidade/common/security/PermissaoService.java` — 4664 bytes
+- `backend/src/main/java/br/com/contabilidade/common/security/Permissoes.java` — 1000 bytes
+- `backend/src/main/java/br/com/contabilidade/common/security/SecurityConfig.java` — 3998 bytes
+- `backend/src/main/java/br/com/contabilidade/common/security/UsuarioAtualController.java` — 1834 bytes
+- `backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java` — 3961 bytes
+- `backend/src/main/java/br/com/contabilidade/common/web/CorrelationIdFilter.java` — 1569 bytes
+- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeat.java` — 1341 bytes
+- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatRepository.java` — 314 bytes
+- `backend/src/main/java/br/com/contabilidade/common/worker/WorkerInternalController.java` — 2350 bytes
+- `backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java` — 2616 bytes
+- `backend/src/main/resources/application-local.yml` — 101 bytes
+- `backend/src/main/resources/application-onpremise.yml` — 106 bytes
+- `backend/src/main/resources/application.yml` — 2152 bytes
+- `backend/src/main/resources/banner.txt` — 307 bytes
+- `backend/src/main/resources/db/migration/V1__baseline_common.sql` — 5730 bytes
+- `backend/src/main/resources/db/migration/V2__seed_provedores.sql` — 1121 bytes
+- `backend/src/main/resources/logback-spring.xml` — 446 bytes
+- `backend/src/main/resources/messages_pt_BR.properties` — 1527 bytes
+- `compose.dev.yaml` — 318 bytes
+- `compose.onpremise.yaml` — 373 bytes
+- `compose.yaml` — 4196 bytes
+- `docs/GOVERNANCA_DOCUMENTACAO.md` — 1018 bytes
+- `docs/INDICE_DOCUMENTACAO_ATIVA.md` — 2152 bytes
+- `docs/ai/FLUXO_TRABALHO_CODEX.md` — 403 bytes
+- `docs/ai/PADROES_PROMPTS.md` — 543 bytes
+- `docs/ai/REGRAS_TASKS_CODEX.md` — 649 bytes
+- `docs/arquitetura/ARQUITETURA_BASE.md` — 755 bytes
+- `docs/arquitetura/ARQUITETURA_INTEGRACOES.md` — 469 bytes
+- `docs/arquitetura/AUTOMACAO_PLAYWRIGHT.md` — 500 bytes
+- `docs/arquitetura/DOCUMENTOS_E_EVIDENCIAS.md` — 383 bytes
+- `docs/arquitetura/I18N_PTBR.md` — 333 bytes
+- `docs/arquitetura/INTERVENCAO_HUMANA.md` — 414 bytes
+- `docs/arquitetura/MODELO_DOMINIO.md` — 699 bytes
+- `docs/arquitetura/MODULOS_COMMON.md` — 750 bytes
+- `docs/arquitetura/OBSERVABILIDADE.md` — 387 bytes
+- `docs/arquitetura/SEGURANCA.md` — 505 bytes
+- `docs/decisoes/DEC-DEP-001_ON_PREMISE_FIRST.md` — 672 bytes
+- `docs/decisoes/INDICE_DECISOES.md` — 376 bytes
+- `docs/discovery/PLANO_OBSERVACAO_TRIAL.md` — 539 bytes
+- `docs/historico/INDICE.md` — 160 bytes
+- `docs/operacao/ATUALIZACAO_E_ROLLBACK.md` — 497 bytes
+- `docs/operacao/BACKUP_E_RESTAURACAO.md` — 740 bytes
+- `docs/operacao/INSTALACAO_ON_PREMISE.md` — 932 bytes
+- `docs/operacao/RUNBOOK.md` — 658 bytes
+- `docs/roadmap/BACKLOG_ADMINISTRACAO.md` — 363 bytes
+- `docs/roadmap/BACKLOG_AUTOMACAO.md` — 508 bytes
+- `docs/roadmap/BACKLOG_CERTIDOES.md` — 667 bytes
+- `docs/roadmap/BACKLOG_COMMON.md` — 571 bytes
+- `docs/roadmap/BACKLOG_EMPRESAS.md` — 475 bytes
+- `docs/roadmap/BACKLOG_INTEGRACOES.md` — 439 bytes
+- `docs/roadmap/BACKLOG_MODULOS_FUTUROS.md` — 381 bytes
+- `docs/roadmap/BOARD_ORQUESTRACAO.md` — 765 bytes
+- `docs/roadmap/HISTORICO_ENTREGAS.md` — 332 bytes
+- `docs/roadmap/REGISTRO_ITENS_ROADMAP.md` — 2826 bytes
+- `docs/roadmap/ROADMAP_PRODUTO.md` — 922 bytes
+- `docs/visao/BENCHMARK_VERI_CONTABILIZEI.md` — 624 bytes
+- `docs/visao/ESCOPO.md` — 946 bytes
+- `docs/visao/VISAO_PRODUTO.md` — 753 bytes
+- `frontend/.dockerignore` — 23 bytes
+- `frontend/Dockerfile` — 405 bytes
+- `frontend/docker-entrypoint.d/40-runtime-config.sh` — 366 bytes
+- `frontend/index.html` — 379 bytes
+- `frontend/nginx.conf` — 1260 bytes
+- `frontend/package.json` — 826 bytes
+- `frontend/public/config.js` — 186 bytes
+- `frontend/scripts/validate-locale.mjs` — 1284 bytes
+- `frontend/src/App.tsx` — 356 bytes
+- `frontend/src/api/http.ts` — 2639 bytes
+- `frontend/src/api/types.ts` — 3515 bytes
+- `frontend/src/app/AppShell.tsx` — 4010 bytes
+- `frontend/src/app/GlobalSearch.tsx` — 2692 bytes
+- `frontend/src/app/router.tsx` — 3006 bytes
+- `frontend/src/auth/AuthProvider.tsx` — 3044 bytes
+- `frontend/src/auth/PermissionRoute.tsx` — 448 bytes
+- `frontend/src/auth/ProtectedRoute.tsx` — 500 bytes
+- `frontend/src/auth/permissoes.ts` — 534 bytes
+- `frontend/src/auth/types.ts` — 339 bytes
+- `frontend/src/components/Alert.tsx` — 649 bytes
+- `frontend/src/components/Button.tsx` — 437 bytes
+- `frontend/src/components/Card.tsx` — 347 bytes
+- `frontend/src/components/EmptyState.tsx` — 387 bytes
+- `frontend/src/components/LoadingScreen.tsx` — 233 bytes
+- `frontend/src/components/Modal.tsx` — 1486 bytes
+- `frontend/src/components/ModulePending.tsx` — 301 bytes
+- `frontend/src/components/PageHeader.tsx` — 416 bytes
+- `frontend/src/components/Pagination.tsx` — 892 bytes
+- `frontend/src/components/StatusBadge.tsx` — 232 bytes
+- `frontend/src/config/runtime.ts` — 322 bytes
+- `frontend/src/features/empresas/EmpresaFormModal.tsx` — 8007 bytes
+- `frontend/src/i18n/index.ts` — 353 bytes
+- `frontend/src/i18n/pt-BR.json` — 8977 bytes
+- `frontend/src/main.tsx` — 349 bytes
+- `frontend/src/pages/AuditoriaPage.tsx` — 2185 bytes
+- `frontend/src/pages/ConsoleTecnicaPage.tsx` — 3063 bytes
+- `frontend/src/pages/DashboardPage.tsx` — 1730 bytes
+- `frontend/src/pages/DocumentosPage.tsx` — 7848 bytes
+- `frontend/src/pages/EmpresaDetalhePage.tsx` — 5346 bytes
+- `frontend/src/pages/EmpresasPage.tsx` — 5599 bytes
+- `frontend/src/pages/ErrorPage.tsx` — 762 bytes
+- `frontend/src/pages/ExecucoesPage.tsx` — 2930 bytes
+- `frontend/src/pages/IntegracoesPage.tsx` — 5671 bytes
+- `frontend/src/pages/IntervencoesPage.tsx` — 2934 bytes
+- `frontend/src/pages/NotificacoesPage.tsx` — 3276 bytes
+- `frontend/src/styles/global.css` — 14932 bytes
+- `frontend/src/vite-env.d.ts` — 281 bytes
+- `frontend/tsconfig.app.json` — 507 bytes
+- `frontend/tsconfig.app.tsbuildinfo` — 1147 bytes
+- `frontend/tsconfig.json` — 119 bytes
+- `frontend/tsconfig.node.json` — 211 bytes
+- `frontend/tsconfig.node.tsbuildinfo` — 1930 bytes
+- `frontend/vite.config.d.ts` — 54 bytes
+- `frontend/vite.config.js` — 308 bytes
+- `frontend/vite.config.ts` — 267 bytes
+- `infra/keycloak/realm-contabilidade-dev.json` — 2115 bytes
+- `infra/keycloak/realm-contabilidade.json` — 1680 bytes
+- `infra/postgres/init/01-create-keycloak-db.sh` — 328 bytes
+- `prompts/PROMPT_01_RECONCILIAR_BASELINE.md` — 932 bytes
+- `scripts/backup.ps1` — 826 bytes
+- `scripts/backup.sh` — 492 bytes
+- `scripts/iniciar-dev.ps1` — 281 bytes
+- `scripts/iniciar-onpremise.ps1` — 503 bytes
+- `scripts/iniciar.ps1` — 419 bytes
+- `scripts/iniciar.sh` — 133 bytes
+- `scripts/logs.ps1` — 263 bytes
+- `scripts/parar.ps1` — 111 bytes
+- `scripts/status.ps1` — 109 bytes
+- `scripts/validar.ps1` — 980 bytes

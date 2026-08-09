@@ -1,14 +1,18 @@
 # Módulos Common
 
-- `identidade`: login, usuário, papéis, permissões.
-- `empresas`: empresa, estabelecimento, CNPJ, inscrições.
-- `documentos`: metadata, hash, storage, evidência.
-- `execucoes`: jobs, tentativas, retry, timeout.
-- `integracoes`: providers, roteamento, fallback, normalização.
-- `automacao`: contrato com Playwright workers.
-- `intervencao`: ações humanas e retomada.
-- `auditoria`: eventos relevantes.
-- `notificacoes`: info, aviso, ação necessária, erro.
-- `busca`: pesquisa global.
-- `administracao`: providers e políticas.
-- `consoleTecnica`: saúde e operação técnica.
+| Módulo | Responsabilidade atual |
+|---|---|
+| `security` | Keycloak, JWT, papéis e Catálogo de Permissões |
+| `error` | contrato de erro e correlationId |
+| `audit` | trilha de eventos relevantes |
+| `notification` | avisos e ações necessárias |
+| `document` | metadados, hash, storage e download |
+| `execution` | estados de jobs e integrações |
+| `integration` | definição e roteamento de providers |
+| `intervention` | solicitações de ação humana |
+| `search` | busca autoritativa inicial |
+| `technical` | saúde e indicadores operacionais |
+| `worker` | heartbeat de workers externos |
+| `empresa` | empresa, estabelecimento e inscrições |
+
+O Common não contém regra de certidão, obrigação ou tributo.

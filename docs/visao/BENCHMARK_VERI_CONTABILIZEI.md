@@ -1,25 +1,26 @@
 # Benchmark: Veri e Contabilizei
 
-## Veri — capacidades públicas já identificadas
+## Veri — famílias de capacidade observadas
+
 - empresas/CNPJs;
 - certidões e regularidade;
-- pendências/diagnóstico;
-- calendário/obrigações;
-- e-CAC/mensagens;
-- DCTFWeb, DAS/DARF;
-- alertas e histórico/protocolos;
-- BI, Health Score e assistência por IA.
+- situação fiscal e pendências;
+- calendário de obrigações;
+- e-CAC e mensagens;
+- DCTFWeb, DAS/DARF e documentos;
+- alertas e protocolos;
+- BI, score/diagnóstico e assistência por IA.
 
-## Contabilizei — capacidades públicas já identificadas
+## Contabilizei — famílias de capacidade observadas
+
 - dados da empresa;
 - rotinas;
 - notas fiscais;
 - impostos/guias;
-- movimentações/extratos;
+- movimentações e extratos;
 - funcionários/pró-labore;
 - documentos;
-- atendimento/solicitações;
+- solicitações/atendimento;
 - relatórios.
 
-## Trial
-Para cada tela registrar objetivo, campos, filtros, estados, ações, ações em lote, validações, erros, permissões, refresh, dependências e evidências.
+Nenhum item vira requisito apenas por existir no benchmark.

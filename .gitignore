@@ -1,15 +1,39 @@
+# Java
 **/target/
+
+# Node
 **/node_modules/
 **/dist/
+**/.vite/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Local
 .env
 .env.*
 !.env.example
 *.log
-.idea/
-.vscode/
+logs/
+tmp/
+
+# Runtime data
+dados/
+backups/
+
+# Sensitive files
 *.p12
 *.pfx
 *.jks
 *.key
 *.pem
 secrets/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary validation
+validation*/
