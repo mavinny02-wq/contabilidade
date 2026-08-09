@@ -1,35 +1,16 @@
-# Inicialização local por artefatos no Windows
+# START_CONTABILIDADE.bat
 
-**Classificação:** CANÔNICO_ATIVO
-**Arquivo:** `START_CONTABILIDADE.bat`
+**Classificação:** `CANÔNICO_ATIVO`  
+**Modo padrão:** `dev`
 
-## Contrato
+## Objetivo
 
-O BAT compila o backend, o frontend e o worker no Windows e entrega ao Docker somente o JAR, o
-`dist`, a configuração Nginx, o entrypoint de configuração em runtime e as dependências JavaScript
-de produção do worker. Ele não executa Maven/npm em Docker, não usa o build do Compose, não chama
-portais, não chama Serpro, não altera migrations ou dados e só derruba a pilha depois de todos os
-artefatos, imagens e a configuração final terem sido validados.
+Compilar backend, frontend e automation worker na máquina Windows e entregar ao Docker somente os
+artefatos preparados. O BAT não executa fluxo fiscal, não chama Serpro e não resolve CAPTCHA.
 
-## Pré-requisitos
+## Uso
 
-- Windows 10/11, PowerShell, Docker Desktop com Compose, Maven e JDK 21;
-- Node.js 22.12 ou superior e npm 10 ou superior;
-- `package-lock.json` revisados no frontend e worker;
-- Docker Desktop em modo de containers Linux;
-- `.env` com segredos próprios para qualquer uso além de desenvolvimento.
-
-Na ausência de lockfiles, execute conscientemente:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\gerar-lockfiles.ps1
-```
-
-O BAT nunca gera lockfile silenciosamente. Em `dev`, um `.env` ausente é copiado de `.env.example`
-com aviso e nunca sobrescrito. Em `onpremise`, a ausência do arquivo, o realm de desenvolvimento ou
-segredos de exemplo interrompem a execução.
-
-## Execução
+Na raiz do projeto:
 
 ```bat
 START_CONTABILIDADE.bat
@@ -37,59 +18,87 @@ START_CONTABILIDADE.bat dev
 START_CONTABILIDADE.bat onpremise
 ```
 
-`dev` combina `compose.yaml`, `compose.dev.yaml` e o override gerado. `onpremise` combina o base,
-`compose.onpremise.yaml` e o override. O diretório é derivado de `%~dp0`, portanto o duplo clique é
-suportado. O terminal permanece aberto em sucesso ou falha.
+O diretório é derivado de `%~dp0`; o projeto pode permanecer em
+`D:\priv\priv\projeto\contabilidade` ou em outro caminho.
 
-## Artefatos e imagens
+## Java 21
 
-São produzidas imagens versionadas `contabilidade-backend:<VERSION>`,
-`contabilidade-frontend:<VERSION>` e `contabilidade-automation-worker:<VERSION>`, todas com o rótulo
-`contabilidade.local.artifact-only=true`. Os contextos ficam em:
+O projeto exige JDK 21. O BAT procura, nesta ordem:
+
+- `CONTABILIDADE_JAVA_HOME`;
+- `JAVA_HOME`;
+- Java no `PATH`;
+- instalações comuns de Temurin, Oracle/OpenJDK, Microsoft, Corretto, Liberica e Zulu;
+- instalações do IntelliJ, Chocolatey e Scoop.
+
+Uma instalação Java 17 pode continuar existente. O BAT seleciona JDK 21 apenas para seu processo e
+confirma que o Maven também está usando Java 21.
+
+Se nenhum JDK 21 for encontrado e o WinGet estiver disponível, o BAT pergunta antes de instalar o
+Eclipse Temurin 21. Nada é instalado silenciosamente.
+
+Para apontar manualmente:
+
+```bat
+set CONTABILIDADE_JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-21.0.x
+START_CONTABILIDADE.bat dev
+```
+
+## Node e lockfiles
+
+Node 22.12+ é obrigatório. O BAT procura instalações do PATH, NVM e Scoop. Quando não encontra uma
+versão compatível, pode oferecer instalação do Node LTS via WinGet.
+
+- `dev`: pode oferecer geração explícita dos lockfiles ausentes;
+- `onpremise`: lockfiles ausentes interrompem a execução;
+- lockfiles são gerados pelo script canônico `scripts/gerar-lockfiles.ps1`;
+- `npm ci` é usado para instalações reproduzíveis.
+
+## Artifact-only
+
+Maven e npm executam no host. O BAT cria contextos em:
 
 ```text
 .docker-local/artifact-build/backend-context
 .docker-local/artifact-build/frontend-context
 .docker-local/artifact-build/worker-context
-.docker-local/artifact-build/compose.artifacts.yaml
 ```
 
-O worker usa a imagem Playwright `v1.60.0-noble`, igual à dependência direta. Como o grafo atual é
-JavaScript, `npm ci --omit=dev --ignore-scripts` é feito no host e o conjunto de produção é copiado.
-Essa estratégia depende do grafo continuar sem addon nativo; uma futura dependência nativa exige
-revisão específica para ABI Linux, não cópia automática de `node_modules` do Windows.
+Imagens geradas:
 
-## Sequência e saúde
-
-1. preflight e Compose `config` sem tocar em containers;
-2. Maven `clean package` e seleção segura do JAR executável;
-3. `npm ci`, i18n e build do frontend;
-4. `npm ci`, typecheck, build e pacote de produção do worker;
-5. contextos isolados, imagens runtime e verificação de conteúdo/rótulos;
-6. `down`, depois `up --no-build -d`;
-7. espera por PostgreSQL, Keycloak, backend, worker e frontend;
-8. `nginx -t`, readiness do backend, `/health` do worker e `/healthz` do frontend;
-9. `docker compose ps` e abertura de `http://localhost:8088`.
-
-Uma falha mostra logs direcionados. Somente mensagens específicas de corrupção de snapshot do
-BuildKit autorizam uma limpeza do cache do builder e uma única repetição; não há prune de sistema,
-remoção de volume ou descarte de arquivos.
-
-## Parada
-
-Use os scripts existentes ou a mesma combinação do modo utilizado:
-
-```powershell
-.\scripts\parar.ps1
+```text
+contabilidade-backend:<VERSION>
+contabilidade-frontend:<VERSION>
+contabilidade-automation-worker:<VERSION>
 ```
 
-## Solução de problemas e limitações
+Todas recebem o rótulo:
 
-- `npm ci` exige lockfiles existentes e coerentes; não use `npm install` como atalho on-premise.
-- Docker Desktop deve aceitar bind mounts, imagens Linux, `ipc: host` e o perfil seccomp do worker.
-- A porta 3001 existe no override `dev`; em on-premise o BAT tenta a saúde interna se ela não estiver
-  publicada.
-- Antivírus e caminhos longos podem tornar a cópia de `node_modules` lenta.
-- Segredos continuam apenas no `.env`/ambiente Compose e não são copiados para os contextos.
-- HTTPS, backup/restauração comprovados e credenciais não demonstrativas continuam obrigatórios para
-  prontidão on-premise.
+```text
+contabilidade.local.artifact-only=true
+```
+
+## Segurança operacional
+
+O BAT:
+
+- não executa `git reset`, `git clean` ou `git stash`;
+- não apaga volumes;
+- não sobrescreve `.env` existente;
+- recusa modo on-premise com secrets de exemplo;
+- só para containers depois de todos os builds, imagens e Compose passarem;
+- não chama portais, Serpro ou APIs pagas;
+- não executa testes automatizados.
+
+## Serviços validados
+
+Após a subida:
+
+- PostgreSQL;
+- Keycloak;
+- backend readiness;
+- automation worker `/health`;
+- frontend `/healthz`;
+- `nginx -t`.
+
+Em caso de falha, o terminal permanece aberto e apresenta logs direcionados.

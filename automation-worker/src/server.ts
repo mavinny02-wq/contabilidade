@@ -46,7 +46,7 @@ export function criarServidor(
         json(response, operacional ? 200 : 503, {
           status,
           workerId: config.workerId,
-          versao: '0.5.0',
+          versao: '0.5.1',
           browser: {
             necessario: browserNecessario,
             status: browserSaudavel ? 'SAUDAVEL' : 'INDISPONIVEL',
@@ -62,7 +62,7 @@ export function criarServidor(
 
       if (request.method === 'GET' && ['/flows', '/automation/flows'].includes(url.pathname)) {
         json(response, 200, {
-          versao: '0.5.0',
+          versao: '0.5.1',
           fluxos: registry.codigos(),
           capacidades: registry.capacidades(),
           diagnosticos: registry.diagnosticos(),

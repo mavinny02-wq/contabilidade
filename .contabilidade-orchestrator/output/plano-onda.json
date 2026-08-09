@@ -1,30 +1,64 @@
 {
   "schemaVersion": "1.0",
   "baseline": {
-    "branchEsperada": "main",
-    "branchObservada": "work",
-    "commitObservado": "1ab637c2eee438adc287efd1abb25c35a8c37bcc",
-    "requiredVersion": "0.5.0",
-    "upstreamComprovado": false
+    "branch": "main",
+    "requiredVersion": "0.5.1",
+    "commitDeValidacao": "6706ce61b2d2f95cbb1ed0b6c237e44a62d0073f",
+    "previousVersion": "0.5.0"
   },
-  "fase": "GATE_SERIAL_REPRODUTIBILIDADE_V050",
+  "fase": "GATE_VAL_001_CORRECAO_PREPARADA_VALIDACAO_LOCAL",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "prompt": ".contabilidade-orchestrator/output/prompts/GATE_SERIAL_GATE_VAL_001_reprodutibilidade_v050.md",
-    "descricao": "Corrigir blockers TypeScript, gerar lockfiles revisados e comprovar builds/runtime local sem chamadas fiscais."
+    "descricao": "Aplicar correções, gerar lockfiles e comprovar builds/runtime Windows sem chamadas fiscais.",
+    "evidencia": "docs/implementacao/GATE_VAL_001_CORRECOES_PREPARADAS.md"
   },
   "slotsOficiais": [],
+  "ondaCandidataAposGate": [
+    {
+      "slot": 1,
+      "itemId": "SEC-AUT-001",
+      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_1_SEC_AUT_001_anti_replay_sessao.md",
+      "dependencies": [],
+      "migrationOwnership": "V8 reservada somente se a solução persistir jti"
+    },
+    {
+      "slot": 2,
+      "itemId": "PERF-CRT-001",
+      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_2_PERF_CRT_001_consultas_limitadas.md",
+      "dependencies": [],
+      "migrationOwnership": null
+    },
+    {
+      "slot": 3,
+      "itemId": "OPS-BKP-001",
+      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_3_OPS_BKP_001_manifesto_backup.md",
+      "dependencies": [],
+      "migrationOwnership": null
+    },
+    {
+      "slot": 4,
+      "itemId": "OBS-WRK-001",
+      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_4_OBS_WRK_001_heartbeat_stale.md",
+      "dependencies": [],
+      "migrationOwnership": null
+    },
+    {
+      "slot": 5,
+      "itemId": "SEC-DOC-001",
+      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_5_SEC_DOC_001_integridade_storage.md",
+      "dependencies": [],
+      "migrationOwnership": null
+    }
+  ],
   "provasPendentes": [
-    "ORIGIN_MAIN_ANCESTRY_PENDING",
     "NPM_LOCKFILES_PENDING",
-    "FRONTEND_TYPESCRIPT_BLOCKER",
-    "WORKER_TYPESCRIPT_BLOCKER",
-    "MAVEN_REGISTRY_ACCESS_PENDING",
+    "FRONTEND_REAL_BUILD_PENDING",
+    "WORKER_REAL_BUILD_PENDING",
+    "MAVEN_REAL_PENDING",
     "DOCKER_COMPOSE_PENDING",
     "POSTGRESQL_FLYWAY_PENDING",
     "KEYCLOAK_RUNTIME_PENDING",
-    "WINDOWS_BAT_RUNTIME_PENDING",
-    "INTERACTIVE_SESSION_ANTI_REPLAY_PENDING",
-    "EXTERNAL_PROVIDER_RUNTIME_PROHIBITED_IN_GATE"
-  ]
+    "WINDOWS_BAT_RUNTIME_PENDING"
+  ],
+  "operacoesExternasProibidasNoGate": true
 }

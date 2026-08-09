@@ -106,7 +106,8 @@ export async function parsePgeSpCertificate(
 
 async function extractPdfText(filePath: string): Promise<string> {
   const bytes = new Uint8Array(await readFile(filePath));
-  const document = await getDocument({ data: bytes, useSystemFonts: true }).promise;
+  const loadingTask = getDocument({ data: bytes, useSystemFonts: true });
+  const document = await loadingTask.promise;
   const pages: string[] = [];
   try {
     for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
@@ -119,7 +120,7 @@ async function extractPdfText(filePath: string): Promise<string> {
       page.cleanup();
     }
   } finally {
-    await document.destroy();
+    await loadingTask.destroy();
   }
   return pages.join('\n').replace(/\s+/g, ' ').trim();
 }

@@ -12,7 +12,7 @@
 
   <groupId>br.com.contabilidade</groupId>
   <artifactId>contabilidade-backend</artifactId>
-  <version>0.5.0-SNAPSHOT</version>
+  <version>0.5.1-SNAPSHOT</version>
   <name>Contabilidade Backend</name>
   <description>API da plataforma interna de operações fiscais e contábeis</description>
 

@@ -1,5 +1,7 @@
 # Prompts preparados
 
-O baseline 0.5.0 está bloqueado para onda normal. Há somente o gate serial
-`GATE_SERIAL_GATE_VAL_001_reprodutibilidade_v050.md`. Não existem cinco slots oficiais enquanto os
-erros de compilação e a ausência de lockfiles não forem resolvidos e comprovados.
+`GATE-VAL-001` possui correções preparadas, mas ainda requer validação local no Windows.
+
+Os arquivos `PREVIEW_SLOT_*` são apenas candidatos da próxima onda. Eles não estão selecionados e
+não devem ser executados até que lockfiles, builds, Compose, Flyway, Keycloak e o BAT estejam verdes
+no mesmo commit de `main`.

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.1 — 2026-08-09
+
+- corrige os blockers TypeScript identificados na validação canônica da v0.5.0;
+- melhora o BAT para localizar ou instalar JDK 21 sem remover Java 17;
+- exige que o Maven use a JVM 21 selecionada;
+- melhora detecção de Node 22.12+ e geração explícita de lockfiles;
+- ignora artefatos TypeScript/Docker locais gerados;
+- prepara, sem selecionar, a próxima onda de cinco slots independentes.
+
 ## 0.5.0 — 2026-08-09
 
 ### Provider oficial Serpro

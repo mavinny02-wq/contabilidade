@@ -268,9 +268,7 @@ export function InteractiveSessionModal({
     }
   };
 
-  const message = error && 'mensagem' in error
-    ? error.mensagem
-    : error?.message;
+  const message = obterMensagemErro(error);
 
   return (
     <Modal
@@ -353,6 +351,14 @@ export function InteractiveSessionModal({
       </div>
     </Modal>
   );
+}
+
+
+function obterMensagemErro(error: ApiError | Error | undefined): string | undefined {
+  if (!error) return undefined;
+  if ('mensagem' in error && typeof error.mensagem === 'string') return error.mensagem;
+  if ('message' in error && typeof error.message === 'string') return error.message;
+  return undefined;
 }
 
 function modifiers(event: ReactKeyboardEvent): number {

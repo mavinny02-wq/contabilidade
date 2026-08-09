@@ -11,7 +11,7 @@ import { WorkerLoop } from './WorkerLoop.js';
 import { config } from './config.js';
 import { criarServidor } from './server.js';
 
-const VERSAO = '0.5.0';
+const VERSAO = '0.5.1';
 const runtime = new BrowserRuntime();
 const registry = new FluxoRegistry();
 const sessions = new InteractiveSessionManager();

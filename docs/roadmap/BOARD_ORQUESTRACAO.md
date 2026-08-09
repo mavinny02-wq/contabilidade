@@ -2,54 +2,33 @@
 
 ## Checkpoint
 
-- branch de integração esperada: `main`; runner forneceu `work` sem upstream;
-- conteúdo/versionamento encontrado: `0.5.0` em `1ab637c2eee438adc287efd1abb25c35a8c37bcc`;
-- validação: frontend e worker bloqueados por erros TypeScript; lockfiles ausentes;
-- gate serial: `GATE-VAL-001` antes de qualquer onda oficial;
-- onda oficial seguinte: não selecionada; zero slots enquanto o gate estiver aberto;
-- testes permanentes: task separada.
+- branch de integração: `main`;
+- versão candidata: `0.5.1` sobre a baseline `0.5.0`;
+- análise canônica: `docs/analise/ANALISE_COMPLETA_BASELINE_V050.md`;
+- gate ativo: `GATE-VAL-001`;
+- correções do gate: preparadas na candidata v0.5.1;
+- validação obrigatória: Windows + JDK 21 + Node 22.12+ + Maven/npm/Docker;
+- slots oficiais selecionados: zero enquanto o gate não estiver verde;
+- próxima onda: cinco candidatos independentes já preparados como `PREVIEW`.
 
-## Regras
+## Regra de promoção
 
-- exatamente cinco slots oficiais;
-- mesmo commit base;
-- sem dependência na mesma onda;
-- sem overlap crítico;
-- migration exclusiva por slot;
-- reconciliação serial;
-- extras urgentes fora dos cinco;
-- sem sucessor automático.
+Os prompts `PREVIEW_SLOT_*` só podem ser promovidos a slots oficiais após evidência de:
 
-## Provas gerais pendentes
+- lockfiles versionados;
+- frontend typecheck/build verdes;
+- worker typecheck/build verdes;
+- Maven package verde;
+- três variantes de Compose válidas;
+- PostgreSQL/Flyway/Keycloak e cinco health checks verdes;
+- execução do BAT no Windows sem chamada fiscal externa.
 
-- `MAVEN_REAL_PENDING`;
-- `NPM_LOCKFILES_PENDING`;
-- `FRONTEND_REAL_BUILD_PENDING`;
-- `WORKER_REAL_BUILD_PENDING`;
-- `DOCKER_COMPOSE_PENDING`;
-- `POSTGRESQL_FLYWAY_PENDING`;
-- `KEYCLOAK_RUNTIME_PENDING`;
-- `BACKEND_TESTES_PENDENTES`;
-- `CONCORRENCIA_RETEST_REQUIRED`;
-- `PLAYWRIGHT_TESTES_PENDENTES`;
-- `E2E_PENDENTE`;
-- `BACKUP_RESTORE_PENDENTE`.
+## Candidatos da onda após o gate
 
-## Provas específicas Serpro
+1. `SEC-AUT-001` — anti-replay de tickets de sessão;
+2. `PERF-CRT-001` — consultas limitadas no scheduler de certidões;
+3. `OPS-BKP-001` — manifesto/verificação de backup;
+4. `OBS-WRK-001` — heartbeat vencido na Console Técnica;
+5. `SEC-DOC-001` — verificação de integridade do storage.
 
-- `SERPRO_CONTRACT_AND_CREDENTIALS_PENDING`;
-- `SERPRO_TOKEN_RUNTIME_PENDING`;
-- `SERPRO_CND_RUNTIME_PENDING`;
-- `SERPRO_CPEND_RUNTIME_PENDING`;
-- `SERPRO_STATUS7_RUNTIME_PENDING`;
-- `SERPRO_REAL_PDF_SAMPLE_PENDING`;
-- `SERPRO_BILLING_RECONCILIATION_PENDING`;
-- `SERPRO_401_REFRESH_RUNTIME_PENDING`.
-
-## Provas dos portais assistidos ainda abertas
-
-- `FEDERAL_PORTAL_RUNTIME_PENDING`;
-- `SEFAZ_SP_PORTAL_RUNTIME_PENDING`;
-- `PGE_SP_PORTAL_RUNTIME_PENDING`;
-- `INTERACTIVE_SESSION_SECURITY_REVIEW_PENDING`;
-- `PLAYWRIGHT_E2E_PENDING`.
+Os cinco candidatos não possuem dependência entre si e devem partir do mesmo futuro commit verde.

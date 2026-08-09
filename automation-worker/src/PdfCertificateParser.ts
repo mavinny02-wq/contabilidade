@@ -19,10 +19,11 @@ export async function parseFederalCertificate(
   filePath: string,
 ): Promise<ParsedFederalCertificate> {
   const bytes = new Uint8Array(await readFile(filePath));
-  const document = await getDocument({
+  const loadingTask = getDocument({
     data: bytes,
     useSystemFonts: true,
-  }).promise;
+  });
+  const document = await loadingTask.promise;
 
   const pages: string[] = [];
   try {
@@ -38,7 +39,7 @@ export async function parseFederalCertificate(
       page.cleanup();
     }
   } finally {
-    await document.destroy();
+    await loadingTask.destroy();
   }
 
   const text = pages.join('\n').replace(/\s+/g, ' ').trim();

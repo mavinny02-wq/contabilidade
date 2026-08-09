@@ -21,7 +21,7 @@ export class BackendClient {
       method: 'POST',
       body: {
         workerId: config.workerId,
-        versao: '0.5.0',
+        versao: '0.5.1',
         status,
         observadoEm: new Date().toISOString(),
       },
