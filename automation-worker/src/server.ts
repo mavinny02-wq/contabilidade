@@ -31,12 +31,29 @@ export function criarServidor(
       const url = new URL(request.url ?? '/', `http://${request.headers.host ?? 'localhost'}`);
 
       if (request.method === 'GET' && ['/health', '/automation/health'].includes(url.pathname)) {
-        const browser = await runtime.saudavel();
-        json(response, browser ? 200 : 503, {
-          status: browser ? 'SAUDAVEL' : 'INDISPONIVEL',
+        const diagnosticos = registry.diagnosticos();
+        const browserNecessario = registry.possuiPortal();
+        const browserSaudavel = browserNecessario ? await runtime.saudavel() : true;
+        const apiConfigurada = diagnosticos.some(
+          (item) => item.modo === 'API' && item.configurado,
+        );
+        const operacional = browserSaudavel || apiConfigurada;
+        const status = browserSaudavel
+          ? 'SAUDAVEL'
+          : apiConfigurada
+            ? 'DEGRADADO'
+            : 'INDISPONIVEL';
+        json(response, operacional ? 200 : 503, {
+          status,
           workerId: config.workerId,
-          versao: '0.4.0',
+          versao: '0.5.0',
+          browser: {
+            necessario: browserNecessario,
+            status: browserSaudavel ? 'SAUDAVEL' : 'INDISPONIVEL',
+          },
           fluxosRegistrados: registry.codigos(),
+          capacidades: registry.capacidades(),
+          diagnosticos,
           sessoesInterativasAtivas: sessions.activeCount(),
           loop: loop.state,
         });
@@ -44,7 +61,12 @@ export function criarServidor(
       }
 
       if (request.method === 'GET' && ['/flows', '/automation/flows'].includes(url.pathname)) {
-        json(response, 200, { fluxos: registry.codigos() });
+        json(response, 200, {
+          versao: '0.5.0',
+          fluxos: registry.codigos(),
+          capacidades: registry.capacidades(),
+          diagnosticos: registry.diagnosticos(),
+        });
         return;
       }
 

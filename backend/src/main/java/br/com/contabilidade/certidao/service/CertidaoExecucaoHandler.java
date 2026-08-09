@@ -265,6 +265,9 @@ public class CertidaoExecucaoHandler implements ExecucaoLifecycleHandler {
         if (proximo == null) return Optional.empty();
 
         Map<String, Object> payload = lerMapa(execucao.getPayloadJson(), "PAYLOAD_EXECUCAO_INVALIDO");
+        payload.put("provedorTimeoutSegundos", proximo.getTimeoutSegundos());
+        payload.put("provedorCustoEstimadoPorChamada", proximo.getCustoEstimadoPadrao());
+        payload.put("provedorMoeda", proximo.getMoeda());
         return Optional.of(new ComandoCriarExecucao(
                 execucao.getEmpresaId(),
                 execucao.getOperacao(),

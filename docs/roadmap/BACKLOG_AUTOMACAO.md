@@ -1,38 +1,33 @@
 # Backlog Automação
 
-## Entregue até v0.4.0
+## Entregue até o pacote v0.5.0
 
 - worker isolado;
-- polling e lease;
-- heartbeat;
-- browser sandbox;
+- polling, lease e heartbeat;
 - registry de fluxos;
+- modo `PORTAL` com browser;
+- modo `API` sem browser;
 - sessão interativa CDP/SSE;
-- mouse, teclado, rolagem e texto;
-- tickets HMAC temporários;
-- retomada no mesmo contexto;
-- upload de documento;
-- fluxo Federal;
-- fluxo SEFAZ-SP;
-- fluxo PGE-SP;
-- captura PDF por download, resposta, popup, link ou blob;
-- parsers específicos por órgão;
-- classificação de CAPTCHA, indisponibilidade, timeout e portal alterado.
+- upload por arquivo ou bytes;
+- portais Federal, SEFAZ-SP e PGE-SP;
+- API oficial Serpro;
+- diagnóstico seguro por fluxo;
+- health degradado sem bloquear APIs quando o browser está indisponível.
 
-## Segurança preservada
+## Segurança
 
 - nenhum bypass de CAPTCHA;
-- nenhum serviço externo de resolução;
-- nenhuma falsificação deliberada de browser humano;
-- nenhum HTML impresso como substituto do PDF oficial;
-- nenhum resultado fiscal conclusivo sem evidência exigida pelo domínio.
+- nenhum segredo em diagnóstico;
+- bearer estático desabilitado por padrão;
+- token OAuth cacheado somente em memória;
+- chave de processamento Serpro somente em memória;
+- browser não é iniciado para o fluxo API Serpro.
 
 ## Pendências
 
-- validação runtime autorizada dos três portais;
-- revisão de segurança da sessão;
-- redaction de evidência técnica futura;
-- limite de concorrência por múltiplos workers;
+- runtime real Serpro e portais;
+- revisão da sessão interativa;
+- múltiplos workers/limites de concorrência;
 - shutdown gracioso aguardando execução;
-- testes automatizados e E2E;
-- telemetria histórica por portal.
+- telemetria histórica;
+- testes permanentes e E2E.

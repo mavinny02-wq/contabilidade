@@ -1,86 +1,143 @@
-# Integração da versão 0.4.0
+# Integração da versão 0.5.0
+
+## Formato desta entrega
+
+O arquivo `contabilidade-v0.5.0-incremental.zip` contém **somente arquivos adicionados ou
+modificados**, preservando exatamente as pastas do projeto:
+
+```text
+automation-worker/src/...
+backend/src/...
+docs/...
+scripts/...
+```
+
+Não existe pasta wrapper, pasta `_patch` ou script de aplicação. Basta extrair diretamente sobre a
+raiz do repositório e permitir a substituição dos arquivos repetidos.
+
+**Esta versão não exige exclusão de nenhum arquivo.**
 
 ## Pré-condição
 
-O repositório deve conter a versão 0.3.0 integrada ou arquivos equivalentes. Antes de aplicar:
+O repositório deve estar na versão `0.4.0` e sem alterações locais não commitadas.
 
 ```powershell
 Set-Location "C:\work\contabilidade"
+
 git status
 git pull --ff-only origin main
+Get-Content .\VERSION
 ```
 
-A árvore deve estar limpa. Não use reset/clean automático para esconder alterações locais.
+O último comando deve retornar:
 
-## Aplicação do patch
+```text
+0.4.0
+```
 
-Extraia `contabilidade-v0.4.0-patch.zip` na raiz do repositório. Em seguida:
+## Copiar os arquivos
+
+Usando o Explorer, extraia o ZIP diretamente em:
+
+```text
+C:\work\contabilidade
+```
+
+Ou use PowerShell, ajustando o caminho do download:
 
 ```powershell
-Set-ExecutionPolicy -Scope Process Bypass
-.\_patch\APLICAR_PATCH.ps1
-Remove-Item .\_patch -Recurse -Force
+Expand-Archive `
+  -Path "$env:USERPROFILE\Downloads\contabilidade-v0.5.0-incremental.zip" `
+  -DestinationPath "C:\work\contabilidade" `
+  -Force
 ```
+
+Confirme:
+
+```powershell
+Get-Content .\VERSION
+git status --short
+```
+
+A versão deve ser `0.5.0`.
 
 ## Lockfiles e validação
 
 ```powershell
+Set-ExecutionPolicy -Scope Process Bypass
+
 .\scripts\gerar-lockfiles.ps1
 .\scripts\validar.ps1
 ```
 
-Se algum comando falhar, não faça commit. Preserve a saída completa.
+Se qualquer etapa falhar, não faça commit. Preserve a saída completa.
 
-## Subir ambiente
+## Subir o ambiente
 
 ```powershell
 .\scripts\iniciar-dev.ps1
 .\scripts\status.ps1
 ```
 
-## Preflight dos fluxos
+## Preflight Serpro sem consulta
 
 ```powershell
-.\scripts\validar-portal-federal.ps1
-.\scripts\validar-portais-sp.ps1
+.\scripts\validar-serpro.ps1
 ```
 
-Devem aparecer:
+Depois de configurar as credenciais no `.env` e reiniciar o worker:
 
-```text
-FEDERAL_PORTAL::CERTIDAO_FEDERAL_RFB_PGFN
-SEFAZ_SP_PORTAL::CERTIDAO_SP_SEFAZ_NAO_INSCRITOS
-PGE_SP_PORTAL::CERTIDAO_SP_PGE_DIVIDA_ATIVA
+```powershell
+.\scripts\validar-serpro.ps1 -ExigirCredenciais
 ```
 
-## Ativação
+O preflight verifica registro, modo API, versão, host e presença de credenciais. Ele não consulta um
+CNPJ e não deve gerar cobrança.
 
-Os providers permanecem desabilitados. Ative um portal por vez somente depois do build verde:
+## Ativação controlada
 
-1. mantenha `MANUAL` como contingência;
-2. use CNPJ autorizado;
-3. solicite uma certidão individual;
-4. resolva somente o CAPTCHA;
-5. confirme PDF, CNPJ, emissão, validade e número;
-6. desabilite o provider se o portal divergir do fluxo esperado.
+O provider `SERPRO` permanece desabilitado após a migration V7.
+
+Antes de habilitar:
+
+1. confirme contrato e credenciais do cliente;
+2. configure custo unitário e moeda na Administração;
+3. configure a política da operação Federal;
+4. mantenha `MANUAL` como contingência;
+5. use um único CNPJ autorizado na primeira prova;
+6. valide CND, CPEND, código de controle, emissão, validade, PDF e custo estimado;
+7. preserve execução e auditoria como evidência.
 
 ## Commit
 
 ```powershell
 git status
+
 git add .
-git commit -m "feat: implementa portais estaduais assistidos v0.4.0"
+git commit -m "feat: implementa provider oficial Serpro CND v0.5.0"
 git push origin main
+
 git log -1 --oneline
 ```
 
 ## Rollback antes do commit
 
-Se a árvore estava limpa antes da aplicação:
+A aplicação desta versão não remove arquivos. Para desfazer apenas os arquivos rastreados:
 
 ```powershell
 git restore .
-git clean -fd
 ```
 
-Use `git clean -fd` somente depois de revisar o que será removido com `git clean -fdn`.
+Os seis arquivos novos podem ser removidos explicitamente:
+
+```powershell
+Remove-Item .\automation-worker\src\SerproCndFlow.ts -Force
+Remove-Item .\automation-worker\src\SerproTokenProvider.ts -Force
+Remove-Item .\backend\src\main\resources\db\migration\V7__serpro_consulta_cnd.sql -Force
+Remove-Item .\docs\integracoes\SERPRO_CONSULTA_CND.md -Force
+Remove-Item .\docs\operacao\RUNBOOK_SERPRO_CND.md -Force
+Remove-Item .\scripts\validar-serpro.ps1 -Force
+```
+
+Não use `git clean -fd` sem revisar antes `git clean -nd`, pois ele pode apagar outros arquivos não
+rastreados do seu ambiente.

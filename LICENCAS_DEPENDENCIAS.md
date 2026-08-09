@@ -1,7 +1,5 @@
 # Licenças das dependências diretas
 
-Baseline inicial:
-
 | Componente | Licença principal conhecida |
 |---|---|
 | Spring Boot / Spring Framework | Apache-2.0 |
@@ -18,5 +16,8 @@ Baseline inicial:
 | pdfjs-dist | Apache-2.0 |
 | Nginx | BSD-2-Clause |
 | PostgreSQL | PostgreSQL License |
+
+A v0.5.0 não adiciona nova dependência direta. Ela implementa o client Serpro usando `fetch`,
+`Buffer`, `AbortSignal` e tipos já disponíveis no runtime Node.js existente.
 
 Revisar novamente a cada adição ou upgrade.

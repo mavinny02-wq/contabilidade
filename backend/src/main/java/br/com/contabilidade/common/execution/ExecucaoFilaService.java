@@ -253,7 +253,7 @@ public class ExecucaoFilaService {
         ExecucaoIntegracao execucao = buscarComLease(id, token);
         try {
             execucao.concluir(protocolo, serializar(resultado), custo, moeda);
-        } catch (IllegalStateException exception) {
+        } catch (IllegalArgumentException | IllegalStateException exception) {
             throw transicaoInvalida(exception);
         }
         acionar(execucao, handler -> handler.aoConcluir(execucao, resultado));
@@ -273,11 +273,14 @@ public class ExecucaoFilaService {
             String codigo,
             String resumo,
             boolean retryable,
-            boolean fonteIndisponivel
+            boolean fonteIndisponivel,
+            BigDecimal custo,
+            String moeda
     ) {
         ExecucaoIntegracao execucao = buscarComLease(id, token);
         boolean agendouRetry = retryable && execucao.podeTentarNovamente();
         try {
+            execucao.registrarCusto(custo, moeda);
             if (agendouRetry) {
                 execucao.agendarRetry(
                         codigo,
@@ -287,7 +290,7 @@ public class ExecucaoFilaService {
             } else {
                 execucao.falharDefinitivo(codigo, resumo, fonteIndisponivel);
             }
-        } catch (IllegalStateException exception) {
+        } catch (IllegalArgumentException | IllegalStateException exception) {
             throw transicaoInvalida(exception);
         }
         acionar(execucao, handler -> handler.aoFalhar(execucao));

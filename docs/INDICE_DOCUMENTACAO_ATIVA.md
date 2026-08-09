@@ -35,6 +35,7 @@
 
 ## Integrações
 
+- [Serpro Consulta CND](integracoes/SERPRO_CONSULTA_CND.md)
 - [Portal Federal RFB/PGFN](integracoes/PORTAL_FEDERAL_RFB_PGFN.md)
 - [Portal SEFAZ-SP eCND](integracoes/PORTAL_SEFAZ_SP_ECND.md)
 - [Portal PGE-SP e-CRDA](integracoes/PORTAL_PGE_SP_ECRDA.md)
@@ -45,11 +46,13 @@
 - [Backup e restauração](operacao/BACKUP_E_RESTAURACAO.md)
 - [Atualização e rollback](operacao/ATUALIZACAO_E_ROLLBACK.md)
 - [Runbook inicial](operacao/RUNBOOK.md)
+- [Runbook Serpro CND](operacao/RUNBOOK_SERPRO_CND.md)
 - [Runbook Portal Federal](operacao/RUNBOOK_PORTAL_FEDERAL.md)
 - [Runbook Portais SP](operacao/RUNBOOK_PORTAIS_SP.md)
 - [Validação v0.2.0](operacao/VALIDACAO_V020.md)
 - [Validação v0.3.0](operacao/VALIDACAO_V030.md)
 - [Validação v0.4.0](operacao/VALIDACAO_V040.md)
+- [Validação v0.5.0](operacao/VALIDACAO_V050.md)
 
 ## Decisões
 

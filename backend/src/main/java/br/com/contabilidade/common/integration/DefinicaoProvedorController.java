@@ -3,6 +3,7 @@ package br.com.contabilidade.common.integration;
 import br.com.contabilidade.common.audit.AuditoriaService;
 import br.com.contabilidade.common.error.RecursoNaoEncontradoException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -63,7 +64,17 @@ public class DefinicaoProvedorController {
             @Size(max = 200) String referenciaSegredo,
             boolean pago,
             @DecimalMin("0.0") BigDecimal custoEstimadoPadrao,
-            @Size(min = 3, max = 3) String moeda) { }
+            @Size(min = 3, max = 3) String moeda) {
+
+        @AssertTrue(message = "Provider pago habilitado exige custo estimado e moeda ISO de três letras.")
+        public boolean isConfiguracaoCustoValida() {
+            return !habilitado || !pago || (
+                    custoEstimadoPadrao != null
+                    && moeda != null
+                    && moeda.matches("^[A-Za-z]{3}$")
+            );
+        }
+    }
 
     public record ProvedorResponse(UUID id, String codigo, String nome, TipoProvedor tipo,
             boolean habilitado, int prioridade, int timeoutSegundos, int maxRetries,

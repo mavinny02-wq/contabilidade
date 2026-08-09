@@ -1,5 +1,48 @@
 # Changelog
 
+## 0.5.0 — 2026-08-09
+
+### Provider oficial Serpro
+
+- fluxo `SERPRO::CERTIDAO_FEDERAL_RFB_PGFN`;
+- modo API separado do runtime de navegador;
+- OAuth2 `client_credentials`;
+- cache e renovação de bearer token;
+- bearer estático apenas para demonstração controlada;
+- requisição oficial com `TipoContribuinte`, `ContribuinteConsulta`, `CodigoIdentificacao` e PDF;
+- continuidade do status 7 com chave somente em memória;
+- espera mínima configurada em 500 ms;
+- tratamento dos status 1 a 15 e 99;
+- CND e CPEND normalizadas;
+- PDF base64 validado por assinatura `%PDF-`;
+- raiz do CNPJ, emissão e validade validadas;
+- upload com origem `API_OFICIAL`;
+- `X-Request-Tag` sanitizado e limitado;
+- provider desabilitado por padrão.
+
+### Custo e execução
+
+- chamadas HTTP 200 e 201 contabilizadas como bilhetáveis;
+- custo estimado unitário recebido da definição do provider;
+- custo acumulado entre retries na mesma execução;
+- fallback recebe timeout, custo e moeda do próximo provider;
+- worker publica modo e diagnóstico seguro dos fluxos.
+
+### Modelo Federal
+
+- acompanhamento Federal passa a existir somente na matriz;
+- acompanhamentos antigos de filiais são inativados sem exclusão de documentos ou histórico.
+
+### Pendências
+
+- credenciais e contrato reais;
+- custo vigente configurado pelo cliente;
+- build Maven/npm/Docker no ambiente do usuário;
+- PostgreSQL/Flyway real;
+- chamada autorizada à API;
+- amostras reais de CND e CPEND;
+- testes automatizados e E2E.
+
 ## 0.4.0 — 2026-08-09
 
 ### Portais estaduais de São Paulo

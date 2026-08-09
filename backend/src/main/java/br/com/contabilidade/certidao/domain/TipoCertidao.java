@@ -1,7 +1,7 @@
 package br.com.contabilidade.certidao.domain;
 
 public enum TipoCertidao {
-    FEDERAL_RFB_PGFN("CERTIDAO_FEDERAL_RFB_PGFN", false, false),
+    FEDERAL_RFB_PGFN("CERTIDAO_FEDERAL_RFB_PGFN", false, true),
     SP_SEFAZ_NAO_INSCRITOS("CERTIDAO_SP_SEFAZ_NAO_INSCRITOS", true, false),
     SP_PGE_DIVIDA_ATIVA("CERTIDAO_SP_PGE_DIVIDA_ATIVA", true, true);
 

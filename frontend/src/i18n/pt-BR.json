@@ -82,7 +82,8 @@
     "certidoesDescricao": "Acompanhe as certidões federais e estaduais por CNPJ.",
     "proximosPassosDescricaoV2": "A versão 0.2.0 entrega operação manual de certidões, fila de execuções, providers e intervenção humana. Os fluxos reais de portais entram na próxima fase.",
     "proximosPassosDescricaoV3": "A versão 0.3.0 adiciona o provider Federal assistido e a sessão interativa para CAPTCHA. A validação autorizada do portal ainda é obrigatória antes da ativação em produção.",
-    "proximosPassosDescricaoV4": "A versão 0.4.0 adiciona os providers assistidos da SEFAZ-SP e da PGE-SP. Os três portais permanecem desabilitados até validação autorizada."
+    "proximosPassosDescricaoV4": "A versão 0.4.0 adiciona os providers assistidos da SEFAZ-SP e da PGE-SP. Os três portais permanecem desabilitados até validação autorizada.",
+    "proximosPassosDescricaoV5": "A versão 0.5.0 adiciona o provider oficial Serpro para a certidão Federal. Os providers permanecem desabilitados até configuração de credenciais, custo e validação autorizada."
   },
   "empresas": {
     "titulo": "Empresas",

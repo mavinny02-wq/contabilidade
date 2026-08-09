@@ -3,11 +3,11 @@
 ## Checkpoint
 
 - branch de integração: `main`;
-- baseline requerida: v0.3.0;
-- pacote candidato: v0.4.0;
-- gate serial atual: integração, build e prova autorizada dos portais estaduais de São Paulo;
+- baseline requerida: `0.4.0`;
+- pacote candidato: `0.5.0`;
+- gate serial: integração, build e prova autorizada do provider Serpro;
 - onda oficial seguinte: não selecionada;
-- testes: task separada.
+- testes permanentes: task separada.
 
 ## Regras
 
@@ -20,7 +20,7 @@
 - extras urgentes fora dos cinco;
 - sem sucessor automático.
 
-## Provas pendentes
+## Provas gerais pendentes
 
 - `MAVEN_REAL_PENDING`;
 - `NPM_LOCKFILES_PENDING`;
@@ -35,19 +35,21 @@
 - `E2E_PENDENTE`;
 - `BACKUP_RESTORE_PENDENTE`.
 
-## Provas específicas das versões 0.3.0 e 0.4.0
+## Provas específicas Serpro
+
+- `SERPRO_CONTRACT_AND_CREDENTIALS_PENDING`;
+- `SERPRO_TOKEN_RUNTIME_PENDING`;
+- `SERPRO_CND_RUNTIME_PENDING`;
+- `SERPRO_CPEND_RUNTIME_PENDING`;
+- `SERPRO_STATUS7_RUNTIME_PENDING`;
+- `SERPRO_REAL_PDF_SAMPLE_PENDING`;
+- `SERPRO_BILLING_RECONCILIATION_PENDING`;
+- `SERPRO_401_REFRESH_RUNTIME_PENDING`.
+
+## Provas dos portais assistidos ainda abertas
 
 - `FEDERAL_PORTAL_RUNTIME_PENDING`;
-- `FEDERAL_CAPTCHA_RUNTIME_PENDING`;
-- `FEDERAL_CND_PDF_SAMPLE_PENDING`;
-- `FEDERAL_CPEND_PDF_SAMPLE_PENDING`;
+- `SEFAZ_SP_PORTAL_RUNTIME_PENDING`;
+- `PGE_SP_PORTAL_RUNTIME_PENDING`;
 - `INTERACTIVE_SESSION_SECURITY_REVIEW_PENDING`;
 - `PLAYWRIGHT_E2E_PENDING`.
-
-- `SEFAZ_SP_PORTAL_RUNTIME_PENDING`;
-- `SEFAZ_SP_CAPTCHA_RUNTIME_PENDING`;
-- `SEFAZ_SP_PDF_SAMPLE_PENDING`;
-- `PGE_SP_PORTAL_RUNTIME_PENDING`;
-- `PGE_SP_CAPTCHA_RUNTIME_PENDING`;
-- `PGE_SP_PDF_SAMPLE_PENDING`;
-- `PGE_SP_CPEN_ADMINISTRATIVE_FLOW_PENDING`.

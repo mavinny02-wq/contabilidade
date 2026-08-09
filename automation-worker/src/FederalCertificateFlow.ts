@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import type { Locator, Page, Response } from 'playwright';
 import { config } from './config.js';
 import type {
-  ContextoFluxo,
+  ContextoFluxoPortal,
   FluxoPortal,
   ResultadoFluxo,
 } from './contracts.js';
@@ -15,10 +15,11 @@ const PROVEDOR = 'FEDERAL_PORTAL';
 const MAX_INTERVENCOES = 2;
 
 export class FederalCertificateFlow implements FluxoPortal {
+  readonly modo = 'PORTAL' as const;
   readonly operacao = OPERACAO;
   readonly provedorCodigo = PROVEDOR;
 
-  async executar(contexto: ContextoFluxo): Promise<ResultadoFluxo> {
+  async executar(contexto: ContextoFluxoPortal): Promise<ResultadoFluxo> {
     const cnpj = requiredString(contexto.parametros.cnpj, 'CNPJ_AUSENTE_NO_PAYLOAD')
       .toUpperCase()
       .replace(/[^A-Z0-9]/g, '');

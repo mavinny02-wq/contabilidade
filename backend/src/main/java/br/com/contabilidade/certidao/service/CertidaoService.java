@@ -121,6 +121,9 @@ public class CertidaoService {
         payload.put("tipo", acompanhamento.getTipo().name());
         payload.put("permitirIntervencao", politica.politica().isPermitirIntervencao());
         payload.put("timeoutHumanoMinutos", politica.politica().getTimeoutHumanoMinutos());
+        payload.put("provedorTimeoutSegundos", provedor.getTimeoutSegundos());
+        payload.put("provedorCustoEstimadoPorChamada", provedor.getCustoEstimadoPadrao());
+        payload.put("provedorMoeda", provedor.getMoeda());
 
         String chave = idempotencyKey == null || idempotencyKey.isBlank()
                 ? "CERTIDAO:" + acompanhamento.getId() + ":" + UUID.randomUUID()

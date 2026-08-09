@@ -2,6 +2,7 @@ import { basename } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { config } from './config.js';
 import type {
+  DocumentoWorkerBytesInput,
   DocumentoWorkerInput,
   ExecucaoLease,
   IntervencaoRequest,
@@ -20,7 +21,7 @@ export class BackendClient {
       method: 'POST',
       body: {
         workerId: config.workerId,
-        versao: '0.4.0',
+        versao: '0.5.0',
         status,
         observadoEm: new Date().toISOString(),
       },
@@ -98,14 +99,27 @@ export class BackendClient {
 
   async enviarDocumento(input: DocumentoWorkerInput): Promise<{ id: string }> {
     const conteudo = await readFile(input.arquivoPath);
+    return await this.enviarDocumentoBytes({
+      empresaId: input.empresaId,
+      tipo: input.tipo,
+      origem: input.origem,
+      bytes: new Uint8Array(conteudo),
+      mimeType: input.mimeType,
+      nomeArquivo: input.nomeArquivo ?? basename(input.arquivoPath),
+      emitidoEm: input.emitidoEm,
+      validoAte: input.validoAte,
+    });
+  }
+
+  async enviarDocumentoBytes(input: DocumentoWorkerBytesInput): Promise<{ id: string }> {
     const form = new FormData();
     form.append('empresaId', input.empresaId);
     form.append('tipo', input.tipo);
     form.append('origem', input.origem);
     form.append(
       'arquivo',
-      new Blob([new Uint8Array(conteudo)], { type: input.mimeType }),
-      input.nomeArquivo ?? basename(input.arquivoPath),
+      new Blob([input.bytes.slice()], { type: input.mimeType }),
+      input.nomeArquivo ?? 'documento',
     );
     if (input.emitidoEm) form.append('emitidoEm', input.emitidoEm);
     if (input.validoAte) form.append('validoAte', input.validoAte);
@@ -165,6 +179,8 @@ export class BackendClient {
         resumo: resultado.erroResumo ?? null,
         retryable: resultado.retryable,
         fonteIndisponivel: resultado.status === 'FONTE_INDISPONIVEL',
+        custo: resultado.custo ?? null,
+        moeda: resultado.moeda ?? null,
       },
     });
   }

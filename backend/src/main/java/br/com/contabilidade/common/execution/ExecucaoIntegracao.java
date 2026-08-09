@@ -106,15 +106,34 @@ public class ExecucaoIntegracao extends EntidadeBase {
 
     public void concluir(String protocoloExterno, String resultadoJson, BigDecimal custo, String moeda) {
         exigirExecutandoOuEspera();
+        registrarCusto(custo, moeda);
         this.status = StatusExecucao.SUCESSO;
         this.protocoloExterno = limpar(protocoloExterno);
         this.resultadoJson = resultadoJson;
-        this.custoEstimado = custo;
-        this.moeda = moeda == null ? null : moeda.toUpperCase();
         this.finalizadaEm = Instant.now();
         this.proximaTentativaEm = null;
         limparLease();
         limparErro();
+    }
+
+    public void registrarCusto(BigDecimal custo, String moeda) {
+        if (custo == null) return;
+        if (custo.signum() < 0) {
+            throw new IllegalArgumentException("Custo da execução não pode ser negativo");
+        }
+        String moedaNormalizada = moeda == null || moeda.isBlank()
+                ? this.moeda
+                : moeda.trim().toUpperCase(java.util.Locale.ROOT);
+        if (moedaNormalizada == null || !moedaNormalizada.matches("^[A-Z]{3}$")) {
+            throw new IllegalArgumentException("Moeda do custo é inválida");
+        }
+        if (this.moeda != null && !this.moeda.equals(moedaNormalizada)) {
+            throw new IllegalStateException("A moeda do custo não pode mudar dentro da execução");
+        }
+        this.custoEstimado = this.custoEstimado == null
+                ? custo
+                : this.custoEstimado.add(custo);
+        this.moeda = moedaNormalizada;
     }
 
     public void concluirParcial(String resultadoJson, String erroCodigo, String erroResumo) {

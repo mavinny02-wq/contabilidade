@@ -148,8 +148,12 @@ public class PoliticaAquisicaoService {
 
     private boolean custoPermitido(DefinicaoProvedor provedor, PoliticaAquisicao politica) {
         if (!provedor.isPago()) return true;
+        if (provedor.getCustoEstimadoPadrao() == null
+                || provedor.getMoeda() == null
+                || provedor.getMoeda().isBlank()) {
+            return false;
+        }
         if (politica.getCustoMaximo() == null) return true;
-        if (provedor.getCustoEstimadoPadrao() == null) return false;
         if (politica.getMoeda() != null
                 && provedor.getMoeda() != null
                 && !politica.getMoeda().equalsIgnoreCase(provedor.getMoeda())) {

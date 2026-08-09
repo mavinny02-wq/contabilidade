@@ -1,3 +1,17 @@
+export type SerproConfig = {
+  tokenUrl: string;
+  apiUrl: string;
+  consumerKey?: string;
+  consumerSecret?: string;
+  staticBearerToken?: string;
+  allowStaticBearer: boolean;
+  requestTag?: string;
+  httpTimeoutMs: number;
+  processingTimeoutMs: number;
+  pollIntervalMs: number;
+  maxPdfBytes: number;
+};
+
 export type WorkerConfig = {
   port: number;
   backendUrl: string;
@@ -19,6 +33,7 @@ export type WorkerConfig = {
   pgeSpNavigationTimeoutMs: number;
   pgeSpResultTimeoutMs: number;
   downloadDirectory: string;
+  serpro: SerproConfig;
 };
 
 const booleanValue = (value: string | undefined, fallback: boolean) => {
@@ -38,6 +53,11 @@ const integerValue = (
     : fallback;
 };
 
+const optionalTrimmed = (value: string | undefined): string | undefined => {
+  const clean = value?.trim();
+  return clean ? clean : undefined;
+};
+
 const requiredSecret = (value: string | undefined, localFallback: string): string => {
   const effective = value ?? localFallback;
   if (effective.length < 32) {
@@ -46,11 +66,17 @@ const requiredSecret = (value: string | undefined, localFallback: string): strin
   return effective;
 };
 
+const requestTag = (value: string | undefined): string | undefined => {
+  const clean = optionalTrimmed(value)?.replace(/[\r\n\u0000-\u001f\u007f]/g, '');
+  if (!clean) return undefined;
+  return clean.slice(0, 32);
+};
+
 export const config: WorkerConfig = {
   port: integerValue(process.env.WORKER_PORT, 3001, 1, 65_535),
-  backendUrl: (process.env.BACKEND_URL ?? 'http://localhost:8080').replace(/\/$/, ''),
+  backendUrl: normalizedUrl(process.env.BACKEND_URL ?? 'http://localhost:8080'),
   token: process.env.WORKER_TOKEN ?? 'token-local-altere',
-  workerId: process.env.WORKER_ID ?? `playwright-${process.env.HOSTNAME ?? 'local'}`,
+  workerId: process.env.WORKER_ID ?? `integracao-${process.env.HOSTNAME ?? 'local'}`,
   headless: booleanValue(process.env.BROWSER_HEADLESS, true),
   heartbeatIntervalMs: integerValue(
     process.env.HEARTBEAT_INTERVAL_MS,
@@ -120,7 +146,50 @@ export const config: WorkerConfig = {
     15_000,
     600_000,
   ),
-  downloadDirectory: process.env.WORKER_DOWNLOAD_DIRECTORY ?? '/tmp/contabilidade-downloads',
+  downloadDirectory:
+    process.env.WORKER_DOWNLOAD_DIRECTORY ?? '/tmp/contabilidade-downloads',
+  serpro: {
+    tokenUrl: normalizedUrl(
+      process.env.SERPRO_CND_TOKEN_URL
+        ?? 'https://gateway.apiserpro.serpro.gov.br/token',
+    ),
+    apiUrl: normalizedUrl(
+      process.env.SERPRO_CND_API_URL
+        ?? 'https://gateway.apiserpro.serpro.gov.br/consulta-cnd/v1/certidao',
+    ),
+    consumerKey: optionalTrimmed(process.env.SERPRO_CND_CONSUMER_KEY),
+    consumerSecret: optionalTrimmed(process.env.SERPRO_CND_CONSUMER_SECRET),
+    staticBearerToken: optionalTrimmed(process.env.SERPRO_CND_STATIC_BEARER_TOKEN),
+    allowStaticBearer: booleanValue(
+      process.env.SERPRO_CND_ALLOW_STATIC_BEARER,
+      false,
+    ),
+    requestTag: requestTag(process.env.SERPRO_CND_REQUEST_TAG),
+    httpTimeoutMs: integerValue(
+      process.env.SERPRO_CND_HTTP_TIMEOUT_MS,
+      30_000,
+      5_000,
+      120_000,
+    ),
+    processingTimeoutMs: integerValue(
+      process.env.SERPRO_CND_PROCESSING_TIMEOUT_MS,
+      120_000,
+      5_000,
+      600_000,
+    ),
+    pollIntervalMs: integerValue(
+      process.env.SERPRO_CND_POLL_INTERVAL_MS,
+      750,
+      500,
+      30_000,
+    ),
+    maxPdfBytes: integerValue(
+      process.env.SERPRO_CND_MAX_PDF_BYTES,
+      10 * 1024 * 1024,
+      100 * 1024,
+      50 * 1024 * 1024,
+    ),
+  },
 };
 
 function federalPortalUrl(value: string): string {

@@ -1,3 +1,4 @@
+import type { BrowserContext } from 'playwright';
 import type { BrowserRuntime } from './BrowserRuntime.js';
 import { BackendClient, BackendError } from './BackendClient.js';
 import type { FluxoRegistry } from './FluxoRegistry.js';
@@ -7,7 +8,10 @@ import {
 } from './InteractiveSessionManager.js';
 import { config } from './config.js';
 import type {
+  DocumentoRuntime,
   ExecucaoLease,
+  FluxoApi,
+  FluxoPortal,
   IntervencaoRequest,
   ResultadoFluxo,
 } from './contracts.js';
@@ -15,10 +19,18 @@ import type {
 export type WorkerLoopState = {
   rodando: boolean;
   execucaoAtual?: string;
+  modoExecucaoAtual?: 'API' | 'PORTAL';
   ultimaAquisicaoEm?: string;
   ultimaFalha?: string;
   aguardandoIntervencao?: boolean;
   sessaoInterativaAtual?: string;
+};
+
+type LeaseControl = {
+  ativo: () => boolean;
+  iniciar: () => void;
+  parar: () => void;
+  desativar: () => void;
 };
 
 export class WorkerLoop {
@@ -36,6 +48,7 @@ export class WorkerLoop {
     if (this.state.rodando) return;
     this.stopping = false;
     this.state.rodando = true;
+
     while (!this.stopping) {
       try {
         const execucao = await this.client.adquirir(
@@ -54,6 +67,7 @@ export class WorkerLoop {
         await esperar(config.pollIntervalMs);
       }
     }
+
     this.state.rodando = false;
   }
 
@@ -61,55 +75,86 @@ export class WorkerLoop {
     this.stopping = true;
   }
 
-  private async processar(execucaoInicial: ExecucaoLease): Promise<void> {
-    this.state.execucaoAtual = execucaoInicial.id;
-    const fluxo = this.registry.obter(
-      execucaoInicial.provedorCodigo,
-      execucaoInicial.operacao,
-    );
-    if (!fluxo) {
-      await this.client.reportar(execucaoInicial, {
-        status: 'FALHA',
-        erroCodigo: 'FLUXO_NAO_REGISTRADO',
-        erroResumo:
-          `Não existe fluxo para ${execucaoInicial.provedorCodigo}/${execucaoInicial.operacao}.`,
-        retryable: false,
-      });
-      this.state.execucaoAtual = undefined;
-      return;
+  private async processar(execucao: ExecucaoLease): Promise<void> {
+    this.state.execucaoAtual = execucao.id;
+    const fluxo = this.registry.obter(execucao.provedorCodigo, execucao.operacao);
+
+    try {
+      if (!fluxo) {
+        await this.client.reportar(execucao, {
+          status: 'FALHA',
+          erroCodigo: 'FLUXO_NAO_REGISTRADO',
+          erroResumo:
+            `Não existe fluxo para ${execucao.provedorCodigo}/${execucao.operacao}.`,
+          retryable: false,
+        });
+        return;
+      }
+
+      this.state.modoExecucaoAtual = fluxo.modo;
+      const parametros = parsePayload(execucao.payloadJson);
+      if (fluxo.modo === 'API') {
+        await this.processarApi(execucao, fluxo, parametros);
+      } else {
+        await this.processarPortal(execucao, fluxo, parametros);
+      }
+    } finally {
+      this.limparEstadoExecucao();
     }
+  }
 
+  private async processarApi(
+    execucao: ExecucaoLease,
+    fluxo: FluxoApi,
+    parametros: Record<string, unknown>,
+  ): Promise<void> {
+    const lease = this.criarControleLease(() => execucao);
+    lease.iniciar();
+
+    try {
+      let resultado: ResultadoFluxo;
+      try {
+        resultado = await fluxo.executar({
+          execucaoId: execucao.id,
+          empresaId: execucao.empresaId,
+          provedorCodigo: execucao.provedorCodigo,
+          operacao: execucao.operacao,
+          parametros,
+          documentos: this.documentosRuntime(),
+        });
+      } catch (error) {
+        resultado = erroNaoTratado(error);
+      }
+
+      if (!lease.ativo()) {
+        console.warn(
+          `Resultado da execução API ${execucao.id} não foi reportado porque o lease não está ativo.`,
+        );
+        return;
+      }
+
+      await this.client.reportar(execucao, resultado);
+      if (resultado.status === 'AGUARDANDO_HUMANO') {
+        lease.desativar();
+      }
+    } finally {
+      lease.parar();
+    }
+  }
+
+  private async processarPortal(
+    execucaoInicial: ExecucaoLease,
+    fluxo: FluxoPortal,
+    parametros: Record<string, unknown>,
+  ): Promise<void> {
     let execucao = execucaoInicial;
-    let leaseAtivo = true;
-    let renewTimer: NodeJS.Timeout | undefined;
     let sessaoAtual: string | undefined;
-
-    const iniciarRenovacao = () => {
-      if (renewTimer || !leaseAtivo) return;
-      const renewEvery = Math.max(
-        10_000,
-        Math.floor(config.leaseSeconds * 1_000 * 0.45),
-      );
-      renewTimer = setInterval(() => {
-        if (!leaseAtivo) return;
-        void this.client.renovar(execucao.id, execucao.leaseToken)
-          .catch((error) => {
-            console.warn(`Não foi possível renovar lease ${execucao.id}`, error);
-          });
-      }, renewEvery);
-    };
-
-    const pararRenovacao = () => {
-      if (renewTimer) clearInterval(renewTimer);
-      renewTimer = undefined;
-    };
-
+    const lease = this.criarControleLease(() => execucao);
     const context = await this.runtime.novoContexto();
-    iniciarRenovacao();
+    lease.iniciar();
 
     try {
       const page = await context.newPage();
-      const parametros = parsePayload(execucao.payloadJson);
 
       const aguardarIntervencao = async (request: IntervencaoRequest) => {
         if (sessaoAtual) {
@@ -132,18 +177,20 @@ export class WorkerLoop {
         this.state.aguardandoIntervencao = true;
         this.state.sessaoInterativaAtual = sessao.sessionId;
 
-        pararRenovacao();
+        lease.parar();
         try {
           await this.client.aguardarHumano(
             execucao,
             sessao.sessionId,
             { ...request, timeoutMinutos },
           );
-          leaseAtivo = false;
+          lease.desativar();
         } catch (error) {
-          leaseAtivo = true;
-          iniciarRenovacao();
-          await this.sessions.dispose(sessao.sessionId, 'BACKEND_REJEITOU_INTERVENCAO');
+          lease.iniciar();
+          await this.sessions.dispose(
+            sessao.sessionId,
+            'BACKEND_REJEITOU_INTERVENCAO',
+          );
           sessaoAtual = undefined;
           this.state.aguardandoIntervencao = false;
           this.state.sessaoInterativaAtual = undefined;
@@ -158,8 +205,7 @@ export class WorkerLoop {
             operador: continuation.operator,
           });
           this.sessions.acknowledgeResume(sessao.sessionId);
-          leaseAtivo = true;
-          iniciarRenovacao();
+          lease.iniciar();
           return {
             sessionId: sessao.sessionId,
             operator: continuation.operator,
@@ -192,9 +238,7 @@ export class WorkerLoop {
           browserContext: context,
           page,
           intervencao: { aguardar: aguardarIntervencao },
-          documentos: {
-            enviar: (input) => this.client.enviarDocumento(input),
-          },
+          documentos: this.documentosRuntime(),
         });
       } catch (error) {
         if (error instanceof SessaoInterativaAbandonadaError) {
@@ -203,32 +247,84 @@ export class WorkerLoop {
           );
           return;
         }
-        resultado = {
-          status: 'FALHA',
-          erroCodigo: 'ERRO_NAO_TRATADO_NO_FLUXO',
-          erroResumo: resumoErro(error),
-          retryable: true,
-        };
+        resultado = erroNaoTratado(error);
       }
 
-      if (leaseAtivo) {
+      if (lease.ativo()) {
         await this.client.reportar(execucao, resultado);
-        if (resultado.status === 'AGUARDANDO_HUMANO') leaseAtivo = false;
+        if (resultado.status === 'AGUARDANDO_HUMANO') {
+          lease.desativar();
+        }
       } else {
         console.warn(
           `Resultado da execução ${execucao.id} não foi reportado porque não existe lease ativo.`,
         );
       }
     } finally {
-      pararRenovacao();
+      lease.parar();
       if (sessaoAtual) {
         await this.sessions.dispose(sessaoAtual, 'EXECUCAO_ENCERRADA');
       }
-      await context.close();
-      this.state.execucaoAtual = undefined;
+      await fecharContextoSeguro(context);
       this.state.aguardandoIntervencao = false;
       this.state.sessaoInterativaAtual = undefined;
     }
+  }
+
+  private documentosRuntime(): DocumentoRuntime {
+    return {
+      enviar: (input) => this.client.enviarDocumento(input),
+      enviarBytes: (input) => this.client.enviarDocumentoBytes(input),
+    };
+  }
+
+  private criarControleLease(getExecucao: () => ExecucaoLease): LeaseControl {
+    let ativo = true;
+    let timer: NodeJS.Timeout | undefined;
+
+    const iniciar = () => {
+      ativo = true;
+      if (timer) return;
+      const renewEvery = Math.max(
+        10_000,
+        Math.floor(config.leaseSeconds * 1_000 * 0.45),
+      );
+      timer = setInterval(() => {
+        if (!ativo) return;
+        const execucao = getExecucao();
+        void this.client.renovar(execucao.id, execucao.leaseToken)
+          .catch((error) => {
+            console.warn(`Não foi possível renovar lease ${execucao.id}`, error);
+            if (error instanceof BackendError && [409, 410].includes(error.status)) {
+              ativo = false;
+            }
+          });
+      }, renewEvery);
+    };
+
+    const parar = () => {
+      if (timer) clearInterval(timer);
+      timer = undefined;
+    };
+
+    const desativar = () => {
+      ativo = false;
+      parar();
+    };
+
+    return {
+      ativo: () => ativo,
+      iniciar,
+      parar,
+      desativar,
+    };
+  }
+
+  private limparEstadoExecucao(): void {
+    this.state.execucaoAtual = undefined;
+    this.state.modoExecucaoAtual = undefined;
+    this.state.aguardandoIntervencao = false;
+    this.state.sessaoInterativaAtual = undefined;
   }
 }
 
@@ -264,7 +360,24 @@ function numeroParametro(
   return Math.min(Math.max(Math.trunc(parsed), min), max);
 }
 
-function resumoErro(error: unknown) {
+function erroNaoTratado(error: unknown): ResultadoFluxo {
+  return {
+    status: 'FALHA',
+    erroCodigo: 'ERRO_NAO_TRATADO_NO_FLUXO',
+    erroResumo: resumoErro(error),
+    retryable: true,
+  };
+}
+
+async function fecharContextoSeguro(context: BrowserContext): Promise<void> {
+  try {
+    await context.close();
+  } catch (error) {
+    console.warn('Não foi possível fechar o contexto do navegador', error);
+  }
+}
+
+function resumoErro(error: unknown): string {
   return error instanceof Error
     ? `${error.name}: ${error.message}`.slice(0, 500)
     : String(error).slice(0, 500);

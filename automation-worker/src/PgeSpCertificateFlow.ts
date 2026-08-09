@@ -1,7 +1,7 @@
 import { unlink } from 'node:fs/promises';
 import type { Locator, Page } from 'playwright';
 import { config } from './config.js';
-import type { ContextoFluxo, FluxoPortal, ResultadoFluxo } from './contracts.js';
+import type { ContextoFluxoPortal, FluxoPortal, ResultadoFluxo } from './contracts.js';
 import { parsePgeSpCertificate } from './StateCertificatePdfParser.js';
 import {
   boundedInteger,
@@ -39,10 +39,11 @@ type CaptchaResolution =
   | { ok: false; code: string; message: string };
 
 export class PgeSpCertificateFlow implements FluxoPortal {
+  readonly modo = 'PORTAL' as const;
   readonly operacao = OPERACAO;
   readonly provedorCodigo = PROVEDOR;
 
-  async executar(contexto: ContextoFluxo): Promise<ResultadoFluxo> {
+  async executar(contexto: ContextoFluxoPortal): Promise<ResultadoFluxo> {
     const cnpj = requiredString(contexto.parametros.cnpj, 'CNPJ_AUSENTE_NO_PAYLOAD')
       .replace(/\D/g, '');
     if (cnpj.length !== 14) {
@@ -311,7 +312,7 @@ async function detectUnavailable(page: Page): Promise<string | undefined> {
 }
 
 async function resolveCaptcha(
-  contexto: ContextoFluxo,
+  contexto: ContextoFluxoPortal,
   permitirIntervencao: boolean,
   timeoutHumanoMinutos: number,
   current: number,

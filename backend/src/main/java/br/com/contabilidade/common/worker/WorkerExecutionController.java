@@ -105,7 +105,8 @@ public class WorkerExecutionController {
                                    @Valid @RequestBody FalharRequest request) {
         tokenService.validar(token);
         return ExecucaoResponse.de(filaService.falhar(id, request.leaseToken(), request.codigo(),
-                request.resumo(), request.retryable(), request.fonteIndisponivel()));
+                request.resumo(), request.retryable(), request.fonteIndisponivel(),
+                request.custo(), request.moeda()));
     }
 
     @PostMapping("/{id}/aguardar-humano")
@@ -147,7 +148,8 @@ public class WorkerExecutionController {
                                   BigDecimal custo, String moeda) { }
 
     public record FalharRequest(@NotNull UUID leaseToken, @NotBlank String codigo, String resumo,
-                                boolean retryable, boolean fonteIndisponivel) { }
+                                boolean retryable, boolean fonteIndisponivel,
+                                BigDecimal custo, String moeda) { }
 
     public record AguardarHumanoRequest(@NotNull UUID leaseToken, @NotNull StatusExecucao status,
                                         @NotNull TipoIntervencao tipo, String codigo, String resumo,

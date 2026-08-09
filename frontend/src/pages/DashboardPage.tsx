@@ -63,7 +63,7 @@ export function DashboardPage() {
           </div>
         </Card>
         <Card titulo={t('dashboard.proximosPassos')}>
-          <p className="muted">{t('dashboard.proximosPassosDescricaoV4')}</p>
+          <p className="muted">{t('dashboard.proximosPassosDescricaoV5')}</p>
         </Card>
       </div>
     </>

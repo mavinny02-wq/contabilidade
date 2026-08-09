@@ -1,28 +1,28 @@
 # Backlog Common
 
-## Candidato v0.2.0
+## Entregue
 
 - fila PostgreSQL;
-- lease;
+- lease e recuperação;
 - retry/backoff;
 - idempotência;
-- fallback;
-- políticas;
+- fallback e políticas;
 - intervenção;
-- documentos com assinatura básica;
+- documentos;
 - worker;
 - auditoria/notificações;
-- Console Técnica.
+- Console Técnica;
+- custo acumulado por execução em sucesso, retry e falha;
+- moeda imutável dentro da execução.
 
 ## Pendências
 
-- lockfiles;
-- build/runtime real;
+- lockfiles/build runtime;
 - testes de concorrência;
 - storage S3/MinIO;
 - secret manager;
 - retenção documental;
 - e-mail;
 - administração de usuários;
-- histórico de saúde por provider;
-- sessão remota de browser.
+- histórico de saúde/custo por provider;
+- hardening e observabilidade de produção.

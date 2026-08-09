@@ -3,19 +3,20 @@
   "baseline": {
     "branch": "main",
     "commit": null,
-    "requiredVersion": "0.3.0",
-    "candidateVersion": "0.4.0"
+    "requiredVersion": "0.4.0",
+    "candidateVersion": "0.5.0"
   },
-  "fase": "PACOTE_V040_AGUARDANDO_VALIDACAO_RUNTIME_E_INTEGRACAO",
+  "fase": "PACOTE_V050_AGUARDANDO_BUILD_E_RUNTIME_SERPRO",
   "gateSerial": {
-    "itemId": "HIST-CRT-003-004-V040-INTEGRATION",
-    "descricao": "Aplicar a v0.4.0 sobre a v0.3.0, compilar, validar Docker e executar provas autorizadas dos portais SEFAZ-SP e PGE-SP"
+    "itemId": "HIST-CRT-007-V050-INTEGRATION",
+    "descricao": "Aplicar o ZIP incremental v0.5.0, gerar lockfiles, compilar, validar migrations e executar uma Consulta CND autorizada."
   },
   "slotsOficiais": [],
   "decisoesAbertas": [
     "DEC-003",
     "DEC-004",
-    "AMB-002"
+    "AMB-002",
+    "AMB-003"
   ],
   "provasPendentes": [
     "MAVEN_REAL_PENDING",
@@ -25,20 +26,17 @@
     "DOCKER_COMPOSE_PENDING",
     "POSTGRESQL_FLYWAY_PENDING",
     "KEYCLOAK_RUNTIME_PENDING",
-    "FEDERAL_PORTAL_RUNTIME_PENDING",
-    "FEDERAL_CAPTCHA_RUNTIME_PENDING",
-    "FEDERAL_CND_PDF_SAMPLE_PENDING",
-    "FEDERAL_CPEND_PDF_SAMPLE_PENDING",
-    "INTERACTIVE_SESSION_SECURITY_REVIEW_PENDING",
-    "PLAYWRIGHT_E2E_PENDING",
+    "SERPRO_CONTRACT_AND_CREDENTIALS_PENDING",
+    "SERPRO_TOKEN_RUNTIME_PENDING",
+    "SERPRO_CND_RUNTIME_PENDING",
+    "SERPRO_CPEND_RUNTIME_PENDING",
+    "SERPRO_STATUS7_RUNTIME_PENDING",
+    "SERPRO_REAL_PDF_SAMPLE_PENDING",
+    "SERPRO_BILLING_RECONCILIATION_PENDING",
+    "SERPRO_401_REFRESH_RUNTIME_PENDING",
     "BACKEND_TESTES_PENDENTES",
-    "E2E_PENDENTE",
-    "SEFAZ_SP_PORTAL_RUNTIME_PENDING",
-    "SEFAZ_SP_CAPTCHA_RUNTIME_PENDING",
-    "SEFAZ_SP_PDF_SAMPLE_PENDING",
-    "PGE_SP_PORTAL_RUNTIME_PENDING",
-    "PGE_SP_CAPTCHA_RUNTIME_PENDING",
-    "PGE_SP_PDF_SAMPLE_PENDING",
-    "PGE_SP_CPEN_ADMINISTRATIVE_FLOW_PENDING"
+    "CONCORRENCIA_RETEST_REQUIRED",
+    "PLAYWRIGHT_TESTES_PENDENTES",
+    "E2E_PENDENTE"
   ]
 }
