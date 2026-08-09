@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/http';
-import type { EmpresaDetalhe } from '../api/types';
+import type { EmpresaDetalhe, Estabelecimento } from '../api/types';
 import { useAuth } from '../auth/AuthProvider';
 import { PERMISSOES } from '../auth/permissoes';
 import { Alert } from '../components/Alert';
@@ -12,6 +12,7 @@ import { ModulePending } from '../components/ModulePending';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge } from '../components/StatusBadge';
 import { EmpresaFormModal } from '../features/empresas/EmpresaFormModal';
+import { FilialFormModal } from '../features/empresas/FilialFormModal';
 
 const abas = ['resumo', 'certidoes', 'obrigacoes', 'pendencias', 'mensagens', 'guias', 'documentos', 'automacao', 'historico'] as const;
 type Aba = (typeof abas)[number];
@@ -25,6 +26,7 @@ export function EmpresaDetalhePage() {
   const [aba, setAba] = useState<Aba>('resumo');
   const [erro, setErro] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
+  const [filialAberta, setFilialAberta] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
   useEffect(() => {
@@ -35,9 +37,16 @@ export function EmpresaDetalhePage() {
   }, [id]);
 
   if (erro) return <Alert tipo="erro">{t('comum.erroCarregamento')}</Alert>;
-  if (!empresa) return null;
+  if (!empresa || !id) return null;
 
   const matriz = empresa.estabelecimentos.find((item) => item.matriz) ?? empresa.estabelecimentos[0];
+  const filiais = empresa.estabelecimentos.filter((item) => !item.matriz);
+
+  const adicionarFilial = (filial: Estabelecimento) => {
+    setEmpresa((atual) => atual ? { ...atual, estabelecimentos: [...atual.estabelecimentos, filial] } : atual);
+    setFilialAberta(false);
+    setMensagem(t('empresas.filiais.mensagemCriada'));
+  };
 
   return (
     <>
@@ -70,30 +79,57 @@ export function EmpresaDetalhePage() {
       </div>
 
       {aba === 'resumo' ? (
-        <div className="detail-grid">
-          <Card titulo={t('empresas.abas.resumo')}>
-            <dl className="definition-list">
-              <div><dt>{t('empresas.campos.razaoSocial')}</dt><dd>{empresa.razaoSocial}</dd></div>
-              <div><dt>{t('empresas.campos.nomeFantasia')}</dt><dd>{empresa.nomeFantasia ?? t('comum.naoInformado')}</dd></div>
-              <div><dt>{t('empresas.campos.ativa')}</dt><dd><StatusBadge tom={empresa.ativa ? 'sucesso' : 'neutro'}>{t(empresa.ativa ? 'comum.sim' : 'comum.nao')}</StatusBadge></dd></div>
-              <div><dt>{t('empresas.campos.responsavelNome')}</dt><dd>{empresa.responsavelNome ?? t('comum.naoInformado')}</dd></div>
-              <div><dt>{t('empresas.campos.responsavelEmail')}</dt><dd>{empresa.responsavelEmail ?? t('comum.naoInformado')}</dd></div>
-            </dl>
-          </Card>
-          <Card titulo={t('comum.detalhes')}>
-            <dl className="definition-list">
-              <div><dt>{t('empresas.campos.cnpj')}</dt><dd>{formatarCnpj(matriz?.cnpj)}</dd></div>
-              <div><dt>{t('empresas.campos.status')}</dt><dd>{matriz ? t(`empresas.status.${matriz.status}`) : t('comum.naoInformado')}</dd></div>
-              <div><dt>{t('empresas.campos.regimeTributario')}</dt><dd>{matriz ? t(`empresas.regimes.${matriz.regimeTributario}`) : t('comum.naoInformado')}</dd></div>
-              <div><dt>{t('empresas.campos.inscricaoEstadual')}</dt><dd>{matriz?.inscricaoEstadual ?? t('comum.naoInformado')}</dd></div>
-              <div><dt>{t('empresas.campos.inscricaoMunicipal')}</dt><dd>{matriz?.inscricaoMunicipal ?? t('comum.naoInformado')}</dd></div>
-              <div><dt>{t('empresas.campos.municipio')}</dt><dd>{[matriz?.municipio, matriz?.uf].filter(Boolean).join(' / ') || t('comum.naoInformado')}</dd></div>
-            </dl>
+        <div className="stack">
+          <div className="detail-grid">
+            <Card titulo={t('empresas.abas.resumo')}>
+              <dl className="definition-list">
+                <div><dt>{t('empresas.campos.razaoSocial')}</dt><dd>{empresa.razaoSocial}</dd></div>
+                <div><dt>{t('empresas.campos.nomeFantasia')}</dt><dd>{empresa.nomeFantasia ?? t('comum.naoInformado')}</dd></div>
+                <div><dt>{t('empresas.campos.ativa')}</dt><dd><StatusBadge tom={empresa.ativa ? 'sucesso' : 'neutro'}>{t(empresa.ativa ? 'comum.sim' : 'comum.nao')}</StatusBadge></dd></div>
+                <div><dt>{t('empresas.campos.responsavelNome')}</dt><dd>{empresa.responsavelNome ?? t('comum.naoInformado')}</dd></div>
+                <div><dt>{t('empresas.campos.responsavelEmail')}</dt><dd>{empresa.responsavelEmail ?? t('comum.naoInformado')}</dd></div>
+              </dl>
+            </Card>
+            {matriz ? <EstabelecimentoCard item={matriz} titulo={t('empresas.filiais.matriz')} /> : null}
+          </div>
+          <Card
+            titulo={t('empresas.filiais.titulo')}
+            className="company-establishments"
+          >
+            <div className="section-toolbar">
+              <p className="muted">{t('empresas.filiais.descricao')}</p>
+              {temPermissao(PERMISSOES.EMPRESA_EDITAR) ? (
+                <Button variante="secundario" onClick={() => setFilialAberta(true)}>{t('empresas.filiais.adicionar')}</Button>
+              ) : null}
+            </div>
+            {filiais.length === 0 ? (
+              <p className="muted">{t('empresas.filiais.vazio')}</p>
+            ) : (
+              <div className="establishment-grid">
+                {filiais.map((filial) => <EstabelecimentoCard key={filial.id} item={filial} titulo={t('empresas.filiais.filial')} />)}
+              </div>
+            )}
           </Card>
         </div>
+      ) : aba === 'certidoes' ? (
+        <Card>
+          <div className="module-callout">
+            <div>
+              <h2>{t('certidoes.titulo')}</h2>
+              <p>{t('certidoes.empresaDescricao')}</p>
+            </div>
+            <Button onClick={() => navigate(`/certidoes?empresaId=${empresa.id}`)}>{t('certidoes.acoes.abrirCentro')}</Button>
+          </div>
+        </Card>
       ) : aba === 'documentos' ? (
         <Card>
-          <Button onClick={() => navigate(`/documentos?empresaId=${empresa.id}`)}>{t('menu.documentos')}</Button>
+          <div className="module-callout">
+            <div>
+              <h2>{t('documentos.titulo')}</h2>
+              <p>{t('documentos.descricao')}</p>
+            </div>
+            <Button onClick={() => navigate(`/documentos?empresaId=${empresa.id}`)}>{t('menu.documentos')}</Button>
+          </div>
         </Card>
       ) : (
         <Card><ModulePending /></Card>
@@ -109,7 +145,34 @@ export function EmpresaDetalhePage() {
           setMensagem(t('empresas.mensagens.atualizada'));
         }}
       />
+      <FilialFormModal
+        empresaId={id}
+        aberto={filialAberta}
+        aoFechar={() => setFilialAberta(false)}
+        aoSalvar={adicionarFilial}
+      />
     </>
+  );
+}
+
+function EstabelecimentoCard({ item, titulo }: { item: Estabelecimento; titulo: string }) {
+  const { t } = useTranslation();
+  return (
+    <Card className="establishment-card">
+      <div className="card-row__title">
+        <strong>{titulo}</strong>
+        <StatusBadge tom={item.ativo && item.status === 'ATIVA' ? 'sucesso' : 'neutro'}>
+          {t(`empresas.status.${item.status}`)}
+        </StatusBadge>
+      </div>
+      <dl className="definition-list definition-list--compact">
+        <div><dt>{t('empresas.campos.cnpj')}</dt><dd>{formatarCnpj(item.cnpj)}</dd></div>
+        <div><dt>{t('empresas.campos.regimeTributario')}</dt><dd>{t(`empresas.regimes.${item.regimeTributario}`)}</dd></div>
+        <div><dt>{t('empresas.campos.inscricaoEstadual')}</dt><dd>{item.inscricaoEstadual ?? t('comum.naoInformado')}</dd></div>
+        <div><dt>{t('empresas.campos.inscricaoMunicipal')}</dt><dd>{item.inscricaoMunicipal ?? t('comum.naoInformado')}</dd></div>
+        <div><dt>{t('empresas.campos.municipio')}</dt><dd>{[item.municipio, item.uf].filter(Boolean).join(' / ') || t('comum.naoInformado')}</dd></div>
+      </dl>
+    </Card>
   );
 }
 

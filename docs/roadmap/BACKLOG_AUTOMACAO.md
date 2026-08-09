@@ -1,26 +1,25 @@
 # Backlog Automação
 
-## Baseline
+## Candidato v0.2.0
 
 - worker isolado;
-- Chromium;
-- health;
+- polling;
+- aquisição por lease;
+- renovação;
 - heartbeat;
-- interface `FluxoPortal`;
+- browser sandbox;
 - registro de fluxos;
-- tipos de intervenção;
-- estados de execução.
+- upload de documento;
+- resultado/falha/intervenção.
 
-## Antes de um portal real
+## Pendências antes de portal real
 
-- leasing de execução;
+- fluxo específico por portal;
 - sessão persistida;
-- expiração;
-- screenshots com redaction;
-- download seguro;
-- retomada pós-intervenção;
-- terminal remoto/controlado para o operador;
-- limites de concorrência;
-- detecção de mudança de portal;
-- política de retry;
-- monitoramento.
+- handoff visual;
+- redaction de screenshots;
+- retomada do mesmo contexto;
+- limite de concorrência;
+- detecção de alteração;
+- evidência runtime;
+- shutdown gracioso aguardando execução.

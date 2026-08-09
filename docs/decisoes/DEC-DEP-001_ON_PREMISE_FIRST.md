@@ -1,6 +1,6 @@
 # DEC-DEP-001 — Implantação on-premise first
 
-**Status:** APROVADA  
+**Status:** APROVADA
 **Data:** 2026-08-09
 
 ## Decisão

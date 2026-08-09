@@ -13,7 +13,7 @@ public class WorkerHeartbeat extends EntidadeBase {
     @Column(name = "worker_id", nullable = false, unique = true, length = 120)
     private String workerId;
 
-    @Column(nullable = false, length = 80)
+    @Column(name = "worker_versao", nullable = false, length = 80)
     private String versaoWorker;
 
     @Column(name = "observado_em", nullable = false)

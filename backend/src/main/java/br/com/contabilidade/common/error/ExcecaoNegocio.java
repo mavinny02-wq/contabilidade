@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 
 public class ExcecaoNegocio extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
     private final String codigo;
     private final String mensagemKey;
     private final HttpStatus status;

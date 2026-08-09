@@ -5,5 +5,9 @@ public enum StatusIntervencao {
     EM_ATENDIMENTO,
     RESOLVIDA,
     EXPIRADA,
-    CANCELADA
+    CANCELADA;
+
+    public boolean aberta() {
+        return this == PENDENTE || this == EM_ATENDIMENTO;
+    }
 }

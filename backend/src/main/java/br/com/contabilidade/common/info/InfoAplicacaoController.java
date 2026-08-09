@@ -14,7 +14,7 @@ public class InfoAplicacaoController {
 
     public InfoAplicacaoController(
             @Value("${app.environment:LOCAL}") String ambiente,
-            @Value("${app.version:0.1.0}") String versao
+            @Value("${app.version:0.2.0}") String versao
     ) {
         this.ambiente = ambiente;
         this.versao = versao;

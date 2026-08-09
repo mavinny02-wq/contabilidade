@@ -11,5 +11,15 @@ public enum StatusExecucao {
     PARCIAL,
     FALHA,
     FONTE_INDISPONIVEL,
-    CANCELADO
+    CANCELADO;
+
+    public boolean terminal() {
+        return this == SUCESSO || this == PARCIAL || this == FALHA
+                || this == FONTE_INDISPONIVEL || this == CANCELADO;
+    }
+
+    public boolean esperaHumana() {
+        return this == AGUARDANDO_HUMANO || this == AGUARDANDO_CAPTCHA
+                || this == AGUARDANDO_AUTENTICACAO;
+    }
 }

@@ -19,45 +19,32 @@ public class NotificacaoService {
     @Transactional(readOnly = true)
     public Page<NotificacaoResponse> listar(int pagina, int tamanho) {
         return repository.findAllByOrderByCriadoEmDesc(
-                PageRequest.of(Math.max(pagina, 0), Math.min(Math.max(tamanho, 1), 100))
-        ).map(NotificacaoResponse::de);
+                PageRequest.of(Math.max(pagina, 0), Math.min(Math.max(tamanho, 1), 100)))
+                .map(NotificacaoResponse::de);
+    }
+
+    @Transactional
+    public Notificacao criar(TipoNotificacao tipo, String tituloKey, String mensagemKey,
+                             String deepLink, String destinatario) {
+        return repository.save(new Notificacao(tipo, tituloKey, mensagemKey, deepLink, destinatario));
     }
 
     @Transactional
     public void marcarLida(UUID id) {
         Notificacao notificacao = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException(
-                        "NOTIFICACAO_NAO_ENCONTRADA",
-                        "erros.notificacaoNaoEncontrada"
-                ));
+                        "NOTIFICACAO_NAO_ENCONTRADA", "erros.notificacaoNaoEncontrada"));
         notificacao.marcarLida();
     }
 
-    public long contarNaoLidas() {
-        return repository.countByLidaEmIsNull();
-    }
+    public long contarNaoLidas() { return repository.countByLidaEmIsNull(); }
 
-    public record NotificacaoResponse(
-            UUID id,
-            TipoNotificacao tipo,
-            String tituloKey,
-            String mensagemKey,
-            String deepLink,
-            boolean lida,
-            java.time.Instant criadoEm,
-            java.time.Instant lidaEm
-    ) {
-        static NotificacaoResponse de(Notificacao notificacao) {
-            return new NotificacaoResponse(
-                    notificacao.getId(),
-                    notificacao.getTipo(),
-                    notificacao.getTituloKey(),
-                    notificacao.getMensagemKey(),
-                    notificacao.getDeepLink(),
-                    notificacao.isLida(),
-                    notificacao.getCriadoEm(),
-                    notificacao.getLidaEm()
-            );
+    public record NotificacaoResponse(UUID id, TipoNotificacao tipo, String tituloKey,
+                                      String mensagemKey, String deepLink, boolean lida,
+                                      java.time.Instant criadoEm, java.time.Instant lidaEm) {
+        static NotificacaoResponse de(Notificacao item) {
+            return new NotificacaoResponse(item.getId(), item.getTipo(), item.getTituloKey(),
+                    item.getMensagemKey(), item.getDeepLink(), item.isLida(), item.getCriadoEm(), item.getLidaEm());
         }
     }
 }

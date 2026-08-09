@@ -77,11 +77,17 @@ services:
     build:
       context: ./automation-worker
     restart: unless-stopped
+    init: true
+    ipc: host
+    security_opt:
+      - seccomp=./infra/playwright/seccomp_profile.json
     environment:
       WORKER_PORT: 3001
       BACKEND_URL: http://backend:8080
       WORKER_TOKEN: ${APP_WORKER_TOKEN:?Defina APP_WORKER_TOKEN no arquivo .env}
       BROWSER_HEADLESS: "true"
+      POLL_INTERVAL_MS: ${WORKER_POLL_INTERVAL_MS:-5000}
+      LEASE_SECONDS: ${WORKER_LEASE_SECONDS:-180}
     shm_size: 1gb
     depends_on:
       backend:

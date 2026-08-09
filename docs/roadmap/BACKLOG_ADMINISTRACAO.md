@@ -1,20 +1,22 @@
 # Backlog Administração
 
-## Baseline
+## Candidato v0.2.0
 
 - providers;
+- políticas;
 - busca;
 - auditoria;
-- console;
-- permissões no backend.
+- execuções;
+- intervenções;
+- Console Técnica;
+- custo/configuração pública.
 
 ## Pendências
 
-- gestão de usuários e papéis;
-- segredo configurado fora do domínio;
-- política por operação/jurisdição;
-- custo máximo;
-- fallback pago;
-- dashboard técnico histórico;
-- backup/restore na UI;
-- atualização controlada.
+- usuários/papéis;
+- secrets;
+- histórico técnico;
+- backup na UI;
+- atualização controlada;
+- política por ambiente;
+- alertas operacionais externos.

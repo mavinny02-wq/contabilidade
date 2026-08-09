@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { api, type ApiError } from '../../api/http';
-import type { EmpresaDetalhe, EmpresaPayload } from '../../api/types';
+import type { EmpresaDetalhe, EmpresaPayload, RegimeTributario, StatusEmpresa } from '../../api/types';
 import { Alert } from '../../components/Alert';
 import { Button } from '../../components/Button';
 import { Modal } from '../../components/Modal';
@@ -73,7 +73,7 @@ export function EmpresaFormModal({
     }
   }, [aberto, empresa]);
 
-  const set = (campo: keyof EmpresaPayload, valor: string) => {
+  const set = <K extends keyof EmpresaPayload>(campo: K, valor: EmpresaPayload[K]) => {
     setForm((atual) => ({ ...atual, [campo]: valor }));
   };
 
@@ -136,7 +136,7 @@ export function EmpresaFormModal({
         </label>
         <label className="field">
           <span>{t('empresas.campos.status')}</span>
-          <select value={form.status} onChange={(e) => set('status', e.target.value)}>
+          <select value={form.status} onChange={(e) => set('status', e.target.value as StatusEmpresa)}>
             {['ATIVA', 'INATIVA', 'SUSPENSA', 'BAIXADA', 'DESCONHECIDA'].map((status) => (
               <option key={status} value={status}>{t(`empresas.status.${status}`)}</option>
             ))}
@@ -144,7 +144,7 @@ export function EmpresaFormModal({
         </label>
         <label className="field">
           <span>{t('empresas.campos.regimeTributario')}</span>
-          <select value={form.regimeTributario} onChange={(e) => set('regimeTributario', e.target.value)}>
+          <select value={form.regimeTributario} onChange={(e) => set('regimeTributario', e.target.value as RegimeTributario)}>
             {['NAO_INFORMADO', 'MEI', 'SIMPLES_NACIONAL', 'LUCRO_PRESUMIDO', 'LUCRO_REAL', 'OUTRO'].map((regime) => (
               <option key={regime} value={regime}>{t(`empresas.regimes.${regime}`)}</option>
             ))}

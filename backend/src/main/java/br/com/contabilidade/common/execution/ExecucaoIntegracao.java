@@ -28,6 +28,9 @@ public class ExecucaoIntegracao extends EntidadeBase {
     private StatusExecucao status;
 
     @Column(nullable = false)
+    private int prioridade;
+
+    @Column(nullable = false)
     private int tentativas;
 
     @Column(name = "max_tentativas", nullable = false)
@@ -57,53 +60,170 @@ public class ExecucaoIntegracao extends EntidadeBase {
     @Column(length = 3)
     private String moeda;
 
+    @Column(name = "payload_json", columnDefinition = "text")
+    private String payloadJson;
+
+    @Column(name = "resultado_json", columnDefinition = "text")
+    private String resultadoJson;
+
+    @Column(name = "idempotency_key", unique = true, length = 200)
+    private String idempotencyKey;
+
+    @Column(name = "lease_token")
+    private UUID leaseToken;
+
+    @Column(name = "lease_ate")
+    private Instant leaseAte;
+
+    @Column(name = "worker_id", length = 120)
+    private String workerId;
+
+    @Column(name = "execucao_anterior_id")
+    private UUID execucaoAnteriorId;
+
+    @Column(name = "cancelada_em")
+    private Instant canceladaEm;
+
+    @Column(name = "motivo_cancelamento", length = 500)
+    private String motivoCancelamento;
+
     protected ExecucaoIntegracao() {
     }
 
-    public ExecucaoIntegracao(UUID empresaId, String operacao, String provedorCodigo, int maxTentativas) {
+    public ExecucaoIntegracao(UUID empresaId, String operacao, String provedorCodigo,
+                              int prioridade, int maxTentativas, String payloadJson,
+                              String idempotencyKey, UUID execucaoAnteriorId) {
         this.empresaId = empresaId;
         this.operacao = operacao;
         this.provedorCodigo = provedorCodigo;
         this.status = StatusExecucao.NA_FILA;
+        this.prioridade = Math.max(0, Math.min(prioridade, 1000));
         this.maxTentativas = Math.max(maxTentativas, 1);
+        this.payloadJson = payloadJson;
+        this.idempotencyKey = idempotencyKey;
+        this.execucaoAnteriorId = execucaoAnteriorId;
     }
 
-    public void iniciar() {
-        status = StatusExecucao.EXECUTANDO;
-        tentativas++;
-        iniciadaEm = Instant.now();
+    public void concluir(String protocoloExterno, String resultadoJson, BigDecimal custo, String moeda) {
+        exigirExecutandoOuEspera();
+        this.status = StatusExecucao.SUCESSO;
+        this.protocoloExterno = limpar(protocoloExterno);
+        this.resultadoJson = resultadoJson;
+        this.custoEstimado = custo;
+        this.moeda = moeda == null ? null : moeda.toUpperCase();
+        this.finalizadaEm = Instant.now();
+        this.proximaTentativaEm = null;
+        limparLease();
+        limparErro();
     }
 
-    public void concluir(String protocoloExterno, BigDecimal custoEstimado, String moeda) {
-        status = StatusExecucao.SUCESSO;
-        this.protocoloExterno = protocoloExterno;
-        this.custoEstimado = custoEstimado;
-        this.moeda = moeda;
-        finalizadaEm = Instant.now();
+    public void concluirParcial(String resultadoJson, String erroCodigo, String erroResumo) {
+        exigirExecutandoOuEspera();
+        this.status = StatusExecucao.PARCIAL;
+        this.resultadoJson = resultadoJson;
+        this.erroCodigo = limpar(erroCodigo);
+        this.erroResumo = limitar(erroResumo, 500);
+        this.finalizadaEm = Instant.now();
+        this.proximaTentativaEm = null;
+        limparLease();
+    }
+
+    public void falharDefinitivo(String erroCodigo, String erroResumo, boolean fonteIndisponivel) {
+        exigirNaoTerminal();
+        this.status = fonteIndisponivel ? StatusExecucao.FONTE_INDISPONIVEL : StatusExecucao.FALHA;
+        this.erroCodigo = limpar(erroCodigo);
+        this.erroResumo = limitar(erroResumo, 500);
+        this.finalizadaEm = Instant.now();
+        this.proximaTentativaEm = null;
+        limparLease();
+    }
+
+    public void agendarRetry(String erroCodigo, String erroResumo, Instant proximaTentativaEm) {
+        exigirNaoTerminal();
+        this.status = StatusExecucao.RETRY_AGENDADO;
+        this.erroCodigo = limpar(erroCodigo);
+        this.erroResumo = limitar(erroResumo, 500);
+        this.proximaTentativaEm = proximaTentativaEm;
+        this.finalizadaEm = null;
+        limparLease();
+    }
+
+    public void aguardarHumano(StatusExecucao statusEspera, String erroCodigo, String erroResumo) {
+        if (!statusEspera.esperaHumana()) {
+            throw new IllegalArgumentException("Status de espera humana inválido");
+        }
+        exigirNaoTerminal();
+        this.status = statusEspera;
+        this.erroCodigo = limpar(erroCodigo);
+        this.erroResumo = limitar(erroResumo, 500);
+        this.proximaTentativaEm = null;
+        this.finalizadaEm = null;
+        limparLease();
+    }
+
+    public void retomarDaIntervencao() {
+        if (!status.esperaHumana()) {
+            throw new IllegalStateException("Execução não aguarda intervenção");
+        }
+        this.status = StatusExecucao.NA_FILA;
+        this.proximaTentativaEm = Instant.now();
+        limparErro();
+    }
+
+    public void cancelar(String motivo) {
+        if (status.terminal()) {
+            throw new IllegalStateException("Execução terminal não pode ser cancelada");
+        }
+        this.status = StatusExecucao.CANCELADO;
+        this.canceladaEm = Instant.now();
+        this.finalizadaEm = this.canceladaEm;
+        this.motivoCancelamento = limitar(motivo, 500);
+        this.proximaTentativaEm = null;
+        limparLease();
+    }
+
+    public boolean podeTentarNovamente() {
+        return tentativas < maxTentativas;
+    }
+
+    private void exigirNaoTerminal() {
+        if (status.terminal()) {
+            throw new IllegalStateException("Execução já está em estado terminal");
+        }
+    }
+
+    private void exigirExecutandoOuEspera() {
+        if (status != StatusExecucao.EXECUTANDO && !status.esperaHumana()) {
+            throw new IllegalStateException("Execução não está ativa");
+        }
+    }
+
+    private void limparLease() {
+        leaseToken = null;
+        leaseAte = null;
+        workerId = null;
+    }
+
+    private void limparErro() {
         erroCodigo = null;
         erroResumo = null;
     }
 
-    public void falhar(String erroCodigo, String erroResumo, boolean fonteIndisponivel) {
-        status = fonteIndisponivel ? StatusExecucao.FONTE_INDISPONIVEL : StatusExecucao.FALHA;
-        this.erroCodigo = erroCodigo;
-        this.erroResumo = erroResumo;
-        finalizadaEm = Instant.now();
+    private String limpar(String valor) {
+        return valor == null || valor.isBlank() ? null : valor.trim();
     }
 
-    public void aguardarHumano(StatusExecucao statusDeEspera) {
-        if (statusDeEspera != StatusExecucao.AGUARDANDO_HUMANO
-                && statusDeEspera != StatusExecucao.AGUARDANDO_CAPTCHA
-                && statusDeEspera != StatusExecucao.AGUARDANDO_AUTENTICACAO) {
-            throw new IllegalArgumentException("Status de espera humana inválido");
-        }
-        this.status = statusDeEspera;
+    private String limitar(String valor, int tamanho) {
+        String limpo = limpar(valor);
+        if (limpo == null || limpo.length() <= tamanho) return limpo;
+        return limpo.substring(0, tamanho);
     }
 
     public UUID getEmpresaId() { return empresaId; }
     public String getOperacao() { return operacao; }
     public String getProvedorCodigo() { return provedorCodigo; }
     public StatusExecucao getStatus() { return status; }
+    public int getPrioridade() { return prioridade; }
     public int getTentativas() { return tentativas; }
     public int getMaxTentativas() { return maxTentativas; }
     public Instant getProximaTentativaEm() { return proximaTentativaEm; }
@@ -114,4 +234,13 @@ public class ExecucaoIntegracao extends EntidadeBase {
     public String getProtocoloExterno() { return protocoloExterno; }
     public BigDecimal getCustoEstimado() { return custoEstimado; }
     public String getMoeda() { return moeda; }
+    public String getPayloadJson() { return payloadJson; }
+    public String getResultadoJson() { return resultadoJson; }
+    public String getIdempotencyKey() { return idempotencyKey; }
+    public UUID getLeaseToken() { return leaseToken; }
+    public Instant getLeaseAte() { return leaseAte; }
+    public String getWorkerId() { return workerId; }
+    public UUID getExecucaoAnteriorId() { return execucaoAnteriorId; }
+    public Instant getCanceladaEm() { return canceladaEm; }
+    public String getMotivoCancelamento() { return motivoCancelamento; }
 }

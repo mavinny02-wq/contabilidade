@@ -1,26 +1,28 @@
 # Backlog Common
 
-## Implementado na baseline
+## Candidato v0.2.0
 
-- error contract e correlationId;
-- Keycloak/JWT e catálogo de permissões;
-- auditoria;
-- notificações;
-- documentos com hash e storage local;
-- execuções;
-- providers;
+- fila PostgreSQL;
+- lease;
+- retry/backoff;
+- idempotência;
+- fallback;
+- políticas;
 - intervenção;
-- busca;
-- console técnica;
-- heartbeat de worker.
+- documentos com assinatura básica;
+- worker;
+- auditoria/notificações;
+- Console Técnica.
 
 ## Pendências
 
-- políticas de retenção;
-- secret manager de produção;
+- lockfiles;
+- build/runtime real;
+- testes de concorrência;
 - storage S3/MinIO;
-- leasing concorrente de jobs;
-- limpeza segura de sessões;
-- notificações por e-mail;
-- administração de usuários/roles pela aplicação;
-- testes e evidências de segurança.
+- secret manager;
+- retenção documental;
+- e-mail;
+- administração de usuários;
+- histórico de saúde por provider;
+- sessão remota de browser.

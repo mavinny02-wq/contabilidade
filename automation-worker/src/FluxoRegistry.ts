@@ -1,20 +1,40 @@
-import type { FluxoPortal } from './contracts.js';
+import type { CapacidadeFluxo, FluxoPortal } from './contracts.js';
+
+const chave = (provedorCodigo: string, operacao: string) => `${provedorCodigo}::${operacao}`;
 
 export class FluxoRegistry {
   private readonly fluxos = new Map<string, FluxoPortal>();
 
   registrar(fluxo: FluxoPortal): void {
-    if (this.fluxos.has(fluxo.codigo)) {
-      throw new Error(`Fluxo já registrado: ${fluxo.codigo}`);
+    const id = chave(fluxo.provedorCodigo, fluxo.operacao);
+    if (this.fluxos.has(id)) {
+      throw new Error(`Fluxo já registrado: ${id}`);
     }
-    this.fluxos.set(fluxo.codigo, fluxo);
+    this.fluxos.set(id, fluxo);
   }
 
-  obter(codigo: string): FluxoPortal | undefined {
-    return this.fluxos.get(codigo);
+  obter(provedorCodigo: string, operacao: string): FluxoPortal | undefined {
+    return this.fluxos.get(chave(provedorCodigo, operacao));
+  }
+
+  capacidades(): CapacidadeFluxo[] {
+    return [...this.fluxos.values()]
+      .map((fluxo) => ({
+        provedorCodigo: fluxo.provedorCodigo,
+        operacao: fluxo.operacao,
+      }))
+      .sort((a, b) => chave(a.provedorCodigo, a.operacao).localeCompare(chave(b.provedorCodigo, b.operacao)));
+  }
+
+  operacoes(): string[] {
+    return [...new Set(this.capacidades().map((item) => item.operacao))].sort();
+  }
+
+  provedores(): string[] {
+    return [...new Set(this.capacidades().map((item) => item.provedorCodigo))].sort();
   }
 
   codigos(): string[] {
-    return [...this.fluxos.keys()].sort();
+    return this.capacidades().map((item) => chave(item.provedorCodigo, item.operacao));
   }
 }

@@ -1,40 +1,36 @@
 # Roadmap do produto
 
-## Baseline 0.1 — integração atual
+## Checkpoint
 
-- aplicação executável;
-- on-premise local;
-- Common inicial;
-- empresas;
-- documentos;
-- providers;
-- worker Playwright;
-- intervenção humana;
-- console técnica.
+A baseline v0.1 está no repositório. O pacote v0.2.0 foi preparado, mas só vira integrado depois de:
 
-Após extrair o ZIP, compilar e subir no Git, reconciliar `HIST-FND-001` como integrado.
+1. gerar lockfiles;
+2. executar build real;
+3. validar PostgreSQL/Flyway/Keycloak/Docker;
+4. revisar diff;
+5. commitar e enviar.
 
-## Onda pós-baseline sugerida
+## v0.2.0
 
-A primeira onda deve ser planejada somente depois do build no ambiente do usuário. Candidatos:
+- Common operacional;
+- Empresas/filiais;
+- fila PostgreSQL;
+- providers e políticas;
+- intervenção;
+- Centro de Certidões;
+- provider manual;
+- scheduler/alertas;
+- worker pronto para fluxos futuros.
 
-1. endurecimento do modelo Empresas;
-2. storage/backup operacional;
-3. scheduler PostgreSQL e leasing;
-4. sessão remota de intervenção humana;
-5. UI de administração e observabilidade.
+## Depois da integração
 
-Não colocar tarefas dependentes na mesma onda.
+Próxima fase recomendada:
 
-## Vertical seguinte
+1. task de validação dedicada;
+2. sessão assistida para intervenção;
+3. análise do portal Federal;
+4. análise do portal SEFAZ-SP;
+5. análise do portal PGE-SP;
+6. somente então conectores reais.
 
-Centro de Certidões:
-
-1. modelo/estados;
-2. documento de certidão;
-3. provider Federal;
-4. provider SEFAZ-SP;
-5. provider PGE-SP;
-6. política/fallback;
-7. scheduler de renovação;
-8. alertas e histórico.
+Não colocar análise e implementação do mesmo portal na mesma onda.

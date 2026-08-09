@@ -8,12 +8,17 @@ worker detecta desafio
   ↓
 execução entra em espera
   ↓
-notificação
+solicitação de intervenção + notificação
   ↓
-operador resolve etapa
+operador assume e resolve
   ↓
-execução continua ou usa fallback
+execução é concluída manualmente, retomada ou usa fallback
 ```
 
-Guardar execução, empresa, tipo, operador, início, fim e resultado. Nunca guardar senha ou conteúdo
-secreto digitado.
+A API controla atribuição, expiração, resolução e auditoria.
+
+## Limite atual
+
+A versão 0.2.0 não transmite uma sessão de navegador viva para a UI. Quando um futuro fluxo
+Playwright solicitar intervenção, o contexto atual é encerrado depois do reporte. O handoff visual e
+a retomada do mesmo contexto são itens pendentes e devem ser implementados antes de um CAPTCHA real.

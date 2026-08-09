@@ -75,7 +75,7 @@ springdoc:
 
 app:
   environment: ${APP_ENVIRONMENT:LOCAL}
-  version: ${APP_VERSION:0.1.0}
+  version: ${APP_VERSION:0.2.0}
   security:
     enabled: ${APP_SECURITY_ENABLED:false}
     resource-client-id: ${APP_SECURITY_RESOURCE_CLIENT_ID:contabilidade-backend}
@@ -85,3 +85,8 @@ app:
     max-file-size-bytes: ${APP_STORAGE_MAX_FILE_SIZE_BYTES:26214400}
   worker:
     token: ${APP_WORKER_TOKEN:token-local-altere}
+  execution:
+    recovery-interval-ms: ${APP_EXECUTION_RECOVERY_INTERVAL_MS:60000}
+  certificate:
+    scheduler-cron: ${APP_CERTIFICATE_SCHEDULER_CRON:0 15 6 * * *}
+    alert-cron: ${APP_CERTIFICATE_ALERT_CRON:0 30 7 * * *}

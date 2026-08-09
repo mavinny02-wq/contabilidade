@@ -12,7 +12,11 @@ try {
 
 Push-Location (Join-Path $root "frontend")
 try {
-    npm ci
+    if (Test-Path ".\package-lock.json") {
+        npm ci --no-audit --no-fund
+    } else {
+        npm install --no-audit --no-fund
+    }
     npm run locale:validate
     npm run build
     if ($LASTEXITCODE -ne 0) { throw "Falha no build do frontend." }
@@ -22,7 +26,11 @@ try {
 
 Push-Location (Join-Path $root "automation-worker")
 try {
-    npm ci
+    if (Test-Path ".\package-lock.json") {
+        npm ci --no-audit --no-fund
+    } else {
+        npm install --no-audit --no-fund
+    }
     npm run build
     if ($LASTEXITCODE -ne 0) { throw "Falha no build do worker." }
 } finally {

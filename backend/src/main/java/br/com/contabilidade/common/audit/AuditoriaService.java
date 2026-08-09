@@ -9,7 +9,6 @@ import org.slf4j.MDC;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -23,7 +22,7 @@ public class AuditoriaService {
         this.objectMapper = objectMapper;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void registrar(String acao, String recursoTipo, UUID recursoId, Map<String, ?> detalhes) {
         repository.save(new EventoAuditoria(
                 acao,

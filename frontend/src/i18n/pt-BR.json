@@ -18,7 +18,9 @@
     "administracao": "Administração",
     "integracoes": "Integrações",
     "auditoria": "Auditoria",
-    "consoleTecnica": "Console técnica"
+    "consoleTecnica": "Console técnica",
+    "fiscal": "Fiscal",
+    "certidoes": "Certidões"
   },
   "acoes": {
     "novo": "Novo",
@@ -40,7 +42,10 @@
     "proxima": "Próxima",
     "marcarLida": "Marcar como lida",
     "ativar": "Ativar",
-    "inativar": "Inativar"
+    "inativar": "Inativar",
+    "confirmar": "Confirmar",
+    "remover": "Remover",
+    "assumir": "Assumir"
   },
   "comum": {
     "sim": "Sim",
@@ -69,7 +74,13 @@
     "intervencoesPendentes": "Intervenções pendentes",
     "notificacoesNaoLidas": "Notificações não lidas",
     "proximosPassos": "Próximos passos",
-    "proximosPassosDescricao": "A fundação Common está preparada para receber o Centro de Certidões."
+    "proximosPassosDescricao": "A fundação Common está preparada para receber o Centro de Certidões.",
+    "certidoesRegulares": "Certidões regulares",
+    "certidoesAtencao": "Certidões com atenção",
+    "certidoesAcaoManual": "Ações manuais",
+    "certidoesTitulo": "Regularidade fiscal",
+    "certidoesDescricao": "Acompanhe as certidões federais e estaduais por CNPJ.",
+    "proximosPassosDescricaoV2": "A versão 0.2.0 entrega operação manual de certidões, fila de execuções, providers e intervenção humana. Os fluxos reais de portais entram na próxima fase."
   },
   "empresas": {
     "titulo": "Empresas",
@@ -132,6 +143,16 @@
       "atualizada": "Empresa atualizada com sucesso.",
       "inativada": "Empresa inativada.",
       "ativada": "Empresa ativada."
+    },
+    "filiais": {
+      "titulo": "Estabelecimentos e filiais",
+      "descricao": "Matriz e filiais vinculadas à mesma empresa.",
+      "matriz": "Matriz",
+      "filial": "Filial",
+      "adicionar": "Adicionar filial",
+      "cadastroTitulo": "Cadastrar filial",
+      "vazio": "Nenhuma filial cadastrada.",
+      "mensagemCriada": "Filial cadastrada com sucesso."
     }
   },
   "documentos": {
@@ -177,7 +198,13 @@
       "FALHA": "Falha",
       "FONTE_INDISPONIVEL": "Fonte indisponível",
       "CANCELADO": "Cancelada"
-    }
+    },
+    "worker": "Worker",
+    "protocolo": "Protocolo",
+    "proximaTentativa": "Próxima tentativa",
+    "todosStatus": "Todos os status",
+    "cancelamentoUsuario": "Cancelada pelo usuário",
+    "mensagemCancelada": "Execução cancelada."
   },
   "intervencoes": {
     "titulo": "Intervenções",
@@ -193,6 +220,21 @@
       "CONFIRMACAO": "Confirmação",
       "PORTAL_ALTERADO": "Portal alterado",
       "OUTRA": "Outra"
+    },
+    "mensagemAssumida": "Intervenção atribuída a você.",
+    "assumir": "Assumir",
+    "criadaEm": "Criada em",
+    "expiraEm": "Expira em",
+    "atribuidaPara": "Atribuída para",
+    "resolucaoTitulo": "Concluir intervenção",
+    "observacao": "Observação",
+    "retomarExecucao": "Retomar automaticamente a execução após concluir",
+    "status": {
+      "PENDENTE": "Pendente",
+      "EM_ATENDIMENTO": "Em atendimento",
+      "RESOLVIDA": "Resolvida",
+      "EXPIRADA": "Expirada",
+      "CANCELADA": "Cancelada"
     }
   },
   "notificacoes": {
@@ -223,6 +265,32 @@
       "PORTAL_AUTOMATIZADO": "Portal automatizado",
       "PORTAL_ASSISTIDO": "Portal assistido",
       "MANUAL": "Manual"
+    },
+    "pago": "Pago",
+    "custoEstimado": "Custo estimado por chamada",
+    "moeda": "Moeda",
+    "abas": {
+      "provedores": "Providers",
+      "politicas": "Políticas de aquisição"
+    },
+    "politicas": {
+      "listaVazia": "Nenhuma política configurada.",
+      "ordem": "Ordem de tentativa dos providers",
+      "subir": "Mover para cima",
+      "descer": "Mover para baixo",
+      "adicionarProvedor": "Adicionar provider",
+      "selecione": "Selecione um provider",
+      "habilitada": "Política habilitada",
+      "intervencao": "Permitir intervenção humana",
+      "timeoutHumano": "Timeout humano (min)",
+      "fallbackPago": "Permitir fallback pago",
+      "custoMaximo": "Custo máximo por chamada",
+      "mensagemAtualizada": "Política de aquisição atualizada."
+    },
+    "operacoes": {
+      "CERTIDAO_FEDERAL_RFB_PGFN": "Certidão Federal RFB/PGFN",
+      "CERTIDAO_SP_SEFAZ_NAO_INSCRITOS": "Certidão SEFAZ-SP — não inscritos",
+      "CERTIDAO_SP_PGE_DIVIDA_ATIVA": "Certidão PGE-SP — dívida ativa"
     }
   },
   "consoleTecnica": {
@@ -261,6 +329,100 @@
     "inesperado": "Ocorreu um erro inesperado.",
     "fonteIndisponivel": "A fonte externa está indisponível.",
     "naoEncontrado": "Página não encontrada.",
-    "correlationId": "Código de rastreio: {{valor}}"
+    "correlationId": "Código de rastreio: {{valor}}",
+    "execucaoNaoEncontrada": "A execução não foi encontrada.",
+    "execucaoNaoCancelavel": "A execução já está finalizada e não pode ser cancelada.",
+    "execucaoNaoAguardaHumano": "A execução não está aguardando intervenção humana.",
+    "leaseInvalido": "O lease da execução expirou ou não pertence a este worker.",
+    "intervencaoIndisponivel": "A intervenção já foi atribuída ou finalizada.",
+    "politicaNaoEncontrada": "A política de aquisição não foi encontrada.",
+    "politicaSemProvedor": "Informe pelo menos um provider na política.",
+    "semProvedorDisponivel": "Nenhum provider habilitado atende à política e ao limite de custo.",
+    "certidaoNaoEncontrada": "O acompanhamento de certidão não foi encontrado.",
+    "documentoCertidaoObrigatorio": "Anexe o documento para registrar um resultado conclusivo.",
+    "estabelecimentoNaoEncontrado": "O estabelecimento não foi encontrado."
+  },
+  "certidoes": {
+    "titulo": "Centro de Certidões",
+    "descricao": "Controle regularidade, validade, documentos, histórico e forma de obtenção por CNPJ.",
+    "empresaDescricao": "Abra o Centro de Certidões já filtrado para esta empresa.",
+    "todasEmpresas": "Todas as empresas",
+    "listaVazia": "Nenhuma certidão encontrada.",
+    "listaVaziaEmpresa": "O acompanhamento será criado automaticamente para os CNPJs aplicáveis desta empresa.",
+    "listaVaziaGeral": "Cadastre empresas e abra o Centro de Certidões para iniciar o acompanhamento.",
+    "tipos": {
+      "FEDERAL_RFB_PGFN": "Federal — RFB/PGFN",
+      "SP_SEFAZ_NAO_INSCRITOS": "São Paulo — SEFAZ, débitos não inscritos",
+      "SP_PGE_DIVIDA_ATIVA": "São Paulo — PGE, dívida ativa"
+    },
+    "status": {
+      "NAO_CONSULTADA": "Não consultada",
+      "AGENDADA": "Agendada",
+      "EM_PROCESSAMENTO": "Em processamento",
+      "REGULAR": "Regular",
+      "POSITIVA_COM_EFEITO_NEGATIVA": "Positiva com efeito de negativa",
+      "IRREGULAR": "Irregular",
+      "INCOMPLETA": "Incompleta",
+      "FONTE_INDISPONIVEL": "Fonte indisponível",
+      "ACAO_MANUAL_NECESSARIA": "Ação manual necessária",
+      "PROXIMA_DO_VENCIMENTO": "Próxima do vencimento",
+      "VENCIDA": "Vencida",
+      "FALHA": "Falha"
+    },
+    "resultados": {
+      "DESCONHECIDO": "Desconhecido",
+      "REGULAR": "Regular",
+      "POSITIVA_COM_EFEITO_NEGATIVA": "Positiva com efeito de negativa",
+      "IRREGULAR": "Irregular",
+      "INCOMPLETA": "Incompleta"
+    },
+    "campos": {
+      "tipo": "Tipo de certidão",
+      "resultado": "Resultado fiscal",
+      "numero": "Número da certidão",
+      "emitidaEm": "Emitida em",
+      "validaAte": "Válida até",
+      "provedor": "Provider",
+      "observadaEm": "Observada em",
+      "mensagemFonte": "Observação ou mensagem da fonte"
+    },
+    "filtros": {
+      "todosTipos": "Todos os tipos",
+      "todosStatus": "Todos os status"
+    },
+    "acoes": {
+      "abrirCentro": "Abrir Centro de Certidões",
+      "atualizarTodas": "Solicitar todas",
+      "solicitar": "Solicitar atualização",
+      "registrarManual": "Registrar resultado",
+      "historico": "Histórico"
+    },
+    "mensagens": {
+      "solicitada": "A consulta foi criada conforme a política de aquisição.",
+      "todasSolicitadas": "As consultas aplicáveis foram criadas.",
+      "manualRegistrada": "O resultado manual foi registrado com evidência."
+    },
+    "manual": {
+      "titulo": "Registrar resultado manual",
+      "documento": "Documento da certidão",
+      "documentoObrigatorio": "O documento é obrigatório para resultados conclusivos.",
+      "documentoOpcional": "O documento é opcional quando o resultado é incompleto."
+    },
+    "historico": {
+      "titulo": "Histórico da certidão",
+      "vazio": "Nenhum resultado histórico registrado."
+    },
+    "intervencao": {
+      "titulo": "Certidão aguardando registro manual",
+      "instrucao": "Obtenha a certidão na fonte correspondente e registre o resultado no Centro de Certidões."
+    },
+    "alertas": {
+      "vencimentoTitulo": "Certidão próxima do vencimento",
+      "vencimentoMensagem": "Existe uma certidão vencida ou próxima do vencimento que precisa ser atualizada.",
+      "irregularTitulo": "Certidão com irregularidade",
+      "irregularMensagem": "Uma certidão foi classificada como irregular e precisa de análise.",
+      "fonteIndisponivelTitulo": "Fonte de certidão indisponível",
+      "fonteIndisponivelMensagem": "Uma fonte externa não respondeu. A situação fiscal anterior foi preservada e haverá nova tentativa."
+    }
   }
 }

@@ -1,5 +1,6 @@
 package br.com.contabilidade.dashboard;
 
+import br.com.contabilidade.certidao.service.CertidaoService;
 import br.com.contabilidade.common.document.DocumentoService;
 import br.com.contabilidade.common.execution.ExecucaoIntegracaoRepository;
 import br.com.contabilidade.common.execution.StatusExecucao;
@@ -21,23 +22,27 @@ public class DashboardController {
     private final ExecucaoIntegracaoRepository execucaoRepository;
     private final SolicitacaoIntervencaoRepository intervencaoRepository;
     private final NotificacaoService notificacaoService;
+    private final CertidaoService certidaoService;
 
     public DashboardController(
             EmpresaService empresaService,
             DocumentoService documentoService,
             ExecucaoIntegracaoRepository execucaoRepository,
             SolicitacaoIntervencaoRepository intervencaoRepository,
-            NotificacaoService notificacaoService
+            NotificacaoService notificacaoService,
+            CertidaoService certidaoService
     ) {
         this.empresaService = empresaService;
         this.documentoService = documentoService;
         this.execucaoRepository = execucaoRepository;
         this.intervencaoRepository = intervencaoRepository;
         this.notificacaoService = notificacaoService;
+        this.certidaoService = certidaoService;
     }
 
     @GetMapping("/resumo")
     public DashboardResumo resumo() {
+        CertidaoService.ResumoCertidoes certidoes = certidaoService.contarResumo();
         return new DashboardResumo(
                 empresaService.contarAtivas(),
                 documentoService.contarAtivos(),
@@ -50,7 +55,10 @@ public class DashboardController {
                         StatusIntervencao.PENDENTE,
                         StatusIntervencao.EM_ATENDIMENTO
                 )),
-                notificacaoService.contarNaoLidas()
+                notificacaoService.contarNaoLidas(),
+                certidoes.regulares(),
+                certidoes.atencao(),
+                certidoes.acaoManual()
         );
     }
 
@@ -59,7 +67,10 @@ public class DashboardController {
             long documentosAtivos,
             long execucoesAbertas,
             long intervencoesPendentes,
-            long notificacoesNaoLidas
+            long notificacoesNaoLidas,
+            long certidoesRegulares,
+            long certidoesAtencao,
+            long certidoesAcaoManual
     ) {
     }
 }

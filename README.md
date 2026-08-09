@@ -1,81 +1,116 @@
 # Contabilidade
 
-Plataforma interna de operações fiscais e contábeis, desenvolvida em português e preparada para
-execução **on-premise first**, com portabilidade futura para nuvem.
+Plataforma interna de operações fiscais e contábeis em português, preparada para execução
+**on-premise first** e migração futura para nuvem.
 
-## O que esta baseline entrega
+**Versão do pacote:** `0.2.0`
 
-- backend Java 21 + Spring Boot;
-- frontend React + TypeScript;
+## Conteúdo desta versão
+
+### Common operacional
+
+- Java 21 + Spring Boot;
+- React + TypeScript;
 - PostgreSQL + Flyway;
-- autenticação preparada para Keycloak;
-- Catálogo de Permissões aplicado no backend;
-- i18n somente `pt-BR`, sem textos visíveis espalhados pelo frontend;
-- cadastro funcional de empresas e estabelecimentos;
-- upload, listagem e download de documentos;
-- estruturas comuns de execuções, providers, intervenções, notificações e auditoria;
-- busca global inicial por empresa/CNPJ;
-- console técnica inicial;
-- worker Playwright isolado, sem fluxos reais de portais;
-- Docker Compose para desenvolvimento e implantação local;
-- documentação, roadmap e orquestração no padrão adotado no PRIMA.
+- Keycloak/OAuth2/JWT;
+- Catálogo de Permissões no backend;
+- i18n somente `pt-BR`;
+- auditoria, notificações e `correlationId`;
+- storage local abstrato para documentos;
+- fila PostgreSQL com lease, retry, idempotência, prioridade e fallback;
+- políticas de aquisição por operação;
+- intervenções humanas;
+- busca global;
+- Console Técnica;
+- worker Playwright isolado.
 
-## Início rápido com Docker
+### Empresas
+
+- empresa e estabelecimento matriz;
+- filiais adicionais;
+- CNPJ validado;
+- regime tributário, CNAE, inscrições e endereço;
+- listagem, busca, edição e inativação da empresa;
+- Empresa 360.
+
+### Centro de Certidões
+
+- Federal RFB/PGFN;
+- SEFAZ-SP — débitos não inscritos;
+- PGE-SP — dívida ativa;
+- visão por empresa ou consolidada;
+- estados fiscal e técnico separados;
+- solicitação individual e em lote;
+- provider configurável;
+- política de prioridade, intervenção e fallback pago;
+- registro manual com documento;
+- histórico;
+- alertas e agendamento de renovação;
+- custo/protocolo disponíveis no motor de execução.
+
+## Limites explícitos
+
+Esta versão **não contém automações reais dos portais** Federal, SEFAZ-SP ou PGE-SP. O worker está
+preparado, mas não registra nenhum `FluxoPortal`. Portanto:
+
+- o provider `MANUAL` é o caminho funcional inicial;
+- Serpro e InfoSimples são definições desabilitadas, sem credenciais;
+- os providers de portal são definições desabilitadas;
+- não existe ainda handoff visual de uma sessão de navegador ao operador;
+- CAPTCHA não é burlado;
+- lockfiles npm devem ser gerados no ambiente com acesso ao registry;
+- testes automatizados não foram criados nem executados.
+
+## Instalação no repositório existente
+
+Leia [INSTRUCOES_INTEGRACAO.md](INSTRUCOES_INTEGRACAO.md) antes de substituir arquivos.
+
+Depois da integração:
+
+```powershell
+Set-Location "C:\work\contabilidade"
+
+.\scripts\gerar-lockfiles.ps1
+.\scripts\validar.ps1
+```
+
+Somente depois de uma validação verde:
+
+```powershell
+git add .
+git commit -m "feat: implementa common operacional e centro de certidoes v0.2.0"
+git push origin main
+```
+
+## Execução local
 
 ```powershell
 Copy-Item .env.example .env
-docker compose up -d --build
+.\scripts\iniciar-dev.ps1
 ```
 
-Abra:
+Aplicação:
 
-- aplicação: `http://localhost:8088`;
-- administração do Keycloak: `http://localhost:8088/auth/admin`.
+```text
+http://localhost:8088
+```
 
-O realm de desenvolvimento cria o usuário:
+O realm de desenvolvimento inclui:
 
 ```text
 admin@contabilidade.local
 Admin123!
 ```
 
-Esse usuário é **somente para desenvolvimento**. Para implantação real, use
-`KEYCLOAK_REALM_FILE=realm-contabilidade.json`, altere todos os segredos e crie usuários próprios.
+Essa credencial não pode ser usada em produção.
 
-## Desenvolvimento sem Docker
-
-O PostgreSQL precisa estar disponível.
-
-```powershell
-cd backend
-mvn spring-boot:run
-```
-
-```powershell
-cd frontend
-npm install
-npm run dev
-```
-
-```powershell
-cd automation-worker
-npm install
-npm run dev
-```
-
-## Organização
+## Estrutura
 
 ```text
-backend/             domínio e APIs
-frontend/            aplicação web
-automation-worker/   runtime isolado de automação de portais
-infra/               Keycloak, PostgreSQL e proxy
-scripts/             operação local/on-premise
+backend/             domínio, APIs, fila e certidões
+frontend/            aplicação web em pt-BR
+automation-worker/   runtime Playwright, sem fluxos reais
+infra/               Keycloak, PostgreSQL e seccomp
+scripts/             validação, operação e backup
 docs/                documentação canônica
 ```
-
-## Próximo vertical
-
-A baseline não consulta Receita, SEFAZ-SP ou PGE-SP. Ela prepara o Common para que o
-**Centro de Certidões** seja implementado como módulo independente, usando providers substituíveis:
-API oficial, API comercial, portal automatizado, portal assistido ou processo manual.

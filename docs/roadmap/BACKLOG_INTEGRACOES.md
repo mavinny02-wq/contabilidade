@@ -1,24 +1,34 @@
 # Backlog Integrações
 
-Providers conhecidos:
+## Definições presentes
 
 - `FEDERAL_PORTAL`;
 - `SEFAZ_SP_PORTAL`;
 - `PGE_SP_PORTAL`;
 - `SERPRO`;
-- `INFOSIMPLES`.
+- `INFOSIMPLES`;
+- `MANUAL`.
 
-Todos iniciam desabilitados. Segredos são referências, não valores.
+Apenas `MANUAL` inicia habilitado.
 
-Antes de ativar cada provider:
+## Regras
 
-- documentação/termos;
-- credenciais;
-- custo;
+- providers pagos dependem de prioridade/fallback;
+- custo máximo pode bloquear provider;
+- custo desconhecido é bloqueado quando há limite;
+- moeda incompatível é bloqueada;
+- portal assistido/manual dependem de intervenção permitida;
+- segredo é referência, não valor.
+
+## Antes de ativar provider real
+
+- contrato;
+- termos;
+- credencial;
 - ambiente de teste;
-- contrato de resposta;
-- idempotência;
 - rate limit;
+- custo;
+- idempotência;
 - tratamento de indisponibilidade;
 - evidência;
-- licença/fornecedor.
+- segurança.

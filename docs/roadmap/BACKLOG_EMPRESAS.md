@@ -1,25 +1,28 @@
 # Backlog Empresas
 
-## Baseline
+## Candidato v0.2.0
 
 - Empresa;
-- estabelecimento principal;
-- CNPJ validado;
+- matriz;
+- filiais;
+- CNPJ;
 - situação;
 - regime;
 - CNAE;
 - endereço;
-- inscrições;
+- IE/IM;
 - responsável;
-- listagem, busca, criação, edição e inativação;
+- listagem/busca;
+- criação/edição;
+- inativação da empresa;
 - Empresa 360.
 
-## Próximos itens
+## Pendências
 
-- filiais adicionais;
+- edição/inativação individual de filial;
 - importação CSV/Excel;
-- histórico de alterações cadastrais;
-- enriquecimento por fonte oficial;
-- validações jurisdicionais de IE/IM;
-- responsável por módulo;
-- tags/grupos internos.
+- histórico cadastral;
+- enriquecimento oficial;
+- validação específica de IE/IM;
+- tags/grupos;
+- responsáveis por módulo.

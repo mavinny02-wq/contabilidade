@@ -11,7 +11,7 @@ export function GlobalSearch() {
   const [resultados, setResultados] = useState<ResultadoBusca[]>([]);
   const [aberto, setAberto] = useState(false);
   const [carregando, setCarregando] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const listener = (event: MouseEvent) => {

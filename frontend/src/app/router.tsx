@@ -7,6 +7,7 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { EmpresasPage } from '../pages/EmpresasPage';
 import { EmpresaDetalhePage } from '../pages/EmpresaDetalhePage';
 import { DocumentosPage } from '../pages/DocumentosPage';
+import { CertidoesPage } from '../pages/CertidoesPage';
 import { ExecucoesPage } from '../pages/ExecucoesPage';
 import { IntervencoesPage } from '../pages/IntervencoesPage';
 import { NotificacoesPage } from '../pages/NotificacoesPage';
@@ -33,6 +34,10 @@ export const router = createBrowserRouter([
           {
             element: <PermissionRoute permissao={PERMISSOES.DOCUMENTO_LER} />,
             children: [{ path: 'documentos', element: <DocumentosPage /> }],
+          },
+          {
+            element: <PermissionRoute permissao={PERMISSOES.CERTIDAO_LER} />,
+            children: [{ path: 'certidoes', element: <CertidoesPage /> }],
           },
           {
             element: <PermissionRoute permissao={PERMISSOES.EXECUCAO_LER} />,

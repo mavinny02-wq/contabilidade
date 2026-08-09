@@ -24,6 +24,8 @@
 - [Modelo de Domínio](arquitetura/MODELO_DOMINIO.md)
 - [Integrações e Providers](arquitetura/ARQUITETURA_INTEGRACOES.md)
 - [Automação Playwright](arquitetura/AUTOMACAO_PLAYWRIGHT.md)
+- [Motor de Execuções](arquitetura/MOTOR_EXECUCOES.md)
+- [Centro de Certidões](arquitetura/CENTRO_CERTIDOES.md)
 - [Intervenção Humana](arquitetura/INTERVENCAO_HUMANA.md)
 - [Documentos e Evidências](arquitetura/DOCUMENTOS_E_EVIDENCIAS.md)
 - [i18n pt-BR](arquitetura/I18N_PTBR.md)
@@ -36,6 +38,7 @@
 - [Backup e restauração](operacao/BACKUP_E_RESTAURACAO.md)
 - [Atualização e rollback](operacao/ATUALIZACAO_E_ROLLBACK.md)
 - [Runbook inicial](operacao/RUNBOOK.md)
+- [Validação v0.2.0](operacao/VALIDACAO_V020.md)
 
 ## Decisões
 

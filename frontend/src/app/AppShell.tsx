@@ -16,7 +16,8 @@ type NavItem = {
 const items: NavItem[] = [
   { to: '/', labelKey: 'menu.visaoGeral', sigla: 'V' },
   { to: '/empresas', labelKey: 'menu.empresas', sigla: 'E', permissao: PERMISSOES.EMPRESA_LER },
-  { to: '/documentos', labelKey: 'menu.documentos', sigla: 'D', permissao: PERMISSOES.DOCUMENTO_LER },
+  { to: '/certidoes', labelKey: 'menu.certidoes', sigla: 'C', permissao: PERMISSOES.CERTIDAO_LER, grupo: 'menu.fiscal' },
+  { to: '/documentos', labelKey: 'menu.documentos', sigla: 'D', permissao: PERMISSOES.DOCUMENTO_LER, grupo: 'menu.fiscal' },
   { to: '/execucoes', labelKey: 'menu.execucoes', sigla: 'X', permissao: PERMISSOES.EXECUCAO_LER, grupo: 'menu.operacao' },
   { to: '/intervencoes', labelKey: 'menu.intervencoes', sigla: 'I', permissao: PERMISSOES.INTERVENCAO_LER, grupo: 'menu.operacao' },
   { to: '/notificacoes', labelKey: 'menu.notificacoes', sigla: 'N', permissao: PERMISSOES.NOTIFICACAO_LER },

@@ -2,29 +2,35 @@
 
 ## Checkpoint
 
-- branch: `main`;
-- baseline: ZIP 0.1 aguardando integração local;
-- gate serial: `HIST-FND-001`;
-- próxima onda oficial: não selecionada;
-- testes: pendentes para task dedicada.
+- branch de integração: `main`;
+- baseline integrada: v0.1;
+- pacote candidato: v0.2.0;
+- gate serial atual: integração e validação local da v0.2.0;
+- onda oficial seguinte: não selecionada;
+- testes: task separada.
 
-## Regra permanente
+## Regras
 
-- exatamente 5 slots oficiais;
-- todos do mesmo commit base;
+- exatamente cinco slots oficiais;
+- mesmo commit base;
 - sem dependência na mesma onda;
-- sem overlap de arquivos críticos;
-- migrations exclusivas;
-- reconciliação compartilhada serial;
-- extras urgentes não contam nos cinco;
-- não selecionar sucessor automaticamente.
+- sem overlap crítico;
+- migration exclusiva por slot;
+- reconciliação serial;
+- extras urgentes fora dos cinco;
+- sem sucessor automático.
 
-## Prova pendente
+## Provas pendentes
 
+- `MAVEN_REAL_PENDING`;
+- `NPM_LOCKFILES_PENDING`;
+- `FRONTEND_REAL_BUILD_PENDING`;
+- `WORKER_REAL_BUILD_PENDING`;
+- `DOCKER_COMPOSE_PENDING`;
+- `POSTGRESQL_FLYWAY_PENDING`;
+- `KEYCLOAK_RUNTIME_PENDING`;
 - `BACKEND_TESTES_PENDENTES`;
-- `POSTGRESQL_NATIVO_PENDENTE`;
-- `FRONTEND_TESTES_FOCADOS_PENDENTES`;
+- `CONCORRENCIA_RETEST_REQUIRED`;
 - `PLAYWRIGHT_TESTES_PENDENTES`;
 - `E2E_PENDENTE`;
-- `BACKUP_RESTORE_PENDENTE`;
-- `HARDENING_ON_PREMISE_PENDENTE`.
+- `BACKUP_RESTORE_PENDENTE`.

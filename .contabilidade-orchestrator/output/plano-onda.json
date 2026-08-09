@@ -2,23 +2,30 @@
   "schemaVersion": "1.0",
   "baseline": {
     "branch": "main",
-    "commit": null
+    "commit": null,
+    "integratedVersion": "0.1.0"
   },
-  "fase": "BASELINE_0_1_AGUARDANDO_INTEGRACAO",
+  "fase": "PACOTE_V020_AGUARDANDO_VALIDACAO_E_INTEGRACAO",
   "gateSerial": {
-    "itemId": "HIST-FND-001",
-    "descricao": "Extrair, validar, commitar e integrar a baseline 0.1"
+    "itemId": "HIST-FND-001-V020-INTEGRATION",
+    "descricao": "Gerar lockfiles, compilar com dependências reais, validar runtime e integrar v0.2.0"
   },
   "slotsOficiais": [],
   "decisoesAbertas": [
-    "DEC-002",
     "DEC-003",
-    "DEC-004"
+    "DEC-004",
+    "AMB-002"
   ],
   "provasPendentes": [
+    "MAVEN_REAL_PENDING",
+    "NPM_LOCKFILES_PENDING",
+    "FRONTEND_REAL_BUILD_PENDING",
+    "WORKER_REAL_BUILD_PENDING",
+    "DOCKER_COMPOSE_PENDING",
+    "POSTGRESQL_FLYWAY_PENDING",
+    "KEYCLOAK_RUNTIME_PENDING",
     "BACKEND_TESTES_PENDENTES",
-    "POSTGRESQL_NATIVO_PENDENTE",
-    "FRONTEND_TESTES_FOCADOS_PENDENTES",
+    "CONCORRENCIA_RETEST_REQUIRED",
     "PLAYWRIGHT_TESTES_PENDENTES",
     "E2E_PENDENTE",
     "BACKUP_RESTORE_PENDENTE"
