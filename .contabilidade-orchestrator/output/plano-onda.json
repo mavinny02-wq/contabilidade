@@ -1,42 +1,30 @@
 {
   "schemaVersion": "1.0",
   "baseline": {
-    "branch": "main",
-    "commit": null,
-    "requiredVersion": "0.4.0",
-    "candidateVersion": "0.5.0"
+    "branchEsperada": "main",
+    "branchObservada": "work",
+    "commitObservado": "1ab637c2eee438adc287efd1abb25c35a8c37bcc",
+    "requiredVersion": "0.5.0",
+    "upstreamComprovado": false
   },
-  "fase": "PACOTE_V050_AGUARDANDO_BUILD_E_RUNTIME_SERPRO",
+  "fase": "GATE_SERIAL_REPRODUTIBILIDADE_V050",
   "gateSerial": {
-    "itemId": "HIST-CRT-007-V050-INTEGRATION",
-    "descricao": "Aplicar o ZIP incremental v0.5.0, gerar lockfiles, compilar, validar migrations e executar uma Consulta CND autorizada."
+    "itemId": "GATE-VAL-001",
+    "prompt": ".contabilidade-orchestrator/output/prompts/GATE_SERIAL_GATE_VAL_001_reprodutibilidade_v050.md",
+    "descricao": "Corrigir blockers TypeScript, gerar lockfiles revisados e comprovar builds/runtime local sem chamadas fiscais."
   },
   "slotsOficiais": [],
-  "decisoesAbertas": [
-    "DEC-003",
-    "DEC-004",
-    "AMB-002",
-    "AMB-003"
-  ],
   "provasPendentes": [
-    "MAVEN_REAL_PENDING",
+    "ORIGIN_MAIN_ANCESTRY_PENDING",
     "NPM_LOCKFILES_PENDING",
-    "FRONTEND_REAL_BUILD_PENDING",
-    "WORKER_REAL_BUILD_PENDING",
+    "FRONTEND_TYPESCRIPT_BLOCKER",
+    "WORKER_TYPESCRIPT_BLOCKER",
+    "MAVEN_REGISTRY_ACCESS_PENDING",
     "DOCKER_COMPOSE_PENDING",
     "POSTGRESQL_FLYWAY_PENDING",
     "KEYCLOAK_RUNTIME_PENDING",
-    "SERPRO_CONTRACT_AND_CREDENTIALS_PENDING",
-    "SERPRO_TOKEN_RUNTIME_PENDING",
-    "SERPRO_CND_RUNTIME_PENDING",
-    "SERPRO_CPEND_RUNTIME_PENDING",
-    "SERPRO_STATUS7_RUNTIME_PENDING",
-    "SERPRO_REAL_PDF_SAMPLE_PENDING",
-    "SERPRO_BILLING_RECONCILIATION_PENDING",
-    "SERPRO_401_REFRESH_RUNTIME_PENDING",
-    "BACKEND_TESTES_PENDENTES",
-    "CONCORRENCIA_RETEST_REQUIRED",
-    "PLAYWRIGHT_TESTES_PENDENTES",
-    "E2E_PENDENTE"
+    "WINDOWS_BAT_RUNTIME_PENDING",
+    "INTERACTIVE_SESSION_ANTI_REPLAY_PENDING",
+    "EXTERNAL_PROVIDER_RUNTIME_PROHIBITED_IN_GATE"
   ]
 }

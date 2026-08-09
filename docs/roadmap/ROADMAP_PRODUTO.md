@@ -2,9 +2,9 @@
 
 ## Checkpoint
 
-- baseline integrada na `main`: `0.4.0`;
-- pacote incremental candidato: `0.5.0`;
-- próximo gate: build local, migrations e prova autorizada da API Serpro;
+- conteúdo candidato presente: `0.5.0` no branch fornecido `work`; equivalência com o último `main` ainda não comprovada;
+- validação canônica: `docs/analise/ANALISE_COMPLETA_BASELINE_V050.md`;
+- próximo gate serial: corrigir os dois blockers TypeScript, gerar lockfiles e comprovar builds/runtime local sem chamada fiscal;
 - nenhuma próxima implementação deve ser selecionada antes da reconciliação desse gate.
 
 ## v0.5.0 — provider oficial Serpro Consulta CND

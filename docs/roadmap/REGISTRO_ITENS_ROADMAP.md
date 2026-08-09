@@ -40,5 +40,6 @@ O registro é dono da identidade permanente e do status atual.
 | `DEC-003` | Decisão | Segurança | PARCIAL | storage local e secrets por ambiente |
 | `DEC-004` | Decisão | Infra | ABERTA | TLS e DNS internos |
 | `AMB-001` | Ambiente | Git | RESOLVIDO | main remota |
-| `AMB-002` | Ambiente | Dependências | ABERTO | lockfiles/build real no ambiente do usuário |
+| `AMB-002` | Ambiente | Dependências | BLOQUEADOR_CONFIRMADO | lockfiles ausentes; frontend e worker não compilam |
+| `HIST-VAL-001` | História | Validação | INTEGRADO_COM_PROVAS_PENDENTES | relatório canônico e BAT artifact-only; runtime Windows/Docker pendente |
 | `AMB-003` | Ambiente | Serpro | ABERTO | contrato, credenciais, custo e runtime autorizado |
