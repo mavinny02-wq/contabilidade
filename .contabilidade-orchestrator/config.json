@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0",
+  "projeto": {
+    "nome": "Contabilidade",
+    "idioma": "pt-BR"
+  },
+  "git": {
+    "branchIntegracao": "main"
+  },
+  "ondas": {
+    "slotsOficiais": 5,
+    "dependenciaMesmaOndaPermitida": false,
+    "reconciliacaoSerial": true
+  },
+  "testes": {
+    "somenteTaskExplicita": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "fase": "BOOTSTRAP_FUNDACAO",
+  "baseline": {
+    "branch": "main",
+    "commit": null
+  },
+  "gateSerial": "HIST-FND-001",
+  "slotsOficiais": [],
+  "decisoesAbertas": [
+    "DEC-001",
+    "DEC-002",
+    "DEC-003",
+    "AMB-001"
+  ]
+}
