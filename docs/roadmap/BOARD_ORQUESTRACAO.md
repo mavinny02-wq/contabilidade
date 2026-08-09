@@ -2,11 +2,11 @@
 
 ## Checkpoint
 
-- branch de integração: `main`;
-- baseline requerida: `0.4.0`;
-- pacote candidato: `0.5.0`;
-- gate serial: integração, build e prova autorizada do provider Serpro;
-- onda oficial seguinte: não selecionada;
+- branch de integração esperada: `main`; runner forneceu `work` sem upstream;
+- conteúdo/versionamento encontrado: `0.5.0` em `1ab637c2eee438adc287efd1abb25c35a8c37bcc`;
+- validação: frontend e worker bloqueados por erros TypeScript; lockfiles ausentes;
+- gate serial: `GATE-VAL-001` antes de qualquer onda oficial;
+- onda oficial seguinte: não selecionada; zero slots enquanto o gate estiver aberto;
 - testes permanentes: task separada.
 
 ## Regras
