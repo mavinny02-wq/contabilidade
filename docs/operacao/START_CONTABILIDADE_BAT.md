@@ -18,8 +18,13 @@ START_CONTABILIDADE.bat dev
 START_CONTABILIDADE.bat onpremise
 ```
 
-A configuração atual usa o projeto em `D:\priv\priv\projeto\contabilidade` e o mesmo JDK 21 já
-utilizado pelo PRIMA em `C:\work\java\zulu21.44.17-ca-jdk21.0.8-win_x64`.
+O caminho do projeto é derivado de `%~dp0`. O JDK 21 pode ser informado por
+`CONTABILIDADE_JAVA_HOME`; quando essa variável não existe, o BAT usa o mesmo Zulu 21 empregado no
+PRIMA:
+
+```text
+C:\work\java\zulu21.44.17-ca-jdk21.0.8-win_x64
+```
 
 ## Build artifact-only
 
@@ -50,9 +55,13 @@ os builds e verificações das imagens terminam.
 
 ## Inicialização controlada dos serviços
 
-A revisão `FULL-REBUILD-SEQUENTIAL-STARTUP-FIX-2026-08-10-04` não trata o retorno imediato de um único
-`docker compose up` como única prova de sucesso. Os serviços são iniciados e estabilizados nesta
-ordem:
+A revisão `COMPACT-SEQUENTIAL-2026-08-10-05` delega a estabilização dos containers para:
+
+```text
+scripts/start-compose-sequential.bat
+```
+
+Os serviços são iniciados e comprovados nesta ordem:
 
 ```text
 PostgreSQL
@@ -67,17 +76,17 @@ Frontend
     ↓ /healthz e nginx -t
 ```
 
-Cada etapa possui timeout próprio e logs direcionados. Se um primeiro `docker compose up` retornar
-erro enquanto um container reinicia durante o bootstrap, o BAT continua monitorando até o timeout em
-vez de encerrar prematuramente.
+Cada etapa possui timeout próprio e logs direcionados. Se o primeiro `docker compose up` de um
+serviço retornar erro enquanto o container ainda pode reiniciar e se recuperar, o script continua
+monitorando até o timeout em vez de encerrar prematuramente.
 
 ## PostgreSQL
 
 O script `infra/postgres/init/01-create-keycloak-db.sh` mantém a criação do banco do Keycloak
 idempotente e não contém mais a sequência literal inválida `\n` antes de `\gexec`.
 
-O healthcheck do PostgreSQL possui período inicial de tolerância para permitir `initdb` e scripts de
-bootstrap antes de o Docker considerar o container unhealthy.
+O healthcheck do PostgreSQL possui `start_period` e tolerância ampliada para permitir `initdb` e os
+scripts de bootstrap antes de o Docker considerar o container unhealthy.
 
 ## Segurança operacional
 
