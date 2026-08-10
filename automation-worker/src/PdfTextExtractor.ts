@@ -57,6 +57,35 @@ class TextExtractionDomMatrix {
   }
 }
 
+class TextExtractionImageData {
+  readonly data: Uint8ClampedArray;
+  readonly width: number;
+  readonly height: number;
+
+  constructor(
+    dataOrWidth: Uint8ClampedArray | number,
+    widthOrHeight: number,
+    height?: number,
+  ) {
+    if (typeof dataOrWidth === 'number') {
+      this.width = dataOrWidth;
+      this.height = widthOrHeight;
+      this.data = new Uint8ClampedArray(this.width * this.height * 4);
+      return;
+    }
+
+    this.data = dataOrWidth;
+    this.width = widthOrHeight;
+    this.height = height ?? Math.floor(this.data.length / Math.max(this.width * 4, 1));
+  }
+}
+
+class TextExtractionPath2D {
+  constructor(_path?: unknown) {
+    // A extração de texto não executa operações de desenho.
+  }
+}
+
 const require = createRequire(import.meta.url);
 let pdfJsModulePromise: Promise<PdfJsModule> | undefined;
 
@@ -67,13 +96,14 @@ function preparePdfJsRuntime(): void {
   try {
     canvas = require('@napi-rs/canvas') as CanvasRuntime;
   } catch {
-    // A extração de texto não renderiza páginas. O fallback abaixo impede que
-    // o carregamento do PDF.js dependa de uma biblioteca gráfica nativa.
+    // O worker pode ter sido empacotado sem o binding nativo opcional. Os
+    // fallbacks abaixo cobrem somente a leitura de texto e evitam que o
+    // carregamento do PDF.js derrube o processo inteiro.
   }
 
   runtime.DOMMatrix ??= canvas?.DOMMatrix ?? TextExtractionDomMatrix;
-  runtime.ImageData ??= canvas?.ImageData;
-  runtime.Path2D ??= canvas?.Path2D;
+  runtime.ImageData ??= canvas?.ImageData ?? TextExtractionImageData;
+  runtime.Path2D ??= canvas?.Path2D ?? TextExtractionPath2D;
 }
 
 async function loadPdfJs(): Promise<PdfJsModule> {
