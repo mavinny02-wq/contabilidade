@@ -60,6 +60,7 @@ title Contabilidade - Build local no modelo do PRIMA
 
 echo ============================================================
 echo CONTABILIDADE - BUILD LOCAL NO MODELO DO PRIMA
+echo REVISAO: FULL-REBUILD-NGINX-NETWORK-FIX-2026-08-10-03
 echo ============================================================
 echo Projeto: %PROJECT_DIR%
 echo Modo:    %MODE%
@@ -722,25 +723,28 @@ exit /b 0
 set "BUILD_NAME=%~1"
 set "BUILD_IMAGE=%~2"
 set "BUILD_CONTEXT=%~3"
-set "BUILD_LOG=%LOCAL_ROOT%\%BUILD_NAME%-runtime-image-build.log"
-
-docker build --pull=false --network=none --progress=plain -t "%BUILD_IMAGE%" "%BUILD_CONTEXT%" >"%BUILD_LOG%" 2>&1
-set "BUILD_EXIT=!ERRORLEVEL!"
-type "%BUILD_LOG%"
-
-if "!BUILD_EXIT!"=="0" exit /b 0
-
-findstr /i /l /c:"failed to prepare extraction snapshot" /c:"parent snapshot" /c:"snapshot not found" "%BUILD_LOG%" >nul
-if errorlevel 1 exit /b !BUILD_EXIT!
 
 echo.
-echo WARNING: BuildKit snapshot cache appears corrupted.
-echo Removing only unused builder cache before one retry...
-docker builder prune --force
-if errorlevel 1 exit /b 1
+echo ------------------------------------------------------------
+echo Construindo imagem runtime: !BUILD_NAME!
+echo Imagem:   !BUILD_IMAGE!
+echo Contexto: !BUILD_CONTEXT!
+echo A saida do Docker sera exibida em tempo real.
+echo ------------------------------------------------------------
+echo.
 
-docker build --pull=false --network=none --progress=plain -t "%BUILD_IMAGE%" "%BUILD_CONTEXT%"
-exit /b !ERRORLEVEL!
+docker build --pull=false --network=none --progress=plain -t "!BUILD_IMAGE!" "!BUILD_CONTEXT!"
+set "BUILD_EXIT=!ERRORLEVEL!"
+
+if "!BUILD_EXIT!"=="0" (
+    echo.
+    echo [OK] Imagem runtime !BUILD_NAME! concluida.
+    exit /b 0
+)
+
+echo.
+echo [ERRO] Build da imagem runtime !BUILD_NAME! falhou com codigo !BUILD_EXIT!.
+exit /b !BUILD_EXIT!
 
 
 :build_runtime_images
@@ -786,21 +790,38 @@ if /i not "!WORKER_LABEL!"=="true" (
     exit /b 1
 )
 
-docker run --rm --entrypoint /bin/sh "%BACKEND_IMAGE%" -c "test -f /app/app.jar && test ! -f /app/pom.xml"
+REM A verificacao abaixo evita o caractere ! porque o BAT usa EnableDelayedExpansion.
+REM A versao antiga transformava 'test ! -f' em uma verificacao incorreta.
+echo Verificando conteudo da imagem backend...
+docker run --rm --entrypoint /bin/sh "%BACKEND_IMAGE%" -c "if test -f /app/app.jar; then if test -f /app/pom.xml; then exit 1; fi; exit 0; fi; exit 1"
 if errorlevel 1 (
-    set "FATAL_MESSAGE=Backend runtime image invalida."
+    echo.
+    echo Diagnostico da imagem backend:
+    docker run --rm --entrypoint /bin/sh "%BACKEND_IMAGE%" -c "id; ls -la /app"
+    set "FATAL_MESSAGE=Backend runtime image invalida: app.jar ausente ou pom.xml presente."
     exit /b 1
 )
 
-docker run --rm "%FRONTEND_IMAGE%" nginx -t
+echo Verificando conteudo da imagem frontend...
+REM Nao execute nginx -t antes do Compose:
+REM a configuracao referencia o hostname "backend", que so existe na rede Compose.
+REM Aqui validamos binario e arquivos. O nginx -t completo roda depois do `up`.
+docker run --rm --entrypoint /bin/sh "%FRONTEND_IMAGE%" -c "if test -x /usr/sbin/nginx; then if test -f /etc/nginx/conf.d/default.conf; then if test -f /usr/share/nginx/html/index.html; then if test -f /docker-entrypoint.d/40-runtime-config.sh; then nginx -v; exit 0; fi; fi; fi; fi; exit 1"
 if errorlevel 1 (
-    set "FATAL_MESSAGE=Frontend Nginx image invalida."
+    echo.
+    echo Diagnostico da imagem frontend:
+    docker run --rm --entrypoint /bin/sh "%FRONTEND_IMAGE%" -c "id; nginx -v; ls -la /etc/nginx/conf.d; ls -la /usr/share/nginx/html; ls -la /docker-entrypoint.d"
+    set "FATAL_MESSAGE=Frontend runtime image invalida: binario ou arquivos obrigatorios ausentes."
     exit /b 1
 )
 
-docker run --rm --entrypoint /bin/sh "%WORKER_IMAGE%" -c "test -f /app/dist/index.js && test -d /app/node_modules/playwright && test ! -d /app/src"
+echo Verificando conteudo da imagem worker...
+docker run --rm --entrypoint /bin/sh "%WORKER_IMAGE%" -c "if test -f /app/dist/index.js; then if test -d /app/node_modules/playwright; then if test -d /app/src; then exit 1; fi; exit 0; fi; fi; exit 1"
 if errorlevel 1 (
-    set "FATAL_MESSAGE=Worker runtime image invalida."
+    echo.
+    echo Diagnostico da imagem worker:
+    docker run --rm --entrypoint /bin/sh "%WORKER_IMAGE%" -c "id; ls -la /app; ls -la /app/dist; ls -ld /app/node_modules/playwright"
+    set "FATAL_MESSAGE=Worker runtime image invalida: dist/index.js ou dependencia Playwright ausente, ou src indevidamente presente."
     exit /b 1
 )
 
@@ -810,6 +831,7 @@ exit /b 0
 
 :restart_compose
 echo.
+REM Nao use "test ! ..." nos comandos abaixo: EnableDelayedExpansion consome o caractere !.
 echo [7/7] Restarting Compose only after all local builds succeeded...
 echo.
 
@@ -844,9 +866,13 @@ for %%S in (postgres keycloak backend automation-worker frontend) do (
     )
 )
 
+echo Validando Nginx dentro da rede Compose...
 docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T frontend nginx -t
 if errorlevel 1 (
-    set "FATAL_MESSAGE=Frontend Nginx validation failed."
+    echo.
+    echo ---- FRONTEND LOGS ----
+    docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 150 frontend
+    set "FATAL_MESSAGE=Frontend Nginx validation failed dentro da rede Compose."
     exit /b 1
 )
 
@@ -934,6 +960,11 @@ echo - Containers so sao parados depois que todos os builds passam.
 echo.
 echo A janela permanecera aberta.
 echo Copie o erro acima e envie caso ainda exista alguma falha.
+echo.
+echo Sobre memoria do VmmemWSL:
+echo - caches de pagina e BuildKit podem permanecer alocados apos builds;
+echo - isto nao significa necessariamente que containers ficaram vazando;
+echo - para liberar imediatamente, use LIBERAR_MEMORIA_DOCKER.bat separadamente.
 echo.
 pause
 exit /b 1
