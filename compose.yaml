@@ -15,9 +15,10 @@ services:
       - ./dados/backups:/backups
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-contabilidade} -d ${POSTGRES_DB:-contabilidade}"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 12
+      retries: 30
+      start_period: 30s
     networks: [contabilidade]
 
   keycloak:
@@ -72,9 +73,10 @@ services:
         condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:8080/actuator/health/readiness"]
-      interval: 15s
+      interval: 10s
       timeout: 5s
-      retries: 20
+      retries: 30
+      start_period: 90s
     networks: [contabilidade]
 
   automation-worker:
@@ -120,9 +122,10 @@ services:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
-      interval: 15s
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 20
+      start_period: 30s
     networks: [contabilidade]
 
   frontend:
@@ -144,9 +147,10 @@ services:
         condition: service_started
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
-      interval: 15s
+      interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 20
+      start_period: 20s
     networks: [contabilidade]
 
 networks:
