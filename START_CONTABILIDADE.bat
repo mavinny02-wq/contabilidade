@@ -1,552 +1,672 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
-REM Contabilidade: compilacao local. O Docker recebe somente artefatos preparados.
-title Contabilidade - Inicializacao local por artefatos
 
-set "PROJECT_DIR=%~dp0"
-if "%PROJECT_DIR:~-1%"=="\" set "PROJECT_DIR=%PROJECT_DIR:~0,-1%"
+REM ============================================================
+REM CONTABILIDADE - Build local no mesmo modelo do PRIMA
+REM
+REM Maven e npm rodam no Windows.
+REM Docker recebe somente artefatos ja compilados.
+REM
+REM Este arquivo NAO:
+REM   - chama scripts\start-contabilidade.ps1;
+REM   - interpreta java -version com PowerShell;
+REM   - executa Maven ou npm dentro do Docker;
+REM   - executa docker compose build;
+REM   - executa docker compose up --build;
+REM   - para containers antes de todos os builds terminarem.
+REM ============================================================
 
-set "MODE=%~1"
-if not defined MODE set "MODE=dev"
-if /i not "%MODE%"=="dev" if /i not "%MODE%"=="onpremise" (
-  echo Modo invalido: %MODE%. Use dev ou onpremise.
-  goto :fatal
-)
-
+set "PROJECT_DIR=D:\priv\priv\projeto\contabilidade"
 set "BACKEND_DIR=%PROJECT_DIR%\backend"
 set "FRONTEND_DIR=%PROJECT_DIR%\frontend"
 set "WORKER_DIR=%PROJECT_DIR%\automation-worker"
+
+REM Mesmo JDK usado pelo BAT funcional do PRIMA.
+set "JAVA_HOME=C:\work\java\zulu21.44.17-ca-jdk21.0.8-win_x64"
+set "PATH=%JAVA_HOME%\bin;%PATH%"
+
+set "MODE=%~1"
+if not defined MODE set "MODE=dev"
+
+set "COMPOSE_BASE=%PROJECT_DIR%\compose.yaml"
+set "COMPOSE_DEV=%PROJECT_DIR%\compose.dev.yaml"
+set "COMPOSE_ONPREMISE=%PROJECT_DIR%\compose.onpremise.yaml"
+set "ENV_FILE=%PROJECT_DIR%\.env"
+
 set "LOCAL_ROOT=%PROJECT_DIR%\.docker-local\artifact-build"
 set "BACKEND_CONTEXT=%LOCAL_ROOT%\backend-context"
 set "FRONTEND_CONTEXT=%LOCAL_ROOT%\frontend-context"
 set "WORKER_CONTEXT=%LOCAL_ROOT%\worker-context"
 set "WORKER_PROD=%LOCAL_ROOT%\worker-production"
-set "OVERRIDE=%LOCAL_ROOT%\compose.artifacts.yaml"
+set "COMPOSE_OVERRIDE=%LOCAL_ROOT%\compose.local-artifacts.yaml"
+set "FRONTEND_HASH_FILE=%LOCAL_ROOT%\frontend-deps.sha256"
+set "WORKER_HASH_FILE=%LOCAL_ROOT%\worker-deps.sha256"
+
+REM npm: force the official registry and use a clean project-local cache.
+REM The corporate proxy below is used only as a fallback when the normal npm ping fails.
+set "NPM_REGISTRY=https://registry.npmjs.org/"
+set "NPM_CACHE=%LOCAL_ROOT%\npm-cache"
+if not defined CONTABILIDADE_NPM_PROXY set "CONTABILIDADE_NPM_PROXY=http://HE242689.emea2.cds.t-internal.com:3128"
+set "FRONTEND_NPM_PEER_FLAG="
+set "WORKER_NPM_PEER_FLAG="
+
+set "VERSION="
+set "BACKEND_IMAGE="
+set "FRONTEND_IMAGE="
+set "WORKER_IMAGE="
 set "FATAL_MESSAGE="
-set "APP_URL=http://localhost:8088"
+
+title Contabilidade - Build local no modelo do PRIMA
+
+echo ============================================================
+echo CONTABILIDADE - BUILD LOCAL NO MODELO DO PRIMA
+echo ============================================================
+echo Projeto: %PROJECT_DIR%
+echo Modo:    %MODE%
+echo.
 
 call :preflight
 if errorlevel 1 goto :fatal
+
+call :build_backend_local
+if errorlevel 1 goto :fatal
+
+call :build_frontend_local
+if errorlevel 1 goto :fatal
+
+call :build_worker_local
+if errorlevel 1 goto :fatal
+
+call :prepare_runtime_contexts
+if errorlevel 1 goto :fatal
+
+call :build_runtime_images
+if errorlevel 1 goto :fatal
+
+call :restart_compose
+if errorlevel 1 goto :fatal
+
+echo.
+echo ============================================================
+echo SUCCESS
+echo ============================================================
+echo.
+echo Backend image:  %BACKEND_IMAGE%
+echo Frontend image: %FRONTEND_IMAGE%
+echo Worker image:   %WORKER_IMAGE%
+echo.
+echo Maven usou o repositorio da maquina:
+echo %USERPROFILE%\.m2\repository
+echo.
+echo Docker nao executou Maven ou npm.
+echo Aplicacao: http://localhost:8088
+echo.
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" ps
+echo.
+start "" "http://localhost:8088"
+pause
+exit /b 0
+
+
+:preflight
+echo [1/7] Preflight...
+
+cd /d "%PROJECT_DIR%"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Nao foi possivel acessar: %PROJECT_DIR%"
+    exit /b 1
+)
+
+if /i not "%MODE%"=="dev" if /i not "%MODE%"=="onpremise" (
+    set "FATAL_MESSAGE=Modo invalido: %MODE%. Use dev ou onpremise."
+    exit /b 1
+)
+
+if /i "%MODE%"=="dev" (
+    set "COMPOSE_MODE=%COMPOSE_DEV%"
+) else (
+    set "COMPOSE_MODE=%COMPOSE_ONPREMISE%"
+)
+
+if not exist "%PROJECT_DIR%\VERSION" (
+    set "FATAL_MESSAGE=Arquivo VERSION ausente."
+    exit /b 1
+)
+
+set /p VERSION=<"%PROJECT_DIR%\VERSION"
+if not defined VERSION (
+    set "FATAL_MESSAGE=Arquivo VERSION vazio."
+    exit /b 1
+)
 
 set "BACKEND_IMAGE=contabilidade-backend:%VERSION%"
 set "FRONTEND_IMAGE=contabilidade-frontend:%VERSION%"
 set "WORKER_IMAGE=contabilidade-automation-worker:%VERSION%"
 
-call :build_backend
-if errorlevel 1 goto :fatal
-call :build_frontend
-if errorlevel 1 goto :fatal
-call :build_worker
-if errorlevel 1 goto :fatal
-call :prepare_contexts
-if errorlevel 1 goto :fatal
-call :build_images
-if errorlevel 1 goto :fatal
-call :verify_images
-if errorlevel 1 goto :fatal
-call :start_stack
-if errorlevel 1 goto :fatal
-
-echo.
-echo ============================================================
-echo SUCESSO - Contabilidade %VERSION% em modo %MODE%
-echo Java: %JAVA_VERSION% em %JAVA_HOME%
-echo Node: %NODE_VERSION%
-echo Maven e npm foram executados somente na maquina Windows.
-echo Imagens: %BACKEND_IMAGE%, %FRONTEND_IMAGE%, %WORKER_IMAGE%
-echo Aplicacao: %APP_URL%
-echo ============================================================
-start "" "%APP_URL%"
-pause
-exit /b 0
-
-:preflight
-echo [1/8] Validando pre-requisitos sem tocar nos containers atuais...
-cd /d "%PROJECT_DIR%"
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Nao foi possivel acessar %PROJECT_DIR%."
-  exit /b 1
-)
-
-if not exist "VERSION" (
-  set "FATAL_MESSAGE=Arquivo VERSION ausente."
-  exit /b 1
-)
-set /p VERSION=<VERSION
-if not defined VERSION (
-  set "FATAL_MESSAGE=Arquivo VERSION vazio."
-  exit /b 1
-)
-
-for %%F in (
-  "backend\pom.xml"
-  "frontend\package.json"
-  "automation-worker\package.json"
-  "compose.yaml"
-  "compose.dev.yaml"
-  "compose.onpremise.yaml"
-  "frontend\nginx.conf"
-  "frontend\docker-entrypoint.d\40-runtime-config.sh"
-  "infra\keycloak\realm-contabilidade-dev.json"
-  "infra\keycloak\realm-contabilidade.json"
-  "scripts\gerar-lockfiles.ps1"
-) do (
-  if not exist %%F (
-    set "FATAL_MESSAGE=Arquivo obrigatorio ausente: %%~F"
+if not exist "%JAVA_HOME%\bin\java.exe" (
+    set "FATAL_MESSAGE=Java 21 nao encontrado em: %JAVA_HOME%"
     exit /b 1
-  )
 )
 
-where powershell >nul 2>&1
-if errorlevel 1 (
-  set "FATAL_MESSAGE=PowerShell nao encontrado."
-  exit /b 1
+if not exist "%JAVA_HOME%\bin\javac.exe" (
+    set "FATAL_MESSAGE=JDK completo nao encontrado em: %JAVA_HOME%"
+    exit /b 1
 )
+
 where mvn >nul 2>&1
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Maven nao encontrado no PATH."
-  exit /b 1
-)
-where docker >nul 2>&1
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Docker CLI nao encontrado."
-  exit /b 1
-)
-
-call :activate_java21
-if errorlevel 1 exit /b 1
-
-call :activate_node22
-if errorlevel 1 exit /b 1
-
-for /f "tokens=3" %%V in ('mvn -version 2^>^&1 ^| findstr /b /c:"Java version:"') do set "MAVEN_JAVA_VERSION=%%V"
-if not defined MAVEN_JAVA_VERSION (
-  set "FATAL_MESSAGE=Nao foi possivel confirmar a JVM usada pelo Maven."
-  exit /b 1
-)
-if not "!MAVEN_JAVA_VERSION:~0,3!"=="21." (
-  set "FATAL_MESSAGE=O Maven ainda usa Java !MAVEN_JAVA_VERSION!. JAVA_HOME selecionado: !JAVA_HOME!."
-  exit /b 1
-)
-
-docker info >nul 2>&1
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Docker Desktop nao esta em execucao."
-  exit /b 1
-)
-docker compose version >nul 2>&1
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Plugin Docker Compose nao encontrado."
-  exit /b 1
-)
-
-if not exist ".env" (
-  if /i "%MODE%"=="onpremise" (
-    set "FATAL_MESSAGE=.env ausente. Crie-o a partir de .env.example, troque todos os segredos e use KEYCLOAK_REALM_FILE=realm-contabilidade.json."
+    set "FATAL_MESSAGE=Maven nao encontrado no PATH."
     exit /b 1
-  )
-  echo AVISO: criando .env de desenvolvimento a partir de .env.example.
-  echo        Troque os valores antes de qualquer uso real.
-  copy /y ".env.example" ".env" >nul
-  if errorlevel 1 (
-    set "FATAL_MESSAGE=Nao foi possivel criar o .env de desenvolvimento."
+)
+
+where node >nul 2>&1
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Node.js nao encontrado no PATH."
     exit /b 1
-  )
-) else (
-  echo .env existente preservado sem alteracao.
-)
-
-if /i "%MODE%"=="onpremise" (
-  findstr /x /c:"KEYCLOAK_REALM_FILE=realm-contabilidade.json" .env >nul
-  if errorlevel 1 (
-    set "FATAL_MESSAGE=On-premise exige KEYCLOAK_REALM_FILE=realm-contabilidade.json no .env."
-    exit /b 1
-  )
-  findstr /i /c:"altere-esta-senha" /c:"altere-este-token" /c:"altere-este-segredo" .env >nul
-  if not errorlevel 1 (
-    set "FATAL_MESSAGE=On-premise recusado: .env ainda contem segredos de exemplo."
-    exit /b 1
-  )
-)
-
-call :ensure_lockfiles
-if errorlevel 1 exit /b 1
-
-if not exist "%LOCAL_ROOT%" mkdir "%LOCAL_ROOT%"
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Nao foi possivel criar %LOCAL_ROOT%."
-  exit /b 1
-)
-
-if /i "%MODE%"=="dev" (
-  set "MODE_COMPOSE=%PROJECT_DIR%\compose.dev.yaml"
-) else (
-  set "MODE_COMPOSE=%PROJECT_DIR%\compose.onpremise.yaml"
-)
-
-docker compose --env-file "%PROJECT_DIR%\.env" -f "%PROJECT_DIR%\compose.yaml" -f "!MODE_COMPOSE!" config --quiet
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Compose base do modo %MODE% invalido."
-  exit /b 1
-)
-
-echo Java !JAVA_VERSION! selecionado em !JAVA_HOME!.
-echo Maven usa Java !MAVEN_JAVA_VERSION!.
-echo Node !NODE_VERSION!, versao da aplicacao !VERSION!.
-echo Containers atuais ainda nao foram alterados.
-exit /b 0
-
-:activate_java21
-call :locate_java21
-
-if not defined JAVA21_HOME (
-  where winget >nul 2>&1
-  if not errorlevel 1 (
-    echo.
-    echo JDK 21 nao foi encontrado nesta maquina.
-    echo O projeto exige JDK 21; o Java 17 atual nao sera removido.
-    choice /c SN /n /m "Deseja instalar Eclipse Temurin JDK 21 com winget agora? [S/N] "
-    if not errorlevel 2 (
-      winget install --id EclipseAdoptium.Temurin.21.JDK -e --silent --accept-package-agreements --accept-source-agreements
-      if errorlevel 1 (
-        set "FATAL_MESSAGE=A instalacao automatica do JDK 21 falhou. Execute manualmente: winget install EclipseAdoptium.Temurin.21.JDK"
-        exit /b 1
-      )
-      call :locate_java21
-    )
-  )
-)
-
-if not defined JAVA21_HOME (
-  set "FATAL_MESSAGE=JDK 21 nao encontrado. Instale com: winget install EclipseAdoptium.Temurin.21.JDK. Depois execute o BAT novamente ou defina CONTABILIDADE_JAVA_HOME."
-  exit /b 1
-)
-
-set "JAVA_HOME=%JAVA21_HOME%"
-set "PATH=%JAVA_HOME%\bin;%PATH%"
-
-where javac >nul 2>&1
-if errorlevel 1 (
-  set "FATAL_MESSAGE=O caminho encontrado contem Java 21, mas nao contem javac. Instale o JDK 21 completo."
-  exit /b 1
-)
-
-set "JAVA_VERSION="
-for /f "tokens=3" %%V in ('java -version 2^>^&1 ^| findstr /i "version"') do if not defined JAVA_VERSION set "JAVA_VERSION=%%~V"
-if not defined JAVA_VERSION (
-  set "FATAL_MESSAGE=Nao foi possivel identificar a versao do Java selecionado."
-  exit /b 1
-)
-if not "!JAVA_VERSION:~0,3!"=="21." (
-  set "FATAL_MESSAGE=Falha ao ativar Java 21. Versao ativa: !JAVA_VERSION!."
-  exit /b 1
-)
-exit /b 0
-
-:locate_java21
-set "JAVA21_HOME="
-
-if defined CONTABILIDADE_JAVA_HOME call :consider_java "%CONTABILIDADE_JAVA_HOME%"
-if defined JAVA_HOME call :consider_java "%JAVA_HOME%"
-
-for /f "delims=" %%J in ('where java 2^>nul') do (
-  if not defined JAVA21_HOME for %%P in ("%%~dpJ..") do call :consider_java "%%~fP"
-)
-
-for /d %%J in (
-  "%ProgramFiles%\Eclipse Adoptium\jdk-21*"
-  "%ProgramFiles%\Java\jdk-21*"
-  "%ProgramFiles%\Microsoft\jdk-21*"
-  "%ProgramFiles%\Amazon Corretto\jdk21*"
-  "%ProgramFiles%\BellSoft\LibericaJDK-21*"
-  "%ProgramFiles%\Zulu\zulu-21*"
-  "%LOCALAPPDATA%\Programs\Eclipse Adoptium\jdk-21*"
-  "%USERPROFILE%\.jdks\*21*"
-  "%ProgramData%\chocolatey\lib\temurin21\tools\jdk-*"
-) do (
-  if not defined JAVA21_HOME call :consider_java "%%~fJ"
-)
-
-if not defined JAVA21_HOME call :consider_java "%USERPROFILE%\scoop\apps\temurin21-jdk\current"
-if not defined JAVA21_HOME call :consider_java "%USERPROFILE%\scoop\apps\openjdk21\current"
-exit /b 0
-
-:consider_java
-if defined JAVA21_HOME exit /b 0
-set "JAVA_CANDIDATE=%~1"
-if not defined JAVA_CANDIDATE exit /b 0
-if not exist "%JAVA_CANDIDATE%\bin\java.exe" exit /b 0
-if not exist "%JAVA_CANDIDATE%\bin\javac.exe" exit /b 0
-
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$java=Join-Path $env:JAVA_CANDIDATE 'bin\java.exe';" ^
-  "$line=(& $java -version 2>&1 | Select-Object -First 1);" ^
-  "if($line -match 'version \"21(\.|\")'){exit 0}else{exit 1}" >nul 2>&1
-if not errorlevel 1 set "JAVA21_HOME=%JAVA_CANDIDATE%"
-exit /b 0
-
-:activate_node22
-call :locate_node22
-
-if not defined NODE22_HOME (
-  where winget >nul 2>&1
-  if not errorlevel 1 (
-    echo.
-    echo Node.js 22.12 ou superior nao foi encontrado.
-    choice /c SN /n /m "Deseja instalar a versao LTS do Node.js com winget agora? [S/N] "
-    if not errorlevel 2 (
-      winget install --id OpenJS.NodeJS.LTS -e --silent --accept-package-agreements --accept-source-agreements
-      if errorlevel 1 (
-        set "FATAL_MESSAGE=A instalacao automatica do Node.js LTS falhou. Execute manualmente: winget install -e --id OpenJS.NodeJS.LTS"
-        exit /b 1
-      )
-      call :locate_node22
-    )
-  )
-)
-
-if not defined NODE22_HOME (
-  set "FATAL_MESSAGE=Node.js 22.12 ou superior nao encontrado. Instale com: winget install -e --id OpenJS.NodeJS.LTS. Depois execute o BAT novamente ou defina CONTABILIDADE_NODE_HOME."
-  exit /b 1
-)
-
-set "PATH=%NODE22_HOME%;%PATH%"
-set "NODE_VERSION="
-for /f "delims=" %%V in ('node -p "process.versions.node"') do set "NODE_VERSION=%%V"
-if not defined NODE_VERSION (
-  set "FATAL_MESSAGE=Nao foi possivel identificar a versao do Node.js."
-  exit /b 1
-)
-
-powershell -NoProfile -Command "if([version]'!NODE_VERSION!' -ge [version]'22.12.0'){exit 0}else{exit 1}" >nul 2>&1
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Node 22.12 ou superior obrigatorio; detectado !NODE_VERSION!."
-  exit /b 1
 )
 
 where npm >nul 2>&1
 if errorlevel 1 (
-  set "FATAL_MESSAGE=npm nao encontrado junto ao Node.js selecionado."
-  exit /b 1
-)
-exit /b 0
-
-:locate_node22
-set "NODE22_HOME="
-
-if defined CONTABILIDADE_NODE_HOME call :consider_node "%CONTABILIDADE_NODE_HOME%"
-if defined NVM_SYMLINK call :consider_node "%NVM_SYMLINK%"
-
-for /f "delims=" %%N in ('where node 2^>nul') do (
-  if not defined NODE22_HOME call :consider_node "%%~dpN"
+    set "FATAL_MESSAGE=npm nao encontrado no PATH."
+    exit /b 1
 )
 
-for /d %%N in (
-  "%APPDATA%\nvm\v22.*"
-  "%APPDATA%\nvm\v23.*"
-  "%APPDATA%\nvm\v24.*"
-  "%LOCALAPPDATA%\nvm\v22.*"
-  "%LOCALAPPDATA%\nvm\v23.*"
-  "%LOCALAPPDATA%\nvm\v24.*"
-  "%USERPROFILE%\scoop\apps\nodejs22\*"
-  "%USERPROFILE%\scoop\apps\nodejs-lts\*"
+where docker >nul 2>&1
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Docker CLI nao encontrado."
+    exit /b 1
+)
+
+docker info >nul 2>&1
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Docker Desktop nao esta em execucao."
+    exit /b 1
+)
+
+docker compose version >nul 2>&1
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Docker Compose v2 nao encontrado."
+    exit /b 1
+)
+
+for %%F in (
+    "%BACKEND_DIR%\pom.xml"
+    "%FRONTEND_DIR%\package.json"
+    "%FRONTEND_DIR%\nginx.conf"
+    "%FRONTEND_DIR%\docker-entrypoint.d\40-runtime-config.sh"
+    "%WORKER_DIR%\package.json"
+    "%COMPOSE_BASE%"
+    "%COMPOSE_MODE%"
+    "%PROJECT_DIR%\infra\keycloak\realm-contabilidade-dev.json"
+    "%PROJECT_DIR%\infra\keycloak\realm-contabilidade.json"
+    "%PROJECT_DIR%\infra\playwright\seccomp_profile.json"
 ) do (
-  if not defined NODE22_HOME call :consider_node "%%~fN"
+    if not exist %%F (
+        set "FATAL_MESSAGE=Arquivo obrigatorio ausente: %%~F"
+        exit /b 1
+    )
 )
 
-if not defined NODE22_HOME call :consider_node "%ProgramFiles%\nodejs"
-exit /b 0
-
-:consider_node
-if defined NODE22_HOME exit /b 0
-set "NODE_CANDIDATE=%~1"
-if not defined NODE_CANDIDATE exit /b 0
-if not exist "%NODE_CANDIDATE%\node.exe" exit /b 0
-if not exist "%NODE_CANDIDATE%\npm.cmd" exit /b 0
-
-powershell -NoProfile -ExecutionPolicy Bypass -Command ^
-  "$node=Join-Path $env:NODE_CANDIDATE 'node.exe';" ^
-  "$version=& $node -p 'process.versions.node';" ^
-  "if([version]$version -ge [version]'22.12.0'){exit 0}else{exit 1}" >nul 2>&1
-if not errorlevel 1 set "NODE22_HOME=%NODE_CANDIDATE%"
-exit /b 0
-
-:ensure_lockfiles
-if exist "frontend\package-lock.json" if exist "automation-worker\package-lock.json" exit /b 0
+if not exist "%ENV_FILE%" (
+    if /i "%MODE%"=="onpremise" (
+        set "FATAL_MESSAGE=.env ausente. Crie e revise o arquivo antes do modo onpremise."
+        exit /b 1
+    )
+    if not exist "%PROJECT_DIR%\.env.example" (
+        set "FATAL_MESSAGE=.env e .env.example ausentes."
+        exit /b 1
+    )
+    echo Criando .env de desenvolvimento...
+    copy /y "%PROJECT_DIR%\.env.example" "%ENV_FILE%" >nul
+    if errorlevel 1 (
+        set "FATAL_MESSAGE=Nao foi possivel criar .env."
+        exit /b 1
+    )
+)
 
 if /i "%MODE%"=="onpremise" (
-  set "FATAL_MESSAGE=Lockfiles ausentes. Em on-premise gere e revise primeiro: powershell -ExecutionPolicy Bypass -File scripts\gerar-lockfiles.ps1"
-  exit /b 1
+    findstr /i /c:"altere-esta-senha" /c:"altere-este-token" /c:"altere-este-segredo" "%ENV_FILE%" >nul
+    if not errorlevel 1 (
+        set "FATAL_MESSAGE=On-premise recusado: .env ainda contem segredos de exemplo."
+        exit /b 1
+    )
+)
+
+if not exist "%LOCAL_ROOT%" mkdir "%LOCAL_ROOT%"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Nao foi possivel criar: %LOCAL_ROOT%"
+    exit /b 1
 )
 
 echo.
-echo AVISO: package-lock.json esta ausente no frontend ou no worker.
-echo O modo dev pode gerar os lockfiles usando as versoes exatas do package.json.
-choice /c SN /n /m "Deseja gerar os lockfiles agora? [S/N] "
-if errorlevel 2 (
-  set "FATAL_MESSAGE=Lockfiles nao gerados. Execute manualmente scripts\gerar-lockfiles.ps1."
-  exit /b 1
-)
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "%PROJECT_DIR%\scripts\gerar-lockfiles.ps1"
+echo Java:
+"%JAVA_HOME%\bin\java.exe" -version
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Falha ao gerar os lockfiles."
-  exit /b 1
+    set "FATAL_MESSAGE=Falha ao executar Java em: %JAVA_HOME%"
+    exit /b 1
 )
 
-if not exist "frontend\package-lock.json" (
-  set "FATAL_MESSAGE=frontend\package-lock.json nao foi gerado."
-  exit /b 1
-)
-if not exist "automation-worker\package-lock.json" (
-  set "FATAL_MESSAGE=automation-worker\package-lock.json nao foi gerado."
-  exit /b 1
-)
-echo Lockfiles gerados. Eles aparecerao no git status e devem ser revisados/commitados.
-exit /b 0
-
-:deps_hash
-for /f "delims=" %%H in ('powershell -NoProfile -Command "$p=@('%~1\package.json','%~1\package-lock.json');($p|%%{(Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash}) -join '|'"') do set "CURRENT_HASH=%%H"
-set "CACHED_HASH="
-if exist "%~2" set /p CACHED_HASH=<"%~2"
-exit /b 0
-
-:install_locked
-call :deps_hash "%~1" "%~2"
-if not exist "%~1\node_modules" goto :do_npm_ci
-if /i not "!CURRENT_HASH!"=="!CACHED_HASH!" goto :do_npm_ci
-echo Reutilizando node_modules verificado por hashes em %~1.
-exit /b 0
-
-:do_npm_ci
-cd /d "%~1"
-call npm ci --no-audit --no-fund
+echo.
+echo Maven:
+call mvn --version
 if errorlevel 1 (
-  set "FATAL_MESSAGE=npm ci falhou em %~1."
-  exit /b 1
+    set "FATAL_MESSAGE=Falha ao executar Maven."
+    exit /b 1
 )
->"%~2" echo !CURRENT_HASH!
-exit /b 0
 
-:build_backend
-echo [2/8] Compilando backend localmente...
-cd /d "%BACKEND_DIR%"
-call mvn -B -DskipTests clean package
+echo.
+echo Node:
+node --version
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Build Maven local falhou. Confirme acesso ao Maven Central/proxy corporativo e revise o log acima."
-  exit /b 1
+    set "FATAL_MESSAGE=Falha ao executar Node.js."
+    exit /b 1
 )
 
-powershell -NoProfile -Command "$ErrorActionPreference='Stop';$j=Get-ChildItem target\*.jar|?{$_.Name -notmatch '^(original-|.*-(sources|javadoc)\.jar$)'}|Sort Length -Descending|Select -First 1;if(!$j){throw 'JAR executavel nao encontrado'};Copy-Item $j.FullName target\contabilidade-backend.jar -Force"
+echo npm:
+call npm --version
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Nao foi possivel selecionar o JAR executavel."
-  exit /b 1
+    set "FATAL_MESSAGE=Falha ao executar npm."
+    exit /b 1
 )
-exit /b 0
 
-:build_frontend
-echo [3/8] Compilando frontend localmente...
-call :install_locked "%FRONTEND_DIR%" "%LOCAL_ROOT%\frontend-deps.sha256"
+call :prepare_npm_network
 if errorlevel 1 exit /b 1
+
+echo.
+echo Docker:
+docker --version
+docker compose version
+echo.
+
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" config --quiet
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Compose base do modo %MODE% invalido."
+    exit /b 1
+)
+
+echo Preflight OK. Containers existentes ainda estao intactos.
+exit /b 0
+
+
+:build_backend_local
+echo.
+echo [2/7] Building backend LOCALLY...
+echo Maven repository: %USERPROFILE%\.m2\repository
+echo Docker nao executara Maven.
+echo.
+
+cd /d "%BACKEND_DIR%"
+
+call mvn -B clean package -DskipTests
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Build Maven LOCAL falhou."
+    exit /b 1
+)
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference='Stop'; " ^
+  "$target='%BACKEND_DIR%\target'; " ^
+  "$jars=Get-ChildItem -LiteralPath $target -File -Filter '*.jar' | " ^
+  "Where-Object { $_.Name -notmatch '^(original-|.*-sources\.jar$|.*-javadoc\.jar$)' } | " ^
+  "Sort-Object Length -Descending; " ^
+  "if(-not $jars){throw 'No executable JAR found in backend target.'}; " ^
+  "$selected=$jars[0]; " ^
+  "Copy-Item -LiteralPath $selected.FullName -Destination (Join-Path $target 'contabilidade-local-backend.jar') -Force; " ^
+  "Write-Host ('Selected JAR: '+$selected.FullName)"
+
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Nao foi possivel preparar o JAR do backend."
+    exit /b 1
+)
+
+if not exist "%BACKEND_DIR%\target\contabilidade-local-backend.jar" (
+    set "FATAL_MESSAGE=JAR preparado do backend nao foi encontrado."
+    exit /b 1
+)
+
+echo Backend local build completed.
+exit /b 0
+
+
+:build_frontend_local
+echo.
+echo [3/7] Building frontend LOCALLY...
+echo Docker nao executara npm.
+echo.
 
 cd /d "%FRONTEND_DIR%"
-call npm run locale:validate
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Validacao i18n falhou."
-  exit /b 1
-)
-call npm run typecheck
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Typecheck do frontend falhou."
-  exit /b 1
-)
-call npm run build
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Build do frontend falhou."
-  exit /b 1
-)
-if not exist "dist\index.html" (
-  set "FATAL_MESSAGE=dist do frontend nao foi gerado."
-  exit /b 1
-)
-exit /b 0
 
-:build_worker
-echo [4/8] Compilando worker localmente...
-call :install_locked "%WORKER_DIR%" "%LOCAL_ROOT%\worker-deps.sha256"
+call :calculate_dependency_hash "%FRONTEND_DIR%" "%FRONTEND_HASH_FILE%"
 if errorlevel 1 exit /b 1
 
-cd /d "%WORKER_DIR%"
-call npm run typecheck
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Typecheck do worker falhou."
-  exit /b 1
-)
-call npm run build
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Build do worker falhou."
-  exit /b 1
-)
-if not exist "dist\index.js" (
-  set "FATAL_MESSAGE=dist do worker nao foi gerado."
-  exit /b 1
+set "INSTALL_FRONTEND_DEPS=NO"
+if not exist "%FRONTEND_DIR%\node_modules" set "INSTALL_FRONTEND_DEPS=YES"
+if /i not "!CURRENT_HASH!"=="!CACHED_HASH!" set "INSTALL_FRONTEND_DEPS=YES"
+
+if /i "!INSTALL_FRONTEND_DEPS!"=="YES" (
+    call :install_node_project "%FRONTEND_DIR%" "frontend"
+    if errorlevel 1 exit /b 1
+
+    call :calculate_dependency_hash "%FRONTEND_DIR%" "%FRONTEND_HASH_FILE%"
+    if errorlevel 1 exit /b 1
+    >"%FRONTEND_HASH_FILE%" echo !CURRENT_HASH!
+) else (
+    echo Reusing existing frontend node_modules.
 )
 
-REM As dependencias atuais sao JavaScript. Prepara uma arvore de producao separada, sem segredos.
+call npm run locale:validate
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Validacao i18n do frontend falhou."
+    exit /b 1
+)
+
+call npm run typecheck
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Typecheck LOCAL do frontend falhou."
+    exit /b 1
+)
+
+call npm run build
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Build LOCAL do frontend falhou."
+    exit /b 1
+)
+
+if not exist "%FRONTEND_DIR%\dist\index.html" (
+    set "FATAL_MESSAGE=Frontend dist nao foi gerado."
+    exit /b 1
+)
+
+echo Frontend local build completed.
+exit /b 0
+
+
+:build_worker_local
+echo.
+echo [4/7] Building automation worker LOCALLY...
+echo Docker nao executara npm.
+echo.
+
+cd /d "%WORKER_DIR%"
+
+call :calculate_dependency_hash "%WORKER_DIR%" "%WORKER_HASH_FILE%"
+if errorlevel 1 exit /b 1
+
+set "INSTALL_WORKER_DEPS=NO"
+if not exist "%WORKER_DIR%\node_modules" set "INSTALL_WORKER_DEPS=YES"
+if /i not "!CURRENT_HASH!"=="!CACHED_HASH!" set "INSTALL_WORKER_DEPS=YES"
+
+set "OLD_PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=%PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD%"
+set "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1"
+
+if /i "!INSTALL_WORKER_DEPS!"=="YES" (
+    call :install_node_project "%WORKER_DIR%" "worker"
+    if errorlevel 1 (
+        set "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=%OLD_PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD%"
+        exit /b 1
+    )
+
+    call :calculate_dependency_hash "%WORKER_DIR%" "%WORKER_HASH_FILE%"
+    if errorlevel 1 exit /b 1
+    >"%WORKER_HASH_FILE%" echo !CURRENT_HASH!
+) else (
+    echo Reusing existing worker node_modules.
+)
+
+call npm run typecheck
+if errorlevel 1 (
+    set "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=%OLD_PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD%"
+    set "FATAL_MESSAGE=Typecheck LOCAL do worker falhou."
+    exit /b 1
+)
+
+call npm run build
+if errorlevel 1 (
+    set "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=%OLD_PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD%"
+    set "FATAL_MESSAGE=Build LOCAL do worker falhou."
+    exit /b 1
+)
+
+if not exist "%WORKER_DIR%\dist\index.js" (
+    set "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=%OLD_PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD%"
+    set "FATAL_MESSAGE=Worker dist nao foi gerado."
+    exit /b 1
+)
+
 if exist "%WORKER_PROD%" rd /s /q "%WORKER_PROD%"
 mkdir "%WORKER_PROD%"
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Nao foi possivel criar %WORKER_PROD%."
-  exit /b 1
+    set "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=%OLD_PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD%"
+    set "FATAL_MESSAGE=Nao foi possivel criar %WORKER_PROD%."
+    exit /b 1
 )
-copy /y "package.json" "%WORKER_PROD%\package.json" >nul
-copy /y "package-lock.json" "%WORKER_PROD%\package-lock.json" >nul
-call npm ci --prefix "%WORKER_PROD%" --omit=dev --ignore-scripts --no-audit --no-fund
+
+copy /y "%WORKER_DIR%\package.json" "%WORKER_PROD%\package.json" >nul
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Preparacao isolada das dependencias de producao do worker falhou."
-  exit /b 1
+    set "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=%OLD_PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD%"
+    set "FATAL_MESSAGE=Nao foi possivel copiar package.json do worker."
+    exit /b 1
 )
+
+if exist "%WORKER_DIR%\package-lock.json" (
+    copy /y "%WORKER_DIR%\package-lock.json" "%WORKER_PROD%\package-lock.json" >nul
+    call npm ci --prefix "%WORKER_PROD%" --omit=dev --prefer-offline --ignore-scripts --no-audit --no-fund --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" !WORKER_NPM_PEER_FLAG!
+) else (
+    call npm install --prefix "%WORKER_PROD%" --omit=dev --prefer-offline --ignore-scripts --no-audit --no-fund --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" !WORKER_NPM_PEER_FLAG!
+)
+
+set "WORKER_PROD_NPM_EXIT=!ERRORLEVEL!"
+set "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=%OLD_PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD%"
+
+if not "!WORKER_PROD_NPM_EXIT!"=="0" (
+    set "FATAL_MESSAGE=Preparacao LOCAL das dependencias de producao do worker falhou."
+    exit /b 1
+)
+
+echo Worker local build completed.
 exit /b 0
 
-:prepare_contexts
-echo [5/8] Preparando contextos runtime isolados...
-for %%D in ("%BACKEND_CONTEXT%" "%FRONTEND_CONTEXT%" "%WORKER_CONTEXT%") do if exist %%D rd /s /q %%D
+
+:prepare_npm_network
+echo.
+echo npm registry preflight...
+echo Registry: %NPM_REGISTRY%
+echo Cache:    %NPM_CACHE%
+
+if not exist "%NPM_CACHE%" mkdir "%NPM_CACHE%"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Nao foi possivel criar o cache npm local: %NPM_CACHE%"
+    exit /b 1
+)
+
+REM Remove the obsolete/invalid npm "http-proxy" environment key only for this BAT process.
+set "NPM_CONFIG_HTTP_PROXY="
+set "npm_config_http_proxy="
+
+REM Force the official public registry and an isolated cache for this project.
+set "NPM_CONFIG_REGISTRY=%NPM_REGISTRY%"
+set "npm_config_registry=%NPM_REGISTRY%"
+set "NPM_CONFIG_CACHE=%NPM_CACHE%"
+set "npm_config_cache=%NPM_CACHE%"
+
+REM First try the existing host/system proxy configuration.
+call npm ping --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" --fetch-retries=0 --fetch-timeout=20000 >nul 2>&1
+if not errorlevel 1 goto :npm_registry_reachable
+
+echo npm registry nao respondeu com a configuracao atual.
+echo Tentando o proxy corporativo usado no ambiente PRIMA...
+
+set "HTTP_PROXY=%CONTABILIDADE_NPM_PROXY%"
+set "HTTPS_PROXY=%CONTABILIDADE_NPM_PROXY%"
+set "http_proxy=%CONTABILIDADE_NPM_PROXY%"
+set "https_proxy=%CONTABILIDADE_NPM_PROXY%"
+set "NPM_CONFIG_PROXY=%CONTABILIDADE_NPM_PROXY%"
+set "npm_config_proxy=%CONTABILIDADE_NPM_PROXY%"
+set "NPM_CONFIG_HTTPS_PROXY=%CONTABILIDADE_NPM_PROXY%"
+set "npm_config_https_proxy=%CONTABILIDADE_NPM_PROXY%"
+
+call npm ping --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" --fetch-retries=0 --fetch-timeout=20000 >nul 2>&1
+if errorlevel 1 (
+    echo.
+    echo npm nao conseguiu acessar %NPM_REGISTRY%.
+    echo O Maven funciona, mas o npm nao esta conseguindo obter metadados do registry.
+    echo Registry atual:
+    call npm config get registry
+    echo Proxy configurado apenas nesta execucao: %CONTABILIDADE_NPM_PROXY%
+    set "FATAL_MESSAGE=Falha de acesso ao npm registry. Verifique VPN/proxy corporativo ou defina CONTABILIDADE_NPM_PROXY antes de executar o BAT."
+    exit /b 1
+)
+
+:npm_registry_reachable
+set "NPM_VITE_VERSION="
+for /f "usebackq delims=" %%V in (`call npm view vite@7.3.6 version --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" --fetch-retries=1 --fetch-timeout=30000 2^>nul`) do set "NPM_VITE_VERSION=%%V"
+
+if not "!NPM_VITE_VERSION!"=="7.3.6" (
+    echo.
+    echo O registry respondeu, mas nao devolveu os metadados esperados de vite@7.3.6.
+    echo Valor recebido: !NPM_VITE_VERSION!
+    set "FATAL_MESSAGE=Metadados npm incompletos. Nao e um conflito real entre Vite e plugin-react; o pacote Vite nao foi resolvido pelo registry/proxy."
+    exit /b 1
+)
+
+echo npm registry OK. vite@7.3.6 foi resolvido corretamente.
+exit /b 0
+
+
+:install_node_project
+set "NPM_PROJECT_DIR=%~1"
+set "NPM_PROJECT_NAME=%~2"
+set "NPM_PROJECT_PEER_FLAG="
+
+cd /d "%NPM_PROJECT_DIR%"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Nao foi possivel acessar o projeto npm: %NPM_PROJECT_DIR%"
+    exit /b 1
+)
+
+if not exist "%NPM_PROJECT_DIR%\\package-lock.json" (
+    echo package-lock.json ausente em %NPM_PROJECT_NAME%.
+    echo Gerando primeiro um lockfile reproduzivel com cache limpo do projeto...
+
+    if exist "%NPM_PROJECT_DIR%\\node_modules" (
+        echo Removendo node_modules parcial da tentativa anterior...
+        rd /s /q "%NPM_PROJECT_DIR%\\node_modules"
+        if exist "%NPM_PROJECT_DIR%\\node_modules" (
+            set "FATAL_MESSAGE=Nao foi possivel remover node_modules parcial de %NPM_PROJECT_NAME%."
+            exit /b 1
+        )
+    )
+
+    call npm install --package-lock-only --ignore-scripts --no-audit --no-fund --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" --fetch-retries=2 --fetch-timeout=120000
+    if errorlevel 1 (
+        echo.
+        echo O resolver npm normal retornou erro. Como o peer range exibido aceita Vite 7,
+        echo sera feita uma unica tentativa com --legacy-peer-deps para contornar o resolver.
+        call npm install --package-lock-only --ignore-scripts --legacy-peer-deps --no-audit --no-fund --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" --fetch-retries=2 --fetch-timeout=120000
+        if errorlevel 1 (
+            set "FATAL_MESSAGE=Nao foi possivel gerar package-lock.json para %NPM_PROJECT_NAME%."
+            exit /b 1
+        )
+        set "NPM_PROJECT_PEER_FLAG=--legacy-peer-deps"
+    )
+)
+
+echo Installing %NPM_PROJECT_NAME% dependencies with npm ci...
+call npm ci --prefer-offline --no-audit --no-fund --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" --fetch-retries=2 --fetch-timeout=120000 !NPM_PROJECT_PEER_FLAG!
+if errorlevel 1 (
+    if defined NPM_PROJECT_PEER_FLAG (
+        set "FATAL_MESSAGE=npm ci falhou em %NPM_PROJECT_NAME%, inclusive com o mesmo modo usado para gerar o lockfile."
+        exit /b 1
+    )
+
+    echo npm ci normal falhou. Tentando uma unica vez com --legacy-peer-deps...
+    call npm ci --legacy-peer-deps --prefer-offline --no-audit --no-fund --registry="%NPM_REGISTRY%" --cache="%NPM_CACHE%" --fetch-retries=2 --fetch-timeout=120000
+    if errorlevel 1 (
+        set "FATAL_MESSAGE=npm ci falhou em %NPM_PROJECT_NAME%."
+        exit /b 1
+    )
+    set "NPM_PROJECT_PEER_FLAG=--legacy-peer-deps"
+)
+
+if /i "%NPM_PROJECT_NAME%"=="frontend" set "FRONTEND_NPM_PEER_FLAG=!NPM_PROJECT_PEER_FLAG!"
+if /i "%NPM_PROJECT_NAME%"=="worker" set "WORKER_NPM_PEER_FLAG=!NPM_PROJECT_PEER_FLAG!"
+
+echo %NPM_PROJECT_NAME% dependencies installed successfully.
+exit /b 0
+
+
+:calculate_dependency_hash
+set "CURRENT_HASH="
+set "CACHED_HASH="
+
+for /f "usebackq delims=" %%H in (`powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$files=@('%~1\package.json','%~1\package-lock.json') | Where-Object {Test-Path -LiteralPath $_}; " ^
+  "$value=($files | ForEach-Object {(Get-FileHash -Algorithm SHA256 -LiteralPath $_).Hash}) -join '|'; " ^
+  "$sha=[Security.Cryptography.SHA256]::Create(); " ^
+  "$bytes=[Text.Encoding]::UTF8.GetBytes($value); " ^
+  "([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','').ToLowerInvariant()"`) do set "CURRENT_HASH=%%H"
+
+if not defined CURRENT_HASH (
+    set "FATAL_MESSAGE=Nao foi possivel calcular o hash das dependencias em %~1."
+    exit /b 1
+)
+
+if exist "%~2" set /p CACHED_HASH=<"%~2"
+exit /b 0
+
+
+:prepare_runtime_contexts
+echo.
+echo [5/7] Preparing isolated runtime-only Docker contexts...
+
+if exist "%BACKEND_CONTEXT%" rd /s /q "%BACKEND_CONTEXT%"
+if exist "%FRONTEND_CONTEXT%" rd /s /q "%FRONTEND_CONTEXT%"
+if exist "%WORKER_CONTEXT%" rd /s /q "%WORKER_CONTEXT%"
 
 mkdir "%BACKEND_CONTEXT%"
 mkdir "%FRONTEND_CONTEXT%\dist"
 mkdir "%FRONTEND_CONTEXT%\docker-entrypoint.d"
 mkdir "%WORKER_CONTEXT%\dist"
+mkdir "%WORKER_CONTEXT%\node_modules"
+
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Nao foi possivel preparar os contextos Docker locais."
-  exit /b 1
+    set "FATAL_MESSAGE=Nao foi possivel criar os contextos runtime."
+    exit /b 1
 )
 
-copy /y "%BACKEND_DIR%\target\contabilidade-backend.jar" "%BACKEND_CONTEXT%\contabilidade-backend.jar" >nul
-if errorlevel 1 exit /b 1
-xcopy /e /i /y "%FRONTEND_DIR%\dist" "%FRONTEND_CONTEXT%\dist" >nul
-if errorlevel 1 exit /b 1
-copy /y "%FRONTEND_DIR%\nginx.conf" "%FRONTEND_CONTEXT%\nginx.conf" >nul
-if errorlevel 1 exit /b 1
-copy /y "%FRONTEND_DIR%\docker-entrypoint.d\40-runtime-config.sh" "%FRONTEND_CONTEXT%\docker-entrypoint.d\40-runtime-config.sh" >nul
-if errorlevel 1 exit /b 1
-xcopy /e /i /y "%WORKER_DIR%\dist" "%WORKER_CONTEXT%\dist" >nul
-if errorlevel 1 exit /b 1
-xcopy /e /i /y "%WORKER_PROD%\node_modules" "%WORKER_CONTEXT%\node_modules" >nul
-if errorlevel 1 exit /b 1
-copy /y "%WORKER_DIR%\package.json" "%WORKER_CONTEXT%\package.json" >nul
-if errorlevel 1 exit /b 1
+copy /y "%BACKEND_DIR%\target\contabilidade-local-backend.jar" "%BACKEND_CONTEXT%\app.jar" >nul
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Nao foi possivel copiar o JAR para o contexto runtime."
+    exit /b 1
+)
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$ErrorActionPreference='Stop'; " ^
+  "Copy-Item -Path '%FRONTEND_DIR%\dist\*' -Destination '%FRONTEND_CONTEXT%\dist' -Recurse -Force; " ^
+  "Copy-Item -LiteralPath '%FRONTEND_DIR%\nginx.conf' -Destination '%FRONTEND_CONTEXT%\nginx.conf' -Force; " ^
+  "Copy-Item -LiteralPath '%FRONTEND_DIR%\docker-entrypoint.d\40-runtime-config.sh' -Destination '%FRONTEND_CONTEXT%\docker-entrypoint.d\40-runtime-config.sh' -Force; " ^
+  "Copy-Item -Path '%WORKER_DIR%\dist\*' -Destination '%WORKER_CONTEXT%\dist' -Recurse -Force; " ^
+  "Copy-Item -Path '%WORKER_PROD%\node_modules\*' -Destination '%WORKER_CONTEXT%\node_modules' -Recurse -Force; " ^
+  "Copy-Item -LiteralPath '%WORKER_DIR%\package.json' -Destination '%WORKER_CONTEXT%\package.json' -Force"
+
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Nao foi possivel preparar os contextos runtime do frontend/worker."
+    exit /b 1
+)
 
 (
+  echo # syntax=docker/dockerfile:1.7
   echo FROM eclipse-temurin:21-jre
   echo LABEL contabilidade.local.artifact-only="true"
-  echo RUN apt-get update ^&^& apt-get install -y --no-install-recommends curl ^&^& rm -rf /var/lib/apt/lists/*
   echo WORKDIR /app
-  echo COPY contabilidade-backend.jar /app/contabilidade-backend.jar
+  echo COPY app.jar /app/app.jar
   echo EXPOSE 8080
-  echo ENTRYPOINT ["java","-jar","/app/contabilidade-backend.jar"]
-)>"%BACKEND_CONTEXT%\Dockerfile"
+  echo USER 10001
+  echo ENTRYPOINT ["java","-XX:MaxRAMPercentage=75.0","-jar","/app/app.jar"]
+) >"%BACKEND_CONTEXT%\Dockerfile"
 
 (
+  echo # syntax=docker/dockerfile:1.7
   echo FROM nginx:1.27-alpine
   echo LABEL contabilidade.local.artifact-only="true"
   echo COPY nginx.conf /etc/nginx/conf.d/default.conf
@@ -554,168 +674,266 @@ if errorlevel 1 exit /b 1
   echo RUN sed -i 's/\r$//' /docker-entrypoint.d/40-runtime-config.sh ^&^& chmod +x /docker-entrypoint.d/40-runtime-config.sh
   echo COPY dist/ /usr/share/nginx/html/
   echo EXPOSE 8080
-)>"%FRONTEND_CONTEXT%\Dockerfile"
+) >"%FRONTEND_CONTEXT%\Dockerfile"
 
 (
+  echo # syntax=docker/dockerfile:1.7
   echo FROM mcr.microsoft.com/playwright:v1.60.0-noble
   echo LABEL contabilidade.local.artifact-only="true"
   echo WORKDIR /app
-  echo COPY --chown=pwuser:pwuser package.json ./
-  echo COPY --chown=pwuser:pwuser dist ./dist
-  echo COPY --chown=pwuser:pwuser node_modules ./node_modules
+  echo COPY --chown=pwuser:pwuser package.json /app/package.json
+  echo COPY --chown=pwuser:pwuser dist/ /app/dist/
+  echo COPY --chown=pwuser:pwuser node_modules/ /app/node_modules/
   echo ENV NODE_ENV=production
   echo EXPOSE 3001
   echo USER pwuser
   echo ENTRYPOINT ["node","dist/index.js"]
-)>"%WORKER_CONTEXT%\Dockerfile"
+) >"%WORKER_CONTEXT%\Dockerfile"
 
 (
   echo services:
   echo   backend:
   echo     image: %BACKEND_IMAGE%
   echo     build: null
+  echo     healthcheck:
+  echo       test: ["CMD-SHELL", "test -f /app/app.jar"]
+  echo       interval: 5s
+  echo       timeout: 3s
+  echo       retries: 20
   echo   frontend:
   echo     image: %FRONTEND_IMAGE%
   echo     build: null
   echo   automation-worker:
   echo     image: %WORKER_IMAGE%
   echo     build: null
-)>"%OVERRIDE%"
+) >"%COMPOSE_OVERRIDE%"
 
-docker compose --env-file "%PROJECT_DIR%\.env" -f "%PROJECT_DIR%\compose.yaml" -f "%MODE_COMPOSE%" -f "%OVERRIDE%" config --quiet
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" config --quiet
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Override Compose gerado e invalido."
-  exit /b 1
+    set "FATAL_MESSAGE=Compose override local gerado e invalido."
+    exit /b 1
 )
+
+echo Runtime-only contexts prepared.
 exit /b 0
 
-:build_one
-set "BUILD_LOG=%LOCAL_ROOT%\%~1-image-build.log"
-docker build --progress=plain -t "%~2" "%~3" >"!BUILD_LOG!" 2>&1
-set "BUILD_RC=!ERRORLEVEL!"
-type "!BUILD_LOG!"
-if "!BUILD_RC!"=="0" exit /b 0
 
-findstr /i /l /c:"failed to prepare extraction snapshot" /c:"parent snapshot" /c:"snapshot not found" "!BUILD_LOG!" >nul
-if errorlevel 1 exit /b !BUILD_RC!
+:build_runtime_context
+set "BUILD_NAME=%~1"
+set "BUILD_IMAGE=%~2"
+set "BUILD_CONTEXT=%~3"
+set "BUILD_LOG=%LOCAL_ROOT%\%BUILD_NAME%-runtime-image-build.log"
 
-echo AVISO: corrupcao especifica do cache de snapshot detectada.
-echo Uma unica limpeza do cache do builder e nova tentativa serao feitas.
+docker build --pull=false --network=none --progress=plain -t "%BUILD_IMAGE%" "%BUILD_CONTEXT%" >"%BUILD_LOG%" 2>&1
+set "BUILD_EXIT=!ERRORLEVEL!"
+type "%BUILD_LOG%"
+
+if "!BUILD_EXIT!"=="0" exit /b 0
+
+findstr /i /l /c:"failed to prepare extraction snapshot" /c:"parent snapshot" /c:"snapshot not found" "%BUILD_LOG%" >nul
+if errorlevel 1 exit /b !BUILD_EXIT!
+
+echo.
+echo WARNING: BuildKit snapshot cache appears corrupted.
+echo Removing only unused builder cache before one retry...
 docker builder prune --force
 if errorlevel 1 exit /b 1
-docker build --progress=plain -t "%~2" "%~3"
+
+docker build --pull=false --network=none --progress=plain -t "%BUILD_IMAGE%" "%BUILD_CONTEXT%"
 exit /b !ERRORLEVEL!
 
-:build_images
-echo [6/8] Construindo imagens runtime sem Maven ou npm no Docker...
-call :build_one backend "%BACKEND_IMAGE%" "%BACKEND_CONTEXT%"
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Imagem runtime do backend falhou."
-  exit /b 1
-)
-call :build_one frontend "%FRONTEND_IMAGE%" "%FRONTEND_CONTEXT%"
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Imagem runtime do frontend falhou."
-  exit /b 1
-)
-call :build_one worker "%WORKER_IMAGE%" "%WORKER_CONTEXT%"
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Imagem runtime do worker falhou."
-  exit /b 1
-)
-exit /b 0
 
-:verify_images
-echo [7/8] Verificando conteudo, entrypoints e rotulos...
-for %%I in ("%BACKEND_IMAGE%" "%FRONTEND_IMAGE%" "%WORKER_IMAGE%") do (
-  set "IMAGE_LABEL="
-  for /f "delims=" %%L in ('docker image inspect %%I --format "{{ index .Config.Labels \"contabilidade.local.artifact-only\" }}"') do set "IMAGE_LABEL=%%L"
-  if /i not "!IMAGE_LABEL!"=="true" (
-    set "FATAL_MESSAGE=Rotulo artifact-only ausente em %%~I."
+:build_runtime_images
+echo.
+echo [6/7] Building runtime-only Docker images...
+echo Dockerfiles abaixo nao possuem Maven nem npm.
+echo.
+
+call :build_runtime_context backend "%BACKEND_IMAGE%" "%BACKEND_CONTEXT%"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Backend runtime-only Docker build falhou."
     exit /b 1
-  )
 )
 
-docker run --rm --entrypoint /bin/sh "%BACKEND_IMAGE%" -c "test -f /app/contabilidade-backend.jar && test ! -f /app/pom.xml"
-if errorlevel 1 exit /b 1
-docker run --rm --entrypoint /bin/sh "%FRONTEND_IMAGE%" -c "test -f /usr/share/nginx/html/index.html && test -f /docker-entrypoint.d/40-runtime-config.sh && test ! -d /usr/share/nginx/html/src"
-if errorlevel 1 exit /b 1
+call :build_runtime_context frontend "%FRONTEND_IMAGE%" "%FRONTEND_CONTEXT%"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Frontend runtime-only Docker build falhou."
+    exit /b 1
+)
+
+call :build_runtime_context worker "%WORKER_IMAGE%" "%WORKER_CONTEXT%"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Worker runtime-only Docker build falhou."
+    exit /b 1
+)
+
+for /f "delims=" %%L in ('docker image inspect "%BACKEND_IMAGE%" --format "{{ index .Config.Labels \"contabilidade.local.artifact-only\" }}"') do set "BACKEND_LABEL=%%L"
+for /f "delims=" %%L in ('docker image inspect "%FRONTEND_IMAGE%" --format "{{ index .Config.Labels \"contabilidade.local.artifact-only\" }}"') do set "FRONTEND_LABEL=%%L"
+for /f "delims=" %%L in ('docker image inspect "%WORKER_IMAGE%" --format "{{ index .Config.Labels \"contabilidade.local.artifact-only\" }}"') do set "WORKER_LABEL=%%L"
+
+if /i not "!BACKEND_LABEL!"=="true" (
+    set "FATAL_MESSAGE=Backend image nao possui label artifact-only."
+    exit /b 1
+)
+
+if /i not "!FRONTEND_LABEL!"=="true" (
+    set "FATAL_MESSAGE=Frontend image nao possui label artifact-only."
+    exit /b 1
+)
+
+if /i not "!WORKER_LABEL!"=="true" (
+    set "FATAL_MESSAGE=Worker image nao possui label artifact-only."
+    exit /b 1
+)
+
+docker run --rm --entrypoint /bin/sh "%BACKEND_IMAGE%" -c "test -f /app/app.jar && test ! -f /app/pom.xml"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Backend runtime image invalida."
+    exit /b 1
+)
+
 docker run --rm "%FRONTEND_IMAGE%" nginx -t
-if errorlevel 1 exit /b 1
-docker run --rm --entrypoint /bin/sh "%WORKER_IMAGE%" -c "test -f /app/dist/index.js && test -d /app/node_modules/playwright && test ! -d /app/src && test ! -f /app/tsconfig.json"
-if errorlevel 1 exit /b 1
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Frontend Nginx image invalida."
+    exit /b 1
+)
+
+docker run --rm --entrypoint /bin/sh "%WORKER_IMAGE%" -c "test -f /app/dist/index.js && test -d /app/node_modules/playwright && test ! -d /app/src"
+if errorlevel 1 (
+    set "FATAL_MESSAGE=Worker runtime image invalida."
+    exit /b 1
+)
+
+echo Runtime-only images verified.
 exit /b 0
 
-:start_stack
-echo [8/8] Todos os builds passaram. Reiniciando a pilha selecionada sem reconstruir imagens...
-set "DC=docker compose --env-file ^"%PROJECT_DIR%\.env^" -f ^"%PROJECT_DIR%\compose.yaml^" -f ^"%MODE_COMPOSE%^" -f ^"%OVERRIDE%^""
 
-%DC% down
+:restart_compose
+echo.
+echo [7/7] Restarting Compose only after all local builds succeeded...
+echo.
+
+cd /d "%PROJECT_DIR%"
+
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" down
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Nao foi possivel parar a pilha selecionada."
-  exit /b 1
+    set "FATAL_MESSAGE=Docker Compose down falhou."
+    exit /b 1
 )
 
-%DC% up --no-build -d
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" up --no-build -d
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Falha ao iniciar a pilha."
-  %DC% logs --no-color --tail 120
-  exit /b 1
+    docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 150
+    set "FATAL_MESSAGE=Docker Compose up --no-build falhou."
+    exit /b 1
 )
 
-for /l %%N in (1,1,36) do (
-  timeout /t 5 /nobreak >nul
-  set "READY=1"
-  for %%S in (postgres keycloak backend automation-worker frontend) do (
-    %DC% ps --status running %%S | findstr /i "%%S" >nul
-    if errorlevel 1 set "READY=0"
-  )
-  if "!READY!"=="1" goto :health
+echo Aguardando containers...
+timeout /t 15 /nobreak >nul
+
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" ps
+
+for %%S in (postgres keycloak backend automation-worker frontend) do (
+    docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" ps --status running %%S | findstr /i "%%S" >nul
+    if errorlevel 1 (
+        echo.
+        echo ---- LOGS %%S ----
+        docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 120 %%S
+        set "FATAL_MESSAGE=Servico %%S nao esta em execucao."
+        exit /b 1
+    )
 )
 
-%DC% logs --no-color --tail 120 postgres keycloak backend automation-worker frontend
-set "FATAL_MESSAGE=Tempo esgotado aguardando os cinco servicos em execucao."
-exit /b 1
-
-:health
-%DC% exec -T frontend nginx -t
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T frontend nginx -t
 if errorlevel 1 (
-  set "FATAL_MESSAGE=nginx -t falhou."
-  %DC% logs --tail 120 frontend
-  exit /b 1
+    set "FATAL_MESSAGE=Frontend Nginx validation failed."
+    exit /b 1
 )
 
-%DC% exec -T backend sh -c "curl -fsS http://localhost:8080/actuator/health/readiness"
+set /a BACKEND_ATTEMPT=0
+:wait_backend
+set /a BACKEND_ATTEMPT+=1
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T frontend wget -qO- http://backend:8080/actuator/health/readiness >nul 2>&1
+if not errorlevel 1 goto :backend_ready
+if !BACKEND_ATTEMPT! GEQ 60 (
+    docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 150 backend
+    set "FATAL_MESSAGE=Backend readiness nao respondeu."
+    exit /b 1
+)
+timeout /t 3 /nobreak >nul
+goto :wait_backend
+
+:backend_ready
+echo Backend readiness OK.
+
+set /a WORKER_ATTEMPT=0
+:wait_worker
+set /a WORKER_ATTEMPT+=1
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T automation-worker node -e "fetch('http://localhost:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))" >nul 2>&1
+if not errorlevel 1 goto :worker_ready
+if !WORKER_ATTEMPT! GEQ 40 (
+    docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 150 automation-worker
+    set "FATAL_MESSAGE=Worker health endpoint nao respondeu."
+    exit /b 1
+)
+timeout /t 3 /nobreak >nul
+goto :wait_worker
+
+:worker_ready
+echo Worker health OK.
+
+set /a KEYCLOAK_ATTEMPT=0
+:wait_keycloak
+set /a KEYCLOAK_ATTEMPT+=1
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T frontend wget -qO- http://keycloak:8080/auth/realms/contabilidade/.well-known/openid-configuration >nul 2>&1
+if not errorlevel 1 goto :keycloak_ready
+if !KEYCLOAK_ATTEMPT! GEQ 60 (
+    docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 150 keycloak
+    set "FATAL_MESSAGE=Keycloak realm nao respondeu."
+    exit /b 1
+)
+timeout /t 3 /nobreak >nul
+goto :wait_keycloak
+
+:keycloak_ready
+echo Keycloak realm OK.
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command ^
+  "$deadline=(Get-Date).AddSeconds(120); " ^
+  "do { try { $r=Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 'http://localhost:8088/healthz'; if($r.StatusCode -eq 200){exit 0} } catch {}; Start-Sleep -Seconds 3 } while((Get-Date) -lt $deadline); exit 1"
+
 if errorlevel 1 (
-  set "FATAL_MESSAGE=Readiness do backend falhou."
-  %DC% logs --tail 120 backend
-  exit /b 1
+    docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 150 frontend
+    set "FATAL_MESSAGE=Frontend healthz nao respondeu."
+    exit /b 1
 )
 
-%DC% exec -T automation-worker node -e "fetch('http://localhost:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Health do worker falhou."
-  %DC% logs --tail 120 automation-worker
-  exit /b 1
-)
-
-powershell -NoProfile -Command "$ErrorActionPreference='Stop';(Invoke-WebRequest -UseBasicParsing http://localhost:8088/healthz).StatusCode" >nul
-if errorlevel 1 (
-  set "FATAL_MESSAGE=Health do frontend falhou."
-  %DC% logs --tail 120 frontend
-  exit /b 1
-)
-
-%DC% ps
+echo Frontend healthz OK.
 exit /b 0
+
 
 :fatal
 echo.
 echo ============================================================
-echo FALHA
-if defined FATAL_MESSAGE echo %FATAL_MESSAGE%
-echo Nenhum fluxo fiscal externo ou pago foi executado por este arquivo.
-echo Containers existentes so sao parados depois de todos os artefatos e imagens passarem.
+echo ERROR
 echo ============================================================
+if defined FATAL_MESSAGE (
+    echo %FATAL_MESSAGE%
+) else (
+    echo Unexpected error.
+)
+echo.
+echo Este BAT e uma adaptacao direta do BAT funcional do PRIMA:
+echo - JAVA_HOME e definido diretamente.
+echo - java -version roda diretamente no CMD.
+echo - Maven roda no Windows.
+echo - npm roda no Windows.
+echo - Docker recebe artefatos prontos.
+echo - Docker nao baixa dependencias Maven/npm durante o build.
+echo - Containers so sao parados depois que todos os builds passam.
+echo.
+echo A janela permanecera aberta.
+echo Copie o erro acima e envie caso ainda exista alguma falha.
+echo.
 pause
 exit /b 1
