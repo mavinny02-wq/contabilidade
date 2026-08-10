@@ -24,7 +24,7 @@ UPDATE certidoes_acompanhamento AS certidao
            'Acompanhamento inativado: a certidão federal é consolidada no CNPJ da matriz.'
        ),
        atualizado_em = CURRENT_TIMESTAMP,
-       versao = versao + 1
+       versao = certidao.versao + 1
   FROM estabelecimentos AS estabelecimento
  WHERE certidao.estabelecimento_id = estabelecimento.id
    AND certidao.tipo = 'FEDERAL_RFB_PGFN'
