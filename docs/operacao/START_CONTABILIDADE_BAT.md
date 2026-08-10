@@ -18,43 +18,10 @@ START_CONTABILIDADE.bat dev
 START_CONTABILIDADE.bat onpremise
 ```
 
-O diretório é derivado de `%~dp0`; o projeto pode permanecer em
-`D:\priv\priv\projeto\contabilidade` ou em outro caminho.
+A configuração atual usa o projeto em `D:\priv\priv\projeto\contabilidade` e o mesmo JDK 21 já
+utilizado pelo PRIMA em `C:\work\java\zulu21.44.17-ca-jdk21.0.8-win_x64`.
 
-## Java 21
-
-O projeto exige JDK 21. O BAT procura, nesta ordem:
-
-- `CONTABILIDADE_JAVA_HOME`;
-- `JAVA_HOME`;
-- Java no `PATH`;
-- instalações comuns de Temurin, Oracle/OpenJDK, Microsoft, Corretto, Liberica e Zulu;
-- instalações do IntelliJ, Chocolatey e Scoop.
-
-Uma instalação Java 17 pode continuar existente. O BAT seleciona JDK 21 apenas para seu processo e
-confirma que o Maven também está usando Java 21.
-
-Se nenhum JDK 21 for encontrado e o WinGet estiver disponível, o BAT pergunta antes de instalar o
-Eclipse Temurin 21. Nada é instalado silenciosamente.
-
-Para apontar manualmente:
-
-```bat
-set CONTABILIDADE_JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-21.0.x
-START_CONTABILIDADE.bat dev
-```
-
-## Node e lockfiles
-
-Node 22.12+ é obrigatório. O BAT procura instalações do PATH, NVM e Scoop. Quando não encontra uma
-versão compatível, pode oferecer instalação do Node LTS via WinGet.
-
-- `dev`: pode oferecer geração explícita dos lockfiles ausentes;
-- `onpremise`: lockfiles ausentes interrompem a execução;
-- lockfiles são gerados pelo script canônico `scripts/gerar-lockfiles.ps1`;
-- `npm ci` é usado para instalações reproduzíveis.
-
-## Artifact-only
+## Build artifact-only
 
 Maven e npm executam no host. O BAT cria contextos em:
 
@@ -78,6 +45,40 @@ Todas recebem o rótulo:
 contabilidade.local.artifact-only=true
 ```
 
+O Docker não executa Maven ou npm e os containers existentes só são interrompidos depois que todos
+os builds e verificações das imagens terminam.
+
+## Inicialização controlada dos serviços
+
+A revisão `FULL-REBUILD-SEQUENTIAL-STARTUP-FIX-2026-08-10-04` não trata o retorno imediato de um único
+`docker compose up` como única prova de sucesso. Os serviços são iniciados e estabilizados nesta
+ordem:
+
+```text
+PostgreSQL
+    ↓ healthy
+Keycloak
+    ↓ realm disponível
+Backend
+    ↓ readiness
+Automation worker
+    ↓ /health
+Frontend
+    ↓ /healthz e nginx -t
+```
+
+Cada etapa possui timeout próprio e logs direcionados. Se um primeiro `docker compose up` retornar
+erro enquanto um container reinicia durante o bootstrap, o BAT continua monitorando até o timeout em
+vez de encerrar prematuramente.
+
+## PostgreSQL
+
+O script `infra/postgres/init/01-create-keycloak-db.sh` mantém a criação do banco do Keycloak
+idempotente e não contém mais a sequência literal inválida `\n` antes de `\gexec`.
+
+O healthcheck do PostgreSQL possui período inicial de tolerância para permitir `initdb` e scripts de
+bootstrap antes de o Docker considerar o container unhealthy.
+
 ## Segurança operacional
 
 O BAT:
@@ -86,19 +87,23 @@ O BAT:
 - não apaga volumes;
 - não sobrescreve `.env` existente;
 - recusa modo on-premise com secrets de exemplo;
-- só para containers depois de todos os builds, imagens e Compose passarem;
 - não chama portais, Serpro ou APIs pagas;
-- não executa testes automatizados.
+- não executa testes automatizados;
+- mantém a janela aberta em sucesso ou falha.
 
 ## Serviços validados
 
 Após a subida:
 
-- PostgreSQL;
-- Keycloak;
+- PostgreSQL `healthy`;
+- realm do Keycloak acessível;
 - backend readiness;
 - automation worker `/health`;
 - frontend `/healthz`;
-- `nginx -t`.
+- `nginx -t` já dentro da rede Compose.
 
-Em caso de falha, o terminal permanece aberto e apresenta logs direcionados.
+## Memória do WSL
+
+BuildKit e o page cache do WSL podem manter memória alocada depois de builds. O START não executa
+limpeza automática para não perder cache útil nem interromper containers. A limpeza deve continuar
+sendo uma ação operacional separada e explícita.
