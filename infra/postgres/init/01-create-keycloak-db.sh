@@ -3,6 +3,8 @@ set -eu
 
 DB_NAME="${KEYCLOAK_DB:-keycloak}"
 
+echo "Ensuring PostgreSQL database exists: $DB_NAME"
+
 psql -v ON_ERROR_STOP=1 \
   --username "$POSTGRES_USER" \
   --dbname "$POSTGRES_DB" \
@@ -10,5 +12,6 @@ psql -v ON_ERROR_STOP=1 \
 SELECT format('CREATE DATABASE %I', :'keycloak_db')
 WHERE NOT EXISTS (
   SELECT 1 FROM pg_database WHERE datname = :'keycloak_db'
-)\n\gexec
+)
+\gexec
 EOSQL
