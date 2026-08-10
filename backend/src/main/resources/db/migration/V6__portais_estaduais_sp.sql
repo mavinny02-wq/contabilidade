@@ -25,7 +25,7 @@ UPDATE certidoes_acompanhamento AS certidao
            'Acompanhamento inativado: a e-CRDA da PGE-SP é consolidada no CNPJ base da matriz.'
        ),
        atualizado_em = CURRENT_TIMESTAMP,
-       versao = versao + 1
+       versao = certidao.versao + 1
   FROM estabelecimentos AS estabelecimento
  WHERE certidao.estabelecimento_id = estabelecimento.id
    AND certidao.tipo = 'SP_PGE_DIVIDA_ATIVA'
