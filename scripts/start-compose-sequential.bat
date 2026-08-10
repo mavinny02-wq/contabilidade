@@ -22,6 +22,8 @@ if errorlevel 1 exit /b 1
 
 call :start_and_wait_postgres
 if errorlevel 1 exit /b 1
+call :start_and_wait_postgres_bootstrap
+if errorlevel 1 exit /b 1
 call :start_and_wait_keycloak
 if errorlevel 1 exit /b 1
 call :start_and_wait_backend
@@ -31,12 +33,12 @@ if errorlevel 1 exit /b 1
 call :start_and_wait_frontend
 if errorlevel 1 exit /b 1
 
-docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" ps
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" ps -a
 exit /b 0
 
 :start_and_wait_postgres
 echo.
-echo [START 1/5] PostgreSQL...
+echo [START 1/6] PostgreSQL...
 docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" up --no-build -d postgres
 if errorlevel 1 echo [AVISO] up postgres retornou erro; aguardando recuperacao.
 set /a ATTEMPT=0
@@ -55,9 +57,38 @@ if !ATTEMPT! GEQ 60 (
 timeout /t 3 /nobreak >nul
 goto :wait_postgres
 
+:start_and_wait_postgres_bootstrap
+echo.
+echo [START 2/6] Bootstrap do banco Keycloak...
+docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" up --no-build -d postgres-bootstrap
+if errorlevel 1 echo [AVISO] up postgres-bootstrap retornou erro; verificando resultado.
+set /a ATTEMPT=0
+:wait_postgres_bootstrap
+set /a ATTEMPT+=1
+set "CID="
+set "STATUS=missing"
+set "EXIT_CODE="
+for /f "delims=" %%C in ('docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" ps -a -q postgres-bootstrap') do set "CID=%%C"
+if defined CID (
+  for /f "delims=" %%S in ('docker inspect --format "{{.State.Status}}" "!CID!" 2^>nul') do set "STATUS=%%S"
+  for /f "delims=" %%E in ('docker inspect --format "{{.State.ExitCode}}" "!CID!" 2^>nul') do set "EXIT_CODE=%%E"
+)
+echo PostgreSQL bootstrap: !STATUS! - exit=!EXIT_CODE! - !ATTEMPT!/40
+if /i "!STATUS!"=="exited" (
+  if "!EXIT_CODE!"=="0" exit /b 0
+  docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 200 postgres-bootstrap
+  exit /b 1
+)
+if !ATTEMPT! GEQ 40 (
+  docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 200 postgres-bootstrap
+  exit /b 1
+)
+timeout /t 3 /nobreak >nul
+goto :wait_postgres_bootstrap
+
 :start_and_wait_keycloak
 echo.
-echo [START 2/5] Keycloak...
+echo [START 3/6] Keycloak...
 docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" up --no-build -d keycloak
 if errorlevel 1 echo [AVISO] up keycloak retornou erro; aguardando realm.
 set /a ATTEMPT=0
@@ -75,7 +106,7 @@ goto :wait_keycloak
 
 :start_and_wait_backend
 echo.
-echo [START 3/5] Backend...
+echo [START 4/6] Backend...
 docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" up --no-build -d backend
 if errorlevel 1 echo [AVISO] up backend retornou erro; aguardando readiness.
 set /a ATTEMPT=0
@@ -93,7 +124,7 @@ goto :wait_backend
 
 :start_and_wait_worker
 echo.
-echo [START 4/5] Automation worker...
+echo [START 5/6] Automation worker...
 docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" up --no-build -d automation-worker
 if errorlevel 1 echo [AVISO] up worker retornou erro; aguardando health.
 set /a ATTEMPT=0
@@ -111,7 +142,7 @@ goto :wait_worker
 
 :start_and_wait_frontend
 echo.
-echo [START 5/5] Frontend...
+echo [START 6/6] Frontend...
 docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" up --no-build -d frontend
 if errorlevel 1 echo [AVISO] up frontend retornou erro; aguardando healthz.
 set /a ATTEMPT=0
