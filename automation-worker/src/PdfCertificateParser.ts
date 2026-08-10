@@ -1,5 +1,4 @@
-import { readFile } from 'node:fs/promises';
-import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { extractTextFromPdf } from './PdfTextExtractor.js';
 
 export type ParsedFederalCertificate = {
   result:
@@ -18,31 +17,7 @@ export type ParsedFederalCertificate = {
 export async function parseFederalCertificate(
   filePath: string,
 ): Promise<ParsedFederalCertificate> {
-  const bytes = new Uint8Array(await readFile(filePath));
-  const loadingTask = getDocument({
-    data: bytes,
-    useSystemFonts: true,
-  });
-  const document = await loadingTask.promise;
-
-  const pages: string[] = [];
-  try {
-    for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
-      const page = await document.getPage(pageNumber);
-      const content = await page.getTextContent();
-      pages.push(
-        content.items
-          .map((item) => ('str' in item ? item.str : ''))
-          .filter(Boolean)
-          .join(' '),
-      );
-      page.cleanup();
-    }
-  } finally {
-    await loadingTask.destroy();
-  }
-
-  const text = pages.join('\n').replace(/\s+/g, ' ').trim();
+  const text = await extractTextFromPdf(filePath);
   const normalized = normalize(text);
   const result = classify(normalized);
   const issuedAt = findDate(text, [
