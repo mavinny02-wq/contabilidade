@@ -28,6 +28,8 @@ call :start_and_wait_keycloak
 if errorlevel 1 exit /b 1
 call :start_and_wait_backend
 if errorlevel 1 exit /b 1
+call :validate_database_schemas
+if errorlevel 1 exit /b 1
 call :start_and_wait_worker
 if errorlevel 1 exit /b 1
 call :start_and_wait_frontend
@@ -121,6 +123,18 @@ if !ATTEMPT! GEQ 60 (
 echo Backend inicializando - !ATTEMPT!/60
 timeout /t 3 /nobreak >nul
 goto :wait_backend
+
+:validate_database_schemas
+echo.
+echo [VALIDATE] Schemas Keycloak e Flyway...
+call "%PROJECT_DIR%\scripts\validate-database-state.bat" "%MODE%"
+if errorlevel 1 (
+  echo.
+  echo ---- DATABASE STARTUP LOGS ----
+  docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 200 postgres postgres-bootstrap keycloak backend
+  exit /b 1
+)
+exit /b 0
 
 :start_and_wait_worker
 echo.

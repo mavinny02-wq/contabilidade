@@ -49,6 +49,7 @@
 - [Runbook Serpro CND](operacao/RUNBOOK_SERPRO_CND.md)
 - [Runbook Portal Federal](operacao/RUNBOOK_PORTAL_FEDERAL.md)
 - [Runbook Portais SP](operacao/RUNBOOK_PORTAIS_SP.md)
+- [Validação dos schemas PostgreSQL, Keycloak e Flyway](operacao/VALIDACAO_SCHEMAS_POSTGRES_KEYCLOAK.md)
 - [Validação v0.2.0](operacao/VALIDACAO_V020.md)
 - [Validação v0.3.0](operacao/VALIDACAO_V030.md)
 - [Validação v0.4.0](operacao/VALIDACAO_V040.md)

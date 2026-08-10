@@ -4,6 +4,10 @@ services:
   postgres:
     image: postgres:17-alpine
     restart: unless-stopped
+    command:
+      - postgres
+      - -c
+      - "log_line_prefix=%m [%p] db=%d,user=%u,app=%a,client=%h "
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-contabilidade}
       POSTGRES_USER: ${POSTGRES_USER:-contabilidade}
@@ -27,6 +31,7 @@ services:
     environment:
       PGHOST: postgres
       PGPORT: 5432
+      PGAPPNAME: contabilidade-postgres-bootstrap
       PGPASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
       POSTGRES_DB: ${POSTGRES_DB:-contabilidade}
       POSTGRES_USER: ${POSTGRES_USER:-contabilidade}
@@ -51,7 +56,7 @@ services:
       - --hostname-strict=false
     environment:
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB:-keycloak}
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${KEYCLOAK_DB:-keycloak}?ApplicationName=keycloak
       KC_DB_USERNAME: ${POSTGRES_USER:-contabilidade}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
@@ -80,7 +85,7 @@ services:
       context: ./backend
     restart: unless-stopped
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-contabilidade}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-contabilidade}?ApplicationName=contabilidade-backend
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-contabilidade}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?Defina POSTGRES_PASSWORD no arquivo .env}
       APP_SECURITY_ENABLED: ${APP_SECURITY_ENABLED:-true}
