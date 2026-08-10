@@ -1,5 +1,4 @@
-import { readFile } from 'node:fs/promises';
-import { getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
+import { extractTextFromPdf } from './PdfTextExtractor.js';
 import { normalize, normalizeIdentifier } from './StateCertificateSupport.js';
 
 export type ParsedStateCertificate = {
@@ -19,7 +18,7 @@ export type ParsedStateCertificate = {
 export async function parseSefazSpCertificate(
   filePath: string,
 ): Promise<ParsedStateCertificate> {
-  const text = await extractPdfText(filePath);
+  const text = await extractTextFromPdf(filePath);
   const normalized = normalize(text);
   if (!isSefazSpDocument(normalized)) {
     throw new Error('PDF_SEFAZ_SP_NAO_RECONHECIDO');
@@ -63,7 +62,7 @@ export async function parseSefazSpCertificate(
 export async function parsePgeSpCertificate(
   filePath: string,
 ): Promise<ParsedStateCertificate> {
-  const text = await extractPdfText(filePath);
+  const text = await extractTextFromPdf(filePath);
   const normalized = normalize(text);
   if (!isPgeSpDocument(normalized)) {
     throw new Error('PDF_PGE_SP_NAO_RECONHECIDO');
@@ -102,27 +101,6 @@ export async function parsePgeSpCertificate(
       : 'O PDF da PGE-SP foi obtido, mas os dados necessários não puderam ser confirmados integralmente.',
     extractedText: text.slice(0, 12_000),
   };
-}
-
-async function extractPdfText(filePath: string): Promise<string> {
-  const bytes = new Uint8Array(await readFile(filePath));
-  const loadingTask = getDocument({ data: bytes, useSystemFonts: true });
-  const document = await loadingTask.promise;
-  const pages: string[] = [];
-  try {
-    for (let pageNumber = 1; pageNumber <= document.numPages; pageNumber += 1) {
-      const page = await document.getPage(pageNumber);
-      const content = await page.getTextContent();
-      pages.push(content.items
-        .map((item) => ('str' in item ? item.str : ''))
-        .filter(Boolean)
-        .join(' '));
-      page.cleanup();
-    }
-  } finally {
-    await loadingTask.destroy();
-  }
-  return pages.join('\n').replace(/\s+/g, ' ').trim();
 }
 
 function isSefazSpDocument(text: string): boolean {
