@@ -129,3 +129,4 @@ app:
     export-max-rows: ${APP_CERTIFICATE_EXPORT_MAX_ROWS:10000}
     dashboard-batch-size: ${APP_CERTIFICATE_DASHBOARD_BATCH_SIZE:1000}
     dashboard-max-rows: ${APP_CERTIFICATE_DASHBOARD_MAX_ROWS:100000}
+    agenda-max-rows: ${APP_CERTIFICATE_AGENDA_MAX_ROWS:5000}
