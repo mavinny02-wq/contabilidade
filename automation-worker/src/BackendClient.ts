@@ -1,7 +1,10 @@
 import { basename } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { config } from './config.js';
-import type { SessionTicketPayload } from './SessionTicket.js';
+import type {
+  SessionTicketConsumption,
+  SessionTicketPayload,
+} from './SessionTicket.js';
 import type {
   DocumentoWorkerBytesInput,
   DocumentoWorkerInput,
@@ -31,7 +34,7 @@ export class BackendClient {
 
   async consumirTicketSessao(
     payload: SessionTicketPayload,
-  ): Promise<'CONSUMED' | 'REPLAY'> {
+  ): Promise<SessionTicketConsumption> {
     const response = await this.raw('/api/interno/automation/session-tickets/consume', {
       method: 'POST',
       body: {
@@ -48,6 +51,14 @@ export class BackendClient {
     if (response.status === 409) {
       await response.text().catch(() => undefined);
       return 'REPLAY';
+    }
+    if (response.status === 410) {
+      await response.text().catch(() => undefined);
+      return 'EXPIRED';
+    }
+    if (response.status === 404 || response.status === 422) {
+      await response.text().catch(() => undefined);
+      return 'INVALID';
     }
     if (!response.ok) throw await this.error(response);
     return 'CONSUMED';
