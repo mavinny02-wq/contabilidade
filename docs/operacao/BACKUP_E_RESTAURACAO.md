@@ -9,7 +9,7 @@ Execute um dos scripts na raiz do projeto:
 ```
 
 ```sh
-./scripts/backup.sh
+sh ./scripts/backup.sh
 ```
 
 Cada execução gera um conjunto identificado por `yyyyMMdd-HHmmss` em `dados/backups`:
@@ -63,13 +63,13 @@ Verificar um manifesto específico:
 Verificar o backup mais recente:
 
 ```sh
-./scripts/verify-backup.sh
+sh ./scripts/verify-backup.sh
 ```
 
 Verificar um manifesto específico:
 
 ```sh
-./scripts/verify-backup.sh dados/backups/manifest-20260811-010203.json
+sh ./scripts/verify-backup.sh dados/backups/manifest-20260811-010203.json
 ```
 
 A verificação shell não depende de `jq` ou Python. Ela usa `sha256sum` ou, como fallback, `shasum -a
