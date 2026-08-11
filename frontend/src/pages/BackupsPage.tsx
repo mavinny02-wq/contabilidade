@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { api, type ApiError } from '../api/http';
 import { Alert } from '../components/Alert';
@@ -237,7 +238,7 @@ function tomComponente(componente: ComponenteBackup): 'sucesso' | 'aviso' | 'err
   return 'neutro';
 }
 
-function textoComponente(t: ReturnType<typeof useTranslation>['t'], componente: ComponenteBackup) {
+function textoComponente(t: TFunction, componente: ComponenteBackup) {
   if (!componente.existente) return t('backups.componenteStatus.ausente');
   if (!componente.tamanhoConfere) return t('backups.componenteStatus.tamanhoDivergente');
   if (componente.hashConfere === false) return t('backups.componenteStatus.hashDivergente');
@@ -245,7 +246,7 @@ function textoComponente(t: ReturnType<typeof useTranslation>['t'], componente: 
   return t('backups.componenteStatus.metadadosConferidos');
 }
 
-function motivo(t: ReturnType<typeof useTranslation>['t'], codigo?: string) {
+function motivo(t: TFunction, codigo?: string) {
   if (!codigo) return t('comum.naoInformado');
   const chave = `backups.motivos.${codigo}`;
   const traduzido = t(chave);
