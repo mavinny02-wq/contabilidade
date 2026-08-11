@@ -59,13 +59,9 @@ has_postgresql=0
 has_documents=0
 seen_names='|'
 seen_files='|'
-old_ifs=$IFS
-IFS='
-'
-# A atribuição acima é substituída abaixo por um newline literal para manter cada componente em uma linha.
-IFS='
-'
-for line in $component_lines; do
+
+while IFS= read -r line; do
+  [ -n "$line" ] || continue
   name="$(printf '%s\n' "$line" | sed -n 's/.*"name":"\([^"]*\)".*/\1/p')"
   file="$(printf '%s\n' "$line" | sed -n 's/.*"file":"\([^"]*\)".*/\1/p')"
   size="$(printf '%s\n' "$line" | sed -n 's/.*"sizeBytes":\([0-9][0-9]*\).*/\1/p')"
@@ -111,8 +107,9 @@ for line in $component_lines; do
   [ "$name" = "postgresql" ] && has_postgresql=1
   [ "$name" = "documents" ] && has_documents=1
   echo "[OK] $name — $file — $actual_size bytes"
-done
-IFS=$old_ifs
+done <<EOF
+$component_lines
+EOF
 
 [ "$has_postgresql" -eq 1 ] || { echo "Componente PostgreSQL ausente." >&2; exit 1; }
 [ "$has_documents" -eq 1 ] || { echo "Componente documents ausente." >&2; exit 1; }
