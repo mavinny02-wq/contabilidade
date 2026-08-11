@@ -1,28 +1,24 @@
-# PREVIEW SLOT 4 — OBS-WRK-001
+# ARQUIVADO — OBS-WRK-001
 
-- **TASK:** classificar heartbeat vencido do automation worker
-- **TYPE:** IMPLEMENTAÇÃO DE OBSERVABILIDADE
+> Não executar novamente. Implementação integrada pela PR `#17`.
+
 - **ITEM:** `OBS-WRK-001`
-- **BASELINE:** futuro `main` após `GATE-VAL-001` verde
-- **EXECUTION MODE:** CLOUD_FIRST
+- **STATUS:** `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`
+- **BRANCH:** `feat/obs-wrk-001-heartbeat-stale`
+- **PR:** `#17`
+- **MERGE:** `6d2d96453611c10ed55673a3077a65467c208fd6`
+- **EVIDÊNCIA:** `docs/implementacao/OBS_WRK_001_HEARTBEAT_STALE.md`
 
-## Objetivo
+## Resultado implementado
 
-Expor na Console Técnica o último heartbeat, idade, estado saudável/degradado/indisponível e motivo
-seguro, sem confundir ausência de worker com falha fiscal.
+- heartbeat recente, atrasado, expirado, futuro e ausente;
+- estados saudável, degradado e indisponível;
+- limiares configuráveis;
+- motivo seguro, versão, idade e último heartbeat;
+- card agregado e lista bounded na Console Técnica;
+- ausência do worker separada de falha fiscal.
 
-## Caminhos próprios
+## Estado de validação
 
-- `backend/src/main/java/br/com/contabilidade/common/worker/**`;
-- `backend/src/main/java/br/com/contabilidade/common/technical/**`;
-- `frontend/src/pages/ConsoleTecnicaPage.tsx`;
-- chaves i18n de Console Técnica;
-- backlog Administração e uma evidência curta.
-
-## Excluídos
-
-Certidões, sessão interativa, documentos, backup, providers e migrations.
-
-## Validação permitida
-
-Compilação backend, frontend typecheck/build, i18n e `git diff --check`. Sem testes nesta task.
+Permanecem pendentes Maven, i18n/typecheck/build frontend e prova runtime dos diferentes limiares e
+da ausência total de heartbeat.
