@@ -14,6 +14,7 @@ import ptBRFaturasProvedores from './pt-BR-faturas-provedores.json';
 import ptBRFiliais from './pt-BR-filiais.json';
 import ptBRHistoricoEmpresas from './pt-BR-historico-empresas.json';
 import ptBRHistoricoProvedores from './pt-BR-historico-provedores.json';
+import ptBRHistoricoWorkers from './pt-BR-historico-workers.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
 import ptBRPreviewDocumentos from './pt-BR-preview-documentos.json';
 import ptBRResponsaveisModulo from './pt-BR-responsaveis-modulo.json';
@@ -28,6 +29,7 @@ const translation = {
     ...ptBRHistoricoProvedores.menu,
     ...ptBRConfiguracaoSegura.menu,
     ...ptBRFaturasProvedores.menu,
+    ...ptBRHistoricoWorkers.menu,
   },
   auditoria: {
     ...ptBR.auditoria,
@@ -50,6 +52,9 @@ const translation = {
   },
   historicoProvedores: {
     ...ptBRHistoricoProvedores.historicoProvedores,
+  },
+  historicoWorkers: {
+    ...ptBRHistoricoWorkers.historicoWorkers,
   },
   dashboard: {
     ...ptBR.dashboard,
