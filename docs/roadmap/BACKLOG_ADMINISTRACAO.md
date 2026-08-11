@@ -20,14 +20,17 @@
   com proteção contra fórmula; evidência em `docs/implementacao/AUD_EXP_001_EXPORTACAO_CSV.md`;
 - `OPS-BKP-UI-001`: inventário read-only de manifestos e verificação explícita de tamanho/SHA-256,
   sem restauração ou alteração de arquivos; evidência em
-  `docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md`.
+  `docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md`;
+- `ADM-CFG-001`: visão da configuração efetiva com presença segura de tokens, segredos e parâmetros
+  de provider, sem serializar valores sensíveis; evidência em
+  `docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md`.
 
 ## Pendências
 
 - usuários/papéis;
-- secrets;
-- histórico técnico;
+- secret manager e rotação;
+- histórico técnico persistente;
 - criação/agendamento de backup pela UI;
 - atualização controlada;
-- política por ambiente;
+- edição formal da política por ambiente;
 - alertas operacionais externos.
