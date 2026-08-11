@@ -13,6 +13,7 @@ import { IntervencoesPage } from '../pages/IntervencoesPage';
 import { NotificacoesPage } from '../pages/NotificacoesPage';
 import { IntegracoesPage } from '../pages/IntegracoesPage';
 import { AuditoriaPage } from '../pages/AuditoriaPage';
+import { BackupsPage } from '../pages/BackupsPage';
 import { ConsoleTecnicaPage } from '../pages/ConsoleTecnicaPage';
 import { ErrorPage } from '../pages/ErrorPage';
 
@@ -61,7 +62,10 @@ export const router = createBrowserRouter([
           },
           {
             element: <PermissionRoute permissao={PERMISSOES.CONSOLE_TECNICA_LER} />,
-            children: [{ path: 'console-tecnica', element: <ConsoleTecnicaPage /> }],
+            children: [
+              { path: 'console-tecnica', element: <ConsoleTecnicaPage /> },
+              { path: 'backups', element: <BackupsPage /> },
+            ],
           },
         ],
       },
