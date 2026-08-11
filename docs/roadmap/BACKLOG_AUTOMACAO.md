@@ -30,13 +30,15 @@
   grace period do Compose; evidência em `docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md`;
 - `AUT-LIM-001`: limites de sessões ativas e assinantes SSE com reserva para criações concorrentes,
   resposta `429` e capacidade agregada no health; evidência em
-  `docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md`.
+  `docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md`;
+- `AUT-TEL-001`: histórico amostrado de heartbeats por intervalo e mudança de estado/versão, sem
+  dados de empresa, execução ou sessão; evidência em
+  `docs/implementacao/AUT_TEL_001_HISTORICO_HEARTBEATS.md`.
 
 ## Pendências
 
 - validação runtime do anti-replay em PostgreSQL/worker/frontend;
 - runtime real Serpro e portais;
 - múltiplos workers e coordenação distribuída;
-- validação runtime do shutdown gracioso e dos limites interativos;
-- telemetria histórica;
+- validação runtime do shutdown gracioso, limites interativos e telemetria histórica;
 - testes permanentes e E2E.
