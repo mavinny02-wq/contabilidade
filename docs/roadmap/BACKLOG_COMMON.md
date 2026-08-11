@@ -28,7 +28,9 @@
   `docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md`;
 - `DOC-PRE-001`: pré-visualização inline de PDF/PNG/JPEG após nova validação de tamanho e SHA-256,
   com headers restritivos e auditoria segura; evidência em
-  `docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md`.
+  `docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md`;
+- `DOC-MET-001`: correção de tipo, emissão e validade sem alterar arquivo, hash, MIME, origem ou
+  storage; evidência em `docs/implementacao/DOC_MET_001_EDICAO_METADADOS.md`.
 
 ## Pendências
 
