@@ -3,20 +3,20 @@
 ## Estado atual
 
 A onda mais recente foi implementada por autorização direta do usuário e integrada pelas PRs
-`#25` a `#29`.
+`#31` a `#35`.
 
 | Slot | Item | PR | Estado | Evidência |
 |---:|---|---:|---|---|
-| 1 | `EMP-IMP-001` | `#25` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md` |
-| 2 | `AUT-SHD-001` | `#26` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md` |
-| 3 | `CRT-DASH-001` | `#27` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md` |
-| 4 | `AUD-EXP-001` | `#28` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUD_EXP_001_EXPORTACAO_CSV.md` |
-| 5 | `DOC-ORP-001` | `#29` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md` |
+| 1 | `EMP-HIS-001` | `#31` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md` |
+| 2 | `CRT-BULK-001` | `#32` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md` |
+| 3 | `AUT-LIM-001` | `#33` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md` |
+| 4 | `OPS-BKP-UI-001` | `#34` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md` |
+| 5 | `DOC-RET-001` | `#35` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md` |
 
 O commit final de implementação da onda é:
 
 ```text
-9fdfe8b2af8170397d49925027c55ad7e6365760
+0e310acecedf186bb62339e152bd7d5ee7bc0e2e
 ```
 
 Não existem prompts executáveis para esses cinco itens. Não os reenvie ao Codex.
@@ -33,6 +33,11 @@ OBS-WRK-001
 SEC-DOC-001
 EXP-CRT-001
 EMP-FIL-001
+EMP-IMP-001
+AUT-SHD-001
+CRT-DASH-001
+AUD-EXP-001
+DOC-ORP-001
 ```
 
 Os prompts `PREVIEW_SLOT_*` antigos são apenas referências históricas.
@@ -52,11 +57,11 @@ classifica a `main` atual como verde.
 
 ## Provas obrigatórias da onda mais recente
 
-- `EMP-IMP-001`: modelo, validação, importação parcial, duplicidades, limites e auditoria;
-- `AUT-SHD-001`: `SIGTERM` ocioso/em execução, timeout, segundo sinal e Compose;
-- `CRT-DASH-001`: base vazia, consolidada, parcial, permissão e consistência;
-- `AUD-EXP-001`: filtros, período, CSV, limite e evento de exportação;
-- `DOC-ORP-001`: storage íntegro, divergências, symlink, limites e zero alteração.
+- `EMP-HIS-001`: isolamento entre empresas, paginação, permissão e ausência de detalhes JSON;
+- `CRT-BULK-001`: limite, deduplicação, idempotência e resultado parcial;
+- `AUT-LIM-001`: concorrência de criação, limite SSE, liberação e health;
+- `OPS-BKP-UI-001`: manifesto, tamanho, SHA-256, symlink e mount read-only;
+- `DOC-RET-001`: critérios, filtro, resultado parcial e zero alteração.
 
 Essas provas se somam ao ciclo geral Maven, npm, Docker, PostgreSQL/Flyway, Keycloak/Liquibase,
 endpoints e smoke UI.
