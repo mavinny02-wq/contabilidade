@@ -2,22 +2,26 @@
 
 ## Checkpoint
 
-- baseline integrada: `0.5.0`;
-- relatório canônico: `docs/analise/ANALISE_COMPLETA_BASELINE_V050.md`;
-- PR de validação identificou blockers de TypeScript, lockfiles ausentes e runtime não comprovado;
-- esta entrega prepara as correções de `GATE-VAL-001` e melhora o BAT para localizar/instalar JDK 21;
+- baseline integrada: `0.5.1`;
+- análise canônica: `docs/analise/ANALISE_COMPLETA_BASELINE_V050.md`;
+- evidência runtime cloud: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
+- PR `#9` integrou a correção de tipagem do PDF.js e comprovou lockfiles, frontend e worker no Codex Cloud;
+- classificação atual do gate: `VALIDACAO_CLOUD_PARCIAL_WINDOWS_PENDENTE`;
+- Maven, Docker, PostgreSQL/Flyway, Keycloak, endpoints e interface ainda exigem prova no Windows;
 - a próxima onda permanece condicionada à validação local verde.
 
 ## Gate imediato
 
-1. copiar a candidata v0.5.1;
-2. remover os quatro artefatos TypeScript rastreados;
-3. gerar e revisar lockfiles com Node 22.12+;
-4. executar `scripts/validar.ps1`;
-5. executar `START_CONTABILIDADE.bat dev`;
-6. confirmar Maven/JDK 21, builds, Compose, Flyway, Keycloak e health checks;
-7. commitar a evidência;
-8. reconciliar e promover os cinco previews.
+1. atualizar `main` no workspace Windows;
+2. confirmar JDK 21, Node 22.12+ e Docker Desktop;
+3. executar `START_CONTABILIDADE.bat dev`;
+4. executar `scripts/validate-database-state.bat dev`;
+5. confirmar `postgres` saudável e `postgres-bootstrap` finalizado com código `0`;
+6. confirmar Keycloak/Liquibase e Flyway V1–V7;
+7. validar endpoints técnicos e smoke da interface;
+8. validar parser com PDF sintético local, sem documento fiscal real;
+9. anexar a evidência Windows ao relatório runtime;
+10. reconciliar o gate e promover os cinco previews somente após classificação `VERDE`.
 
 ## Onda candidata após gate verde
 
