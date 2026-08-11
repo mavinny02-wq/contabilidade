@@ -24,12 +24,14 @@
   `docs/implementacao/EMP_FIL_001_EDICAO_FILIAL.md`;
 - `EMP-IMP-001`: importação CSV UTF-8 com modelo, validação sem gravação, processamento por linha,
   limites configuráveis e resultado detalhado; evidência em
-  `docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md`.
+  `docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md`;
+- `EMP-HIS-001`: histórico cadastral da empresa e dos estabelecimentos baseado na auditoria,
+  paginado e sem exposição de `detalhes_json`; evidência em
+  `docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md`.
 
 ## Pendências
 
 - importação Excel nativa;
-- histórico cadastral;
 - enriquecimento oficial;
 - validação específica de IE/IM;
 - tags/grupos;
