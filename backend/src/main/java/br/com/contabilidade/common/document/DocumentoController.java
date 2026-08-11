@@ -24,9 +24,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class DocumentoController {
 
     private final DocumentoService service;
+    private final DocumentoDownloadService downloadService;
 
-    public DocumentoController(DocumentoService service) {
+    public DocumentoController(
+            DocumentoService service,
+            DocumentoDownloadService downloadService
+    ) {
         this.service = service;
+        this.downloadService = downloadService;
     }
 
     @GetMapping
@@ -56,13 +61,14 @@ public class DocumentoController {
     @GetMapping("/{id}/conteudo")
     @PreAuthorize("@permissaoService.tem('DOCUMENTO_BAIXAR')")
     public ResponseEntity<Resource> baixar(@PathVariable UUID id) {
-        DocumentoService.DownloadDocumento download = service.carregar(id);
+        DocumentoDownloadService.DownloadDocumento download = downloadService.carregar(id);
         ContentDisposition disposition = ContentDisposition.attachment()
                 .filename(download.nome(), StandardCharsets.UTF_8)
                 .build();
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
                 .contentType(MediaType.parseMediaType(download.mimeType()))
+                .contentLength(download.tamanhoBytes())
                 .body(download.resource());
     }
 }
