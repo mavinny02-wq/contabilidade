@@ -15,27 +15,43 @@
 - entrega dos mesmos bytes verificados, evitando alteração entre verificação e resposta;
 - bloqueio com erro acionável quando o conteúdo diverge ou não pode ser verificado;
 - auditoria isolada de divergência, inclusive quando a transação do download falha;
+- pré-visualização inline segura de PDF, PNG e JPEG após nova validação de integridade;
 - reconciliação read-only entre referências do PostgreSQL e arquivos do storage;
 - fingerprints de amostra sem exposição de paths;
 - prévia read-only de retenção documental por critérios configuráveis;
-- auditoria de envio, download, reconciliação e prévia de retenção;
+- auditoria de envio, download, preview, reconciliação e prévia de retenção;
 - remoção compensatória quando a persistência imediata falha.
 
 A deduplicação atual retorna o documento ativo existente quando a mesma empresa envia o mesmo hash.
 
-## Integridade no download
+## Integridade no download e preview
 
-O endpoint autorizado de conteúdo não transmite diretamente o `Resource` do storage. O arquivo é
+Os endpoints autorizados de conteúdo não transmitem diretamente o `Resource` do storage. O arquivo é
 lido com limite configurável, o tamanho registrado e o SHA-256 são recalculados e somente os bytes
 aprovados são entregues ao cliente. Se houver divergência:
 
-- o download é recusado;
+- o download e o preview são recusados;
 - o arquivo não é removido nem sobrescrito;
 - o estado documental permanece preservado para investigação;
 - uma ocorrência segura é gravada na auditoria sem referência de storage, hash bruto ou conteúdo.
 
 O limite de verificação é configurado por `APP_STORAGE_INTEGRITY_MAX_FILE_SIZE_BYTES` e deve ser no
 mínimo igual ao maior arquivo aceito pela política de upload.
+
+### Pré-visualização segura
+
+A visualização inline é deliberadamente restrita a:
+
+- `application/pdf`;
+- `image/png`;
+- `image/jpeg`.
+
+Textos, CSV, HTML e OOXML não são renderizados no navegador. Formatos não suportados continuam
+acessíveis apenas por download autorizado.
+
+A resposta inline usa `Content-Disposition: inline`, `no-store`, `nosniff`, política same-origin e
+CSP sandbox. O frontend cria uma Blob URL somente durante o modal e a revoga ao fechar ou trocar o
+documento. A ação exige a mesma permissão `DOCUMENTO_BAIXAR` usada pelo download.
 
 ## Reconciliação do storage
 
@@ -77,7 +93,7 @@ A prévia não constitui autorização para descarte. Uma futura execução de r
 ## Evolução
 
 A interface `ArmazenamentoDocumento` permite provider S3/MinIO sem alterar o domínio. Ainda são
-pendentes execução governada de retenção, antivírus, preview seguro de conteúdo e suporte equivalente
-de reconciliação para providers remotos.
+pendentes execução governada de retenção, antivírus e suporte equivalente de reconciliação/preview
+para providers remotos.
 
 Backups devem incluir banco e diretório de documentos.
