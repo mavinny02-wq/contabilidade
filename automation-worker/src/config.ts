@@ -43,7 +43,7 @@ const booleanValue = (value: string | undefined, fallback: boolean) => {
   return value.toLowerCase() === 'true';
 };
 
-const integerValue = (
+export const integerValue = (
   value: string | undefined,
   fallback: number,
   min: number,
@@ -60,7 +60,7 @@ const optionalTrimmed = (value: string | undefined): string | undefined => {
   return clean ? clean : undefined;
 };
 
-const requiredSecret = (value: string | undefined, localFallback: string): string => {
+export const requiredSecret = (value: string | undefined, localFallback: string): string => {
   const effective = value ?? localFallback;
   if (effective.length < 32) {
     throw new Error('APP_AUTOMATION_SESSION_SIGNING_SECRET deve possuir ao menos 32 caracteres.');

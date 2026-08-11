@@ -36,6 +36,7 @@ type LeaseControl = {
 export class WorkerLoop {
   readonly state: WorkerLoopState = { rodando: false };
   private stopping = false;
+  private wakeIdleWait?: () => void;
 
   constructor(
     private readonly runtime: BrowserRuntime,
@@ -57,14 +58,14 @@ export class WorkerLoop {
         );
         this.state.ultimaAquisicaoEm = new Date().toISOString();
         if (!execucao) {
-          await esperar(config.pollIntervalMs);
+          await this.esperarNovaAquisicao();
           continue;
         }
         await this.processar(execucao);
       } catch (error) {
         this.state.ultimaFalha = resumoErro(error);
         console.warn('Falha no ciclo de aquisição do worker', error);
-        await esperar(config.pollIntervalMs);
+        await this.esperarNovaAquisicao();
       }
     }
 
@@ -73,6 +74,19 @@ export class WorkerLoop {
 
   parar(): void {
     this.stopping = true;
+    this.wakeIdleWait?.();
+  }
+
+  private async esperarNovaAquisicao(): Promise<void> {
+    if (this.stopping) return;
+    await new Promise<void>((resolve) => {
+      const timer = setTimeout(resolve, config.pollIntervalMs);
+      this.wakeIdleWait = () => {
+        clearTimeout(timer);
+        resolve();
+      };
+    });
+    this.wakeIdleWait = undefined;
   }
 
   private async processar(execucao: ExecucaoLease): Promise<void> {
@@ -334,8 +348,6 @@ class SessaoInterativaAbandonadaError extends Error {
     this.name = 'SessaoInterativaAbandonadaError';
   }
 }
-
-const esperar = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 function parsePayload(payload?: string): Record<string, unknown> {
   if (!payload) return {};
