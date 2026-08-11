@@ -1,0 +1,30 @@
+{
+  "menu": {
+    "faturasProvedores": "Faturas de providers"
+  },
+  "faturasProvedores": {
+    "titulo": "Faturas de providers",
+    "descricao": "Compare o valor faturado com o custo estimado registrado nas execuções.",
+    "registrar": "Registrar ou atualizar competência",
+    "provedor": "Provider",
+    "inicio": "Início",
+    "fim": "Fim",
+    "competencia": "Competência",
+    "moeda": "Moeda",
+    "valorFaturado": "Valor faturado",
+    "valorEstimado": "Valor estimado",
+    "diferenca": "Diferença",
+    "referencia": "Referência da fatura",
+    "observacao": "Observação",
+    "filtrarProvedor": "Filtrar provider",
+    "todosProvedores": "Todos os providers",
+    "mensagemSalva": "Fatura reconciliada com os custos estimados.",
+    "vazio": "Nenhuma fatura registrada",
+    "vazioDescricao": "Registre uma competência para comparar o faturamento com as execuções.",
+    "situacoes": {
+      "SEM_DIVERGENCIA": "Sem divergência",
+      "ACIMA_ESTIMADO": "Acima do estimado",
+      "ABAIXO_ESTIMADO": "Abaixo do estimado"
+    }
+  }
+}

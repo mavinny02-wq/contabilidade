@@ -26,7 +26,10 @@
   idempotência e resultado por item; evidência em
   `docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md`;
 - `CRT-CAL-001`: agenda bounded de vencimentos com período, empresa, prazo e status autoritativo;
-  evidência em `docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md`.
+  evidência em `docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md`;
+- `CRT-FAT-001`: reconciliação manual de faturas com o custo estimado das execuções, separada por
+  provider, competência e moeda; evidência em
+  `docs/implementacao/CRT_FAT_001_RECONCILIACAO_FATURAS.md`.
 
 ## Provider Serpro
 
@@ -42,6 +45,5 @@ Resultado normalizado:
 
 - runtime dos quatro providers reais;
 - amostras oficiais e anonimizadas de PDFs;
-- reconciliação de custo estimado com fatura;
 - testes de unidade, integração, concorrência e E2E;
 - InfoSimples real.
