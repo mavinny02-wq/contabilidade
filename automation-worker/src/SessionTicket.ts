@@ -15,9 +15,11 @@ export type SessionTicketPayload = {
   jti: string;
 };
 
+export type SessionTicketConsumption = 'CONSUMED' | 'REPLAY' | 'EXPIRED' | 'INVALID';
+
 export type SessionTicketConsumer = (
   payload: SessionTicketPayload,
-) => Promise<'CONSUMED' | 'REPLAY'>;
+) => Promise<SessionTicketConsumption>;
 
 export type SessionTicketAuthentication = {
   payload: SessionTicketPayload;
@@ -61,7 +63,7 @@ export class SessionTicketVerifier {
     if (input.ticket) {
       const payload = this.verifySignedTicket(input.ticket, sessionKey, now);
 
-      let consumption: 'CONSUMED' | 'REPLAY';
+      let consumption: SessionTicketConsumption;
       try {
         consumption = await this.consumeJti(payload);
       } catch {
@@ -69,6 +71,12 @@ export class SessionTicketVerifier {
       }
       if (consumption === 'REPLAY') {
         throw new TicketError('TICKET_REUTILIZADO', 409);
+      }
+      if (consumption === 'EXPIRED') {
+        throw new TicketError('TICKET_EXPIRADO', 410);
+      }
+      if (consumption === 'INVALID') {
+        throw new TicketError('TICKET_DIVERGENTE', 422);
       }
 
       // Há no máximo um grant ativo por sessão. A troca de um ticket novo
