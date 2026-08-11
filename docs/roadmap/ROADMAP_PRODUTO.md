@@ -2,80 +2,98 @@
 
 ## Checkpoint
 
-- baseline integrada: `0.5.1`;
-- commit da onda de segurança/performance/operação: `b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01`;
-- commit após a exportação CSV: `99df51e9b37195692e35c6651fafb10905f83b32`;
-- commit após a manutenção individual de filiais: `4468f98f4b57a3a5d233f5ae890447ac6a73002a`;
-- validação Cloud canônica histórica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
-- validação runtime histórica/parcial: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
-- classificação do gate: `IMPLEMENTACOES_ATUAIS_RUNTIME_LOCAL_PENDENTE`;
+- versão declarada: `0.5.1`;
+- commit final da onda mais recente: `9fdfe8b2af8170397d49925027c55ad7e6365760`;
+- PRs da onda mais recente: `#25` a `#29`;
+- validação Cloud canônica é histórica para uma baseline anterior;
+- classificação atual: `ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE`;
 - executor da prova runtime: `LOCAL_WINDOWS_MANUAL`;
-- próxima onda: ainda não selecionada.
+- próxima onda: não selecionada.
 
-## Itens implementados por autorização direta
+## Onda mais recente
 
-As PRs `#14` a `#18` integraram:
+A autorização direta do usuário produziu cinco slots independentes:
 
-1. `SEC-AUT-001` — anti-replay de tickets da sessão interativa;
-2. `PERF-CRT-001` — lotes bounded no scheduler de certidões;
-3. `OPS-BKP-001` — manifesto e verificação de backups;
-4. `OBS-WRK-001` — heartbeat atrasado/expirado na Console Técnica;
-5. `SEC-DOC-001` — integridade do storage antes do download.
+1. `EMP-IMP-001` — importação CSV de empresas;
+2. `AUT-SHD-001` — shutdown gracioso do automation worker;
+3. `CRT-DASH-001` — dashboard gerencial de certidões;
+4. `AUD-EXP-001` — filtros e exportação CSV da auditoria;
+5. `DOC-ORP-001` — reconciliação read-only do storage documental.
 
-As PRs posteriores integraram:
+Os cinco itens foram integrados pelas PRs `#25` a `#29` e permanecem
+`IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`.
 
-6. `EXP-CRT-001` — exportação CSV filtrável do Centro de Certidões (`#20`);
-7. `EMP-FIL-001` — edição e inativação individual de filiais (`#23`).
+## Capacidades preparadas
 
-Os sete itens estão `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`. Nenhum provider fiscal foi acionado
-durante as implementações.
+### Empresas
 
-## Resultados preparados
+- modelo CSV UTF-8;
+- validação sem gravação por padrão;
+- detecção de delimitador, aspas e BOM;
+- validação por linha, duplicidade no arquivo/banco e limites;
+- importação pela mesma regra autoritativa do cadastro individual;
+- relatório de válidas, importadas e rejeitadas.
 
-### Segurança
+### Automação
 
-- migration V8 e ledger de `jti` consumido;
-- ticket usado somente na troca inicial e grant HttpOnly para eventos/comandos;
-- recálculo de tamanho e SHA-256 antes do download documental;
-- auditoria isolada quando a evidência diverge;
-- proteção contra fórmula de planilha no CSV.
+- `SIGTERM`/`SIGINT` interrompe novas aquisições;
+- execução atual pode concluir durante o grace period;
+- servidor HTTP e browser são fechados por último;
+- timeout e segundo sinal não são mascarados como sucesso;
+- Compose aguarda o prazo configurado antes de `SIGKILL`.
 
-### Performance e operação
+### Certidões
 
-- inicialização, agendamento e alertas de certidões em lotes configuráveis;
-- queries de IDs bounded, cursores rotativos e transações por item;
-- backup com manifesto, versão, tamanhos e SHA-256;
-- verificação não destrutiva em PowerShell e shell;
-- exportação CSV lida em lotes e possui limite configurável.
+- consolidação gerencial bounded;
+- distribuição por status e tipo;
+- vencimentos em 30 dias e ausência de validade;
+- regra de status compartilhada com o Centro de Certidões;
+- indicador explícito quando o teto de análise produz visão parcial.
 
-### Observabilidade e uso operacional
+### Auditoria
 
-- classificação de worker saudável, degradado e indisponível;
-- exibição de último heartbeat, idade e motivo seguro;
-- exportação respeita filtros de empresa, tipo e status exibido;
-- operação de exportação gera auditoria sem conteúdo fiscal sensível;
-- Empresa 360 permite editar, inativar e reativar cada filial sem alterar seu CNPJ;
-- ciclo ativo da filial sincroniza os acompanhamentos aplicáveis sem apagar resultado, documento ou histórico.
+- filtros de ação, recurso, ator e período;
+- CSV paginado, com snapshot e limite;
+- proteção contra fórmula de planilha;
+- `detalhes_json` deliberadamente excluído;
+- evento seguro de exportação.
+
+### Documentos e storage
+
+- comparação sob demanda de banco e filesystem;
+- documentos ativos e inativos considerados;
+- nenhum symlink seguido;
+- nenhuma exclusão ou correção automática;
+- paths substituídos por fingerprints;
+- resultado conclusivo somente após varredura integral.
+
+## Itens anteriores
+
+Continuam integrados e aguardando prova runtime:
+
+- `SEC-AUT-001`, `PERF-CRT-001`, `OPS-BKP-001`, `OBS-WRK-001`, `SEC-DOC-001`;
+- `EXP-CRT-001` e `EMP-FIL-001`.
+
+Nenhum provider fiscal foi acionado durante qualquer implementação.
 
 ## Gate imediato — execução humana local
 
-1. atualizar a main para o commit atual;
-2. executar Maven Java 21, frontend e worker com Node suportado;
-3. validar Compose `dev` e `onpremise`;
-4. executar `START_CONTABILIDADE.bat dev`;
-5. comprovar imagens artifact-only e serviços saudáveis;
-6. validar Keycloak/Liquibase e Flyway V1–V8;
-7. executar endpoints e smoke UI;
-8. provar anti-replay, lotes, backup, heartbeat, integridade documental, exportação CSV e manutenção de filiais;
-9. anexar a evidência ao relatório runtime;
-10. executar uma task Cloud apenas para reconciliar o commit de evidência.
+1. atualizar a `main`;
+2. executar Maven Java 21;
+3. executar frontend e worker com Node suportado;
+4. validar Compose `dev` e `onpremise`;
+5. executar `START_CONTABILIDADE.bat dev`;
+6. comprovar imagens artifact-only e serviços saudáveis;
+7. validar Keycloak/Liquibase e Flyway V1–V8;
+8. executar endpoints e smoke UI;
+9. executar as provas focadas de todos os itens pendentes;
+10. anexar a evidência ao relatório runtime;
+11. executar uma task Cloud somente para reconciliar o commit de evidência.
 
-A evidência Cloud da PR `#12` é histórica e não substitui build/runtime da main atual, porque backend,
-worker e frontend foram alterados depois daquela prova.
+A evidência Cloud da PR `#12` não substitui essa prova, pois a `main` foi amplamente modificada depois.
 
 ## Próxima onda
 
-Ainda não há IDs selecionados nem prompts executáveis. A próxima onda deve ser criada somente após o
-gate verde e terá exatamente cinco slots independentes com ownership sem sobreposição crítica.
-
-Nenhum provider externo deve ser acionado durante o gate ou durante reconciliações.
+Nenhum novo slot será selecionado até a `main` atual obter classificação runtime `VERDE`. A próxima
+onda continuará exigindo exatamente cinco itens independentes, ownership sem sobreposição crítica e
+baseline única comprovada.

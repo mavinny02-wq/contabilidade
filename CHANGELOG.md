@@ -59,11 +59,52 @@
 - registra quantidade e filtros em auditoria segura;
 - adiciona botão de exportação na interface e configuração operacional por ambiente.
 
+### Empresas e filiais
+
+- permite editar, inativar e reativar cada filial sem alterar o CNPJ;
+- sincroniza de forma não destrutiva os acompanhamentos aplicáveis após mudança de UF ou estado ativo;
+- adiciona importação CSV UTF-8 com modelo, validação prévia e resultado por linha;
+- rejeita duplicidades no arquivo e no banco;
+- mantém o cadastro autoritativo, auditoria e inicialização de certidões já existentes.
+
+### Shutdown gracioso do worker
+
+- interrompe novas aquisições ao receber `SIGTERM` ou `SIGINT`;
+- aguarda a execução atual antes de fechar servidor HTTP e browser;
+- mantém sessão interativa disponível durante o drain normal;
+- trata timeout e segundo sinal sem mascarar interrupção;
+- adiciona grace period configurável ao Compose `dev` e `onpremise`.
+
+### Dashboard gerencial de certidões
+
+- consolida status e tipos por leitura bounded;
+- utiliza a regra autoritativa de status do domínio;
+- destaca atenção, andamento, vencimentos em 30 dias e ausência de validade;
+- identifica explicitamente visão parcial quando o teto operacional é atingido;
+- respeita `CERTIDAO_LER` e não expõe documentos ou payloads fiscais.
+
+### Exportação da auditoria
+
+- adiciona filtros por ação, recurso, ator e período;
+- exporta CSV com snapshot temporal, lotes e limite configurável;
+- exclui deliberadamente `detalhes_json`;
+- escapa wildcards de busca e impede fórmula de planilha;
+- registra evento seguro da exportação sem copiar o ator filtrado para os detalhes.
+
+### Reconciliação do storage documental
+
+- compara referências do PostgreSQL com arquivos regulares do storage;
+- considera documentos ativos e inativos;
+- não segue links simbólicos;
+- não exclui, move ou corrige arquivos;
+- só apresenta divergências conclusivas após varredura integral;
+- substitui paths por fingerprints e registra auditoria sem conteúdo sensível.
+
 ### Pendências
 
-- build completo Maven/frontend/worker da main atual;
+- build completo Maven/frontend/worker da `main` atual;
 - execução Docker, Flyway V1–V8, Keycloak/Liquibase e smoke UI;
-- provas runtime focadas dos itens integrados pelas PRs #14 a #18 e #20;
+- provas runtime focadas dos itens integrados pelas PRs `#14` a `#29`;
 - testes automatizados permanentes e E2E.
 
 ## 0.5.1 — 2026-08-09
