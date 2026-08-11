@@ -2,27 +2,44 @@
 
 ## Estado atual
 
-A onda de cinco itens foi implementada por autorização direta do usuário e integrada pelas PRs
-`#14` a `#18` sobre a versão declarada `0.5.1`.
+A onda mais recente foi implementada por autorização direta do usuário e integrada pelas PRs
+`#25` a `#29`.
 
-Depois da reconciliação dessa onda, o usuário autorizou a próxima implementação direta:
-`EXP-CRT-001`, integrada pela PR `#20`.
+| Slot | Item | PR | Estado | Evidência |
+|---:|---|---:|---|---|
+| 1 | `EMP-IMP-001` | `#25` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md` |
+| 2 | `AUT-SHD-001` | `#26` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md` |
+| 3 | `CRT-DASH-001` | `#27` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md` |
+| 4 | `AUD-EXP-001` | `#28` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUD_EXP_001_EXPORTACAO_CSV.md` |
+| 5 | `DOC-ORP-001` | `#29` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md` |
 
-| Item | PR | Estado | Evidência |
-|---|---:|---|---|
-| `SEC-AUT-001` | `#14` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md` |
-| `PERF-CRT-001` | `#15` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md` |
-| `OPS-BKP-001` | `#16` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_BKP_001_MANIFESTO_BACKUP.md` |
-| `OBS-WRK-001` | `#17` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OBS_WRK_001_HEARTBEAT_STALE.md` |
-| `SEC-DOC-001` | `#18` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md` |
-| `EXP-CRT-001` | `#20` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EXP_CRT_001_EXPORTACAO_CSV.md` |
+O commit final de implementação da onda é:
 
-Os arquivos `PREVIEW_SLOT_1_*` a `PREVIEW_SLOT_5_*` estão arquivados como referência histórica. Eles
-não são prompts executáveis e não devem ser enviados novamente ao Codex.
+```text
+9fdfe8b2af8170397d49925027c55ad7e6365760
+```
+
+Não existem prompts executáveis para esses cinco itens. Não os reenvie ao Codex.
+
+## Implementações anteriores
+
+Também permanecem aguardando prova runtime:
+
+```text
+SEC-AUT-001
+PERF-CRT-001
+OPS-BKP-001
+OBS-WRK-001
+SEC-DOC-001
+EXP-CRT-001
+EMP-FIL-001
+```
+
+Os prompts `PREVIEW_SLOT_*` antigos são apenas referências históricas.
 
 ## Prova Cloud histórica
 
-A PR `#12` comprovou, em sua baseline:
+A PR `#12` comprovou, em uma baseline anterior:
 
 - lockfiles;
 - frontend e worker;
@@ -30,41 +47,30 @@ A PR `#12` comprovou, em sua baseline:
 - sintaxe YAML/JSON/shell;
 - revisão estática de Compose, Dockerfiles, BAT, PowerShell e migrations V1–V7.
 
-Essa evidência permanece em:
+As implementações posteriores modificaram backend, frontend e worker. Portanto, essa prova não
+classifica a `main` atual como verde.
 
-```text
-docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md
-```
+## Provas obrigatórias da onda mais recente
 
-Entretanto, as PRs `#14` a `#18` e `#20` alteraram backend, worker e frontend. Portanto a prova da
-PR `#12` é histórica e não classifica a main atual como verde.
+- `EMP-IMP-001`: modelo, validação, importação parcial, duplicidades, limites e auditoria;
+- `AUT-SHD-001`: `SIGTERM` ocioso/em execução, timeout, segundo sinal e Compose;
+- `CRT-DASH-001`: base vazia, consolidada, parcial, permissão e consistência;
+- `AUD-EXP-001`: filtros, período, CSV, limite e evento de exportação;
+- `DOC-ORP-001`: storage íntegro, divergências, symlink, limites e zero alteração.
 
-## Provas obrigatórias para a main atual
-
-- Maven Java 21;
-- frontend e worker com Node 22.12+;
-- Compose efetivo `dev` e `onpremise`;
-- imagens artifact-only;
-- PostgreSQL, `postgres-bootstrap`, Flyway V1–V8, Keycloak e Liquibase;
-- BAT, healthchecks, endpoints, proxies e smoke UI;
-- anti-replay de ticket/grant;
-- lotes e cursores do scheduler;
-- manifesto/backup PowerShell e geração real;
-- estados de heartbeat;
-- adulteração documental recusada e auditada;
-- exportação CSV com filtros, UTF-8/BOM, proteção contra fórmula, limite e auditoria.
+Essas provas se somam ao ciclo geral Maven, npm, Docker, PostgreSQL/Flyway, Keycloak/Liquibase,
+endpoints e smoke UI.
 
 ## Coleta da prova runtime
 
-O Codex disponível é `CODEX_CLOUD_LINUX`. Não criar task com executor Windows fictício. O fluxo é:
+O Codex disponível é `CODEX_CLOUD_LINUX`. O fluxo correto continua:
 
 1. o usuário atualiza e executa os scripts no Windows local;
-2. a saída é anexada ao relatório runtime ou commitada;
+2. a evidência é anexada ao relatório runtime ou commitada;
 3. uma task Cloud reconcilia o commit de evidência;
-4. somente após classificação verde a próxima onda é selecionada.
+4. somente após classificação `VERDE` a próxima onda é selecionada.
 
 ## Próxima onda
 
-Não há slots oficiais nem previews novos. A próxima onda terá exatamente cinco itens independentes,
-selecionados apenas depois da validação verde da main atual e da reconciliação de ownership,
-migrations e baseline.
+A próxima onda está `NAO_SELECIONADA`. Ela terá exatamente cinco itens independentes depois do
+fechamento de `GATE-VAL-001`.
