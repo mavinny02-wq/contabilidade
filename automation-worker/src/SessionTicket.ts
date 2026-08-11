@@ -39,6 +39,9 @@ type SessionGrant = {
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const BASE64_URL_PATTERN = /^[A-Za-z0-9_-]+$/;
 const MAX_ACTIVE_GRANTS = 4096;
+const MAX_TICKET_LENGTH = 4096;
+const MAX_PAYLOAD_LENGTH = 2048;
+const MAX_SIGNATURE_LENGTH = 128;
 
 export class SessionTicketVerifier {
   private readonly grants = new Map<string, SessionGrant>();
@@ -50,6 +53,42 @@ export class SessionTicketVerifier {
     this.prune(now);
 
     const cookieName = grantCookieName(input.expectedSessionId);
+
+    // Um ticket explicitamente apresentado sempre é consumido e rotaciona o grant.
+    // Isso evita deixar um jti novo e ainda reutilizável quando a sessão já possui cookie.
+    if (input.ticket) {
+      const payload = this.verifySignedTicket(input.ticket, input.expectedSessionId, now);
+
+      let consumption: 'CONSUMED' | 'REPLAY';
+      try {
+        consumption = await this.consumeJti(payload);
+      } catch {
+        throw new TicketError('TICKET_VALIDACAO_INDISPONIVEL', 503);
+      }
+      if (consumption === 'REPLAY') {
+        throw new TicketError('TICKET_REUTILIZADO');
+      }
+
+      const grantTokenNovo = randomBytes(32).toString('base64url');
+      this.grants.set(hashGrant(grantTokenNovo), {
+        payload,
+        expiresAt: payload.exp,
+      });
+      this.trimGrants();
+
+      return {
+        payload,
+        setCookie: buildGrantCookie(
+          cookieName,
+          grantTokenNovo,
+          input.expectedSessionId,
+          payload.exp,
+          now,
+          input.secureCookie,
+        ),
+      };
+    }
+
     const grantToken = readCookie(input.cookieHeader, cookieName);
     if (grantToken) {
       const grantKey = hashGrant(grantToken);
@@ -64,44 +103,15 @@ export class SessionTicketVerifier {
       this.grants.delete(grantKey);
     }
 
-    const payload = this.verifySignedTicket(input.ticket, input.expectedSessionId, now);
-
-    let consumption: 'CONSUMED' | 'REPLAY';
-    try {
-      consumption = await this.consumeJti(payload);
-    } catch {
-      throw new TicketError('TICKET_VALIDACAO_INDISPONIVEL', 503);
-    }
-    if (consumption === 'REPLAY') {
-      throw new TicketError('TICKET_REUTILIZADO');
-    }
-
-    const grantTokenNovo = randomBytes(32).toString('base64url');
-    this.grants.set(hashGrant(grantTokenNovo), {
-      payload,
-      expiresAt: payload.exp,
-    });
-    this.trimGrants();
-
-    return {
-      payload,
-      setCookie: buildGrantCookie(
-        cookieName,
-        grantTokenNovo,
-        input.expectedSessionId,
-        payload.exp,
-        now,
-        input.secureCookie,
-      ),
-    };
+    throw new TicketError('TICKET_AUSENTE');
   }
 
   private verifySignedTicket(
-    ticket: string | undefined,
+    ticket: string,
     expectedSessionId: string,
     now: number,
   ): SessionTicketPayload {
-    if (!ticket) throw new TicketError('TICKET_AUSENTE');
+    if (ticket.length > MAX_TICKET_LENGTH) throw new TicketError('TICKET_INVALIDO');
 
     const parts = ticket.split('.');
     if (parts.length !== 2) throw new TicketError('TICKET_INVALIDO');
@@ -110,6 +120,8 @@ export class SessionTicketVerifier {
     if (
       !payloadEncoded
       || !signatureEncoded
+      || payloadEncoded.length > MAX_PAYLOAD_LENGTH
+      || signatureEncoded.length > MAX_SIGNATURE_LENGTH
       || !BASE64_URL_PATTERN.test(payloadEncoded)
       || !BASE64_URL_PATTERN.test(signatureEncoded)
     ) {
