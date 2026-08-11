@@ -61,6 +61,7 @@
 - [CRT-FAT-001 — Reconciliação de faturas](implementacao/CRT_FAT_001_RECONCILIACAO_FATURAS.md)
 - [AUT-TEL-001 — Histórico de heartbeats](implementacao/AUT_TEL_001_HISTORICO_HEARTBEATS.md)
 - [OPS-UPD-001 — Preflight de atualização](implementacao/OPS_UPD_001_PREFLIGHT_ATUALIZACAO.md)
+- [DOC-MET-001 — Edição segura de metadados](implementacao/DOC_MET_001_EDICAO_METADADOS.md)
 
 ## Integrações
 
