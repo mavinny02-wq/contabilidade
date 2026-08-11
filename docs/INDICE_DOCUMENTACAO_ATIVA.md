@@ -36,6 +36,10 @@
 ## Implementações
 
 - [SEC-AUT-001 — Anti-replay de tickets da sessão interativa](implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md)
+- [PERF-CRT-001 — Consultas limitadas no scheduler](implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md)
+- [OPS-BKP-001 — Manifesto e verificação de backup](implementacao/OPS_BKP_001_MANIFESTO_BACKUP.md)
+- [OBS-WRK-001 — Heartbeat vencido na Console Técnica](implementacao/OBS_WRK_001_HEARTBEAT_STALE.md)
+- [SEC-DOC-001 — Integridade antes do download](implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md)
 
 ## Integrações
 
