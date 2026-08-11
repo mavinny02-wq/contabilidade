@@ -10,6 +10,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { EmptyState } from '../components/EmptyState';
 import { PageHeader } from '../components/PageHeader';
+import { DocumentoMetadadosModal } from '../features/documentos/DocumentoMetadadosModal';
 import { DocumentoPreviewModal } from '../features/documentos/DocumentoPreviewModal';
 import {
   DocumentoRetencaoPreview,
@@ -28,6 +29,7 @@ export function DocumentosPage() {
   const [validoAte, setValidoAte] = useState('');
   const [arquivo, setArquivo] = useState<File>();
   const [preview, setPreview] = useState<Documento>();
+  const [editando, setEditando] = useState<Documento>();
   const [mensagem, setMensagem] = useState('');
   const [erro, setErro] = useState<ApiError>();
   const [enviando, setEnviando] = useState(false);
@@ -56,6 +58,7 @@ export function DocumentosPage() {
     setEmpresaId(id);
     setRetencao(undefined);
     setPreview(undefined);
+    setEditando(undefined);
     if (id) setSearchParams({ empresaId: id });
     else setSearchParams({});
   };
@@ -118,6 +121,7 @@ export function DocumentosPage() {
   };
 
   const podeBaixar = temPermissao(PERMISSOES.DOCUMENTO_BAIXAR);
+  const podeEditar = temPermissao(PERMISSOES.DOCUMENTO_ENVIAR);
 
   return (
     <>
@@ -158,7 +162,7 @@ export function DocumentosPage() {
 
       {retencao ? <DocumentoRetencaoPreview preview={retencao} /> : null}
 
-      {empresaId && temPermissao(PERMISSOES.DOCUMENTO_ENVIAR) ? (
+      {empresaId && podeEditar ? (
         <Card titulo={t('documentos.enviarTitulo')}>
           <form className="form-grid form-grid--compact" onSubmit={enviar}>
             <label className="field">
@@ -200,6 +204,7 @@ export function DocumentosPage() {
                     <th>{t('comum.tipo')}</th>
                     <th>{t('documentos.selecionarArquivo')}</th>
                     <th>{t('documentos.tamanho')}</th>
+                    <th>{t('documentos.emitidoEm')}</th>
                     <th>{t('documentos.validoAte')}</th>
                     <th />
                   </tr>
@@ -213,8 +218,14 @@ export function DocumentosPage() {
                         <span className="table-secondary">{formatarData(documento.criadoEm)}</span>
                       </td>
                       <td>{formatarTamanho(documento.tamanhoBytes)}</td>
+                      <td>{documento.emitidoEm ? formatarData(documento.emitidoEm) : t('comum.naoInformado')}</td>
                       <td>{documento.validoAte ? formatarData(documento.validoAte) : t('comum.naoInformado')}</td>
                       <td className="table-actions">
+                        {podeEditar ? (
+                          <Button variante="texto" onClick={() => setEditando(documento)}>
+                            {t('documentos.metadados.acao')}
+                          </Button>
+                        ) : null}
                         {podeBaixar && previewSuportado(documento.mimeType) ? (
                           <Button variante="texto" onClick={() => setPreview(documento)}>
                             {t('documentos.preview.acao')}
@@ -233,6 +244,16 @@ export function DocumentosPage() {
         )
       ) : null}
 
+      <DocumentoMetadadosModal
+        documento={editando}
+        aoFechar={() => setEditando(undefined)}
+        aoSalvar={(atualizado) => {
+          setDocumentos((atuais) => atuais.map((item) => item.id === atualizado.id ? atualizado : item));
+          setEditando(undefined);
+          setRetencao(undefined);
+          setMensagem(t('documentos.metadados.mensagemSalva'));
+        }}
+      />
       <DocumentoPreviewModal
         documento={preview}
         aoFechar={() => setPreview(undefined)}
@@ -253,5 +274,8 @@ function formatarTamanho(bytes: number) {
 }
 
 function formatarData(value: string) {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    return new Intl.DateTimeFormat('pt-BR').format(new Date(`${value}T12:00:00`));
+  }
   return new Intl.DateTimeFormat('pt-BR').format(new Date(value));
 }
