@@ -145,6 +145,7 @@ export function ResponsaveisModuloPage() {
           const item = itens[modulo];
           return (
             <Card key={modulo}>
+              <form onSubmit={(event) => { event.preventDefault(); void salvar(modulo); }}>
               <div className="card-row__title">
                 <strong>{t(`responsaveisModulo.modulos.${modulo}`)}</strong>
                 <StatusBadge tom={item.id && item.ativo ? 'sucesso' : 'neutro'}>
@@ -194,13 +195,14 @@ export function ResponsaveisModuloPage() {
               {editavel ? (
                 <div className="form-actions">
                   <Button
+                    type="submit"
                     disabled={!item.nome.trim() || salvando.has(modulo)}
-                    onClick={() => void salvar(modulo)}
                   >
                     {t('acoes.salvar')}
                   </Button>
                 </div>
               ) : null}
+              </form>
             </Card>
           );
         })}
