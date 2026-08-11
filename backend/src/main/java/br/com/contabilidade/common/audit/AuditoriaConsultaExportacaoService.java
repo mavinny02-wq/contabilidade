@@ -9,7 +9,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -141,16 +140,16 @@ public class AuditoriaConsultaExportacaoService {
         if (inicio != null) {
             Instant inicioInstant = inicio.atStartOfDay(ZONA_NEGOCIO).toInstant();
             spec = spec.and((root, _query, criteria) ->
-                    criteria.greaterThanOrEqualTo(root.get("criadoEm"), inicioInstant));
+                    criteria.greaterThanOrEqualTo(root.<Instant>get("criadoEm"), inicioInstant));
         }
         if (fim != null) {
             Instant fimExclusivo = fim.plusDays(1).atStartOfDay(ZONA_NEGOCIO).toInstant();
             spec = spec.and((root, _query, criteria) ->
-                    criteria.lessThan(root.get("criadoEm"), fimExclusivo));
+                    criteria.lessThan(root.<Instant>get("criadoEm"), fimExclusivo));
         }
         if (observadoAte != null) {
             spec = spec.and((root, _query, criteria) ->
-                    criteria.lessThanOrEqualTo(root.get("criadoEm"), observadoAte));
+                    criteria.lessThanOrEqualTo(root.<Instant>get("criadoEm"), observadoAte));
         }
         return spec;
     }
@@ -158,7 +157,7 @@ public class AuditoriaConsultaExportacaoService {
     private Specification<EventoAuditoria> contemIgnoreCase(String campo, String valor) {
         String padrao = "%" + escaparLike(valor.trim().toLowerCase(Locale.ROOT)) + "%";
         return (root, _query, criteria) -> criteria.like(
-                criteria.lower(root.get(campo)),
+                criteria.lower(root.<String>get(campo)),
                 padrao,
                 '\\'
         );
