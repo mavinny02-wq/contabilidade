@@ -56,14 +56,16 @@ Não foi adicionada dependência VNC/noVNC e nenhum vídeo é persistido.
 O ticket assinado é uma credencial de troca, não uma credencial reutilizável:
 
 1. somente `infoUrl` recebe `?ticket=...`;
-2. o worker valida HMAC, formato, sessão, expiração e todos os UUIDs;
-3. o backend valida novamente os vínculos com intervenção, execução, operador e expiração;
-4. o `INSERT ... ON CONFLICT DO NOTHING` torna o consumo do `jti` atômico entre workers e reinícios;
-5. uma segunda tentativa recebe `TICKET_REUTILIZADO`;
-6. o primeiro consumo gera um grant opaco cujo valor bruto não é armazenado, apenas seu SHA-256;
-7. eventos e comandos usam o cookie com `HttpOnly`, `SameSite=Strict`, escopo da sessão e `Secure`
+2. o worker aceita ticket bruto somente em `GET /info`;
+3. o worker valida HMAC, tamanho, Base64URL, sessão, expiração e todos os UUIDs;
+4. o backend valida novamente os vínculos com intervenção, execução, operador, estado e expiração;
+5. o `INSERT ... ON CONFLICT DO NOTHING` torna o consumo do `jti` atômico entre workers e reinícios;
+6. uma segunda tentativa recebe `409 / TICKET_REUTILIZADO`;
+7. o primeiro consumo gera um grant opaco cujo valor bruto não é armazenado, apenas seu SHA-256;
+8. existe no máximo um grant ativo por sessão; um novo ticket rotaciona e revoga o grant anterior;
+9. eventos e comandos usam o cookie com `HttpOnly`, `SameSite=Strict`, escopo da sessão e `Secure`
    quando o proxy informa HTTPS;
-8. grants expiram junto com o ticket e desaparecem quando o worker reinicia.
+10. grants expiram junto com o ticket e desaparecem quando o worker reinicia.
 
 O backend remove oportunisticamente registros cujo `expira_em` já venceu. A tabela é estado de
 segurança temporário, não uma trilha de auditoria funcional.
@@ -75,6 +77,7 @@ segurança temporário, não uma trilha de auditoria funcional.
 - o worker confere assinatura, sessão e execução;
 - o backend confirma sessão, intervenção, execução, usuário, estado e expiração antes do consumo;
 - cada `jti` pode ser consumido uma única vez, inclusive após restart do worker;
+- ticket bruto em `events` ou `input` é recusado;
 - URLs de eventos e comandos não carregam o ticket;
 - cookies de grant não são acessíveis ao JavaScript;
 - URLs com ticket não são registradas pelo Nginx;
@@ -90,5 +93,6 @@ segurança temporário, não uma trilha de auditoria funcional.
 - clipboard do sistema operacional não é compartilhado;
 - o operador deve usar o campo “Enviar texto” para colar texto longo;
 - o grant é local ao worker que mantém a página Playwright, assim como a própria sessão interativa;
+- uma nova troca em outra aba revoga o grant anterior da mesma sessão;
 - se o portal alterar o comportamento do iframe/desafio, será necessária validação em runtime;
 - a sessão ainda não foi validada contra um CAPTCHA real autorizado da Receita Federal.
