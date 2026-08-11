@@ -49,4 +49,5 @@ O registro é dono da identidade permanente e do status atual.
 | `SEC-DOC-001` | Segurança | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | PR #18: tamanho/SHA-256 recalculados e download divergente bloqueado/auditado |
 | `EXP-CRT-001` | Funcionalidade | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | exportação CSV filtrável, bounded, auditada e protegida contra fórmula de planilha |
 | `EMP-FIL-001` | Funcionalidade | Empresas | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | edição/inativação individual de filial com CNPJ imutável e sincronização de certidões |
+| `EMP-IMP-001` | Funcionalidade | Empresas | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | importação CSV UTF-8 com validação prévia, limites e resultado por linha |
 | `AMB-003` | Ambiente | Serpro | ABERTO | contrato, credenciais, custo e runtime autorizado |

@@ -21,11 +21,14 @@
 
 - `EMP-FIL-001`: edição e inativação individual de filial, CNPJ imutável, auditoria e sincronização
   não destrutiva dos acompanhamentos de certidões; evidência em
-  `docs/implementacao/EMP_FIL_001_EDICAO_FILIAL.md`.
+  `docs/implementacao/EMP_FIL_001_EDICAO_FILIAL.md`;
+- `EMP-IMP-001`: importação CSV UTF-8 com modelo, validação sem gravação, processamento por linha,
+  limites configuráveis e resultado detalhado; evidência em
+  `docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md`.
 
 ## Pendências
 
-- importação CSV/Excel;
+- importação Excel nativa;
 - histórico cadastral;
 - enriquecimento oficial;
 - validação específica de IE/IM;

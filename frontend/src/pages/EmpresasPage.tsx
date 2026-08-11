@@ -12,6 +12,7 @@ import { PageHeader } from '../components/PageHeader';
 import { Pagination } from '../components/Pagination';
 import { StatusBadge } from '../components/StatusBadge';
 import { EmpresaFormModal } from '../features/empresas/EmpresaFormModal';
+import { EmpresaImportacaoCsvModal } from '../features/empresas/EmpresaImportacaoCsvModal';
 
 export function EmpresasPage() {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ export function EmpresasPage() {
   const [dados, setDados] = useState<Pagina<EmpresaResumo>>();
   const [erro, setErro] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
+  const [importacaoAberta, setImportacaoAberta] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
   const carregar = useCallback(() => {
@@ -49,6 +51,14 @@ export function EmpresasPage() {
     navigate(`/empresas/${empresa.id}`);
   };
 
+  const aoImportar = (quantidade: number) => {
+    setMensagem(t('empresas.importacao.mensagemImportadas', { quantidade }));
+    setPagina(0);
+    setConsulta('');
+    setTermo('');
+    carregar();
+  };
+
   return (
     <>
       <PageHeader
@@ -56,7 +66,12 @@ export function EmpresasPage() {
         descricao={t('empresas.descricao')}
         acoes={
           temPermissao(PERMISSOES.EMPRESA_EDITAR) ? (
-            <Button onClick={() => setModalAberto(true)}>{t('acoes.novaEmpresa')}</Button>
+            <>
+              <Button variante="secundario" onClick={() => setImportacaoAberta(true)}>
+                {t('empresas.importacao.acao')}
+              </Button>
+              <Button onClick={() => setModalAberto(true)}>{t('acoes.novaEmpresa')}</Button>
+            </>
           ) : undefined
         }
       />
@@ -134,6 +149,11 @@ export function EmpresasPage() {
         aberto={modalAberto}
         aoFechar={() => setModalAberto(false)}
         aoSalvar={aoSalvar}
+      />
+      <EmpresaImportacaoCsvModal
+        aberto={importacaoAberta}
+        aoFechar={() => setImportacaoAberta(false)}
+        aoImportar={aoImportar}
       />
     </>
   );

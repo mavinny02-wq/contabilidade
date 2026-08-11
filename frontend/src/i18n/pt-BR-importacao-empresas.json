@@ -1,0 +1,25 @@
+{
+  "empresas": {
+    "importacao": {
+      "acao": "Importar CSV",
+      "titulo": "Importar empresas por CSV",
+      "descricao": "Use o modelo UTF-8. A validação não grava dados; desmarque a opção somente depois de revisar o resultado.",
+      "baixarModelo": "Baixar modelo CSV",
+      "arquivo": "Arquivo CSV",
+      "somenteValidar": "Somente validar, sem cadastrar empresas",
+      "validar": "Validar arquivo",
+      "importar": "Importar empresas",
+      "validacaoConcluida": "Validação concluída",
+      "importacaoConcluida": "Importação concluída",
+      "total": "Linhas de dados",
+      "validas": "Linhas válidas",
+      "importadas": "Empresas importadas",
+      "rejeitadas": "Linhas rejeitadas",
+      "linha": "Linha",
+      "codigo": "Código",
+      "motivo": "Motivo",
+      "errosTruncados": "Existem outros erros além dos exibidos. Reduza o arquivo ou corrija os primeiros itens e valide novamente.",
+      "mensagemImportadas": "{{quantidade}} empresa(s) importada(s)."
+    }
+  }
+}
