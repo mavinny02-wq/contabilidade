@@ -6,7 +6,8 @@
 - versão declarada: `0.5.1`;
 - commit com a onda implementada: `b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01`;
 - commit após `EXP-CRT-001`: `99df51e9b37195692e35c6651fafb10905f83b32`;
-- PRs implementadas diretamente: `#14` a `#18` e `#20`;
+- commit após `EMP-FIL-001`: `4468f98f4b57a3a5d233f5ae890447ac6a73002a`;
+- PRs implementadas diretamente: `#14` a `#18`, `#20` e `#23`;
 - validação Cloud histórica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
 - validação runtime histórica/parcial: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
 - classificação Cloud histórica: `CLOUD_AMARELO` na baseline anterior às implementações atuais;
@@ -25,6 +26,7 @@
 | `OBS-WRK-001` | `#17` | `6d2d964` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OBS_WRK_001_HEARTBEAT_STALE.md` |
 | `SEC-DOC-001` | `#18` | `b50fd18` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md` |
 | `EXP-CRT-001` | `#20` | `99df51e` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EXP_CRT_001_EXPORTACAO_CSV.md` |
+| `EMP-FIL-001` | `#23` | `4468f98` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_FIL_001_EDICAO_FILIAL.md` |
 
 ### Resultado funcional preparado
 
@@ -33,7 +35,8 @@
 - backups com manifesto, tamanho, SHA-256 e verificadores não destrutivos;
 - Console Técnica com idade e classificação dos heartbeats do worker;
 - download documental bloqueado quando tamanho ou SHA-256 divergem;
-- Centro de Certidões com exportação CSV filtrável, bounded, auditada e protegida contra fórmula.
+- Centro de Certidões com exportação CSV filtrável, bounded, auditada e protegida contra fórmula;
+- Empresa 360 com edição e ativação/inativação individual de filial, CNPJ imutável e sincronização não destrutiva dos acompanhamentos.
 
 Os prompts arquivados não devem ser executados novamente.
 
@@ -42,7 +45,7 @@ Os prompts arquivados não devem ser executados novamente.
 A PR `#12` continua válida como evidência histórica de lockfiles, PDF.js, frontend/worker e análises
 estáticas naquele commit. Entretanto, backend, worker e frontend foram alterados depois dela. Por
 isso a main atual exige novo ciclo de build e runtime; o resultado histórico não pode ser promovido
-automaticamente para o commit `99df51e9`.
+automaticamente para o commit `4468f98f`.
 
 ## Provas necessárias para fechar o gate
 
@@ -64,7 +67,8 @@ Todas devem partir da main atual ou de descendente reconciliado:
 14. heartbeat: estados recente, atrasado, expirado e ausência total;
 15. documento: download íntegro e adulteração do storage recusada com auditoria persistida;
 16. exportação CSV: filtros, UTF-8, proteção contra fórmula, limite excedido e auditoria;
-17. aplicação deixada rodando em `http://localhost:8088` durante a prova.
+17. filial: edição, inativação, reativação, CNPJ imutável e sincronização de certidões por UF;
+18. aplicação deixada rodando em `http://localhost:8088` durante a prova.
 
 A coleta da prova é humana no Windows local. Depois, uma task `CODEX_CLOUD_LINUX` reconcilia o commit
 de evidência. Não criar task Codex que finja acesso a `cmd.exe`, WSL, Docker Desktop ou ao localhost
