@@ -88,6 +88,11 @@ app:
     reconciliation-max-references: ${APP_STORAGE_RECONCILIATION_MAX_REFERENCES:200000}
     reconciliation-max-files: ${APP_STORAGE_RECONCILIATION_MAX_FILES:200000}
     reconciliation-max-samples: ${APP_STORAGE_RECONCILIATION_MAX_SAMPLES:20}
+  document:
+    retention-inactive-days: ${APP_DOCUMENT_RETENTION_INACTIVE_DAYS:365}
+    retention-expired-grace-days: ${APP_DOCUMENT_RETENTION_EXPIRED_GRACE_DAYS:365}
+    retention-no-expiry-days: ${APP_DOCUMENT_RETENTION_NO_EXPIRY_DAYS:3650}
+    retention-preview-max-rows: ${APP_DOCUMENT_RETENTION_PREVIEW_MAX_ROWS:1000}
   backup:
     directory: ${APP_BACKUP_DIRECTORY:./dados/backups}
     inventory-max-manifests: ${APP_BACKUP_INVENTORY_MAX_MANIFESTS:50}
