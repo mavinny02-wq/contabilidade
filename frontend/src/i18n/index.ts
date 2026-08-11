@@ -14,6 +14,7 @@ import ptBRFiliais from './pt-BR-filiais.json';
 import ptBRHistoricoEmpresas from './pt-BR-historico-empresas.json';
 import ptBRHistoricoProvedores from './pt-BR-historico-provedores.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
+import ptBRPreviewDocumentos from './pt-BR-preview-documentos.json';
 import ptBRRetencaoDocumentos from './pt-BR-retencao-documentos.json';
 import ptBRStorageReconciliacao from './pt-BR-storage-reconciliacao.json';
 
@@ -64,6 +65,9 @@ const translation = {
   },
   documentos: {
     ...ptBR.documentos,
+    preview: {
+      ...ptBRPreviewDocumentos.documentos.preview,
+    },
     retencao: {
       ...ptBRRetencaoDocumentos.documentos.retencao,
     },
