@@ -1,0 +1,30 @@
+{
+  "menu": {
+    "atualizacoes": "Atualizações"
+  },
+  "atualizacaoPreflight": {
+    "titulo": "Preflight de atualização",
+    "descricao": "Valide a estrutura e a compatibilidade de um manifesto antes de qualquer atualização real.",
+    "somentePreflight": "Esta tela não baixa, executa, instala ou substitui arquivos. A atualização continua sendo uma operação humana controlada.",
+    "baixarModelo": "Baixar modelo",
+    "enviarTitulo": "Analisar manifesto",
+    "manifesto": "Manifesto JSON",
+    "analisar": "Executar preflight",
+    "analisando": "Analisando...",
+    "resultado": "Resultado",
+    "versaoAtual": "Versão atual",
+    "versaoDestino": "Versão de destino",
+    "artefatos": "Artefatos",
+    "semOcorrencias": "Nenhum erro ou aviso foi identificado no manifesto.",
+    "semArtefatos": "Nenhum artefato válido foi reconhecido",
+    "componente": "Componente",
+    "nomeArquivo": "Nome do arquivo",
+    "tamanho": "Tamanho declarado",
+    "nomeSeguro": "Nome seguro",
+    "shaValido": "SHA-256 válido",
+    "status": {
+      "APROVADO": "Aprovado",
+      "REPROVADO": "Reprovado"
+    }
+  }
+}
