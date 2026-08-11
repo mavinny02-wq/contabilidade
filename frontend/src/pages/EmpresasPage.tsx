@@ -14,6 +14,11 @@ import { StatusBadge } from '../components/StatusBadge';
 import { EmpresaFormModal } from '../features/empresas/EmpresaFormModal';
 import { EmpresaImportacaoCsvModal } from '../features/empresas/EmpresaImportacaoCsvModal';
 
+type EmpresaResumoClassificada = EmpresaResumo & {
+  grupo?: string;
+  tags: string[];
+};
+
 export function EmpresasPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -21,7 +26,7 @@ export function EmpresasPage() {
   const [pagina, setPagina] = useState(0);
   const [termo, setTermo] = useState('');
   const [consulta, setConsulta] = useState('');
-  const [dados, setDados] = useState<Pagina<EmpresaResumo>>();
+  const [dados, setDados] = useState<Pagina<EmpresaResumoClassificada>>();
   const [erro, setErro] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
   const [importacaoAberta, setImportacaoAberta] = useState(false);
@@ -29,7 +34,7 @@ export function EmpresasPage() {
 
   const carregar = useCallback(() => {
     setErro(false);
-    void api<Pagina<EmpresaResumo>>(
+    void api<Pagina<EmpresaResumoClassificada>>(
       `/empresas?pagina=${pagina}&tamanho=20&termo=${encodeURIComponent(consulta)}`,
     )
       .then(setDados)
@@ -81,8 +86,8 @@ export function EmpresasPage() {
         <input
           value={termo}
           onChange={(event) => setTermo(event.target.value)}
-          placeholder={t('empresas.buscarPlaceholder')}
-          aria-label={t('empresas.buscarPlaceholder')}
+          placeholder={t('empresas.classificacao.buscarPlaceholder')}
+          aria-label={t('empresas.classificacao.buscarPlaceholder')}
         />
         <Button type="submit" variante="secundario">{t('acoes.buscar')}</Button>
         {consulta ? (
@@ -110,6 +115,7 @@ export function EmpresasPage() {
                 <tr>
                   <th>{t('empresas.campos.razaoSocial')}</th>
                   <th>{t('empresas.campos.cnpj')}</th>
+                  <th>{t('empresas.classificacao.grupo')}</th>
                   <th>{t('empresas.campos.status')}</th>
                   <th>{t('empresas.campos.regimeTributario')}</th>
                   <th>{t('empresas.campos.municipio')}</th>
@@ -122,8 +128,15 @@ export function EmpresasPage() {
                     <td>
                       <strong>{empresa.razaoSocial}</strong>
                       {empresa.nomeFantasia ? <span className="table-secondary">{empresa.nomeFantasia}</span> : null}
+                      {empresa.tags.length > 0 ? (
+                        <span className="table-secondary">
+                          {empresa.tags.slice(0, 4).join(' · ')}
+                          {empresa.tags.length > 4 ? ` +${empresa.tags.length - 4}` : ''}
+                        </span>
+                      ) : null}
                     </td>
                     <td>{formatarCnpj(empresa.cnpj)}</td>
+                    <td>{empresa.grupo ?? t('empresas.classificacao.semGrupo')}</td>
                     <td>
                       <StatusBadge tom={empresa.status === 'ATIVA' ? 'sucesso' : 'neutro'}>
                         {empresa.status ? t(`empresas.status.${empresa.status}`) : t('comum.naoInformado')}
