@@ -42,8 +42,8 @@ public class CertidaoDashboardGerencialService {
         LocalDate limiteTrintaDias = hoje.plusDays(30);
         long totalRegistradas = repository.countByAtivaTrue();
 
-        Map<StatusCertidao, Long> porStatus = mapaZerado(StatusCertidao.values());
-        Map<TipoCertidao, Long> porTipo = mapaZerado(TipoCertidao.values());
+        Map<StatusCertidao, Long> porStatus = mapaZerado(StatusCertidao.class);
+        Map<TipoCertidao, Long> porTipo = mapaZerado(TipoCertidao.class);
         UUID cursor = null;
         int analisadas = 0;
         long vencemEmTrintaDias = 0;
@@ -121,9 +121,9 @@ public class CertidaoDashboardGerencialService {
         return total;
     }
 
-    private <E extends Enum<E>> Map<E, Long> mapaZerado(E[] valores) {
-        Map<E, Long> mapa = new EnumMap<>(valores[0].getDeclaringClass());
-        for (E valor : valores) mapa.put(valor, 0L);
+    private <E extends Enum<E>> Map<E, Long> mapaZerado(Class<E> tipo) {
+        Map<E, Long> mapa = new EnumMap<>(tipo);
+        for (E valor : tipo.getEnumConstants()) mapa.put(valor, 0L);
         return mapa;
     }
 
