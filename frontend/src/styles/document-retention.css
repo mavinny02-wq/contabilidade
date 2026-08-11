@@ -1,0 +1,79 @@
+.retention-preview {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.retention-preview__header {
+  align-items: flex-start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.retention-preview__header h2 {
+  margin: 0.2rem 0;
+}
+
+.retention-preview__metrics {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.retention-preview__metrics > div {
+  background: var(--surface-subtle, #f6f7f9);
+  border-radius: 0.65rem;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.85rem;
+}
+
+.retention-preview__metrics span {
+  color: var(--text-muted, #667085);
+  font-size: 0.8rem;
+}
+
+.retention-preview__metrics strong {
+  font-size: 1rem;
+}
+
+.retention-preview__criteria h3 {
+  margin: 0 0 0.5rem;
+}
+
+.retention-preview__criteria ul {
+  color: var(--text-muted, #667085);
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+.retention-preview__reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.retention-preview__reason-list {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 14rem;
+}
+
+.retention-preview__reason-list span {
+  color: var(--text-muted, #667085);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 760px) {
+  .retention-preview__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .retention-preview__metrics {
+    grid-template-columns: 1fr;
+  }
+}
