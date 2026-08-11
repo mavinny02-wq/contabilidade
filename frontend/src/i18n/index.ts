@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import ptBR from './pt-BR.json';
 import ptBRAuditoriaExportacao from './pt-BR-auditoria-exportacao.json';
+import ptBRCertidoesLote from './pt-BR-certidoes-lote.json';
 import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
 import ptBRDashboardCertidoes from './pt-BR-dashboard-certidoes.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
@@ -47,6 +48,9 @@ const translation = {
     mensagens: {
       ...ptBR.certidoes.mensagens,
       ...ptBRExportacaoCertidoes.certidoes.mensagens,
+    },
+    lote: {
+      ...ptBRCertidoesLote.certidoes.lote,
     },
   },
   consoleTecnica: {
