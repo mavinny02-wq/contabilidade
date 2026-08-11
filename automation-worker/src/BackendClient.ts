@@ -1,6 +1,7 @@
 import { basename } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { config } from './config.js';
+import type { SessionTicketPayload } from './SessionTicket.js';
 import type {
   DocumentoWorkerBytesInput,
   DocumentoWorkerInput,
@@ -26,6 +27,30 @@ export class BackendClient {
         observadoEm: new Date().toISOString(),
       },
     });
+  }
+
+  async consumirTicketSessao(
+    payload: SessionTicketPayload,
+  ): Promise<'CONSUMED' | 'REPLAY'> {
+    const response = await this.raw('/api/interno/automation/session-tickets/consume', {
+      method: 'POST',
+      body: {
+        jti: payload.jti,
+        sessaoId: payload.sid,
+        intervencaoId: payload.iid,
+        execucaoId: payload.eid,
+        usuario: payload.sub,
+        expiraEm: new Date(payload.exp * 1000).toISOString(),
+        workerId: config.workerId,
+      },
+    });
+
+    if (response.status === 409) {
+      await response.text().catch(() => undefined);
+      return 'REPLAY';
+    }
+    if (!response.ok) throw await this.error(response);
+    return 'CONSUMED';
   }
 
   async adquirir(operacoes: string[], provedores: string[]): Promise<ExecucaoLease | undefined> {
