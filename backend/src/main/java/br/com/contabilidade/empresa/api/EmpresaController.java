@@ -71,6 +71,15 @@ public class EmpresaController {
         return service.atualizar(id, request);
     }
 
+    @PutMapping("/{id}/classificacao")
+    @PreAuthorize("@permissaoService.tem('EMPRESA_EDITAR')")
+    public EmpresaDetalheResponse atualizarClassificacao(
+            @PathVariable UUID id,
+            @Valid @RequestBody EmpresaClassificacaoRequest request
+    ) {
+        return service.atualizarClassificacao(id, request);
+    }
+
     @PostMapping("/{id}/filiais")
     @PreAuthorize("@permissaoService.tem('EMPRESA_EDITAR')")
     public ResponseEntity<EstabelecimentoResponse> adicionarFilial(@PathVariable UUID id,
