@@ -4,8 +4,8 @@
 
 - branch de integração: `main`;
 - versão declarada: `0.5.1`;
-- commit final da onda mais recente: `9fdfe8b2af8170397d49925027c55ad7e6365760`;
-- PRs da onda mais recente: `#25` a `#29`;
+- commit final da onda mais recente: `0e310acecedf186bb62339e152bd7d5ee7bc0e2e`;
+- PRs da onda mais recente: `#31` a `#35`;
 - validação Cloud canônica permanece histórica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
 - validação runtime permanece parcial: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
 - gate ativo: `GATE-VAL-001`;
@@ -17,26 +17,27 @@
 
 | Slot | Item | PR | Merge | Estado | Evidência |
 |---:|---|---:|---|---|---|
-| 1 | `EMP-IMP-001` | `#25` | `ff91c9c` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md` |
-| 2 | `AUT-SHD-001` | `#26` | `68a1c15` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md` |
-| 3 | `CRT-DASH-001` | `#27` | `ada8e91` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md` |
-| 4 | `AUD-EXP-001` | `#28` | `40abcbb` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUD_EXP_001_EXPORTACAO_CSV.md` |
-| 5 | `DOC-ORP-001` | `#29` | `9fdfe8b` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md` |
+| 1 | `EMP-HIS-001` | `#31` | `fb738e6` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md` |
+| 2 | `CRT-BULK-001` | `#32` | `9cab6c4` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md` |
+| 3 | `AUT-LIM-001` | `#33` | `fad4af7` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md` |
+| 4 | `OPS-BKP-UI-001` | `#34` | `a592810` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md` |
+| 5 | `DOC-RET-001` | `#35` | `0e310ac` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md` |
 
 ### Resultado funcional preparado
 
-- importação CSV de empresas com modelo, validação sem gravação e resultado por linha;
-- shutdown gracioso do worker com drain da execução atual e grace period do Compose;
-- dashboard gerencial bounded das certidões, usando a regra autoritativa de status;
-- filtros e exportação CSV da auditoria sem `detalhes_json`;
-- reconciliação read-only entre documentos do PostgreSQL e arquivos do storage, sem expor paths.
+- aba Histórico da Empresa 360 baseada na auditoria da empresa e de seus estabelecimentos;
+- seleção e solicitação de até 500 acompanhamentos de certidão por lote, com idempotência por item;
+- limites locais de sessões interativas e assinantes SSE, com reserva para criações concorrentes;
+- inventário read-only dos backups e verificação SHA-256 explícita pela interface;
+- prévia bounded de candidatos à retenção documental, sem exclusão ou alteração do storage.
 
 ## Implementações anteriores ainda aguardando runtime
 
 Também continuam abertas as provas de:
 
-- `SEC-AUT-001`, `PERF-CRT-001`, `OPS-BKP-001`, `OBS-WRK-001` e `SEC-DOC-001`;
-- `EXP-CRT-001` e `EMP-FIL-001`.
+- primeira onda: `SEC-AUT-001`, `PERF-CRT-001`, `OPS-BKP-001`, `OBS-WRK-001` e `SEC-DOC-001`;
+- adicionais: `EXP-CRT-001` e `EMP-FIL-001`;
+- onda anterior: `EMP-IMP-001`, `AUT-SHD-001`, `CRT-DASH-001`, `AUD-EXP-001` e `DOC-ORP-001`.
 
 Todos os itens integrados permanecem `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`. A prova Cloud da
 PR `#12` não classifica a `main` atual, porque backend, frontend e worker foram modificados depois
@@ -54,11 +55,11 @@ Todas devem partir da `main` atual ou de descendente reconciliado:
 6. imagens artifact-only, PostgreSQL, `postgres-bootstrap`, Keycloak/Liquibase e Flyway V1–V8;
 7. endpoints técnicos, proxies e smoke UI;
 8. provas focadas das implementações anteriores;
-9. `EMP-IMP-001`: validação, importação parcial, duplicidades, auditoria e limites;
-10. `AUT-SHD-001`: worker ocioso/em execução, timeout, segundo sinal e recuperação do lease;
-11. `CRT-DASH-001`: base vazia, completa, parcial, permissão e consistência com o Centro;
-12. `AUD-EXP-001`: filtros, período, limite, CSV seguro e evento de exportação;
-13. `DOC-ORP-001`: storage íntegro, divergências, symlink, limites e prova de zero alteração;
+9. `EMP-HIS-001`: isolamento entre empresas, paginação, ator e ausência de `detalhes_json`;
+10. `CRT-BULK-001`: lotes, duplicidades, idempotência e resultado parcialmente aceito;
+11. `AUT-LIM-001`: concorrência de criação, limite SSE, liberação e health agregado;
+12. `OPS-BKP-UI-001`: manifesto válido/inválido, tamanho, hash, symlink e mount read-only;
+13. `DOC-RET-001`: critérios isolados/combinados, filtro, resultado parcial e zero alteração;
 14. aplicação mantida em `http://localhost:8088` durante a coleta.
 
 A execução é humana no Windows local. Depois, uma task `CODEX_CLOUD_LINUX` reconcilia o commit de
