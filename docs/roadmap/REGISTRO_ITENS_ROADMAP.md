@@ -51,4 +51,5 @@ O registro é dono da identidade permanente e do status atual.
 | `EMP-FIL-001` | Funcionalidade | Empresas | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | edição/inativação individual de filial com CNPJ imutável e sincronização de certidões |
 | `EMP-IMP-001` | Funcionalidade | Empresas | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | importação CSV UTF-8 com validação prévia, limites e resultado por linha |
 | `AUT-SHD-001` | Operação | Automação | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | shutdown aguarda execução atual, fecha HTTP/browser e respeita grace period do Compose |
+| `CRT-DASH-001` | Funcionalidade | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | dashboard gerencial bounded com status, tipos, vencimentos e amostra parcial explícita |
 | `AMB-003` | Ambiente | Serpro | ABERTO | contrato, credenciais, custo e runtime autorizado |
