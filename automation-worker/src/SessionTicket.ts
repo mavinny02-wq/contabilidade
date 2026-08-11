@@ -69,6 +69,10 @@ export class SessionTicketVerifier {
         throw new TicketError('TICKET_REUTILIZADO');
       }
 
+      // A troca bem-sucedida também revoga o grant anterior desta sessão.
+      const grantTokenAnterior = readCookie(input.cookieHeader, cookieName);
+      if (grantTokenAnterior) this.grants.delete(hashGrant(grantTokenAnterior));
+
       const grantTokenNovo = randomBytes(32).toString('base64url');
       this.grants.set(hashGrant(grantTokenNovo), {
         payload,
