@@ -120,16 +120,16 @@ public class DocumentoRetencaoPreviewService {
             }
 
             Predicate inativoAntigo = criteria.and(
-                    criteria.isFalse(root.get("ativo")),
-                    criteria.lessThanOrEqualTo(root.get("atualizadoEm"), limiteInativo)
+                    criteria.isFalse(root.<Boolean>get("ativo")),
+                    criteria.lessThanOrEqualTo(root.<Instant>get("atualizadoEm"), limiteInativo)
             );
             Predicate validadeExpirada = criteria.and(
-                    criteria.isNotNull(root.get("validoAte")),
-                    criteria.lessThanOrEqualTo(root.get("validoAte"), limiteValidade)
+                    criteria.isNotNull(root.<LocalDate>get("validoAte")),
+                    criteria.lessThanOrEqualTo(root.<LocalDate>get("validoAte"), limiteValidade)
             );
             Predicate semValidadeAntigo = criteria.and(
-                    criteria.isNull(root.get("validoAte")),
-                    criteria.lessThanOrEqualTo(root.get("criadoEm"), limiteSemValidade)
+                    criteria.isNull(root.<LocalDate>get("validoAte")),
+                    criteria.lessThanOrEqualTo(root.<Instant>get("criadoEm"), limiteSemValidade)
             );
             escopo.add(criteria.or(inativoAntigo, validadeExpirada, semValidadeAntigo));
             return criteria.and(escopo.toArray(Predicate[]::new));
