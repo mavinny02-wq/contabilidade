@@ -55,21 +55,26 @@ os builds e verificações das imagens terminam.
 
 ## Inicialização controlada dos serviços
 
-A revisão `COMPACT-SEQUENTIAL-2026-08-10-05` delega a estabilização dos containers para:
+O BAT delega a estabilização dos containers para:
 
 ```text
 scripts/start-compose-sequential.bat
 ```
 
-Os serviços são iniciados e comprovados nesta ordem:
+A revisão operacional `STABLE-NETWORK-PROBE-2026-08-11-06` inicia e comprova os serviços nesta
+ordem:
 
 ```text
 PostgreSQL
     ↓ healthy
+postgres-bootstrap
+    ↓ exit code 0
 Keycloak
-    ↓ realm disponível
+    ↓ Docker healthcheck healthy
 Backend
     ↓ readiness
+schemas Keycloak/Flyway
+    ↓ válidos
 Automation worker
     ↓ /health
 Frontend
@@ -79,6 +84,55 @@ Frontend
 Cada etapa possui timeout próprio e logs direcionados. Se o primeiro `docker compose up` de um
 serviço retornar erro enquanto o container ainda pode reiniciar e se recuperar, o script continua
 monitorando até o timeout em vez de encerrar prematuramente.
+
+## Sonda de readiness da rede
+
+A readiness do backend precisa ser consultada de dentro da rede Compose também no modo on-premise,
+em que a porta 8080 não é publicada no Windows.
+
+A implementação antiga executava repetidamente:
+
+```text
+docker compose run --rm ... frontend wget http://backend:8080/...
+```
+
+Isso criava containers one-shot com nomes como:
+
+```text
+contabilidade-frontend-run-<id>
+```
+
+Eles desapareciam por causa de `--rm` e podiam exibir `wget: bad address 'backend:8080'` enquanto o
+backend ainda não havia sido criado. Esses containers não eram o frontend real, mas a nomenclatura
+causava uma interpretação incorreta de crash do frontend.
+
+A revisão atual cria uma única sonda temporária e identificável:
+
+```text
+contabilidade-startup-probe
+```
+
+Ela:
+
+- usa a imagem frontend apenas pelo `wget` do Alpine;
+- substitui o entrypoint para não iniciar Nginx;
+- permanece ativa durante a espera do backend;
+- não publica portas;
+- não executa a aplicação frontend;
+- é removida explicitamente em sucesso ou falha;
+- não produz containers `frontend-run-*` a cada tentativa.
+
+O Keycloak agora é considerado pronto somente quando o healthcheck Docker está `healthy`, evitando
+que o backend seja solicitado antes de a condição `depends_on` estar satisfeita. Caso o backend
+não tenha sido criado, o comando `up backend` é repetido durante a espera.
+
+O frontend real continua sendo:
+
+```text
+contabilidade-frontend-1
+```
+
+Ele é iniciado somente na etapa final e deve permanecer em execução.
 
 ## PostgreSQL
 
@@ -105,8 +159,10 @@ O BAT:
 Após a subida:
 
 - PostgreSQL `healthy`;
-- realm do Keycloak acessível;
+- `postgres-bootstrap` concluído com código zero;
+- Keycloak `healthy`;
 - backend readiness;
+- schemas PostgreSQL, Flyway e Liquibase;
 - automation worker `/health`;
 - frontend `/healthz`;
 - `nginx -t` já dentro da rede Compose.
