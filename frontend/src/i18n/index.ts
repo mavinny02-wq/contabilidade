@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import ptBR from './pt-BR.json';
 import ptBRAgendaCertidoes from './pt-BR-agenda-certidoes.json';
+import ptBRAtualizacaoPreflight from './pt-BR-atualizacao-preflight.json';
 import ptBRAuditoriaExportacao from './pt-BR-auditoria-exportacao.json';
 import ptBRBackups from './pt-BR-backups.json';
 import ptBRCertidoesLote from './pt-BR-certidoes-lote.json';
@@ -30,6 +31,7 @@ const translation = {
     ...ptBRConfiguracaoSegura.menu,
     ...ptBRFaturasProvedores.menu,
     ...ptBRHistoricoWorkers.menu,
+    ...ptBRAtualizacaoPreflight.menu,
   },
   auditoria: {
     ...ptBR.auditoria,
@@ -37,6 +39,9 @@ const translation = {
     exportacao: {
       ...ptBRAuditoriaExportacao.auditoria.exportacao,
     },
+  },
+  atualizacaoPreflight: {
+    ...ptBRAtualizacaoPreflight.atualizacaoPreflight,
   },
   backups: {
     ...ptBRBackups.backups,
