@@ -13,6 +13,7 @@ import { ExecucoesPage } from '../pages/ExecucoesPage';
 import { IntervencoesPage } from '../pages/IntervencoesPage';
 import { NotificacoesPage } from '../pages/NotificacoesPage';
 import { IntegracoesPage } from '../pages/IntegracoesPage';
+import { HistoricoProvedoresPage } from '../pages/HistoricoProvedoresPage';
 import { AuditoriaPage } from '../pages/AuditoriaPage';
 import { BackupsPage } from '../pages/BackupsPage';
 import { ConsoleTecnicaPage } from '../pages/ConsoleTecnicaPage';
@@ -58,7 +59,10 @@ export const router = createBrowserRouter([
           },
           {
             element: <PermissionRoute permissao={PERMISSOES.INTEGRACAO_LER} />,
-            children: [{ path: 'integracoes', element: <IntegracoesPage /> }],
+            children: [
+              { path: 'integracoes', element: <IntegracoesPage /> },
+              { path: 'integracoes/historico-provedores', element: <HistoricoProvedoresPage /> },
+            ],
           },
           {
             element: <PermissionRoute permissao={PERMISSOES.AUDITORIA_LER} />,
