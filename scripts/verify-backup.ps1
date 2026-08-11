@@ -17,6 +17,9 @@ if ([string]::IsNullOrWhiteSpace($ManifestPath)) {
     }
     $ManifestPath = $latest.FullName
 }
+elseif (-not [System.IO.Path]::IsPathRooted($ManifestPath)) {
+    $ManifestPath = Join-Path $projectRoot $ManifestPath
+}
 
 $resolvedManifest = (Resolve-Path -LiteralPath $ManifestPath).Path
 $manifestDirectory = Split-Path -Parent $resolvedManifest
@@ -28,8 +31,9 @@ if ($manifest.schemaVersion -ne "1.0") {
 if ([string]::IsNullOrWhiteSpace([string]$manifest.backupId)) {
     throw "O manifesto não informa backupId."
 }
-if ([string]::IsNullOrWhiteSpace([string]$manifest.applicationVersion)) {
-    throw "O manifesto não informa applicationVersion."
+if ([string]::IsNullOrWhiteSpace([string]$manifest.applicationVersion)
+        -or [string]$manifest.applicationVersion -notmatch '^[A-Za-z0-9._-]+$') {
+    throw "O manifesto não informa uma applicationVersion válida."
 }
 
 $createdAt = [DateTimeOffset]::MinValue
@@ -42,24 +46,30 @@ if ($components.Count -lt 2) {
     throw "O manifesto deve conter ao menos os componentes PostgreSQL e documentos."
 }
 
-$names = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
-$files = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
-$expectedNames = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
-[void]$expectedNames.Add("postgresql")
-[void]$expectedNames.Add("documents")
+$names = @{}
+$files = @{}
+$expectedNames = @{
+    postgresql = $true
+    documents = $true
+}
 
 foreach ($component in $components) {
     $name = [string]$component.name
     $fileName = [string]$component.file
     $expectedHash = ([string]$component.sha256).ToLowerInvariant()
     $expectedSize = [Int64]$component.sizeBytes
+    $nameKey = $name.ToLowerInvariant()
+    $fileKey = $fileName.ToLowerInvariant()
 
-    if ([string]::IsNullOrWhiteSpace($name) -or -not $names.Add($name)) {
+    if ([string]::IsNullOrWhiteSpace($name) -or $names.ContainsKey($nameKey)) {
         throw "Nome de componente ausente ou duplicado: $name"
     }
-    if ([string]::IsNullOrWhiteSpace($fileName) -or -not $files.Add($fileName)) {
+    if ([string]::IsNullOrWhiteSpace($fileName) -or $files.ContainsKey($fileKey)) {
         throw "Nome de arquivo ausente ou duplicado: $fileName"
     }
+    $names[$nameKey] = $true
+    $files[$fileKey] = $true
+
     if ([System.IO.Path]::IsPathRooted($fileName) -or [System.IO.Path]::GetFileName($fileName) -ne $fileName) {
         throw "O manifesto contém caminho de arquivo inseguro: $fileName"
     }
@@ -85,12 +95,12 @@ foreach ($component in $components) {
         throw "SHA-256 divergente em $fileName."
     }
 
-    [void]$expectedNames.Remove($name)
+    [void]$expectedNames.Remove($nameKey)
     Write-Host "[OK] $name — $fileName — $actualSize bytes"
 }
 
 if ($expectedNames.Count -gt 0) {
-    throw "Componentes obrigatórios ausentes: $([string]::Join(', ', $expectedNames))"
+    throw "Componentes obrigatórios ausentes: $([string]::Join(', ', @($expectedNames.Keys)))"
 }
 
 Write-Host "[OK] Manifesto verificado: $resolvedManifest"
