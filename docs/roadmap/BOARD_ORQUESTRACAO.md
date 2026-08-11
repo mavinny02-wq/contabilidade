@@ -3,25 +3,38 @@
 ## Checkpoint
 
 - branch de integração: `main`;
-- versão candidata: `0.5.1` sobre a baseline `0.5.0`;
-- análise canônica: `docs/analise/ANALISE_COMPLETA_BASELINE_V050.md`;
+- versão atual: `0.5.1`;
+- evidência cloud integrada: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
+- merge da validação cloud: PR `#9`, commit `beabe35bd6aef2dc4e64515a1b2255963629218d`;
+- classificação da evidência cloud: `BLOQUEADO_POR_AMBIENTE` para runtime completo;
+- lockfiles versionados: comprovado;
+- frontend `npm ci`/i18n/typecheck/build no Codex Cloud: comprovado;
+- worker `npm ci`/typecheck/build e startup sem crash de PDF.js no Codex Cloud: comprovado após correção;
 - gate ativo: `GATE-VAL-001`;
-- correções do gate: preparadas na candidata v0.5.1;
-- validação obrigatória: Windows + JDK 21 + Node 22.12+ + Maven/npm/Docker;
+- validação ainda obrigatória: Windows + JDK 21 + Node 22.12+ + Maven + Docker Desktop;
 - slots oficiais selecionados: zero enquanto o gate não estiver verde;
-- próxima onda: cinco candidatos independentes já preparados como `PREVIEW`.
+- próxima onda: cinco candidatos independentes mantidos como `PREVIEW`.
+
+## Provas ainda necessárias para fechar o gate
+
+Todas devem partir do mesmo commit atualizado de `main`:
+
+1. `mvn -B clean verify` verde no Windows com JDK 21 e acesso ao repositório Maven;
+2. frontend e worker verdes no Windows com Node 22.12 ou superior;
+3. `docker compose config` verde para `dev` e `onpremise`;
+4. execução do `START_CONTABILIDADE.bat dev` sem chamadas fiscais externas;
+5. `postgres` saudável e `postgres-bootstrap` finalizado com código `0`;
+6. Keycloak/Liquibase e Flyway V1–V7 validados por `scripts/validate-database-state.bat dev`;
+7. backend, worker e frontend saudáveis;
+8. endpoints técnicos e smoke da interface aprovados;
+9. parser PDF comprovado com amostra sintética local, sem documento fiscal real;
+10. aplicação deixada rodando em `http://localhost:8088` durante a prova.
 
 ## Regra de promoção
 
-Os prompts `PREVIEW_SLOT_*` só podem ser promovidos a slots oficiais após evidência de:
-
-- lockfiles versionados;
-- frontend typecheck/build verdes;
-- worker typecheck/build verdes;
-- Maven package verde;
-- três variantes de Compose válidas;
-- PostgreSQL/Flyway/Keycloak e cinco health checks verdes;
-- execução do BAT no Windows sem chamada fiscal externa.
+Os prompts `PREVIEW_SLOT_*` só podem ser promovidos a slots oficiais depois que a evidência local for
+anexada ao relatório runtime e a classificação geral mudar para `VERDE`. A validação cloud da PR #9
+resolveu blockers de lockfile/build frontend/worker, mas não substitui a prova Windows/Docker.
 
 ## Candidatos da onda após o gate
 
