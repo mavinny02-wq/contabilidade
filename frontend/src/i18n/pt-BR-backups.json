@@ -1,0 +1,55 @@
+{
+  "menu": {
+    "backups": "Backups"
+  },
+  "backups": {
+    "titulo": "Backups",
+    "descricao": "Inventário read-only dos conjuntos gerados pelos scripts operacionais.",
+    "totalManifestos": "Manifestos encontrados",
+    "listados": "Backups listados",
+    "observadoEm": "Inventário observado em",
+    "listaLimitada": "A lista foi limitada aos {{quantidade}} manifestos mais recentes.",
+    "vazio": "Nenhum backup encontrado",
+    "vazioDescricao": "Execute o script operacional de backup para gerar o primeiro conjunto verificável.",
+    "identificador": "Identificador do backup",
+    "versao": "Versão da aplicação",
+    "integridadeVerificada": "Hash confirmado",
+    "integridadeNaoVerificada": "Hash ainda não verificado",
+    "tamanhoManifesto": "Tamanho esperado",
+    "tamanhoAtual": "Tamanho encontrado",
+    "componentes": "Componentes",
+    "componente": "Componente",
+    "formato": "Formato",
+    "tamanhoEsperado": "Esperado",
+    "tamanhoEncontrado": "Encontrado",
+    "verificacao": "Verificação",
+    "verificarIntegridade": "Verificar SHA-256",
+    "verificando": "Verificando...",
+    "status": {
+      "SAUDAVEL": "Saudável",
+      "DEGRADADO": "Com divergência",
+      "INDISPONIVEL": "Inválido"
+    },
+    "componenteStatus": {
+      "ausente": "Arquivo ausente",
+      "tamanhoDivergente": "Tamanho divergente",
+      "hashDivergente": "SHA-256 divergente",
+      "hashConfirmado": "SHA-256 confirmado",
+      "metadadosConferidos": "Existência e tamanho conferidos"
+    },
+    "motivos": {
+      "DIRETORIO_BACKUP_INDISPONIVEL": "O diretório de backups não está disponível para leitura.",
+      "LISTAGEM_BACKUP_INTERROMPIDA": "A listagem dos backups foi interrompida.",
+      "MANIFESTO_INVALIDO": "O manifesto está ausente, malformado ou contém dados inválidos.",
+      "COMPONENTE_AUSENTE": "Ao menos um componente referenciado não foi encontrado.",
+      "TAMANHO_DIVERGENTE": "O tamanho atual de um componente difere do manifesto.",
+      "HASH_DIVERGENTE": "O SHA-256 atual de um componente difere do manifesto.",
+      "LIMITE_HASH_ATINGIDO": "Um componente excede o limite configurado para verificação de hash.",
+      "COMPONENTE_NAO_LEGIVEL": "Um componente não pôde ser lido para verificação."
+    },
+    "mensagens": {
+      "integridadeConfirmada": "A integridade do backup {{backupId}} foi confirmada.",
+      "verificacaoComPendencias": "A verificação do backup {{backupId}} encontrou pendências."
+    }
+  }
+}
