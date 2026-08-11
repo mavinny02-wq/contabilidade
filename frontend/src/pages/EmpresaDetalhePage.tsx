@@ -27,6 +27,7 @@ export function EmpresaDetalhePage() {
   const [erro, setErro] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
   const [filialAberta, setFilialAberta] = useState(false);
+  const [filialSelecionada, setFilialSelecionada] = useState<Estabelecimento>();
   const [mensagem, setMensagem] = useState('');
 
   useEffect(() => {
@@ -41,11 +42,33 @@ export function EmpresaDetalhePage() {
 
   const matriz = empresa.estabelecimentos.find((item) => item.matriz) ?? empresa.estabelecimentos[0];
   const filiais = empresa.estabelecimentos.filter((item) => !item.matriz);
+  const podeEditar = temPermissao(PERMISSOES.EMPRESA_EDITAR);
 
-  const adicionarFilial = (filial: Estabelecimento) => {
-    setEmpresa((atual) => atual ? { ...atual, estabelecimentos: [...atual.estabelecimentos, filial] } : atual);
+  const abrirNovaFilial = () => {
+    setFilialSelecionada(undefined);
+    setFilialAberta(true);
+  };
+
+  const editarFilial = (filial: Estabelecimento) => {
+    setFilialSelecionada(filial);
+    setFilialAberta(true);
+  };
+
+  const salvarFilial = (filial: Estabelecimento) => {
+    const editando = Boolean(filialSelecionada);
+    setEmpresa((atual) => {
+      if (!atual) return atual;
+      const existente = atual.estabelecimentos.some((item) => item.id === filial.id);
+      return {
+        ...atual,
+        estabelecimentos: existente
+          ? atual.estabelecimentos.map((item) => item.id === filial.id ? filial : item)
+          : [...atual.estabelecimentos, filial],
+      };
+    });
     setFilialAberta(false);
-    setMensagem(t('empresas.filiais.mensagemCriada'));
+    setFilialSelecionada(undefined);
+    setMensagem(t(editando ? 'empresas.filiais.mensagemAtualizada' : 'empresas.filiais.mensagemCriada'));
   };
 
   return (
@@ -56,7 +79,7 @@ export function EmpresaDetalhePage() {
         acoes={
           <>
             <Button variante="secundario" onClick={() => navigate('/empresas')}>{t('acoes.voltar')}</Button>
-            {temPermissao(PERMISSOES.EMPRESA_EDITAR) ? (
+            {podeEditar ? (
               <Button onClick={() => setModalAberto(true)}>{t('acoes.editar')}</Button>
             ) : null}
           </>
@@ -98,15 +121,23 @@ export function EmpresaDetalhePage() {
           >
             <div className="section-toolbar">
               <p className="muted">{t('empresas.filiais.descricao')}</p>
-              {temPermissao(PERMISSOES.EMPRESA_EDITAR) ? (
-                <Button variante="secundario" onClick={() => setFilialAberta(true)}>{t('empresas.filiais.adicionar')}</Button>
+              {podeEditar ? (
+                <Button variante="secundario" onClick={abrirNovaFilial}>{t('empresas.filiais.adicionar')}</Button>
               ) : null}
             </div>
             {filiais.length === 0 ? (
               <p className="muted">{t('empresas.filiais.vazio')}</p>
             ) : (
               <div className="establishment-grid">
-                {filiais.map((filial) => <EstabelecimentoCard key={filial.id} item={filial} titulo={t('empresas.filiais.filial')} />)}
+                {filiais.map((filial) => (
+                  <EstabelecimentoCard
+                    key={filial.id}
+                    item={filial}
+                    titulo={t('empresas.filiais.filial')}
+                    podeEditar={podeEditar}
+                    aoEditar={() => editarFilial(filial)}
+                  />
+                ))}
               </div>
             )}
           </Card>
@@ -147,23 +178,45 @@ export function EmpresaDetalhePage() {
       />
       <FilialFormModal
         empresaId={id}
+        filial={filialSelecionada}
         aberto={filialAberta}
-        aoFechar={() => setFilialAberta(false)}
-        aoSalvar={adicionarFilial}
+        aoFechar={() => {
+          setFilialAberta(false);
+          setFilialSelecionada(undefined);
+        }}
+        aoSalvar={salvarFilial}
       />
     </>
   );
 }
 
-function EstabelecimentoCard({ item, titulo }: { item: Estabelecimento; titulo: string }) {
+function EstabelecimentoCard({
+  item,
+  titulo,
+  podeEditar = false,
+  aoEditar,
+}: {
+  item: Estabelecimento;
+  titulo: string;
+  podeEditar?: boolean;
+  aoEditar?: () => void;
+}) {
   const { t } = useTranslation();
   return (
     <Card className="establishment-card">
-      <div className="card-row__title">
-        <strong>{titulo}</strong>
-        <StatusBadge tom={item.ativo && item.status === 'ATIVA' ? 'sucesso' : 'neutro'}>
-          {t(`empresas.status.${item.status}`)}
-        </StatusBadge>
+      <div className="card-row">
+        <div className="card-row__title">
+          <strong>{titulo}</strong>
+          <StatusBadge tom={item.ativo ? 'sucesso' : 'neutro'}>
+            {t(item.ativo ? 'empresas.filiais.ativa' : 'empresas.filiais.inativa')}
+          </StatusBadge>
+          <StatusBadge tom={item.status === 'ATIVA' ? 'sucesso' : 'neutro'}>
+            {t(`empresas.status.${item.status}`)}
+          </StatusBadge>
+        </div>
+        {podeEditar && aoEditar ? (
+          <Button variante="texto" onClick={aoEditar}>{t('acoes.editar')}</Button>
+        ) : null}
       </div>
       <dl className="definition-list definition-list--compact">
         <div><dt>{t('empresas.campos.cnpj')}</dt><dd>{formatarCnpj(item.cnpj)}</dd></div>
