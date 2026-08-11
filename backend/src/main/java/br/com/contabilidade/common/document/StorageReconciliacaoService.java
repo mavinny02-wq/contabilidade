@@ -58,61 +58,36 @@ public class StorageReconciliacaoService {
         ReferenciasBanco referenciasBanco = carregarReferencias(documentosRegistrados);
 
         if (!Files.exists(raiz, LinkOption.NOFOLLOW_LINKS)) {
-            return finalizar(new ResultadoReconciliacao(
+            return finalizar(indisponivel(
                     observadoEm,
-                    "INDISPONIVEL",
                     "DIRETORIO_STORAGE_AUSENTE",
                     documentosRegistrados,
                     documentosAtivos,
-                    referenciasBanco.analisadas(),
-                    referenciasBanco.completas(),
-                    0,
-                    false,
-                    0,
-                    false,
-                    0,
-                    false,
-                    0,
-                    List.of(),
-                    List.of()
+                    referenciasBanco
             ));
         }
         if (Files.isSymbolicLink(raiz) || !Files.isDirectory(raiz, LinkOption.NOFOLLOW_LINKS)
                 || !Files.isReadable(raiz)) {
-            return finalizar(new ResultadoReconciliacao(
+            return finalizar(indisponivel(
                     observadoEm,
-                    "INDISPONIVEL",
                     "DIRETORIO_STORAGE_NAO_LEGIVEL",
                     documentosRegistrados,
                     documentosAtivos,
-                    referenciasBanco.analisadas(),
-                    referenciasBanco.completas(),
-                    0,
-                    false,
-                    0,
-                    false,
-                    0,
-                    false,
-                    0,
-                    List.of(),
-                    List.of()
+                    referenciasBanco
             ));
         }
 
         ArquivosStorage arquivosStorage = carregarArquivos();
-        boolean ausentesCompletos = arquivosStorage.completos();
-        boolean orfaosCompletos = referenciasBanco.completas();
+        boolean comparacaoCompleta = referenciasBanco.completas() && arquivosStorage.completos();
         Set<String> referenciasSemArquivo = new HashSet<>();
         Set<String> arquivosSemRegistro = new HashSet<>();
 
-        if (ausentesCompletos) {
+        if (comparacaoCompleta) {
             for (String referencia : referenciasBanco.referencias()) {
                 if (!arquivosStorage.referencias().contains(referencia)) {
                     referenciasSemArquivo.add(referencia);
                 }
             }
-        }
-        if (orfaosCompletos) {
             for (String arquivo : arquivosStorage.referencias()) {
                 if (!referenciasBanco.referencias().contains(arquivo)) {
                     arquivosSemRegistro.add(arquivo);
@@ -120,7 +95,7 @@ public class StorageReconciliacaoService {
             }
         }
 
-        boolean parcial = !referenciasBanco.completas() || !arquivosStorage.completos();
+        boolean parcial = !comparacaoCompleta;
         boolean divergente = !referenciasSemArquivo.isEmpty() || !arquivosSemRegistro.isEmpty();
         String status = parcial || divergente ? "DEGRADADO" : "SAUDAVEL";
         String motivo = arquivosStorage.motivoSeguro();
@@ -138,13 +113,40 @@ public class StorageReconciliacaoService {
                 arquivosStorage.analisados(),
                 arquivosStorage.completos(),
                 referenciasSemArquivo.size(),
-                ausentesCompletos,
+                comparacaoCompleta,
                 arquivosSemRegistro.size(),
-                orfaosCompletos,
+                comparacaoCompleta,
                 arquivosStorage.linksSimbolicosIgnorados(),
                 amostras(referenciasSemArquivo),
                 amostras(arquivosSemRegistro)
         ));
+    }
+
+    private ResultadoReconciliacao indisponivel(
+            Instant observadoEm,
+            String motivo,
+            long documentosRegistrados,
+            long documentosAtivos,
+            ReferenciasBanco referenciasBanco
+    ) {
+        return new ResultadoReconciliacao(
+                observadoEm,
+                "INDISPONIVEL",
+                motivo,
+                documentosRegistrados,
+                documentosAtivos,
+                referenciasBanco.analisadas(),
+                referenciasBanco.completas(),
+                0,
+                false,
+                0,
+                false,
+                0,
+                false,
+                0,
+                List.of(),
+                List.of()
+        );
     }
 
     private ReferenciasBanco carregarReferencias(long totalDocumentos) {
