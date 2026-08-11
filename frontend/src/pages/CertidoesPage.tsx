@@ -20,6 +20,21 @@ const tipos: TipoCertidao[] = [
   'SP_PGE_DIVIDA_ATIVA',
 ];
 
+type SolicitacaoLoteResponse = {
+  loteId: string;
+  recebidas: number;
+  unicas: number;
+  aceitas: number;
+  rejeitadas: number;
+  itens: Array<{
+    id: string;
+    aceita: boolean;
+    codigo: string;
+    situacaoConsulta?: string;
+    execucaoId?: string;
+  }>;
+};
+
 export function CertidoesPage() {
   const { t } = useTranslation();
   const { temPermissao } = useAuth();
@@ -31,11 +46,16 @@ export function CertidoesPage() {
   const [filtroStatus, setFiltroStatus] = useState<StatusCertidao | ''>('');
   const [erro, setErro] = useState<ApiError>();
   const [mensagem, setMensagem] = useState('');
+  const [aviso, setAviso] = useState('');
   const [carregando, setCarregando] = useState(false);
   const [exportando, setExportando] = useState(false);
+  const [solicitandoLote, setSolicitandoLote] = useState(false);
   const [manual, setManual] = useState<Certidao>();
   const [historico, setHistorico] = useState<Certidao>();
   const [solicitando, setSolicitando] = useState<Set<string>>(new Set());
+  const [selecionadas, setSelecionadas] = useState<Set<string>>(new Set());
+
+  const podeSolicitar = temPermissao(PERMISSOES.CERTIDAO_SOLICITAR);
 
   useEffect(() => {
     void api<Pagina<EmpresaResumo>>('/empresas?pagina=0&tamanho=100&termo=')
@@ -48,7 +68,11 @@ export function CertidoesPage() {
     setErro(undefined);
     const query = empresaId ? `?empresaId=${empresaId}` : '';
     void api<Certidao[]>(`/certidoes${query}`)
-      .then(setCertidoes)
+      .then((itens) => {
+        setCertidoes(itens);
+        const idsAtuais = new Set(itens.map((item) => item.id));
+        setSelecionadas((atuais) => new Set([...atuais].filter((id) => idsAtuais.has(id))));
+      })
       .catch((exception) => setErro(exception as ApiError))
       .finally(() => setCarregando(false));
   }, [empresaId]);
@@ -57,6 +81,7 @@ export function CertidoesPage() {
 
   const selecionarEmpresa = (value: string) => {
     setEmpresaId(value);
+    setSelecionadas(new Set());
     if (value) setSearchParams({ empresaId: value });
     else setSearchParams({});
   };
@@ -94,6 +119,53 @@ export function CertidoesPage() {
       setErro(exception as ApiError);
       setCarregando(false);
     }
+  };
+
+  const solicitarSelecionadas = async () => {
+    if (selecionadas.size === 0) return;
+    setSolicitandoLote(true);
+    setErro(undefined);
+    setAviso('');
+    try {
+      const resultado = await api<SolicitacaoLoteResponse>('/certidoes/solicitar-lote', {
+        method: 'POST',
+        body: JSON.stringify({
+          ids: [...selecionadas],
+          idempotencyKey: crypto.randomUUID(),
+        }),
+      });
+      setSelecionadas(new Set());
+      if (resultado.rejeitadas > 0) {
+        setAviso(t('certidoes.lote.resultadoParcial', {
+          aceitas: resultado.aceitas,
+          rejeitadas: resultado.rejeitadas,
+        }));
+      } else {
+        setMensagem(t('certidoes.lote.resultadoSucesso', { quantidade: resultado.aceitas }));
+      }
+      carregar();
+    } catch (exception) {
+      setErro(exception as ApiError);
+    } finally {
+      setSolicitandoLote(false);
+    }
+  };
+
+  const alternarSelecao = (id: string) => {
+    setSelecionadas((atuais) => {
+      const proximo = new Set(atuais);
+      if (proximo.has(id)) proximo.delete(id);
+      else proximo.add(id);
+      return proximo;
+    });
+  };
+
+  const selecionarFiltradas = () => {
+    setSelecionadas((atuais) => {
+      const proximo = new Set(atuais);
+      filtradas.forEach((item) => proximo.add(item.id));
+      return proximo;
+    });
   };
 
   const substituir = (atualizada: Certidao) => {
@@ -148,11 +220,19 @@ export function CertidoesPage() {
         descricao={t('certidoes.descricao')}
         acoes={
           <>
+            {podeSolicitar ? (
+              <Button
+                onClick={() => void solicitarSelecionadas()}
+                disabled={selecionadas.size === 0 || solicitandoLote}
+              >
+                {t('certidoes.lote.solicitarSelecionadas', { quantidade: selecionadas.size })}
+              </Button>
+            ) : null}
             <Button variante="secundario" onClick={() => void exportarCsv()} disabled={exportando}>
               {t('certidoes.acoes.exportarCsv')}
             </Button>
             <Button variante="secundario" onClick={carregar}>{t('acoes.atualizar')}</Button>
-            {empresaId && temPermissao(PERMISSOES.CERTIDAO_SOLICITAR) ? (
+            {empresaId && podeSolicitar ? (
               <Button onClick={() => void solicitarTodas()} disabled={carregando}>
                 {t('certidoes.acoes.atualizarTodas')}
               </Button>
@@ -161,6 +241,7 @@ export function CertidoesPage() {
         }
       />
       {mensagem ? <Alert tipo="sucesso" onClose={() => setMensagem('')}>{mensagem}</Alert> : null}
+      {aviso ? <Alert tipo="aviso" onClose={() => setAviso('')}>{aviso}</Alert> : null}
       {erro ? (
         <Alert tipo="erro" onClose={() => setErro(undefined)}>
           <strong>{erro.mensagem ?? t('erros.inesperado')}</strong>
@@ -194,6 +275,21 @@ export function CertidoesPage() {
             </select>
           </label>
         </div>
+        {podeSolicitar ? (
+          <div className="section-toolbar">
+            <small className="muted">
+              {t('certidoes.lote.selecionadas', { quantidade: selecionadas.size })}
+            </small>
+            <div className="form-actions">
+              <Button type="button" variante="texto" onClick={selecionarFiltradas} disabled={filtradas.length === 0}>
+                {t('certidoes.lote.selecionarFiltradas', { quantidade: filtradas.length })}
+              </Button>
+              <Button type="button" variante="texto" onClick={() => setSelecionadas(new Set())} disabled={selecionadas.size === 0}>
+                {t('certidoes.lote.limparSelecao')}
+              </Button>
+            </div>
+          </div>
+        ) : null}
       </Card>
 
       {carregando && certidoes.length === 0 ? <p className="muted">{t('app.carregando')}</p> : null}
@@ -208,7 +304,19 @@ export function CertidoesPage() {
             <Card key={item.id} className="certificate-card">
               <div className="certificate-card__header">
                 <div>
-                  <span className="eyebrow">{formatarCnpj(item.cnpj)}</span>
+                  {podeSolicitar ? (
+                    <label className="certificate-card__selection">
+                      <input
+                        type="checkbox"
+                        checked={selecionadas.has(item.id)}
+                        onChange={() => alternarSelecao(item.id)}
+                        aria-label={t('certidoes.lote.selecionarItem', { tipo: t(`certidoes.tipos.${item.tipo}`) })}
+                      />
+                      <span className="eyebrow">{formatarCnpj(item.cnpj)}</span>
+                    </label>
+                  ) : (
+                    <span className="eyebrow">{formatarCnpj(item.cnpj)}</span>
+                  )}
                   <h2>{t(`certidoes.tipos.${item.tipo}`)}</h2>
                 </div>
                 <StatusBadge tom={tomStatus(item.status)}>{t(`certidoes.status.${item.status}`)}</StatusBadge>
@@ -222,7 +330,7 @@ export function CertidoesPage() {
               </dl>
               {item.mensagemFonte ? <p className="certificate-card__message">{item.mensagemFonte}</p> : null}
               <div className="certificate-card__actions">
-                {temPermissao(PERMISSOES.CERTIDAO_SOLICITAR) ? (
+                {podeSolicitar ? (
                   <Button variante="secundario" disabled={solicitando.has(item.id)} onClick={() => void solicitar(item)}>
                     {t('certidoes.acoes.solicitar')}
                   </Button>
