@@ -60,10 +60,12 @@ public class SessaoInterativaTicketService {
                 + "/sessions/"
                 + intervencao.getSessaoReferencia();
 
+        // O ticket aparece somente no primeiro GET /info. O worker o troca por um
+        // grant HttpOnly vinculado à sessão; eventos e comandos nunca reutilizam o jti.
         return new TicketSessaoInterativa(
                 intervencao.getSessaoReferencia(),
-                base + "/events?ticket=" + ticketEscapado,
-                base + "/input?ticket=" + ticketEscapado,
+                base + "/events",
+                base + "/input",
                 base + "/info?ticket=" + ticketEscapado,
                 expiraEm
         );
