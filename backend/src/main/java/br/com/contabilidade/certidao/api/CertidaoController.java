@@ -3,6 +3,7 @@ package br.com.contabilidade.certidao.api;
 import br.com.contabilidade.certidao.domain.ResultadoCertidao;
 import br.com.contabilidade.certidao.domain.StatusCertidao;
 import br.com.contabilidade.certidao.domain.TipoCertidao;
+import br.com.contabilidade.certidao.service.CertidaoAgendaService;
 import br.com.contabilidade.certidao.service.CertidaoExportacaoCsvService;
 import br.com.contabilidade.certidao.service.CertidaoService;
 import br.com.contabilidade.certidao.service.CertidaoSolicitacaoLoteService;
@@ -37,21 +38,36 @@ public class CertidaoController {
     private final CertidaoService service;
     private final CertidaoExportacaoCsvService exportacaoCsvService;
     private final CertidaoSolicitacaoLoteService solicitacaoLoteService;
+    private final CertidaoAgendaService agendaService;
 
     public CertidaoController(
             CertidaoService service,
             CertidaoExportacaoCsvService exportacaoCsvService,
-            CertidaoSolicitacaoLoteService solicitacaoLoteService
+            CertidaoSolicitacaoLoteService solicitacaoLoteService,
+            CertidaoAgendaService agendaService
     ) {
         this.service = service;
         this.exportacaoCsvService = exportacaoCsvService;
         this.solicitacaoLoteService = solicitacaoLoteService;
+        this.agendaService = agendaService;
     }
 
     @GetMapping
     @PreAuthorize("@permissaoService.tem('CERTIDAO_LER')")
     public List<CertidaoResponse> listar(@RequestParam(required = false) UUID empresaId) {
         return empresaId == null ? service.listarTodas() : service.listarPorEmpresa(empresaId);
+    }
+
+    @GetMapping("/agenda-vencimentos")
+    @PreAuthorize("@permissaoService.tem('CERTIDAO_LER')")
+    public CertidaoAgendaResponse agendaVencimentos(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate inicio,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fim,
+            @RequestParam(required = false) UUID empresaId
+    ) {
+        return agendaService.consultar(inicio, fim, empresaId);
     }
 
     @GetMapping(value = "/exportacao.csv", produces = "text/csv;charset=UTF-8")
