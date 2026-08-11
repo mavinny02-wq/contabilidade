@@ -6,17 +6,17 @@
     "previousVersion": "0.5.0",
     "commitDeValidacaoCloudHistorica": "6c101a3a0699cd843e9257f685550c61d662360f",
     "pullRequestDeValidacaoCloudHistorica": 12,
-    "commitDaOndaAnterior": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
-    "pullRequestsDaOndaAnterior": [31, 32, 33, 34, 35],
-    "commitDaOndaMaisRecente": "d7e50e55ad7c2ee0dafbf48736d22507470e0c92",
-    "pullRequestsDaOndaMaisRecente": [37, 38, 39, 40, 41],
+    "commitDaOndaAnterior": "d7e50e55ad7c2ee0dafbf48736d22507470e0c92",
+    "pullRequestsDaOndaAnterior": [37, 38, 39, 40, 41],
+    "commitDaOndaMaisRecente": "8d7357bf70a77bf6e265f4c50aed6453510a93d3",
+    "pullRequestsDaOndaMaisRecente": [43, 44, 45, 46, 47],
     "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
   "fase": "GATE_VAL_001_MULTIPLAS_ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Comprovar a main atual, com Flyway V1-V9 e todas as implementações integradas, no Windows alvo com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "descricao": "Comprovar a main atual, com Flyway V1-V12 e todas as implementações integradas, no Windows alvo com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
     "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
     "evidenciaCloudHistorica": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "classificacaoCloudHistorica": "CLOUD_AMARELO",
@@ -27,47 +27,47 @@
   "slotsOficiais": [],
   "ondaMaisRecente": {
     "status": "IMPLEMENTADA_POR_AUTORIZACAO_DIRETA_AGUARDANDO_VALIDACAO_RUNTIME",
-    "baselineInicial": "7a686c729c514b7e3bd69cbcaf7d5766213f5392",
-    "commitFinalImplementacao": "d7e50e55ad7c2ee0dafbf48736d22507470e0c92",
+    "baselineInicial": "125349c20d2ac3b13056dee01a72efade9999c76",
+    "commitFinalImplementacao": "8d7357bf70a77bf6e265f4c50aed6453510a93d3",
     "slots": [
       {
         "slot": 1,
-        "itemId": "EMP-GRP-001",
-        "pullRequest": 37,
-        "mergeCommit": "97fbc006ffc2a7dd973450bc26517bb20a2028d4",
-        "evidencia": "docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md",
-        "migrationOwnership": "V9__empresa_grupos_tags.sql"
+        "itemId": "EMP-RSP-001",
+        "pullRequest": 43,
+        "mergeCommit": "2b13fcf8f92e97ad9600bbf7b5018bc0576a1abc",
+        "evidencia": "docs/implementacao/EMP_RSP_001_RESPONSAVEIS_MODULO.md",
+        "migrationOwnership": "V10__empresa_responsaveis_modulo.sql"
       },
       {
         "slot": 2,
-        "itemId": "CRT-CAL-001",
-        "pullRequest": 38,
-        "mergeCommit": "5d35b19f9d2891c18e528d570859402d86b0c530",
-        "evidencia": "docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md",
-        "migrationOwnership": null
+        "itemId": "CRT-FAT-001",
+        "pullRequest": 44,
+        "mergeCommit": "d47ece62099540601a98e474521d6972e212a3e7",
+        "evidencia": "docs/implementacao/CRT_FAT_001_RECONCILIACAO_FATURAS.md",
+        "migrationOwnership": "V11__faturas_provedor.sql"
       },
       {
         "slot": 3,
-        "itemId": "OBS-PRV-001",
-        "pullRequest": 39,
-        "mergeCommit": "3294aa937c8edc3319391256c161a56cc49c94e1",
-        "evidencia": "docs/implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md",
-        "migrationOwnership": null
+        "itemId": "AUT-TEL-001",
+        "pullRequest": 45,
+        "mergeCommit": "7c553d7386205381d11140eb2eabd6ca2a6f6006",
+        "evidencia": "docs/implementacao/AUT_TEL_001_HISTORICO_HEARTBEATS.md",
+        "migrationOwnership": "V12__worker_heartbeat_historico.sql"
       },
       {
         "slot": 4,
-        "itemId": "ADM-CFG-001",
-        "pullRequest": 40,
-        "mergeCommit": "b719f0b29f528ee77571d613e0e9a734733bb93b",
-        "evidencia": "docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md",
+        "itemId": "OPS-UPD-001",
+        "pullRequest": 46,
+        "mergeCommit": "99f72a75ffc9952ad26d8de49ffaf43771fa7896",
+        "evidencia": "docs/implementacao/OPS_UPD_001_PREFLIGHT_ATUALIZACAO.md",
         "migrationOwnership": null
       },
       {
         "slot": 5,
-        "itemId": "DOC-PRE-001",
-        "pullRequest": 41,
-        "mergeCommit": "d7e50e55ad7c2ee0dafbf48736d22507470e0c92",
-        "evidencia": "docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md",
+        "itemId": "DOC-MET-001",
+        "pullRequest": 47,
+        "mergeCommit": "8d7357bf70a77bf6e265f4c50aed6453510a93d3",
+        "evidencia": "docs/implementacao/DOC_MET_001_EDICAO_METADADOS.md",
         "migrationOwnership": null
       }
     ]
@@ -270,6 +270,51 @@
       "branch": "feat/doc-pre-001-preview-seguro",
       "migrationOwnership": null,
       "evidencia": "docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md"
+    },
+    {
+      "itemId": "EMP-RSP-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 43,
+      "mergeCommit": "2b13fcf8f92e97ad9600bbf7b5018bc0576a1abc",
+      "branch": "feat/emp-rsp-001-responsaveis-modulo",
+      "migrationOwnership": "V10__empresa_responsaveis_modulo.sql",
+      "evidencia": "docs/implementacao/EMP_RSP_001_RESPONSAVEIS_MODULO.md"
+    },
+    {
+      "itemId": "CRT-FAT-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 44,
+      "mergeCommit": "d47ece62099540601a98e474521d6972e212a3e7",
+      "branch": "feat/crt-fat-001-reconciliacao-faturas",
+      "migrationOwnership": "V11__faturas_provedor.sql",
+      "evidencia": "docs/implementacao/CRT_FAT_001_RECONCILIACAO_FATURAS.md"
+    },
+    {
+      "itemId": "AUT-TEL-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 45,
+      "mergeCommit": "7c553d7386205381d11140eb2eabd6ca2a6f6006",
+      "branch": "feat/aut-tel-001-historico-heartbeats",
+      "migrationOwnership": "V12__worker_heartbeat_historico.sql",
+      "evidencia": "docs/implementacao/AUT_TEL_001_HISTORICO_HEARTBEATS.md"
+    },
+    {
+      "itemId": "OPS-UPD-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 46,
+      "mergeCommit": "99f72a75ffc9952ad26d8de49ffaf43771fa7896",
+      "branch": "feat/ops-upd-001-preflight-atualizacao",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/OPS_UPD_001_PREFLIGHT_ATUALIZACAO.md"
+    },
+    {
+      "itemId": "DOC-MET-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 47,
+      "mergeCommit": "8d7357bf70a77bf6e265f4c50aed6453510a93d3",
+      "branch": "feat/doc-met-001-edicao-metadados",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/DOC_MET_001_EDICAO_METADADOS.md"
     }
   ],
   "ondaCandidataAposGate": [],
@@ -290,11 +335,11 @@
     "CODEX_EXECUTOR_CONTRACT_DOCUMENTED"
   ],
   "provasDeImplementacao": [
-    "EMP_GRP_001_STATIC_REVIEW_RECORDED",
-    "CRT_CAL_001_STATIC_REVIEW_RECORDED",
-    "OBS_PRV_001_STATIC_REVIEW_RECORDED",
-    "ADM_CFG_001_STATIC_REVIEW_RECORDED",
-    "DOC_PRE_001_STATIC_REVIEW_RECORDED"
+    "EMP_RSP_001_STATIC_REVIEW_RECORDED",
+    "CRT_FAT_001_STATIC_REVIEW_RECORDED",
+    "AUT_TEL_001_STATIC_REVIEW_RECORDED",
+    "OPS_UPD_001_STATIC_REVIEW_RECORDED",
+    "DOC_MET_001_STATIC_REVIEW_RECORDED"
   ],
   "provasPendentes": [
     "MAVEN_CURRENT_MAIN_VERIFY_PENDING",
@@ -304,17 +349,17 @@
     "DOCKER_COMPOSE_ONPREMISE_EFFECTIVE_CONFIG_PENDING",
     "ARTIFACT_ONLY_IMAGES_RUNTIME_PENDING",
     "POSTGRES_BOOTSTRAP_RUNTIME_PENDING",
-    "POSTGRESQL_FLYWAY_V1_V9_PENDING",
+    "POSTGRESQL_FLYWAY_V1_V12_PENDING",
     "KEYCLOAK_LIQUIBASE_RUNTIME_PENDING",
     "WINDOWS_BAT_RUNTIME_PENDING",
     "TECHNICAL_ENDPOINTS_RUNTIME_PENDING",
     "UI_SMOKE_RUNTIME_PENDING",
     "ALL_PREVIOUS_IMPLEMENTATION_RUNTIME_PROOFS_PENDING",
-    "EMP_GRP_001_MIGRATION_SEARCH_LIMITS_RUNTIME_PENDING",
-    "CRT_CAL_001_PERIOD_STATUS_PARTIAL_RUNTIME_PENDING",
-    "OBS_PRV_001_STATUS_COST_CURRENCY_RUNTIME_PENDING",
-    "ADM_CFG_001_NO_SECRET_EXPOSURE_RUNTIME_PENDING",
-    "DOC_PRE_001_INTEGRITY_HEADERS_BLOB_RUNTIME_PENDING"
+    "EMP_RSP_001_CRUD_UNIQUENESS_PERMISSIONS_RUNTIME_PENDING",
+    "CRT_FAT_001_COST_CURRENCY_IDEMPOTENCY_RUNTIME_PENDING",
+    "AUT_TEL_001_SAMPLING_STATUS_VERSION_RUNTIME_PENDING",
+    "OPS_UPD_001_MANIFEST_SECURITY_RUNTIME_PENDING",
+    "DOC_MET_001_IMMUTABILITY_DATES_PERMISSIONS_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }

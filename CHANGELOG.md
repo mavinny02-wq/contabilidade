@@ -195,11 +195,58 @@
 - recusa formatos não suportados com HTTP 415;
 - audita sem hash bruto, path ou conteúdo.
 
+### Responsáveis por módulo
+
+- adiciona contatos separados para Fiscal, Contábil, Financeiro, Documentos, Automação e Administração;
+- garante um responsável por empresa e módulo;
+- permite nome, e-mail, telefone e estado ativo;
+- mantém o cadastro fiscal e o responsável geral separados;
+- cria a migration V10;
+- audita módulo e presença dos canais sem copiar nome, e-mail ou telefone.
+
+### Reconciliação de faturas dos providers
+
+- registra fatura por provider, competência e moeda;
+- compara o valor faturado com a soma dos custos estimados das execuções no mesmo recorte;
+- classifica sem divergência, acima ou abaixo do estimado;
+- usa tolerância operacional de 0,01;
+- atualiza de forma idempotente a mesma competência;
+- cria a migration V11;
+- não chama provider e não registra valores monetários na auditoria.
+
+### Histórico de heartbeats dos workers
+
+- persiste amostras na primeira observação, na mudança de status/versão ou após intervalo;
+- evita crescimento por linha em todo polling;
+- usa o horário do backend como fonte autoritativa;
+- permite consulta por período e worker, com contagens e resultado parcial;
+- normaliza estados desconhecidos;
+- cria a migration V12;
+- não grava empresa, execução, sessão, ticket, grant ou payload.
+
+### Preflight de atualização controlada
+
+- adiciona modelo e análise de manifesto JSON;
+- valida schema, versão de destino, origem mínima e data de criação;
+- exige backend, frontend e worker;
+- valida nomes, duplicidades, tamanhos e formato SHA-256;
+- rejeita path traversal e nomes inseguros;
+- não baixa, executa, grava, aplica migration ou reinicia serviços;
+- registra auditoria sem conteúdo do manifesto ou detalhes dos artefatos.
+
+### Edição de metadados documentais
+
+- permite corrigir tipo, emissão e validade de documento ativo;
+- bloqueia validade anterior à emissão;
+- mantém empresa, arquivo, nome, MIME, tamanho, SHA-256, origem, storage, conteúdo e estado imutáveis;
+- atualiza a listagem e invalida a prévia de retenção na interface;
+- audita somente quais grupos de campos mudaram, sem valores antigos ou novos.
+
 ### Pendências
 
 - build completo Maven/frontend/worker da `main` atual;
-- execução Docker, Flyway V1–V9, Keycloak/Liquibase e smoke UI;
-- provas runtime focadas dos itens integrados pelas PRs `#14` a `#41`;
+- execução Docker, Flyway V1–V12, Keycloak/Liquibase e smoke UI;
+- provas runtime focadas dos itens integrados pelas PRs `#14` a `#47`;
 - testes automatizados permanentes e E2E.
 
 ## 0.5.1 — 2026-08-09

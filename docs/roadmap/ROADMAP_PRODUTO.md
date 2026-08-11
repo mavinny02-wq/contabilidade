@@ -3,9 +3,9 @@
 ## Checkpoint
 
 - versão declarada: `0.5.1`;
-- commit final da onda mais recente: `d7e50e55ad7c2ee0dafbf48736d22507470e0c92`;
-- PRs da onda mais recente: `#37` a `#41`;
-- schema atual esperado: Flyway V1–V9;
+- commit final da onda mais recente: `8d7357bf70a77bf6e265f4c50aed6453510a93d3`;
+- PRs da onda mais recente: `#43` a `#47`;
+- schema atual esperado: Flyway V1–V12;
 - validação Cloud canônica é histórica para uma baseline anterior;
 - classificação atual: `MULTIPLAS_ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE`;
 - executor da prova runtime: `LOCAL_WINDOWS_MANUAL`;
@@ -15,62 +15,64 @@
 
 A autorização direta do usuário produziu cinco slots independentes:
 
-1. `EMP-GRP-001` — grupos e tags de empresas;
-2. `CRT-CAL-001` — agenda de vencimentos de certidões;
-3. `OBS-PRV-001` — histórico operacional e de custo dos providers;
-4. `ADM-CFG-001` — configuração efetiva segura;
-5. `DOC-PRE-001` — pré-visualização segura de documentos.
+1. `EMP-RSP-001` — responsáveis por módulo da empresa;
+2. `CRT-FAT-001` — reconciliação de faturas dos providers;
+3. `AUT-TEL-001` — histórico amostrado de heartbeats;
+4. `OPS-UPD-001` — preflight de atualização controlada;
+5. `DOC-MET-001` — edição segura de metadados documentais.
 
-Os cinco itens foram integrados pelas PRs `#37` a `#41` e permanecem
+Os cinco itens foram integrados pelas PRs `#43` a `#47` e permanecem
 `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`.
 
 ## Capacidades preparadas
 
 ### Empresas
 
-- grupo opcional e até vinte tags por empresa;
-- classificação separada do cadastro fiscal;
-- deduplicação case-insensitive;
-- busca por grupo e tag;
-- card e modal próprios na Empresa 360;
-- migration V9 com tabela e índices específicos.
+- responsáveis distintos para Fiscal, Contábil, Financeiro, Documentos, Automação e Administração;
+- um contato por empresa e módulo;
+- nome obrigatório, e-mail e telefone opcionais;
+- ativação e inativação sem exclusão;
+- auditoria que não copia PII do contato;
+- migration V10 e nova página contextual.
 
-### Certidões
+### Certidões e providers
 
-- agenda por período de até 366 dias;
-- filtro opcional por empresa;
-- status calculado pelo mesmo domínio do Centro de Certidões;
-- prazo até o vencimento;
-- consulta bounded com total e flag parcial;
-- nenhuma chamada fiscal durante a consulta.
+- registro de fatura por provider, competência e moeda;
+- comparação com a soma dos custos estimados das execuções do mesmo recorte;
+- classificação sem divergência, acima ou abaixo do estimado;
+- tolerância operacional de 0,01;
+- atualização idempotente da mesma competência;
+- migration V11;
+- nenhuma chamada externa durante a reconciliação.
 
-### Providers e observabilidade
+### Automação e observabilidade
 
-- consolidação histórica de sucesso, parcial, falha, indisponibilidade, cancelamento e estado aberto;
-- taxa de sucesso e duração média;
-- última execução;
-- custo estimado separado por moeda;
-- ausência deliberada de payload, resultado, protocolo, empresa ou segredo.
+- histórico de heartbeat persistido por amostragem;
+- nova amostra na primeira observação, mudança de status/versão ou após intervalo;
+- horário autoritativo do backend;
+- período, filtro de worker, contagens e flag parcial;
+- migration V12;
+- nenhuma empresa, execução, sessão, ticket ou payload no histórico.
 
-### Administração segura
+### Atualização controlada
 
-- ambiente, versão, segurança e provider de storage;
-- presença adequada de token do worker e segredo da sessão;
-- estado seguro de Base URL, referência de segredo, custo e moeda por provider;
-- alertas de valor padrão ou configuração incompleta;
-- nenhum valor sensível retornado pela API.
+- download de modelo de manifesto;
+- preflight de schema, versões, origem mínima e artefatos;
+- validação de componentes, nomes, duplicidades, tamanhos e formato SHA-256;
+- resultado aprovado/reprovado com erros e avisos;
+- nenhuma transferência, execução, escrita, migration ou reinício pela funcionalidade.
 
 ### Documentos
 
-- preview restrito a PDF, PNG e JPEG;
-- nova verificação de tamanho e SHA-256 antes da resposta;
-- headers inline restritivos;
-- Blob URL temporária no frontend;
-- formatos ativos não suportados continuam disponíveis somente por download.
+- tipo, data de emissão e validade podem ser corrigidos após o upload;
+- validade não pode anteceder a emissão;
+- empresa, nome, MIME, tamanho, SHA-256, origem, storage, conteúdo e estado permanecem imutáveis;
+- auditoria registra somente quais grupos de metadados mudaram;
+- preview, download e retenção continuam usando a mesma evidência física.
 
 ## Itens anteriores
 
-Continuam integrados e aguardando prova runtime todos os itens das PRs funcionais `#14` a `#35`.
+Continuam integrados e aguardando prova runtime todos os itens das PRs funcionais `#14` a `#41`.
 Nenhum provider fiscal foi acionado durante qualquer implementação.
 
 ## Gate imediato — execução humana local
@@ -81,7 +83,7 @@ Nenhum provider fiscal foi acionado durante qualquer implementação.
 4. validar Compose `dev` e `onpremise`;
 5. executar `START_CONTABILIDADE.bat dev`;
 6. comprovar imagens artifact-only e serviços saudáveis;
-7. validar Keycloak/Liquibase e Flyway V1–V9;
+7. validar Keycloak/Liquibase e Flyway V1–V12;
 8. executar endpoints e smoke UI;
 9. executar as provas focadas de todos os itens pendentes;
 10. anexar a evidência ao relatório runtime;

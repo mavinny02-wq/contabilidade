@@ -4,9 +4,9 @@
 
 - branch de integração: `main`;
 - versão declarada: `0.5.1`;
-- commit final da onda mais recente: `d7e50e55ad7c2ee0dafbf48736d22507470e0c92`;
-- PRs da onda mais recente: `#37` a `#41`;
-- migration mais recente: `V9__empresa_grupos_tags.sql`;
+- commit final da onda mais recente: `8d7357bf70a77bf6e265f4c50aed6453510a93d3`;
+- PRs da onda mais recente: `#43` a `#47`;
+- migrations mais recentes: `V10__empresa_responsaveis_modulo.sql`, `V11__faturas_provedor.sql` e `V12__worker_heartbeat_historico.sql`;
 - validação Cloud canônica permanece histórica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
 - validação runtime permanece parcial: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
 - gate ativo: `GATE-VAL-001`;
@@ -18,19 +18,19 @@
 
 | Slot | Item | PR | Merge | Estado | Evidência |
 |---:|---|---:|---|---|---|
-| 1 | `EMP-GRP-001` | `#37` | `97fbc00` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md` |
-| 2 | `CRT-CAL-001` | `#38` | `5d35b19` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md` |
-| 3 | `OBS-PRV-001` | `#39` | `3294aa9` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md` |
-| 4 | `ADM-CFG-001` | `#40` | `b719f0b` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md` |
-| 5 | `DOC-PRE-001` | `#41` | `d7e50e5` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md` |
+| 1 | `EMP-RSP-001` | `#43` | `2b13fcf` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_RSP_001_RESPONSAVEIS_MODULO.md` |
+| 2 | `CRT-FAT-001` | `#44` | `d47ece6` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_FAT_001_RECONCILIACAO_FATURAS.md` |
+| 3 | `AUT-TEL-001` | `#45` | `7c553d7` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_TEL_001_HISTORICO_HEARTBEATS.md` |
+| 4 | `OPS-UPD-001` | `#46` | `99f72a7` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_UPD_001_PREFLIGHT_ATUALIZACAO.md` |
+| 5 | `DOC-MET-001` | `#47` | `8d7357b` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_MET_001_EDICAO_METADADOS.md` |
 
 ### Resultado funcional preparado
 
-- grupos e tags separados do cadastro fiscal, pesquisáveis e persistidos pela V9;
-- agenda bounded de vencimentos de certidões, com período, empresa, status e prazo;
-- histórico operacional de providers com status, duração e custo separado por moeda;
-- configuração efetiva exibida sem serialização de tokens, segredos ou URLs completas;
-- preview de PDF/PNG/JPEG após recálculo de tamanho e SHA-256.
+- contatos operacionais separados por empresa e módulo, com unicidade e auditoria sem PII;
+- reconciliação de faturas com custos estimados por provider, competência e moeda;
+- histórico amostrado de heartbeats, evitando uma linha por polling;
+- preflight read-only de manifesto de atualização, sem download ou execução;
+- correção de tipo, emissão e validade sem substituir a evidência documental.
 
 ## Implementações anteriores ainda aguardando runtime
 
@@ -39,7 +39,8 @@ Também continuam abertas as provas de todas as PRs funcionais anteriores, inclu
 - segurança, scheduler, backup, heartbeat e integridade: `#14` a `#18`;
 - exportação e filiais: `#20` e `#23`;
 - importação, shutdown, dashboard, auditoria e storage: `#25` a `#29`;
-- histórico, bulk, limites, backup UI e retenção: `#31` a `#35`.
+- histórico, bulk, limites, backup UI e retenção: `#31` a `#35`;
+- grupos, agenda, providers, configuração e preview: `#37` a `#41`.
 
 Todos os itens integrados permanecem `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`. A prova Cloud da
 PR `#12` não classifica a `main` atual, porque backend, frontend, worker e migrations foram
@@ -54,14 +55,14 @@ Todas devem partir da `main` atual ou de descendente reconciliado:
 3. worker `npm ci`, typecheck e build com Node 22.12+;
 4. Compose efetivo para `dev` e `onpremise`;
 5. execução do `START_CONTABILIDADE.bat dev` sem chamadas fiscais externas;
-6. imagens artifact-only, PostgreSQL, `postgres-bootstrap`, Keycloak/Liquibase e Flyway V1–V9;
+6. imagens artifact-only, PostgreSQL, `postgres-bootstrap`, Keycloak/Liquibase e Flyway V1–V12;
 7. endpoints técnicos, proxies e smoke UI;
 8. provas focadas de todas as implementações anteriores;
-9. `EMP-GRP-001`: V9, busca, deduplicação, limites e isolamento do cadastro fiscal;
-10. `CRT-CAL-001`: períodos, filtro, status e resultado parcial;
-11. `OBS-PRV-001`: status, moedas, duração, taxa e ausência de payload/segredo;
-12. `ADM-CFG-001`: alertas corretos e nenhuma exposição de valor sensível;
-13. `DOC-PRE-001`: formatos permitidos, integridade, headers, Blob URL e auditoria;
+9. `EMP-RSP-001`: V10, CRUD por módulo, unicidade, isolamento e ausência de PII na auditoria;
+10. `CRT-FAT-001`: V11, moedas, tolerância, idempotência e separação por provider;
+11. `AUT-TEL-001`: V12, amostragem temporal, mudança de estado/versão e múltiplos workers;
+12. `OPS-UPD-001`: manifesto válido/inválido, compatibilidade, traversal, tamanhos, hashes e ausência de execução;
+13. `DOC-MET-001`: datas, tipo, permissões e imutabilidade de arquivo/hash/MIME/origem/storage;
 14. aplicação mantida em `http://localhost:8088` durante a coleta.
 
 A execução é humana no Windows local. Depois, uma task `CODEX_CLOUD_LINUX` reconcilia o commit de

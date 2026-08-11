@@ -3,20 +3,20 @@
 ## Estado atual
 
 A onda mais recente foi implementada por autorização direta do usuário e integrada pelas PRs
-`#37` a `#41`.
+`#43` a `#47`.
 
 | Slot | Item | PR | Estado | Evidência |
 |---:|---|---:|---|---|
-| 1 | `EMP-GRP-001` | `#37` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md` |
-| 2 | `CRT-CAL-001` | `#38` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md` |
-| 3 | `OBS-PRV-001` | `#39` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md` |
-| 4 | `ADM-CFG-001` | `#40` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md` |
-| 5 | `DOC-PRE-001` | `#41` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md` |
+| 1 | `EMP-RSP-001` | `#43` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_RSP_001_RESPONSAVEIS_MODULO.md` |
+| 2 | `CRT-FAT-001` | `#44` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_FAT_001_RECONCILIACAO_FATURAS.md` |
+| 3 | `AUT-TEL-001` | `#45` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_TEL_001_HISTORICO_HEARTBEATS.md` |
+| 4 | `OPS-UPD-001` | `#46` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_UPD_001_PREFLIGHT_ATUALIZACAO.md` |
+| 5 | `DOC-MET-001` | `#47` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_MET_001_EDICAO_METADADOS.md` |
 
 O commit final de implementação da onda é:
 
 ```text
-d7e50e55ad7c2ee0dafbf48736d22507470e0c92
+8d7357bf70a77bf6e265f4c50aed6453510a93d3
 ```
 
 Não existem prompts executáveis para esses cinco itens. Não os reenvie ao Codex.
@@ -24,7 +24,7 @@ Não existem prompts executáveis para esses cinco itens. Não os reenvie ao Cod
 ## Implementações anteriores
 
 Também permanecem aguardando prova runtime todos os itens funcionais integrados pelas PRs `#14` a
-`#35`, conforme `plano-onda.json` e o Registro de Itens do Roadmap.
+`#41`, conforme `plano-onda.json` e o Registro de Itens do Roadmap.
 
 Os prompts `PREVIEW_SLOT_*` antigos são apenas referências históricas.
 
@@ -43,13 +43,13 @@ prova não classifica a `main` atual como verde.
 
 ## Provas obrigatórias da onda mais recente
 
-- `EMP-GRP-001`: V9, busca, deduplicação, limites e isolamento do cadastro fiscal;
-- `CRT-CAL-001`: períodos, filtro por empresa, status e resultado parcial;
-- `OBS-PRV-001`: status, moedas, duração, taxa e ausência de payload/segredo;
-- `ADM-CFG-001`: alertas seguros e ausência de valores sensíveis na resposta;
-- `DOC-PRE-001`: PDF/PNG/JPEG, integridade, headers, Blob URL, auditoria e MIME não suportado.
+- `EMP-RSP-001`: V10, módulos, unicidade, isolamento, permissões e auditoria sem PII;
+- `CRT-FAT-001`: V11, custos, moeda, tolerância, período e atualização idempotente;
+- `AUT-TEL-001`: V12, amostragem, mudança de estado/versão, múltiplos workers e resultado parcial;
+- `OPS-UPD-001`: schema, versões, componentes, nomes, traversal, tamanho, hash e ausência de execução;
+- `DOC-MET-001`: tipo/datas, permissões e imutabilidade de arquivo, hash, MIME, origem e storage.
 
-Essas provas se somam ao ciclo geral Maven, npm, Docker, PostgreSQL/Flyway V1–V9,
+Essas provas se somam ao ciclo geral Maven, npm, Docker, PostgreSQL/Flyway V1–V12,
 Keycloak/Liquibase, endpoints e smoke UI.
 
 ## Coleta da prova runtime
