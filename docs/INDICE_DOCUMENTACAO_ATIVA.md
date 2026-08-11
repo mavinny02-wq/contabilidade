@@ -57,6 +57,7 @@
 - [OBS-PRV-001 — Histórico de providers](implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md)
 - [ADM-CFG-001 — Configuração efetiva segura](implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md)
 - [DOC-PRE-001 — Pré-visualização segura de documentos](implementacao/DOC_PRE_001_PREVIEW_SEGURO.md)
+- [EMP-RSP-001 — Responsáveis por módulo](implementacao/EMP_RSP_001_RESPONSAVEIS_MODULO.md)
 
 ## Integrações
 
