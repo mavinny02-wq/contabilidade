@@ -4,68 +4,82 @@
     "branch": "main",
     "requiredVersion": "0.5.1",
     "previousVersion": "0.5.0",
-    "commitDeValidacaoCloud": "6c101a3a0699cd843e9257f685550c61d662360f",
-    "pullRequestDeValidacaoCloud": 12,
+    "commitDeValidacaoCloudHistorica": "6c101a3a0699cd843e9257f685550c61d662360f",
+    "pullRequestDeValidacaoCloudHistorica": 12,
+    "commitDaOndaImplementada": "b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01",
+    "pullRequestsDaOnda": [14, 15, 16, 17, 18],
     "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
-  "fase": "GATE_VAL_001_CLOUD_AMARELO_SEC_AUT_001_IMPLEMENTADO_RUNTIME_LOCAL_PENDENTE",
+  "fase": "GATE_VAL_001_ONDA_IMPLEMENTADA_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Comprovar a baseline v0.5.1 no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "descricao": "Comprovar a main atual, já contendo a onda de segurança, performance, backup e observabilidade, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
     "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
-    "evidenciaCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
-    "classificacaoCloud": "CLOUD_AMARELO",
+    "evidenciaCloudHistorica": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
+    "classificacaoCloudHistorica": "CLOUD_AMARELO",
     "evidenciaRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md",
     "classificacaoRuntime": "BLOQUEADO_POR_AMBIENTE",
-    "criterioDeFechamento": "O usuário executa os scripts locais, commita a evidência verde de Maven, imagens artifact-only, Compose, schemas, endpoints e smoke UI; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
+    "criterioDeFechamento": "O usuário executa os scripts locais sobre o commit atual, commita a evidência verde de Maven, frontend, worker, imagens artifact-only, Compose, schemas, endpoints, smoke UI e provas focadas da onda; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
   },
   "slotsOficiais": [],
   "itensImplementadosPorAutorizacaoDireta": [
     {
       "itemId": "SEC-AUT-001",
       "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 14,
+      "mergeCommit": "d02fd5c7a0b907697a85ec8f7465745033444483",
       "branch": "feat/sec-aut-001-anti-replay-session-ticket",
       "migrationOwnership": "V8__interactive_session_ticket_replay.sql",
-      "evidencia": "docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md",
-      "observacao": "Implementado por solicitação explícita do usuário antes do fechamento do gate; não promove os demais previews."
-    }
-  ],
-  "ondaCandidataAposGate": [
+      "evidencia": "docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md"
+    },
     {
-      "slot": 2,
       "itemId": "PERF-CRT-001",
-      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_2_PERF_CRT_001_consultas_limitadas.md",
-      "dependencies": [],
-      "migrationOwnership": null
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 15,
+      "mergeCommit": "1b0827c887ad3637fa061521f43bcb15658d99ea",
+      "branch": "feat/perf-crt-001-bounded-scheduler",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md"
     },
     {
-      "slot": 3,
       "itemId": "OPS-BKP-001",
-      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_3_OPS_BKP_001_manifesto_backup.md",
-      "dependencies": [],
-      "migrationOwnership": null
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 16,
+      "mergeCommit": "c432a007ca809f07826edcd5331ef50c0f4bfa7f",
+      "branch": "feat/ops-bkp-001-backup-manifest",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/OPS_BKP_001_MANIFESTO_BACKUP.md"
     },
     {
-      "slot": 4,
       "itemId": "OBS-WRK-001",
-      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_4_OBS_WRK_001_heartbeat_stale.md",
-      "dependencies": [],
-      "migrationOwnership": null
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 17,
+      "mergeCommit": "6d2d96453611c10ed55673a3077a65467c208fd6",
+      "branch": "feat/obs-wrk-001-heartbeat-stale",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/OBS_WRK_001_HEARTBEAT_STALE.md"
     },
     {
-      "slot": 5,
       "itemId": "SEC-DOC-001",
-      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_5_SEC_DOC_001_integridade_storage.md",
-      "dependencies": [],
-      "migrationOwnership": null
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 18,
+      "mergeCommit": "b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01",
+      "branch": "feat/sec-doc-001-integrity-download",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md"
     }
   ],
-  "vagasDaProximaOndaASelecionar": 1,
-  "provasResolvidas": [
+  "ondaCandidataAposGate": [],
+  "proximaOnda": {
+    "status": "NAO_SELECIONADA",
+    "quantidadeSlots": 5,
+    "criterio": "Selecionar cinco itens independentes somente após a main atual receber validação runtime verde e reconciliação canônica."
+  },
+  "provasHistoricasResolvidas": [
     "NPM_LOCKFILES_VERSIONED",
-    "FRONTEND_CODEX_CLOUD_BUILD_GREEN",
-    "WORKER_CODEX_CLOUD_BUILD_GREEN",
+    "FRONTEND_PR12_CLOUD_BUILD_GREEN",
+    "WORKER_PR12_CLOUD_BUILD_GREEN",
     "WORKER_PDFJS_IMPORT_STARTUP_GREEN",
     "SYNTHETIC_PDF_PARSE_CLOUD_LINUX_GREEN",
     "COMPOSE_YAML_STATIC_VALIDATION_GREEN",
@@ -75,9 +89,9 @@
     "CODEX_EXECUTOR_CONTRACT_DOCUMENTED"
   ],
   "provasPendentes": [
-    "MAVEN_TARGET_ENV_VERIFY_PENDING",
-    "FRONTEND_WINDOWS_NODE22_BUILD_PENDING",
-    "WORKER_WINDOWS_NODE22_BUILD_PENDING",
+    "MAVEN_CURRENT_MAIN_VERIFY_PENDING",
+    "FRONTEND_CURRENT_MAIN_NODE22_BUILD_PENDING",
+    "WORKER_CURRENT_MAIN_NODE22_BUILD_PENDING",
     "DOCKER_COMPOSE_DEV_EFFECTIVE_CONFIG_PENDING",
     "DOCKER_COMPOSE_ONPREMISE_EFFECTIVE_CONFIG_PENDING",
     "ARTIFACT_ONLY_IMAGES_RUNTIME_PENDING",
@@ -88,7 +102,11 @@
     "WINDOWS_BAT_RUNTIME_PENDING",
     "TECHNICAL_ENDPOINTS_RUNTIME_PENDING",
     "UI_SMOKE_RUNTIME_PENDING",
-    "SEC_AUT_001_ANTI_REPLAY_RUNTIME_PENDING"
+    "SEC_AUT_001_ANTI_REPLAY_RUNTIME_PENDING",
+    "PERF_CRT_001_BATCH_CURSOR_RUNTIME_PENDING",
+    "OPS_BKP_001_POWERSHELL_AND_REAL_BACKUP_PENDING",
+    "OBS_WRK_001_HEARTBEAT_STATES_RUNTIME_PENDING",
+    "SEC_DOC_001_STORAGE_TAMPER_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }
