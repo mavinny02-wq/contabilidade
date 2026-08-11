@@ -23,14 +23,17 @@
   `docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md`;
 - `ADM-CFG-001`: visão da configuração efetiva com presença segura de tokens, segredos e parâmetros
   de provider, sem serializar valores sensíveis; evidência em
-  `docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md`.
+  `docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md`;
+- `OPS-UPD-001`: preflight read-only de manifesto de atualização, com compatibilidade de versão,
+  componentes, nomes, tamanhos e formato dos hashes; evidência em
+  `docs/implementacao/OPS_UPD_001_PREFLIGHT_ATUALIZACAO.md`.
 
 ## Pendências
 
 - usuários/papéis;
 - secret manager e rotação;
-- histórico técnico persistente;
+- histórico técnico persistente além de workers/providers;
 - criação/agendamento de backup pela UI;
-- atualização controlada;
+- execução controlada da atualização após aprovação operacional;
 - edição formal da política por ambiente;
 - alertas operacionais externos.
