@@ -54,7 +54,8 @@
 - [Validação v0.3.0](operacao/VALIDACAO_V030.md)
 - [Validação v0.4.0](operacao/VALIDACAO_V040.md)
 - [Validação v0.5.0](operacao/VALIDACAO_V050.md)
-- [Validação runtime completa v0.5.1 — evidência Codex Cloud](operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md)
+- [Validação Cloud completa v0.5.1](operacao/VALIDACAO_CLOUD_COMPLETA_V051.md)
+- [Validação runtime v0.5.1 — prova local ainda pendente](operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md)
 
 ## Decisões
 
