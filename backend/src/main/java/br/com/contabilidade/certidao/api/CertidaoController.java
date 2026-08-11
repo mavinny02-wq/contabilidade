@@ -1,14 +1,21 @@
 package br.com.contabilidade.certidao.api;
 
 import br.com.contabilidade.certidao.domain.ResultadoCertidao;
+import br.com.contabilidade.certidao.domain.StatusCertidao;
+import br.com.contabilidade.certidao.domain.TipoCertidao;
+import br.com.contabilidade.certidao.service.CertidaoExportacaoCsvService;
 import br.com.contabilidade.certidao.service.CertidaoService;
 import jakarta.validation.constraints.Size;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +32,44 @@ import org.springframework.web.multipart.MultipartFile;
 public class CertidaoController {
 
     private final CertidaoService service;
+    private final CertidaoExportacaoCsvService exportacaoCsvService;
 
-    public CertidaoController(CertidaoService service) { this.service = service; }
+    public CertidaoController(
+            CertidaoService service,
+            CertidaoExportacaoCsvService exportacaoCsvService
+    ) {
+        this.service = service;
+        this.exportacaoCsvService = exportacaoCsvService;
+    }
 
     @GetMapping
     @PreAuthorize("@permissaoService.tem('CERTIDAO_LER')")
     public List<CertidaoResponse> listar(@RequestParam(required = false) UUID empresaId) {
         return empresaId == null ? service.listarTodas() : service.listarPorEmpresa(empresaId);
+    }
+
+    @GetMapping(value = "/exportacao.csv", produces = "text/csv;charset=UTF-8")
+    @PreAuthorize("@permissaoService.tem('CERTIDAO_LER')")
+    public ResponseEntity<byte[]> exportarCsv(
+            @RequestParam(required = false) UUID empresaId,
+            @RequestParam(required = false) TipoCertidao tipo,
+            @RequestParam(required = false) StatusCertidao status
+    ) {
+        CertidaoExportacaoCsvService.ExportacaoCsv exportacao = exportacaoCsvService.exportar(
+                empresaId,
+                tipo,
+                status
+        );
+        ContentDisposition disposition = ContentDisposition.attachment()
+                .filename(exportacao.nomeArquivo(), StandardCharsets.UTF_8)
+                .build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
+                .header(HttpHeaders.CACHE_CONTROL, "no-store")
+                .header("X-Content-Type-Options", "nosniff")
+                .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
+                .contentLength(exportacao.conteudo().length)
+                .body(exportacao.conteudo());
     }
 
     @PostMapping("/{id}/solicitar")
