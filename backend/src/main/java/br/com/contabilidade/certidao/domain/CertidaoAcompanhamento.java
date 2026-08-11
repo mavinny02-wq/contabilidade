@@ -219,6 +219,7 @@ public class CertidaoAcompanhamento extends EntidadeBase {
     public void registrarAlertaIrregular() { this.alertaIrregularEm = Instant.now(); }
     public void alterarAntecedencia(int dias) { this.antecedenciaDias = Math.max(1, Math.min(dias, 180)); }
     public void inativar() { this.ativa = false; }
+    public void ativar() { this.ativa = true; }
 
     private String limpar(String valor) { return valor == null || valor.isBlank() ? null : valor.trim(); }
     private String limitar(String valor, int max) {
