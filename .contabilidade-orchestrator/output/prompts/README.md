@@ -5,6 +5,9 @@
 A onda de cinco itens foi implementada por autorização direta do usuário e integrada pelas PRs
 `#14` a `#18` sobre a versão declarada `0.5.1`.
 
+Depois da reconciliação dessa onda, o usuário autorizou a próxima implementação direta:
+`EXP-CRT-001`, integrada pela PR `#20`.
+
 | Item | PR | Estado | Evidência |
 |---|---:|---|---|
 | `SEC-AUT-001` | `#14` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md` |
@@ -12,6 +15,7 @@ A onda de cinco itens foi implementada por autorização direta do usuário e in
 | `OPS-BKP-001` | `#16` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_BKP_001_MANIFESTO_BACKUP.md` |
 | `OBS-WRK-001` | `#17` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OBS_WRK_001_HEARTBEAT_STALE.md` |
 | `SEC-DOC-001` | `#18` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md` |
+| `EXP-CRT-001` | `#20` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EXP_CRT_001_EXPORTACAO_CSV.md` |
 
 Os arquivos `PREVIEW_SLOT_1_*` a `PREVIEW_SLOT_5_*` estão arquivados como referência histórica. Eles
 não são prompts executáveis e não devem ser enviados novamente ao Codex.
@@ -32,8 +36,8 @@ Essa evidência permanece em:
 docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md
 ```
 
-Entretanto, as PRs `#14` a `#18` alteraram backend, worker e frontend. Portanto a prova da PR `#12`
-é histórica e não classifica a main atual como verde.
+Entretanto, as PRs `#14` a `#18` e `#20` alteraram backend, worker e frontend. Portanto a prova da
+PR `#12` é histórica e não classifica a main atual como verde.
 
 ## Provas obrigatórias para a main atual
 
@@ -47,7 +51,8 @@ Entretanto, as PRs `#14` a `#18` alteraram backend, worker e frontend. Portanto 
 - lotes e cursores do scheduler;
 - manifesto/backup PowerShell e geração real;
 - estados de heartbeat;
-- adulteração documental recusada e auditada.
+- adulteração documental recusada e auditada;
+- exportação CSV com filtros, UTF-8/BOM, proteção contra fórmula, limite e auditoria.
 
 ## Coleta da prova runtime
 
