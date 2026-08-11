@@ -209,7 +209,10 @@ Em Windows com Docker Desktop Linux, Node compatível, `.env` seguro e acesso ao
 
 Branch de entrega: `validation/runtime-completa-v051`. Arquivos intencionalmente alterados: `automation-worker/src/PdfTextExtractor.ts` e este relatório. A evidência final de `git diff --check`, `git status --short`, commit e PR é registrada na entrega Git e na resposta final, pois o SHA do próprio commit não pode ser autorreferenciado dentro de seu conteúdo.
 
-## Execução local Windows — 2026-08-11 00:39 UTC
+## Tentativa de validação Windows executada indevidamente no Codex Cloud — 2026-08-11 00:39 UTC
+
+Esta não foi uma execução local Windows. A task anterior foi incompatível com o executor Cloud e
+somente comprovou a ausência do ambiente solicitado.
 
 ### Baseline
 
