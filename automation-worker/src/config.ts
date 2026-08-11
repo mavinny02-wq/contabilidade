@@ -13,11 +13,13 @@ export type SerproConfig = {
 };
 
 export type WorkerConfig = {
+  host: string;
   port: number;
   backendUrl: string;
   token: string;
   workerId: string;
   headless: boolean;
+  chromiumSandbox: boolean;
   heartbeatIntervalMs: number;
   pollIntervalMs: number;
   leaseSeconds: number;
@@ -74,12 +76,16 @@ const requestTag = (value: string | undefined): string | undefined => {
   return clean.slice(0, 32);
 };
 
+const sandboxPadrao = typeof process.getuid !== 'function' || process.getuid() !== 0;
+
 export const config: WorkerConfig = {
+  host: optionalTrimmed(process.env.WORKER_HOST) ?? '0.0.0.0',
   port: integerValue(process.env.WORKER_PORT, 3001, 1, 65_535),
   backendUrl: normalizedUrl(process.env.BACKEND_URL ?? 'http://localhost:8080'),
   token: process.env.WORKER_TOKEN ?? 'token-local-altere',
   workerId: process.env.WORKER_ID ?? `integracao-${process.env.HOSTNAME ?? 'local'}`,
   headless: booleanValue(process.env.BROWSER_HEADLESS, true),
+  chromiumSandbox: booleanValue(process.env.BROWSER_CHROMIUM_SANDBOX, sandboxPadrao),
   heartbeatIntervalMs: integerValue(
     process.env.HEARTBEAT_INTERVAL_MS,
     30_000,

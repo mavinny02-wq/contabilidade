@@ -41,11 +41,11 @@ public interface EmpresaRepository extends JpaRepository<Empresa, UUID> {
                          @Param("termoNumerico") String termoNumerico,
                          Pageable pageable);
 
-    @EntityGraph(attributePaths = {"estabelecimentos", "estabelecimentos.inscricoes", "tags"})
+    @EntityGraph(attributePaths = {"estabelecimentos", "tags"})
     @Query("select distinct e from Empresa e where e.id = :id")
     Optional<Empresa> buscarDetalhada(@Param("id") UUID id);
 
-    @EntityGraph(attributePaths = {"estabelecimentos", "estabelecimentos.inscricoes", "tags"})
+    @EntityGraph(attributePaths = {"estabelecimentos", "tags"})
     List<Empresa> findByAtivaTrueOrderByRazaoSocialAsc();
 
     @Query("select empresa.id from Empresa empresa where empresa.ativa = true order by empresa.id")

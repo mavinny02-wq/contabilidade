@@ -50,14 +50,18 @@ public class EmpresaService {
 
     @Transactional(readOnly = true)
     public Page<EmpresaResumoResponse> listar(String termo, int pagina, int tamanho) {
-        String termoLimpo = termo == null || termo.isBlank() ? null : termo.trim();
-        String termoNumerico = termoLimpo == null ? "" : termoLimpo.replaceAll("\\D", "");
+        String termoLimpo = normalizarTermoBusca(termo);
+        String termoNumerico = termoLimpo.replaceAll("\\D", "");
         return empresaRepository.buscar(
                 termoLimpo,
                 termoNumerico,
                 PageRequest.of(Math.max(pagina, 0), Math.min(Math.max(tamanho, 1), 100),
                         Sort.by("razaoSocial").ascending())
         ).map(mapper::resumo);
+    }
+
+    static String normalizarTermoBusca(String termo) {
+        return termo == null || termo.isBlank() ? "" : termo.trim();
     }
 
     @Transactional(readOnly = true)

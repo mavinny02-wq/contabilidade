@@ -8,9 +8,9 @@ export class BrowserRuntime {
     if (this.browser) return;
     this.browser = await chromium.launch({
       headless: config.headless,
-      // O Chromium recusa o sandbox setuid quando o worker roda como root em
-      // contêiner Linux. Usuários não-root continuam com o sandbox habilitado.
-      chromiumSandbox: typeof process.getuid !== 'function' || process.getuid() !== 0,
+      // Em produção, o worker não-root mantém o sandbox. O executor Cloud pode
+      // desabilitá-lo explicitamente quando o Chromium roda como root.
+      chromiumSandbox: config.chromiumSandbox,
     });
   }
 

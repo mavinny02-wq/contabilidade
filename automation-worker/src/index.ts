@@ -42,9 +42,9 @@ const heartbeat = async () => {
   }
 };
 
-servidor.listen(config.port, '0.0.0.0', () => {
+servidor.listen(config.port, config.host, () => {
   if (encerramentoEmCurso) return;
-  console.log(`Worker de integrações ${VERSAO} disponível na porta ${config.port}`);
+  console.log(`Worker de integrações ${VERSAO} disponível em ${config.host}:${config.port}`);
   console.log(`Fluxos registrados: ${registry.codigos().join(', ') || 'nenhum'}`);
   console.log(
     `Limites interativos: ${config.interactiveMaxSessions} sessões e `

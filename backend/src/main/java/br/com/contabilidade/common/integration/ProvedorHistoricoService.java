@@ -4,6 +4,7 @@ import br.com.contabilidade.common.error.ExcecaoNegocio;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -46,8 +47,8 @@ public class ProvedorHistoricoService {
         Instant inicio = inicioData.atStartOfDay(ZONA_NEGOCIO).toInstant();
         Instant fimExclusivo = fimData.plusDays(1).atStartOfDay(ZONA_NEGOCIO).toInstant();
         MapSqlParameterSource parametros = new MapSqlParameterSource()
-                .addValue("inicio", inicio)
-                .addValue("fim", fimExclusivo)
+                .addValue("inicio", parametroTemporal(inicio))
+                .addValue("fim", parametroTemporal(fimExclusivo))
                 .addValue("limite", maximoProvedores);
 
         long totalExecucoes = numero("""
@@ -133,8 +134,8 @@ public class ProvedorHistoricoService {
     ) {
         if (codigos.isEmpty()) return Map.of();
         MapSqlParameterSource parametros = new MapSqlParameterSource()
-                .addValue("inicio", inicio)
-                .addValue("fim", fim)
+                .addValue("inicio", parametroTemporal(inicio))
+                .addValue("fim", parametroTemporal(fim))
                 .addValue("codigos", codigos);
         Map<String, List<ProvedorHistoricoResponse.Custo>> porProvedor = new HashMap<>();
         jdbc.query("""
@@ -181,6 +182,10 @@ public class ProvedorHistoricoService {
     private long numero(String sql, MapSqlParameterSource parametros) {
         Long valor = jdbc.queryForObject(sql, parametros, Long.class);
         return valor == null ? 0L : valor;
+    }
+
+    static Timestamp parametroTemporal(Instant instante) {
+        return Timestamp.from(instante);
     }
 
     private void validarPeriodo(LocalDate inicio, LocalDate fim) {
