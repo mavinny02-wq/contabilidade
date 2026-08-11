@@ -9,19 +9,36 @@ import org.springframework.stereotype.Component;
 public class CertidaoScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(CertidaoScheduler.class);
-    private final CertidaoService service;
+    private final CertidaoSchedulerBatchService batchService;
 
-    public CertidaoScheduler(CertidaoService service) { this.service = service; }
+    public CertidaoScheduler(CertidaoSchedulerBatchService batchService) {
+        this.batchService = batchService;
+    }
 
     @Scheduled(cron = "${app.certificate.scheduler-cron:0 15 6 * * *}", zone = "America/Sao_Paulo")
     public void agendarConsultas() {
-        int total = service.agendarVencidas();
-        if (total > 0) log.info("Consultas de certidões agendadas: {}", total);
+        CertidaoSchedulerBatchService.ResultadoLote resultado = batchService.agendarVencidas();
+        if (resultado.candidatos() > 0 || resultado.empresasInicializadas() > 0) {
+            log.info(
+                    "Lote de certidões processado: empresasInicializadas={}, candidatos={}, agendados={}, ignorados={}",
+                    resultado.empresasInicializadas(),
+                    resultado.candidatos(),
+                    resultado.processados(),
+                    resultado.ignorados()
+            );
+        }
     }
 
     @Scheduled(cron = "${app.certificate.alert-cron:0 30 7 * * *}", zone = "America/Sao_Paulo")
     public void emitirAlertas() {
-        int total = service.emitirAlertas();
-        if (total > 0) log.info("Alertas de certidões emitidos: {}", total);
+        CertidaoSchedulerBatchService.ResultadoLote resultado = batchService.emitirAlertas();
+        if (resultado.candidatos() > 0 || resultado.empresasInicializadas() > 0) {
+            log.info(
+                    "Lote de alertas de certidões processado: empresasInicializadas={}, candidatos={}, alertasEmitidos={}",
+                    resultado.empresasInicializadas(),
+                    resultado.candidatos(),
+                    resultado.processados()
+            );
+        }
     }
 }
