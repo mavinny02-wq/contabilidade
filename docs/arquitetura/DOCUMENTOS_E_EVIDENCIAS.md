@@ -16,10 +16,11 @@
 - bloqueio com erro acionável quando o conteúdo diverge ou não pode ser verificado;
 - auditoria isolada de divergência, inclusive quando a transação do download falha;
 - pré-visualização inline segura de PDF, PNG e JPEG após nova validação de integridade;
+- edição controlada de tipo, emissão e validade sem substituir a evidência;
 - reconciliação read-only entre referências do PostgreSQL e arquivos do storage;
 - fingerprints de amostra sem exposição de paths;
 - prévia read-only de retenção documental por critérios configuráveis;
-- auditoria de envio, download, preview, reconciliação e prévia de retenção;
+- auditoria de envio, metadados, download, preview, reconciliação e prévia de retenção;
 - remoção compensatória quando a persistência imediata falha.
 
 A deduplicação atual retorna o documento ativo existente quando a mesma empresa envia o mesmo hash.
@@ -52,6 +53,29 @@ acessíveis apenas por download autorizado.
 A resposta inline usa `Content-Disposition: inline`, `no-store`, `nosniff`, política same-origin e
 CSP sandbox. O frontend cria uma Blob URL somente durante o modal e a revoga ao fechar ou trocar o
 documento. A ação exige a mesma permissão `DOCUMENTO_BAIXAR` usada pelo download.
+
+## Edição de metadados
+
+A correção de metadados é separada da evidência física. A operação pode alterar somente:
+
+- tipo funcional;
+- data de emissão;
+- data de validade.
+
+Permanecem imutáveis:
+
+- empresa;
+- nome original;
+- MIME type;
+- tamanho;
+- SHA-256;
+- origem;
+- referência de storage;
+- conteúdo;
+- estado ativo.
+
+A validade não pode anteceder a emissão. A auditoria registra apenas quais grupos de campos foram
+alterados, sem copiar os valores antigos ou novos.
 
 ## Reconciliação do storage
 
