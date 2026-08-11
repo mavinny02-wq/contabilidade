@@ -85,6 +85,11 @@ app:
     max-file-size-bytes: ${APP_STORAGE_MAX_FILE_SIZE_BYTES:26214400}
   worker:
     token: ${APP_WORKER_TOKEN:token-local-altere}
+    heartbeat:
+      degraded-after: ${APP_WORKER_HEARTBEAT_DEGRADED_AFTER:PT90S}
+      unavailable-after: ${APP_WORKER_HEARTBEAT_UNAVAILABLE_AFTER:PT5M}
+      future-tolerance: ${APP_WORKER_HEARTBEAT_FUTURE_TOLERANCE:PT30S}
+      max-listed: ${APP_WORKER_HEARTBEAT_MAX_LISTED:100}
   automation:
     session:
       public-path: ${APP_AUTOMATION_PUBLIC_PATH:/automation}
