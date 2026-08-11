@@ -33,6 +33,10 @@
 - [Segurança](arquitetura/SEGURANCA.md)
 - [Observabilidade](arquitetura/OBSERVABILIDADE.md)
 
+## Implementações
+
+- [SEC-AUT-001 — Anti-replay de tickets da sessão interativa](implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md)
+
 ## Integrações
 
 - [Serpro Consulta CND](integracoes/SERPRO_CONSULTA_CND.md)

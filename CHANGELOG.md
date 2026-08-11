@@ -1,5 +1,27 @@
 # Changelog
 
+## Não lançado
+
+### Segurança da sessão interativa
+
+- transforma o ticket HMAC em credencial de troca de uso único;
+- persiste o consumo do `jti` no PostgreSQL pela migration V8;
+- bloqueia replay entre workers e após restart do worker;
+- revalida intervenção, execução, sessão, operador, estado e expiração no backend;
+- envia o ticket somente no primeiro `GET /info`;
+- troca o ticket por grant opaco de 256 bits em cookie `HttpOnly` e `SameSite=Strict`;
+- mantém no máximo um grant ativo por sessão e rotaciona o grant com ticket novo;
+- recusa ticket bruto em endpoints de eventos e comandos;
+- preserva HMAC, TTL, autorização e a proibição de bypass de CAPTCHA;
+- amplia a validação operacional para Flyway V1–V8 e o ledger anti-replay.
+
+### Pendências
+
+- build completo Maven/npm no ambiente-alvo;
+- aplicação da V8 e prova de replay em PostgreSQL real;
+- validação de cookie HttpOnly/Secure, restart do worker e proxy Nginx;
+- testes automatizados permanentes e E2E.
+
 ## 0.5.1 — 2026-08-09
 
 - corrige os blockers TypeScript identificados na validação canônica da v0.5.0;

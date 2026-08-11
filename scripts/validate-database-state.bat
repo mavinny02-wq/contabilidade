@@ -66,15 +66,16 @@ if /i not "!FLYWAY_TABLE_STATUS!"=="PRESENT" (
 )
 
 set "FLYWAY_SCHEMA_STATUS="
-for /f "usebackq delims=" %%R in (`docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T postgres psql -U "!POSTGRES_USER!" -d "!POSTGRES_DB!" -Atc "SELECT CASE WHEN NOT EXISTS (SELECT 1 FROM flyway_schema_history WHERE success = FALSE) AND (SELECT COUNT(*) FROM flyway_schema_history WHERE success = TRUE AND version IN ('1','2','3','4','5','6','7')) = 7 THEN 'OK' ELSE 'INVALID' END;" 2^>nul`) do set "FLYWAY_SCHEMA_STATUS=%%R"
+for /f "usebackq delims=" %%R in (`docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T postgres psql -U "!POSTGRES_USER!" -d "!POSTGRES_DB!" -Atc "SELECT CASE WHEN NOT EXISTS (SELECT 1 FROM flyway_schema_history WHERE success = FALSE) AND (SELECT COUNT(*) FROM flyway_schema_history WHERE success = TRUE AND version IN ('1','2','3','4','5','6','7','8')) = 8 AND to_regclass('public.tickets_sessao_interativa_consumidos') IS NOT NULL THEN 'OK' ELSE 'INVALID' END;" 2^>nul`) do set "FLYWAY_SCHEMA_STATUS=%%R"
 
 if /i not "!FLYWAY_SCHEMA_STATUS!"=="OK" (
-  echo [DB-VALIDATION] Historico Flyway incompleto ou com falha.
+  echo [DB-VALIDATION] Historico Flyway incompleto, com falha ou sem a tabela anti-replay da V8.
   docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T postgres psql -U "!POSTGRES_USER!" -d "!POSTGRES_DB!" -c "SELECT installed_rank, version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
   exit /b 1
 )
 
-echo [OK] Flyway V1-V7 aplicado sem registro de falha.
+echo [OK] Flyway V1-V8 aplicado sem registro de falha.
+echo [OK] Ledger anti-replay da sessao interativa presente.
 echo.
 echo [DB-VALIDATION] Schemas PostgreSQL validados.
 exit /b 0

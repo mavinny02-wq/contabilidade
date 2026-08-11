@@ -9,7 +9,7 @@
     "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
-  "fase": "GATE_VAL_001_CLOUD_AMARELO_RUNTIME_LOCAL_PENDENTE",
+  "fase": "GATE_VAL_001_CLOUD_AMARELO_SEC_AUT_001_IMPLEMENTADO_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
     "descricao": "Comprovar a baseline v0.5.1 no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
@@ -21,14 +21,17 @@
     "criterioDeFechamento": "O usuário executa os scripts locais, commita a evidência verde de Maven, imagens artifact-only, Compose, schemas, endpoints e smoke UI; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
   },
   "slotsOficiais": [],
-  "ondaCandidataAposGate": [
+  "itensImplementadosPorAutorizacaoDireta": [
     {
-      "slot": 1,
       "itemId": "SEC-AUT-001",
-      "prompt": ".contabilidade-orchestrator/output/prompts/PREVIEW_SLOT_1_SEC_AUT_001_anti_replay_sessao.md",
-      "dependencies": [],
-      "migrationOwnership": "V8 reservada somente se a solução persistir jti"
-    },
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "branch": "feat/sec-aut-001-anti-replay-session-ticket",
+      "migrationOwnership": "V8__interactive_session_ticket_replay.sql",
+      "evidencia": "docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md",
+      "observacao": "Implementado por solicitação explícita do usuário antes do fechamento do gate; não promove os demais previews."
+    }
+  ],
+  "ondaCandidataAposGate": [
     {
       "slot": 2,
       "itemId": "PERF-CRT-001",
@@ -58,6 +61,7 @@
       "migrationOwnership": null
     }
   ],
+  "vagasDaProximaOndaASelecionar": 1,
   "provasResolvidas": [
     "NPM_LOCKFILES_VERSIONED",
     "FRONTEND_CODEX_CLOUD_BUILD_GREEN",
@@ -79,11 +83,12 @@
     "ARTIFACT_ONLY_IMAGES_RUNTIME_PENDING",
     "WORKER_ARTIFACT_ONLY_IMAGE_RUNTIME_PENDING",
     "POSTGRES_BOOTSTRAP_RUNTIME_PENDING",
-    "POSTGRESQL_FLYWAY_V1_V7_PENDING",
+    "POSTGRESQL_FLYWAY_V1_V8_PENDING",
     "KEYCLOAK_LIQUIBASE_RUNTIME_PENDING",
     "WINDOWS_BAT_RUNTIME_PENDING",
     "TECHNICAL_ENDPOINTS_RUNTIME_PENDING",
-    "UI_SMOKE_RUNTIME_PENDING"
+    "UI_SMOKE_RUNTIME_PENDING",
+    "SEC_AUT_001_ANTI_REPLAY_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }

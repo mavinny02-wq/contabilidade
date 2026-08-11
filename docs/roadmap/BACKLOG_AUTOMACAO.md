@@ -21,12 +21,16 @@
 - bearer estático desabilitado por padrão;
 - token OAuth cacheado somente em memória;
 - chave de processamento Serpro somente em memória;
-- browser não é iniciado para o fluxo API Serpro.
+- browser não é iniciado para o fluxo API Serpro;
+- `SEC-AUT-001`: ticket HMAC da sessão é consumido uma única vez no backend;
+- `jti` permanece bloqueado entre reinícios do worker enquanto estiver válido;
+- o ticket é trocado por grant opaco em cookie HttpOnly, sem reutilização nas URLs de eventos/input;
+- grant bruto e ticket bruto não são persistidos nem registrados em logs.
 
 ## Pendências
 
+- validação runtime do anti-replay em PostgreSQL/worker/frontend;
 - runtime real Serpro e portais;
-- revisão da sessão interativa;
 - múltiplos workers/limites de concorrência;
 - shutdown gracioso aguardando execução;
 - telemetria histórica;

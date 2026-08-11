@@ -72,14 +72,29 @@ export function criarServidor(
 
       const sessionRoute = parseSessionRoute(url.pathname);
       if (sessionRoute) {
-        const ticket = tickets.verify(url.searchParams.get('ticket') ?? undefined, sessionRoute.sessionId);
+        const ticketQuery = url.searchParams.get('ticket') ?? undefined;
+        if (ticketQuery && !(request.method === 'GET' && sessionRoute.action === 'info')) {
+          throw new TicketError('TICKET_TROCA_ROTA_INVALIDA', 400);
+        }
+
+        const authentication = await tickets.authenticate({
+          ticket: ticketQuery,
+          expectedSessionId: sessionRoute.sessionId,
+          cookieHeader: request.headers.cookie,
+          secureCookie: isSecureRequest(request),
+        });
+
+        const ticketPayload = authentication.payload;
         const sessionInfo = sessions.info(sessionRoute.sessionId);
-        if (sessionInfo.executionId !== ticket.eid) {
+        if (sessionInfo.executionId !== ticketPayload.eid) {
           throw new TicketError('TICKET_EXECUCAO_DIVERGENTE');
+        }
+        if (authentication.setCookie) {
+          response.setHeader('Set-Cookie', authentication.setCookie);
         }
 
         if (request.method === 'GET' && sessionRoute.action === 'info') {
-          json(response, 200, sessions.info(sessionRoute.sessionId));
+          json(response, 200, sessionInfo);
           return;
         }
 
@@ -93,7 +108,7 @@ export function criarServidor(
           await sessions.input(
             sessionRoute.sessionId,
             validateInput(body),
-            ticket.sub,
+            ticketPayload.sub,
           );
           json(response, 202, { aceito: true });
           return;
@@ -103,7 +118,7 @@ export function criarServidor(
       json(response, 404, { codigo: 'ROTA_NAO_ENCONTRADA' });
     } catch (error) {
       if (error instanceof TicketError) {
-        json(response, 401, { codigo: error.code });
+        json(response, error.status, { codigo: error.code });
         return;
       }
       if (error instanceof SessionError) {
@@ -133,6 +148,12 @@ function parseSessionRoute(pathname: string): {
     sessionId: match[1].toLowerCase(),
     action: match[2] as 'events' | 'input' | 'info',
   };
+}
+
+function isSecureRequest(request: IncomingMessage): boolean {
+  const forwarded = request.headers['x-forwarded-proto'];
+  const value = Array.isArray(forwarded) ? forwarded[0] : forwarded;
+  return value?.split(',')[0]?.trim().toLowerCase() === 'https';
 }
 
 async function readJsonBody(

@@ -15,8 +15,10 @@ const VERSAO = '0.5.1';
 const runtime = new BrowserRuntime();
 const registry = new FluxoRegistry();
 const sessions = new InteractiveSessionManager();
-const tickets = new SessionTicketVerifier();
 const backend = new BackendClient();
+const tickets = new SessionTicketVerifier(
+  async (payload) => await backend.consumirTicketSessao(payload),
+);
 
 registry.registrar(new FederalCertificateFlow());
 registry.registrar(new SefazSpCertificateFlow());

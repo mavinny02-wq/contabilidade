@@ -36,8 +36,10 @@ scripts/validate-database-state.bat
 - presença de `databasechangelog` e `databasechangeloglock` no banco do Keycloak;
 - presença informativa de `migration_model`;
 - presença de `flyway_schema_history` no banco da aplicação;
-- migrations V1 a V7 registradas com sucesso;
-- ausência de registro Flyway com `success = false`.
+- migrations V1 a V8 registradas com sucesso;
+- ausência de registro Flyway com `success = false`;
+- presença da tabela `tickets_sessao_interativa_consumidos`, criada pela V8 para impedir replay de
+  tickets da sessão interativa.
 
 Se a validação falhar, o startup imprime o estado das tabelas e os logs de PostgreSQL,
 `postgres-bootstrap`, Keycloak e backend.

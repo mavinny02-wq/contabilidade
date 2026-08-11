@@ -42,7 +42,7 @@ O registro é dono da identidade permanente e do status atual.
 | `VAL-RUNTIME-V051-001` | Validação | Runtime | BLOQUEADO_POR_AMBIENTE | relatório histórico: runtime Windows/Docker, schemas, endpoints e UI não executados no Cloud |
 | `VAL-CLOUD-V051-002` | Validação | Cloud | CLOUD_AMARELO | PR #12: frontend/worker, PDF sintético e análises estáticas verdes; Maven bloqueado por registry e runtime local fora do escopo Cloud |
 | `GATE-VAL-001` | Gate | Validação | CLOUD_AMARELO_RUNTIME_LOCAL_PENDENTE | reprodutibilidade parcialmente comprovada; prova Docker/Windows ainda obrigatória antes da onda oficial |
-| `SEC-AUT-001` | Segurança | Automação | CANDIDATO_BLOQUEADO_PELO_GATE | anti-replay de ticket da sessão interativa |
+| `SEC-AUT-001` | Segurança | Automação | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | jti interativo consumido uma vez e trocado por grant HttpOnly |
 | `PERF-CRT-001` | Performance | Certidões | CANDIDATO_BLOQUEADO_PELO_GATE | limitar consultas globais do scheduler de certidões |
 | `OPS-BKP-001` | Operação | Backup | CANDIDATO_BLOQUEADO_PELO_GATE | manifesto e verificação dos backups |
 | `OBS-WRK-001` | Observabilidade | Worker | CANDIDATO_BLOQUEADO_PELO_GATE | heartbeat vencido/degradado na console técnica |
