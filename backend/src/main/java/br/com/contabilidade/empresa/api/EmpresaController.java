@@ -1,5 +1,6 @@
 package br.com.contabilidade.empresa.api;
 
+import br.com.contabilidade.empresa.service.EmpresaHistoricoService;
 import br.com.contabilidade.empresa.service.EmpresaService;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -22,9 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmpresaController {
 
     private final EmpresaService service;
+    private final EmpresaHistoricoService historicoService;
 
-    public EmpresaController(EmpresaService service) {
+    public EmpresaController(
+            EmpresaService service,
+            EmpresaHistoricoService historicoService
+    ) {
         this.service = service;
+        this.historicoService = historicoService;
     }
 
     @GetMapping
@@ -39,6 +45,16 @@ public class EmpresaController {
     @PreAuthorize("@permissaoService.tem('EMPRESA_LER')")
     public EmpresaDetalheResponse obter(@PathVariable UUID id) {
         return service.obter(id);
+    }
+
+    @GetMapping("/{id}/historico")
+    @PreAuthorize("@permissaoService.tem('EMPRESA_LER')")
+    public Page<EmpresaHistoricoResponse> historico(
+            @PathVariable UUID id,
+            @RequestParam(defaultValue = "0") int pagina,
+            @RequestParam(defaultValue = "30") int tamanho
+    ) {
+        return historicoService.listar(id, pagina, tamanho);
     }
 
     @PostMapping

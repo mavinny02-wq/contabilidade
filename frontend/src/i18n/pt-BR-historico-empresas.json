@@ -1,0 +1,25 @@
+{
+  "empresas": {
+    "historico": {
+      "carregando": "Carregando histórico cadastral...",
+      "vazio": "Nenhum evento cadastral registrado",
+      "vazioDescricao": "Alterações futuras da empresa e de suas filiais aparecerão aqui.",
+      "realizadoPor": "Realizado por {{ator}}",
+      "correlationId": "Correlation ID",
+      "recursos": {
+        "empresa": "Empresa",
+        "estabelecimento": "Estabelecimento"
+      },
+      "acoes": {
+        "EMPRESA_CRIADA": "Empresa criada",
+        "EMPRESA_ATUALIZADA": "Dados da empresa atualizados",
+        "EMPRESA_ATIVADA": "Empresa ativada",
+        "EMPRESA_INATIVADA": "Empresa inativada",
+        "FILIAL_ADICIONADA": "Filial adicionada",
+        "FILIAL_ATUALIZADA": "Filial atualizada",
+        "FILIAL_ATIVADA": "Filial ativada",
+        "FILIAL_INATIVADA": "Filial inativada"
+      }
+    }
+  }
+}

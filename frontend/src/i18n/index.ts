@@ -6,6 +6,7 @@ import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
 import ptBRDashboardCertidoes from './pt-BR-dashboard-certidoes.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
 import ptBRFiliais from './pt-BR-filiais.json';
+import ptBRHistoricoEmpresas from './pt-BR-historico-empresas.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
 import ptBRStorageReconciliacao from './pt-BR-storage-reconciliacao.json';
 
@@ -31,6 +32,9 @@ const translation = {
     },
     importacao: {
       ...ptBRImportacaoEmpresas.empresas.importacao,
+    },
+    historico: {
+      ...ptBRHistoricoEmpresas.empresas.historico,
     },
   },
   certidoes: {
