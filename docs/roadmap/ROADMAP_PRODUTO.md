@@ -3,8 +3,9 @@
 ## Checkpoint
 
 - versão declarada: `0.5.1`;
-- commit final da onda mais recente: `0e310acecedf186bb62339e152bd7d5ee7bc0e2e`;
-- PRs da onda mais recente: `#31` a `#35`;
+- commit final da onda mais recente: `d7e50e55ad7c2ee0dafbf48736d22507470e0c92`;
+- PRs da onda mais recente: `#37` a `#41`;
+- schema atual esperado: Flyway V1–V9;
 - validação Cloud canônica é histórica para uma baseline anterior;
 - classificação atual: `MULTIPLAS_ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE`;
 - executor da prova runtime: `LOCAL_WINDOWS_MANUAL`;
@@ -14,71 +15,62 @@
 
 A autorização direta do usuário produziu cinco slots independentes:
 
-1. `EMP-HIS-001` — histórico cadastral da Empresa 360;
-2. `CRT-BULK-001` — solicitação de certidões selecionadas em lote;
-3. `AUT-LIM-001` — limites de recursos da sessão interativa;
-4. `OPS-BKP-UI-001` — inventário e verificação read-only de backups;
-5. `DOC-RET-001` — prévia read-only de retenção documental.
+1. `EMP-GRP-001` — grupos e tags de empresas;
+2. `CRT-CAL-001` — agenda de vencimentos de certidões;
+3. `OBS-PRV-001` — histórico operacional e de custo dos providers;
+4. `ADM-CFG-001` — configuração efetiva segura;
+5. `DOC-PRE-001` — pré-visualização segura de documentos.
 
-Os cinco itens foram integrados pelas PRs `#31` a `#35` e permanecem
+Os cinco itens foram integrados pelas PRs `#37` a `#41` e permanecem
 `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`.
 
 ## Capacidades preparadas
 
 ### Empresas
 
-- a aba Histórico deixou de ser placeholder;
-- eventos da empresa e de seus estabelecimentos são obtidos da auditoria existente;
-- paginação e ordenação decrescente;
-- ator, data, recurso e correlation ID;
-- `detalhes_json` não é exposto;
-- `EMPRESA_LER` é suficiente sem conceder acesso à auditoria global.
+- grupo opcional e até vinte tags por empresa;
+- classificação separada do cadastro fiscal;
+- deduplicação case-insensitive;
+- busca por grupo e tag;
+- card e modal próprios na Empresa 360;
+- migration V9 com tabela e índices específicos.
 
 ### Certidões
 
-- seleção individual e das certidões filtradas;
-- até 500 IDs por chamada;
-- deduplicação preservando ordem;
-- idempotência derivada por acompanhamento;
-- erro de negócio isolado por item;
-- resultado de lote integral ou parcialmente aceito;
-- nenhuma chamada direta a provider pelo endpoint de lote.
+- agenda por período de até 366 dias;
+- filtro opcional por empresa;
+- status calculado pelo mesmo domínio do Centro de Certidões;
+- prazo até o vencimento;
+- consulta bounded com total e flag parcial;
+- nenhuma chamada fiscal durante a consulta.
 
-### Automação
+### Providers e observabilidade
 
-- limite configurável de sessões interativas por worker;
-- reserva de capacidade para criações concorrentes;
-- limite de assinantes SSE por sessão;
-- HTTP `429` quando a capacidade se esgota;
-- limpeza de sessão parcialmente criada;
-- capacidade agregada no health sem identificadores sensíveis.
+- consolidação histórica de sucesso, parcial, falha, indisponibilidade, cancelamento e estado aberto;
+- taxa de sucesso e duração média;
+- última execução;
+- custo estimado separado por moeda;
+- ausência deliberada de payload, resultado, protocolo, empresa ou segredo.
 
-### Backup
+### Administração segura
 
-- nova página administrativa de inventário;
-- validação de manifesto, ID, componentes, tamanho e paths;
-- diretório montado como read-only no backend;
-- verificação SHA-256 sob demanda;
-- nenhuma criação, restauração, exclusão ou download pela interface;
-- auditoria segura da verificação.
+- ambiente, versão, segurança e provider de storage;
+- presença adequada de token do worker e segredo da sessão;
+- estado seguro de Base URL, referência de segredo, custo e moeda por provider;
+- alertas de valor padrão ou configuração incompleta;
+- nenhum valor sensível retornado pela API.
 
-### Retenção documental
+### Documentos
 
-- simulação global ou por empresa;
-- critérios configuráveis para inatividade, validade expirada e documento antigo sem validade;
-- total real, amostra bounded e flag parcial;
-- contagem por motivo e tamanho da amostra;
-- zero alteração no PostgreSQL ou storage;
-- execução futura de retenção continua fora do escopo e exige governança específica.
+- preview restrito a PDF, PNG e JPEG;
+- nova verificação de tamanho e SHA-256 antes da resposta;
+- headers inline restritivos;
+- Blob URL temporária no frontend;
+- formatos ativos não suportados continuam disponíveis somente por download.
 
 ## Itens anteriores
 
-Continuam integrados e aguardando prova runtime:
-
-- primeira onda: `SEC-AUT-001`, `PERF-CRT-001`, `OPS-BKP-001`, `OBS-WRK-001`, `SEC-DOC-001`;
-- adicionais: `EXP-CRT-001`, `EMP-FIL-001`;
-- onda anterior: `EMP-IMP-001`, `AUT-SHD-001`, `CRT-DASH-001`, `AUD-EXP-001`, `DOC-ORP-001`.
-
+Continuam integrados e aguardando prova runtime todos os itens das PRs funcionais `#14` a `#35`.
 Nenhum provider fiscal foi acionado durante qualquer implementação.
 
 ## Gate imediato — execução humana local
@@ -89,7 +81,7 @@ Nenhum provider fiscal foi acionado durante qualquer implementação.
 4. validar Compose `dev` e `onpremise`;
 5. executar `START_CONTABILIDADE.bat dev`;
 6. comprovar imagens artifact-only e serviços saudáveis;
-7. validar Keycloak/Liquibase e Flyway V1–V8;
+7. validar Keycloak/Liquibase e Flyway V1–V9;
 8. executar endpoints e smoke UI;
 9. executar as provas focadas de todos os itens pendentes;
 10. anexar a evidência ao relatório runtime;
