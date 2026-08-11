@@ -45,6 +45,7 @@
 - [EMP-IMP-001 — Importação CSV de empresas](implementacao/EMP_IMP_001_IMPORTACAO_CSV.md)
 - [AUT-SHD-001 — Shutdown gracioso do worker](implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md)
 - [CRT-DASH-001 — Dashboard gerencial de certidões](implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md)
+- [AUD-EXP-001 — Exportação CSV da auditoria](implementacao/AUD_EXP_001_EXPORTACAO_CSV.md)
 
 ## Integrações
 

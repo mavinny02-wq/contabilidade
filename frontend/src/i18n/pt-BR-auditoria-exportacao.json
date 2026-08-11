@@ -1,0 +1,17 @@
+{
+  "auditoria": {
+    "exportacao": {
+      "acao": "Exportar CSV",
+      "acaoFiltro": "Ação contém",
+      "recursoFiltro": "Tipo de recurso contém",
+      "atorFiltro": "Ator contém",
+      "inicio": "Data inicial",
+      "fim": "Data final",
+      "filtrar": "Aplicar filtros",
+      "limpar": "Limpar filtros",
+      "total": "{{quantidade}} evento(s) encontrado(s)",
+      "descricaoSegura": "O CSV contém metadados de rastreabilidade e não inclui os detalhes JSON dos eventos.",
+      "erro": "Não foi possível exportar os eventos de auditoria."
+    }
+  }
+}

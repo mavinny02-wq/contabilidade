@@ -88,6 +88,9 @@ app:
     csv-import-max-file-size-bytes: ${APP_COMPANY_CSV_IMPORT_MAX_FILE_SIZE_BYTES:2097152}
     csv-import-max-rows: ${APP_COMPANY_CSV_IMPORT_MAX_ROWS:2000}
     csv-import-max-errors: ${APP_COMPANY_CSV_IMPORT_MAX_ERRORS:200}
+  audit:
+    export-batch-size: ${APP_AUDIT_EXPORT_BATCH_SIZE:500}
+    export-max-rows: ${APP_AUDIT_EXPORT_MAX_ROWS:50000}
   worker:
     token: ${APP_WORKER_TOKEN:token-local-altere}
     heartbeat:
