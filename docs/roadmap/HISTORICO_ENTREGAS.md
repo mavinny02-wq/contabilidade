@@ -34,3 +34,9 @@ Registrar aqui resultados integrados e pacotes candidatos de forma explícita.
 | 2026-08-11 | v0.5.1 — inventário de backups | `OPS-BKP-UI-001`, PR `#34` | listagem read-only e verificação SHA-256 dos conjuntos pela interface; runtime pendente |
 | 2026-08-11 | v0.5.1 — prévia de retenção | `DOC-RET-001`, PR `#35` | simulação bounded por critérios, sem alteração no PostgreSQL ou storage; runtime pendente |
 | 2026-08-11 | v0.5.1 — onda Histórico/Bulk/Limites/Backup/Retenção | PRs `#31` a `#35` | cinco slots integrados na `main` até `0e310ac`; gate runtime permanece aberto |
+| 2026-08-11 | v0.5.1 — grupos e tags | `EMP-GRP-001`, PR `#37` | classificação interna, busca e migration V9, sem alterar cadastro fiscal; runtime pendente |
+| 2026-08-11 | v0.5.1 — agenda de certidões | `CRT-CAL-001`, PR `#38` | agenda bounded por período/empresa com status autoritativo e nenhuma chamada fiscal; runtime pendente |
+| 2026-08-11 | v0.5.1 — histórico de providers | `OBS-PRV-001`, PR `#39` | métricas de status, duração e custo por moeda sem payload ou segredo; runtime pendente |
+| 2026-08-11 | v0.5.1 — configuração segura | `ADM-CFG-001`, PR `#40` | diagnóstico efetivo sem serializar tokens, segredos ou URLs completas; runtime pendente |
+| 2026-08-11 | v0.5.1 — preview documental | `DOC-PRE-001`, PR `#41` | PDF/PNG/JPEG inline após validação de integridade e com headers restritivos; runtime pendente |
+| 2026-08-11 | v0.5.1 — onda Grupos/Agenda/Providers/Configuração/Preview | PRs `#37` a `#41` | cinco slots integrados na `main` até `d7e50e5`; Flyway esperado V1–V9 e gate runtime aberto |
