@@ -22,3 +22,4 @@ Registrar aqui resultados integrados e pacotes candidatos de forma explícita.
 | 2026-08-11 | v0.5.1 — onda implementada | PRs `#14` a `#18` | cinco itens integrados na main `b50fd182`; nova validação completa obrigatória antes da próxima onda |
 | 2026-08-11 | v0.5.1 — reconciliação da onda | PR `#19` | docs, status e prompts arquivados; gate mantido aberto e próxima onda não selecionada |
 | 2026-08-11 | v0.5.1 — exportação operacional | `EXP-CRT-001`, PR `#20` | Centro de Certidões ganhou CSV filtrável, bounded, auditado e protegido contra fórmula; runtime pendente |
+| 2026-08-11 | v0.5.1 — manutenção de filiais | `EMP-FIL-001`, PR `#23` | Empresa 360 ganhou edição e inativação individual de filial com CNPJ imutável e sincronização não destrutiva das certidões; runtime pendente |
