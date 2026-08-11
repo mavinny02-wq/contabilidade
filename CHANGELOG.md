@@ -15,11 +15,45 @@
 - preserva HMAC, TTL, autorização e a proibição de bypass de CAPTCHA;
 - amplia a validação operacional para Flyway V1–V8 e o ledger anti-replay.
 
+### Performance do Centro de Certidões
+
+- substitui cargas globais do scheduler por queries bounded de IDs;
+- processa inicialização, agendamento e alertas em lotes configuráveis;
+- usa cursores rotativos com wrap para evitar starvation;
+- executa cada empresa, solicitação e alerta em transação própria;
+- preserva a idempotency key diária;
+- impede que configuração de provider ausente bloqueie o restante do lote.
+
+### Backup verificável
+
+- gera manifesto por conjunto com versão, timestamp, componentes, tamanhos e SHA-256;
+- adiciona verificador PowerShell e shell sem restauração;
+- rejeita componente ausente, tamanho/hash divergente, duplicidade e path traversal;
+- remove apenas arquivos parciais do backup atual quando há falha;
+- mantém o teste real de restauração como operação humana separada.
+
+### Observabilidade do automation worker
+
+- classifica heartbeat recente, atrasado, expirado, futuro e ausente;
+- expõe estado saudável, degradado ou indisponível com motivo seguro;
+- adiciona versão, último heartbeat e idade na Console Técnica;
+- usa limiares e limite de listagem configuráveis;
+- mantém indisponibilidade do worker separada de resultado fiscal e contagem de execuções com falha.
+
+### Integridade documental
+
+- recalcula tamanho e SHA-256 antes do download;
+- compara o digest em tempo constante;
+- entrega exatamente os bytes verificados;
+- bloqueia divergência, metadados inválidos e falha de verificação;
+- preserva a evidência divergente para investigação;
+- registra ocorrência segura em auditoria isolada, sem hash bruto, path ou conteúdo.
+
 ### Pendências
 
-- build completo Maven/npm no ambiente-alvo;
-- aplicação da V8 e prova de replay em PostgreSQL real;
-- validação de cookie HttpOnly/Secure, restart do worker e proxy Nginx;
+- build completo Maven/frontend/worker da main atual;
+- execução Docker, Flyway V1–V8, Keycloak/Liquibase e smoke UI;
+- provas runtime focadas dos cinco itens integrados pelas PRs #14 a #18;
 - testes automatizados permanentes e E2E.
 
 ## 0.5.1 — 2026-08-09
