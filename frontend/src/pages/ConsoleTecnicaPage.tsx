@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { api } from '../api/http';
+import { api, type ApiError } from '../api/http';
 import type {
   ResumoTecnico,
   StatusTecnico,
@@ -12,11 +12,34 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge } from '../components/StatusBadge';
+import '../styles/storage-reconciliacao.css';
+
+type StorageReconciliacao = {
+  observadoEm: string;
+  status: StatusTecnico;
+  motivoSeguro?: string;
+  documentosRegistrados: number;
+  documentosAtivos: number;
+  referenciasAnalisadas: number;
+  referenciasCompletas: boolean;
+  arquivosAnalisados: number;
+  arquivosCompletos: boolean;
+  referenciasSemArquivoDetectadas: number;
+  referenciasSemArquivoCompleta: boolean;
+  arquivosSemRegistroDetectados: number;
+  arquivosSemRegistroCompleta: boolean;
+  linksSimbolicosIgnorados: number;
+  amostrasReferenciasSemArquivo: string[];
+  amostrasArquivosSemRegistro: string[];
+};
 
 export function ConsoleTecnicaPage() {
   const { t } = useTranslation();
   const [resumo, setResumo] = useState<ResumoTecnico>();
   const [erro, setErro] = useState(false);
+  const [reconciliacao, setReconciliacao] = useState<StorageReconciliacao>();
+  const [erroReconciliacao, setErroReconciliacao] = useState<ApiError>();
+  const [reconciliando, setReconciliando] = useState(false);
 
   const carregar = useCallback(() => {
     setErro(false);
@@ -27,12 +50,35 @@ export function ConsoleTecnicaPage() {
 
   useEffect(carregar, [carregar]);
 
+  const reconciliarStorage = async () => {
+    setReconciliando(true);
+    setErroReconciliacao(undefined);
+    try {
+      setReconciliacao(await api<StorageReconciliacao>('/console-tecnica/storage/reconciliacao'));
+    } catch (exception) {
+      setErroReconciliacao(exception as ApiError);
+    } finally {
+      setReconciliando(false);
+    }
+  };
+
   return (
     <>
       <PageHeader
         titulo={t('consoleTecnica.titulo')}
         descricao={t('consoleTecnica.descricao')}
-        acoes={<Button variante="secundario" onClick={carregar}>{t('acoes.atualizar')}</Button>}
+        acoes={
+          <>
+            <Button
+              variante="secundario"
+              disabled={reconciliando}
+              onClick={() => void reconciliarStorage()}
+            >
+              {t('consoleTecnica.storageReconciliacao.acao')}
+            </Button>
+            <Button variante="secundario" onClick={carregar}>{t('acoes.atualizar')}</Button>
+          </>
+        }
       />
       {erro ? <Alert tipo="erro">{t('comum.erroCarregamento')}</Alert> : null}
       {resumo ? (
@@ -69,6 +115,16 @@ export function ConsoleTecnicaPage() {
             />
           </div>
 
+          {erroReconciliacao ? (
+            <Alert tipo="erro" onClose={() => setErroReconciliacao(undefined)}>
+              <strong>{erroReconciliacao.mensagem ?? t('comum.erroCarregamento')}</strong>
+              {erroReconciliacao.correlationId ? (
+                <small>{t('erros.correlationId', { valor: erroReconciliacao.correlationId })}</small>
+              ) : null}
+            </Alert>
+          ) : null}
+          {reconciliacao ? <ReconciliacaoStorage resultado={reconciliacao} /> : null}
+
           <div className="card-row__title console-technical__workers-title">
             <h2>{t('consoleTecnica.worker.listaTitulo')}</h2>
             <StatusBadge tom="neutro">
@@ -98,6 +154,123 @@ export function ConsoleTecnicaPage() {
         </>
       ) : null}
     </>
+  );
+}
+
+function ReconciliacaoStorage({ resultado }: { resultado: StorageReconciliacao }) {
+  const { t } = useTranslation();
+  const completa = resultado.referenciasCompletas && resultado.arquivosCompletos;
+  const divergente = resultado.referenciasSemArquivoDetectadas > 0
+    || resultado.arquivosSemRegistroDetectados > 0;
+
+  return (
+    <section className="storage-reconciliation" aria-labelledby="storage-reconciliation-title">
+      <div className="storage-reconciliation__header">
+        <div>
+          <h2 id="storage-reconciliation-title">{t('consoleTecnica.storageReconciliacao.titulo')}</h2>
+          <p>{t('consoleTecnica.storageReconciliacao.descricao')}</p>
+        </div>
+        <Status status={resultado.status} />
+      </div>
+
+      {!completa ? (
+        <Alert tipo="aviso">{t('consoleTecnica.storageReconciliacao.resultadoParcial')}</Alert>
+      ) : divergente ? (
+        <Alert tipo="aviso">{t('consoleTecnica.storageReconciliacao.divergencias')}</Alert>
+      ) : resultado.status === 'SAUDAVEL' ? (
+        <Alert tipo="sucesso">{t('consoleTecnica.storageReconciliacao.semDivergencias')}</Alert>
+      ) : null}
+      {resultado.motivoSeguro ? (
+        <p className="muted">{motivoStorage(t, resultado.motivoSeguro)}</p>
+      ) : null}
+
+      <div className="storage-reconciliation__metrics">
+        <MetricaStorage label={t('consoleTecnica.storageReconciliacao.documentosRegistrados')} value={resultado.documentosRegistrados} />
+        <MetricaStorage label={t('consoleTecnica.storageReconciliacao.documentosAtivos')} value={resultado.documentosAtivos} />
+        <MetricaStorage
+          label={t('consoleTecnica.storageReconciliacao.referenciasAnalisadas')}
+          value={resultado.referenciasAnalisadas}
+          complete={resultado.referenciasCompletas}
+        />
+        <MetricaStorage
+          label={t('consoleTecnica.storageReconciliacao.arquivosAnalisados')}
+          value={resultado.arquivosAnalisados}
+          complete={resultado.arquivosCompletos}
+        />
+        <MetricaStorage
+          label={t('consoleTecnica.storageReconciliacao.referenciasSemArquivo')}
+          value={resultado.referenciasSemArquivoDetectadas}
+          complete={resultado.referenciasSemArquivoCompleta}
+          attention={resultado.referenciasSemArquivoDetectadas > 0}
+        />
+        <MetricaStorage
+          label={t('consoleTecnica.storageReconciliacao.arquivosSemRegistro')}
+          value={resultado.arquivosSemRegistroDetectados}
+          complete={resultado.arquivosSemRegistroCompleta}
+          attention={resultado.arquivosSemRegistroDetectados > 0}
+        />
+        <MetricaStorage
+          label={t('consoleTecnica.storageReconciliacao.linksIgnorados')}
+          value={resultado.linksSimbolicosIgnorados}
+          attention={resultado.linksSimbolicosIgnorados > 0}
+        />
+      </div>
+
+      {(resultado.amostrasReferenciasSemArquivo.length > 0
+        || resultado.amostrasArquivosSemRegistro.length > 0) ? (
+        <div className="detail-grid">
+          <AmostrasStorage
+            titulo={t('consoleTecnica.storageReconciliacao.amostrasSemArquivo')}
+            valores={resultado.amostrasReferenciasSemArquivo}
+          />
+          <AmostrasStorage
+            titulo={t('consoleTecnica.storageReconciliacao.amostrasOrfaos')}
+            valores={resultado.amostrasArquivosSemRegistro}
+          />
+        </div>
+      ) : null}
+      <p className="muted">{t('consoleTecnica.storageReconciliacao.amostrasDescricao')}</p>
+      <p className="muted">
+        {t('consoleTecnica.storageReconciliacao.observadoEm', {
+          valor: formatarData(resultado.observadoEm),
+        })}
+      </p>
+    </section>
+  );
+}
+
+function MetricaStorage({
+  label,
+  value,
+  complete,
+  attention = false,
+}: {
+  label: string;
+  value: number;
+  complete?: boolean;
+  attention?: boolean;
+}) {
+  const { t } = useTranslation();
+  return (
+    <Card className={`metric-card storage-metric${attention ? ' storage-metric--attention' : ''}`}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+      {complete != null ? (
+        <small>{t(complete
+          ? 'consoleTecnica.storageReconciliacao.completo'
+          : 'consoleTecnica.storageReconciliacao.parcial')}</small>
+      ) : null}
+    </Card>
+  );
+}
+
+function AmostrasStorage({ titulo, valores }: { titulo: string; valores: string[] }) {
+  return (
+    <Card titulo={titulo}>
+      <div className="storage-fingerprint-list">
+        {valores.map((valor) => <code key={valor}>{valor}</code>)}
+      </div>
+    </Card>
   );
 }
 
@@ -162,6 +335,12 @@ function Status({ status }: { status: StatusTecnico }) {
       ? 'aviso'
       : 'erro';
   return <StatusBadge tom={tom}>{t(chave)}</StatusBadge>;
+}
+
+function motivoStorage(t: TFunction, motivo: string): string {
+  const chave = `consoleTecnica.storageReconciliacao.motivos.${motivo}`;
+  const traduzido = t(chave);
+  return traduzido === chave ? motivo : traduzido;
 }
 
 function motivoWorker(t: TFunction, motivo?: string): string | undefined {

@@ -1,0 +1,33 @@
+{
+  "consoleTecnica": {
+    "storageReconciliacao": {
+      "titulo": "Reconciliação do storage documental",
+      "descricao": "Compara referências registradas no banco com arquivos presentes no storage, sem remover ou alterar evidências.",
+      "acao": "Verificar órfãos",
+      "documentosRegistrados": "Documentos registrados",
+      "documentosAtivos": "Documentos ativos",
+      "referenciasAnalisadas": "Referências analisadas",
+      "arquivosAnalisados": "Arquivos analisados",
+      "referenciasSemArquivo": "Referências sem arquivo",
+      "arquivosSemRegistro": "Arquivos sem registro",
+      "linksIgnorados": "Links simbólicos ignorados",
+      "resultadoParcial": "A varredura atingiu um limite ou foi interrompida. Contagens de divergência só são conclusivas quando banco e storage são analisados por completo.",
+      "semDivergencias": "Nenhuma divergência foi encontrada na varredura completa.",
+      "divergencias": "Foram encontradas divergências. Nenhum arquivo foi excluído ou alterado.",
+      "amostrasSemArquivo": "Identificadores de referências sem arquivo",
+      "amostrasOrfaos": "Identificadores de arquivos sem registro",
+      "amostrasDescricao": "Os códigos são fingerprints e não revelam o caminho do arquivo.",
+      "observadoEm": "Reconciliação observada em {{valor}}",
+      "completo": "completo",
+      "parcial": "parcial",
+      "motivos": {
+        "DIRETORIO_STORAGE_AUSENTE": "O diretório configurado não existe.",
+        "DIRETORIO_STORAGE_NAO_LEGIVEL": "O diretório configurado não pode ser lido com segurança.",
+        "LIMITE_ARQUIVOS_ATINGIDO": "O limite de arquivos foi atingido.",
+        "LEITURA_STORAGE_INTERROMPIDA": "A leitura do storage foi interrompida.",
+        "LIMITE_RECONCILIACAO_ATINGIDO": "Um limite operacional da reconciliação foi atingido.",
+        "DIVERGENCIA_STORAGE_DETECTADA": "Existem referências ou arquivos divergentes."
+      }
+    }
+  }
+}

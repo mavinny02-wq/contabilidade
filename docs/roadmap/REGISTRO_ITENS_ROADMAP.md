@@ -53,4 +53,5 @@ O registro é dono da identidade permanente e do status atual.
 | `AUT-SHD-001` | Operação | Automação | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | shutdown aguarda execução atual, fecha HTTP/browser e respeita grace period do Compose |
 | `CRT-DASH-001` | Funcionalidade | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | dashboard gerencial bounded com status, tipos, vencimentos e amostra parcial explícita |
 | `AUD-EXP-001` | Funcionalidade | Auditoria | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | filtros e exportação CSV bounded sem detalhes JSON e com proteção contra fórmula |
+| `DOC-ORP-001` | Operação | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | reconciliação read-only sem seguir links, sem paths e sem correção automática |
 | `AMB-003` | Ambiente | Serpro | ABERTO | contrato, credenciais, custo e runtime autorizado |
