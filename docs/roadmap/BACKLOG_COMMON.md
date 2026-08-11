@@ -19,7 +19,10 @@
 
 - `SEC-DOC-001`: recálculo de tamanho e SHA-256 antes do download, entrega dos mesmos bytes
   verificados, bloqueio de divergência e auditoria isolada; evidência em
-  `docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md`.
+  `docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md`;
+- `DOC-ORP-001`: reconciliação sob demanda entre PostgreSQL e storage, sem exclusão automática,
+  sem seguir links e sem expor paths; evidência em
+  `docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md`.
 
 ## Pendências
 
@@ -32,4 +35,5 @@
 - administração de usuários;
 - histórico de saúde/custo por provider;
 - hardening e observabilidade de produção;
-- antivírus e reconciliação periódica de órfãos do storage.
+- antivírus;
+- agendamento periódico da reconciliação de storage após prova operacional.
