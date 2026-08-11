@@ -75,7 +75,8 @@ public class EmpresaService {
                 request.logradouro(), request.numero(), request.complemento(), request.bairro(),
                 request.municipio(), request.uf(), request.cep());
         empresa.adicionarEstabelecimento(matriz);
-        Empresa salva = empresaRepository.save(empresa);
+        Empresa salva = empresaRepository.saveAndFlush(empresa);
+        certidaoLifecycleService.sincronizar(matriz);
         auditoriaService.registrar("EMPRESA_CRIADA", "EMPRESA", salva.getId(), Map.of("cnpj", cnpj));
         return mapper.detalhe(salva);
     }
@@ -97,6 +98,7 @@ public class EmpresaService {
         atualizarEstabelecimento(matriz, request.status(), request.cnaePrincipal(), request.regimeTributario(),
                 request.inscricaoEstadual(), request.inscricaoMunicipal(), request.logradouro(), request.numero(),
                 request.complemento(), request.bairro(), request.municipio(), request.uf(), request.cep());
+        certidaoLifecycleService.sincronizar(matriz);
         auditoriaService.registrar("EMPRESA_ATUALIZADA", "EMPRESA", id, Map.of("cnpj", cnpj));
         return mapper.detalhe(empresaRepository.save(empresa));
     }
@@ -162,6 +164,7 @@ public class EmpresaService {
     public void alterarAtiva(UUID id, boolean ativa) {
         Empresa empresa = buscar(id);
         if (ativa) empresa.ativar(); else empresa.inativar();
+        empresa.getEstabelecimentos().forEach(certidaoLifecycleService::sincronizar);
         auditoriaService.registrar(ativa ? "EMPRESA_ATIVADA" : "EMPRESA_INATIVADA", "EMPRESA", id, Map.of());
     }
 
