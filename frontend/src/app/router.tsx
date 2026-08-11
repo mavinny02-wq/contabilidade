@@ -16,6 +16,7 @@ import { IntegracoesPage } from '../pages/IntegracoesPage';
 import { HistoricoProvedoresPage } from '../pages/HistoricoProvedoresPage';
 import { AuditoriaPage } from '../pages/AuditoriaPage';
 import { BackupsPage } from '../pages/BackupsPage';
+import { ConfiguracaoSeguraPage } from '../pages/ConfiguracaoSeguraPage';
 import { ConsoleTecnicaPage } from '../pages/ConsoleTecnicaPage';
 import { ErrorPage } from '../pages/ErrorPage';
 
@@ -73,6 +74,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'console-tecnica', element: <ConsoleTecnicaPage /> },
               { path: 'backups', element: <BackupsPage /> },
+              { path: 'configuracao-segura', element: <ConfiguracaoSeguraPage /> },
             ],
           },
         ],

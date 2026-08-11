@@ -55,6 +55,7 @@
 - [EMP-GRP-001 — Grupos e tags de empresas](implementacao/EMP_GRP_001_GRUPOS_TAGS.md)
 - [CRT-CAL-001 — Agenda de vencimentos](implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md)
 - [OBS-PRV-001 — Histórico de providers](implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md)
+- [ADM-CFG-001 — Configuração efetiva segura](implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md)
 
 ## Integrações
 
