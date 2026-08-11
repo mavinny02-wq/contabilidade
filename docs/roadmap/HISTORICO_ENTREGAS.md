@@ -11,3 +11,5 @@ Registrar aqui resultados integrados e pacotes candidatos de forma explícita.
 | 2026-08-09 | v0.4.0 | SEFAZ-SP/PGE-SP | integrado na `main`; runtime oficial pendente |
 | 2026-08-09 | pacote v0.5.0 | `HIST-CRT-007`, `HIST-AUT-004`, `HIST-COM-007` | provider Serpro preparado; integração e runtime pendentes |
 | 2026-08-09 | conteúdo v0.5.0 no branch fornecido | `HIST-VAL-001` | relatório canônico e BAT incorporados; build frontend/worker reprovado; Docker/runtime pendentes |
+| 2026-08-10 | v0.5.1 — endurecimento de runtime | PRs `#2` a `#8` | bootstrap PostgreSQL, startup sequencial, migrations V6/V7, PDF.js e validação de schemas integrados; prova local completa ainda pendente |
+| 2026-08-11 | v0.5.1 — validação Codex Cloud | `VAL-RUNTIME-V051-001`, PR `#9` | lockfiles usados; frontend e worker verdes no runner; tipagem PDF.js corrigida; Maven e runtime Windows/Docker bloqueados pelo ambiente |

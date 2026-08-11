@@ -3,14 +3,18 @@
   "baseline": {
     "branch": "main",
     "requiredVersion": "0.5.1",
-    "commitDeValidacao": "6706ce61b2d2f95cbb1ed0b6c237e44a62d0073f",
-    "previousVersion": "0.5.0"
+    "previousVersion": "0.5.0",
+    "commitDeValidacaoCloud": "beabe35bd6aef2dc4e64515a1b2255963629218d",
+    "pullRequestDeValidacaoCloud": 9,
+    "relatorioCloud": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
-  "fase": "GATE_VAL_001_CORRECAO_PREPARADA_VALIDACAO_LOCAL",
+  "fase": "GATE_VAL_001_VALIDACAO_CLOUD_PARCIAL_WINDOWS_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Aplicar correções, gerar lockfiles e comprovar builds/runtime Windows sem chamadas fiscais.",
-    "evidencia": "docs/implementacao/GATE_VAL_001_CORRECOES_PREPARADAS.md"
+    "descricao": "Comprovar a baseline v0.5.1 no Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "evidenciaParcial": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md",
+    "classificacaoParcial": "BLOQUEADO_POR_AMBIENTE",
+    "criterioDeFechamento": "Anexar prova local Windows verde de builds, Compose, schemas, endpoints e smoke UI no mesmo commit de main."
   },
   "slotsOficiais": [],
   "ondaCandidataAposGate": [
@@ -50,15 +54,25 @@
       "migrationOwnership": null
     }
   ],
+  "provasResolvidas": [
+    "NPM_LOCKFILES_VERSIONED",
+    "FRONTEND_CODEX_CLOUD_BUILD_GREEN",
+    "WORKER_CODEX_CLOUD_BUILD_GREEN",
+    "WORKER_PDFJS_IMPORT_STARTUP_GREEN"
+  ],
   "provasPendentes": [
-    "NPM_LOCKFILES_PENDING",
-    "FRONTEND_REAL_BUILD_PENDING",
-    "WORKER_REAL_BUILD_PENDING",
-    "MAVEN_REAL_PENDING",
-    "DOCKER_COMPOSE_PENDING",
-    "POSTGRESQL_FLYWAY_PENDING",
-    "KEYCLOAK_RUNTIME_PENDING",
-    "WINDOWS_BAT_RUNTIME_PENDING"
+    "MAVEN_WINDOWS_VERIFY_PENDING",
+    "FRONTEND_WINDOWS_NODE22_BUILD_PENDING",
+    "WORKER_WINDOWS_NODE22_BUILD_PENDING",
+    "DOCKER_COMPOSE_DEV_CONFIG_PENDING",
+    "DOCKER_COMPOSE_ONPREMISE_CONFIG_PENDING",
+    "POSTGRES_BOOTSTRAP_RUNTIME_PENDING",
+    "POSTGRESQL_FLYWAY_V1_V7_PENDING",
+    "KEYCLOAK_LIQUIBASE_RUNTIME_PENDING",
+    "WINDOWS_BAT_RUNTIME_PENDING",
+    "TECHNICAL_ENDPOINTS_RUNTIME_PENDING",
+    "UI_SMOKE_RUNTIME_PENDING",
+    "SYNTHETIC_PDF_PARSE_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }
