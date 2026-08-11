@@ -13,11 +13,12 @@
   "gateSerial": {
     "itemId": "GATE-VAL-001",
     "descricao": "Comprovar a baseline v0.5.1 no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
     "evidenciaCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "classificacaoCloud": "CLOUD_AMARELO",
     "evidenciaRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md",
     "classificacaoRuntime": "BLOQUEADO_POR_AMBIENTE",
-    "criterioDeFechamento": "Anexar prova local verde de Maven, imagens artifact-only, Compose, schemas, endpoints e smoke UI no mesmo commit atualizado de main."
+    "criterioDeFechamento": "O usuário executa os scripts locais, commita a evidência verde de Maven, imagens artifact-only, Compose, schemas, endpoints e smoke UI; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
   },
   "slotsOficiais": [],
   "ondaCandidataAposGate": [
