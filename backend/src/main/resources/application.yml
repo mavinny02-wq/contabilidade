@@ -83,6 +83,7 @@ app:
     provider: local
     local-path: ${APP_STORAGE_LOCAL_PATH:./dados/documentos}
     max-file-size-bytes: ${APP_STORAGE_MAX_FILE_SIZE_BYTES:26214400}
+    integrity-max-file-size-bytes: ${APP_STORAGE_INTEGRITY_MAX_FILE_SIZE_BYTES:52428800}
   worker:
     token: ${APP_WORKER_TOKEN:token-local-altere}
     heartbeat:
