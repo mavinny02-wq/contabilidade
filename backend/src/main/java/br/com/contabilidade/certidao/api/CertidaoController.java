@@ -5,6 +5,8 @@ import br.com.contabilidade.certidao.domain.StatusCertidao;
 import br.com.contabilidade.certidao.domain.TipoCertidao;
 import br.com.contabilidade.certidao.service.CertidaoExportacaoCsvService;
 import br.com.contabilidade.certidao.service.CertidaoService;
+import br.com.contabilidade.certidao.service.CertidaoSolicitacaoLoteService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,13 +36,16 @@ public class CertidaoController {
 
     private final CertidaoService service;
     private final CertidaoExportacaoCsvService exportacaoCsvService;
+    private final CertidaoSolicitacaoLoteService solicitacaoLoteService;
 
     public CertidaoController(
             CertidaoService service,
-            CertidaoExportacaoCsvService exportacaoCsvService
+            CertidaoExportacaoCsvService exportacaoCsvService,
+            CertidaoSolicitacaoLoteService solicitacaoLoteService
     ) {
         this.service = service;
         this.exportacaoCsvService = exportacaoCsvService;
+        this.solicitacaoLoteService = solicitacaoLoteService;
     }
 
     @GetMapping
@@ -78,6 +84,14 @@ public class CertidaoController {
     public CertidaoResponse solicitar(@PathVariable UUID id,
                                       @RequestParam(required = false) @Size(max = 200) String idempotencyKey) {
         return service.solicitar(id, idempotencyKey);
+    }
+
+    @PostMapping("/solicitar-lote")
+    @PreAuthorize("@permissaoService.tem('CERTIDAO_SOLICITAR')")
+    public CertidaoSolicitacaoLoteResponse solicitarLote(
+            @Valid @RequestBody CertidaoSolicitacaoLoteRequest request
+    ) {
+        return solicitacaoLoteService.solicitar(request);
     }
 
     @PostMapping("/solicitar-todas")
