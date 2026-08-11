@@ -10,6 +10,10 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { EmptyState } from '../components/EmptyState';
 import { PageHeader } from '../components/PageHeader';
+import {
+  DocumentoRetencaoPreview,
+  type DocumentoRetencaoPreviewData,
+} from '../features/documentos/DocumentoRetencaoPreview';
 
 export function DocumentosPage() {
   const { t } = useTranslation();
@@ -25,6 +29,8 @@ export function DocumentosPage() {
   const [mensagem, setMensagem] = useState('');
   const [erro, setErro] = useState<ApiError>();
   const [enviando, setEnviando] = useState(false);
+  const [analisandoRetencao, setAnalisandoRetencao] = useState(false);
+  const [retencao, setRetencao] = useState<DocumentoRetencaoPreviewData>();
 
   useEffect(() => {
     void api<Pagina<EmpresaResumo>>('/empresas?pagina=0&tamanho=100&termo=')
@@ -46,8 +52,22 @@ export function DocumentosPage() {
 
   const selecionarEmpresa = (id: string) => {
     setEmpresaId(id);
+    setRetencao(undefined);
     if (id) setSearchParams({ empresaId: id });
     else setSearchParams({});
+  };
+
+  const analisarRetencao = async () => {
+    setAnalisandoRetencao(true);
+    setErro(undefined);
+    try {
+      const query = empresaId ? `?empresaId=${encodeURIComponent(empresaId)}` : '';
+      setRetencao(await api<DocumentoRetencaoPreviewData>(`/documentos/retencao-preview${query}`));
+    } catch (exception) {
+      setErro(exception as ApiError);
+    } finally {
+      setAnalisandoRetencao(false);
+    }
   };
 
   const enviar = async (event: FormEvent) => {
@@ -66,6 +86,7 @@ export function DocumentosPage() {
       setArquivo(undefined);
       setEmitidoEm('');
       setValidoAte('');
+      setRetencao(undefined);
       setMensagem(t('documentos.mensagemEnviado'));
       carregar();
       const input = document.getElementById('documento-arquivo') as HTMLInputElement | null;
@@ -93,7 +114,21 @@ export function DocumentosPage() {
 
   return (
     <>
-      <PageHeader titulo={t('documentos.titulo')} descricao={t('documentos.descricao')} />
+      <PageHeader
+        titulo={t('documentos.titulo')}
+        descricao={t('documentos.descricao')}
+        acoes={
+          <Button
+            variante="secundario"
+            disabled={analisandoRetencao}
+            onClick={() => void analisarRetencao()}
+          >
+            {analisandoRetencao
+              ? t('documentos.retencao.analisando')
+              : t('documentos.retencao.analisar')}
+          </Button>
+        }
+      />
       {mensagem ? <Alert tipo="sucesso" onClose={() => setMensagem('')}>{mensagem}</Alert> : null}
       {erro ? (
         <Alert tipo="erro" onClose={() => setErro(undefined)}>
@@ -105,13 +140,15 @@ export function DocumentosPage() {
         <label className="field">
           <span>{t('documentos.selecionarEmpresa')}</span>
           <select value={empresaId} onChange={(event) => selecionarEmpresa(event.target.value)}>
-            <option value="">{t('documentos.selecionarEmpresa')}</option>
+            <option value="">{t('documentos.retencao.todasEmpresas')}</option>
             {empresas.map((empresa) => (
               <option key={empresa.id} value={empresa.id}>{empresa.razaoSocial}</option>
             ))}
           </select>
         </label>
       </Card>
+
+      {retencao ? <DocumentoRetencaoPreview preview={retencao} /> : null}
 
       {empresaId && temPermissao(PERMISSOES.DOCUMENTO_ENVIAR) ? (
         <Card titulo={t('documentos.enviarTitulo')}>

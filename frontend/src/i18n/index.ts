@@ -10,6 +10,7 @@ import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
 import ptBRFiliais from './pt-BR-filiais.json';
 import ptBRHistoricoEmpresas from './pt-BR-historico-empresas.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
+import ptBRRetencaoDocumentos from './pt-BR-retencao-documentos.json';
 import ptBRStorageReconciliacao from './pt-BR-storage-reconciliacao.json';
 
 const translation = {
@@ -44,6 +45,12 @@ const translation = {
     },
     historico: {
       ...ptBRHistoricoEmpresas.empresas.historico,
+    },
+  },
+  documentos: {
+    ...ptBR.documentos,
+    retencao: {
+      ...ptBRRetencaoDocumentos.documentos.retencao,
     },
   },
   certidoes: {

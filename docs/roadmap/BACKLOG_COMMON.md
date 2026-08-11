@@ -22,7 +22,10 @@
   `docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md`;
 - `DOC-ORP-001`: reconciliação sob demanda entre PostgreSQL e storage, sem exclusão automática,
   sem seguir links e sem expor paths; evidência em
-  `docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md`.
+  `docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md`;
+- `DOC-RET-001`: prévia read-only de retenção por critérios configuráveis, com limite, amostra
+  parcial explícita e nenhuma alteração dos documentos; evidência em
+  `docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md`.
 
 ## Pendências
 
@@ -30,7 +33,7 @@
 - testes de concorrência;
 - storage S3/MinIO;
 - secret manager;
-- retenção documental;
+- aprovação e execução governada de retenção documental;
 - e-mail;
 - administração de usuários;
 - histórico de saúde/custo por provider;

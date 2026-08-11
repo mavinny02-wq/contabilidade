@@ -58,4 +58,5 @@ O registro é dono da identidade permanente e do status atual.
 | `CRT-BULK-001` | Funcionalidade | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | solicitação de até 500 acompanhamentos por lote com idempotência e resultado por item |
 | `AUT-LIM-001` | Segurança | Automação | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | limites por worker para sessões interativas e assinantes SSE com resposta 429 |
 | `OPS-BKP-UI-001` | Operação | Backup | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | inventário read-only e verificação explícita dos conjuntos de backup na interface |
+| `DOC-RET-001` | Governança | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | prévia read-only de candidatos à retenção por critérios configuráveis e bounded |
 | `AMB-003` | Ambiente | Serpro | ABERTO | contrato, credenciais, custo e runtime autorizado |
