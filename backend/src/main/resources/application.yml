@@ -95,3 +95,6 @@ app:
   certificate:
     scheduler-cron: ${APP_CERTIFICATE_SCHEDULER_CRON:0 15 6 * * *}
     alert-cron: ${APP_CERTIFICATE_ALERT_CRON:0 30 7 * * *}
+    initialization-batch-size: ${APP_CERTIFICATE_INITIALIZATION_BATCH_SIZE:100}
+    scheduler-batch-size: ${APP_CERTIFICATE_SCHEDULER_BATCH_SIZE:200}
+    alert-batch-size: ${APP_CERTIFICATE_ALERT_BATCH_SIZE:300}

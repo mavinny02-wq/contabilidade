@@ -39,9 +39,20 @@ public interface EmpresaRepository extends JpaRepository<Empresa, UUID> {
     @Query("select distinct e from Empresa e where e.id = :id")
     Optional<Empresa> buscarDetalhada(@Param("id") UUID id);
 
-
     @EntityGraph(attributePaths = {"estabelecimentos", "estabelecimentos.inscricoes"})
     List<Empresa> findByAtivaTrueOrderByRazaoSocialAsc();
+
+    @Query("select empresa.id from Empresa empresa where empresa.ativa = true order by empresa.id")
+    List<UUID> buscarPrimeirosIdsAtivos(Pageable pageable);
+
+    @Query("""
+            select empresa.id
+              from Empresa empresa
+             where empresa.ativa = true
+               and empresa.id > :cursor
+             order by empresa.id
+            """)
+    List<UUID> buscarIdsAtivosApos(@Param("cursor") UUID cursor, Pageable pageable);
 
     long countByAtivaTrue();
 }

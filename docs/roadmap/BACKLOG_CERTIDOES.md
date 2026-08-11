@@ -11,6 +11,12 @@
 - estados fiscal e técnico separados;
 - nenhuma fonte indisponível convertida em falso verde ou vermelho.
 
+## Implementado após v0.5.1 — aguardando runtime
+
+- `PERF-CRT-001`: scheduler com inicialização, agendamento e alertas processados em lotes bounded,
+  cursores rotativos e transações por item; evidência em
+  `docs/implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md`.
+
 ## Provider Serpro
 
 Resultado normalizado:
