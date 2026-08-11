@@ -1,0 +1,19 @@
+{
+  "empresas": {
+    "classificacao": {
+      "titulo": "Classificação interna",
+      "descricao": "Organize a carteira por grupo e tags sem alterar o cadastro fiscal.",
+      "editarTitulo": "Editar grupo e tags",
+      "grupo": "Grupo",
+      "grupoPlaceholder": "Ex.: Holding Alfa, Carteira Sul ou Prioridade A",
+      "tags": "Tags",
+      "tagsPlaceholder": "Digite tags separadas por vírgula, ponto e vírgula ou nova linha",
+      "tagsAjuda": "Até 20 tags, com no máximo 60 caracteres cada. Duplicidades são removidas sem diferenciar maiúsculas e minúsculas.",
+      "maxTags": "Informe no máximo 20 tags.",
+      "semGrupo": "Sem grupo",
+      "semTags": "Nenhuma tag cadastrada.",
+      "salva": "Classificação da empresa atualizada.",
+      "buscarPlaceholder": "Buscar por razão social, fantasia, CNPJ, grupo ou tag"
+    }
+  }
+}
