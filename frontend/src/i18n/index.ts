@@ -4,14 +4,19 @@ import ptBR from './pt-BR.json';
 import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
 import ptBRFiliais from './pt-BR-filiais.json';
+import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
 
 const translation = {
   ...ptBR,
   empresas: {
     ...ptBR.empresas,
+    ...ptBRImportacaoEmpresas.empresas,
     filiais: {
       ...ptBR.empresas.filiais,
       ...ptBRFiliais.empresas.filiais,
+    },
+    importacao: {
+      ...ptBRImportacaoEmpresas.empresas.importacao,
     },
   },
   certidoes: {
