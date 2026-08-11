@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import ptBR from './pt-BR.json';
+import ptBRAuditoriaExportacao from './pt-BR-auditoria-exportacao.json';
 import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
 import ptBRDashboardCertidoes from './pt-BR-dashboard-certidoes.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
@@ -9,6 +10,13 @@ import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
 
 const translation = {
   ...ptBR,
+  auditoria: {
+    ...ptBR.auditoria,
+    ...ptBRAuditoriaExportacao.auditoria,
+    exportacao: {
+      ...ptBRAuditoriaExportacao.auditoria.exportacao,
+    },
+  },
   dashboard: {
     ...ptBR.dashboard,
     ...ptBRDashboardCertidoes.dashboard,
