@@ -110,3 +110,5 @@ app:
     alert-batch-size: ${APP_CERTIFICATE_ALERT_BATCH_SIZE:300}
     export-batch-size: ${APP_CERTIFICATE_EXPORT_BATCH_SIZE:500}
     export-max-rows: ${APP_CERTIFICATE_EXPORT_MAX_ROWS:10000}
+    dashboard-batch-size: ${APP_CERTIFICATE_DASHBOARD_BATCH_SIZE:1000}
+    dashboard-max-rows: ${APP_CERTIFICATE_DASHBOARD_MAX_ROWS:100000}
