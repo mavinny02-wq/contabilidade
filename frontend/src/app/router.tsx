@@ -15,6 +15,7 @@ import { IntervencoesPage } from '../pages/IntervencoesPage';
 import { NotificacoesPage } from '../pages/NotificacoesPage';
 import { IntegracoesPage } from '../pages/IntegracoesPage';
 import { HistoricoProvedoresPage } from '../pages/HistoricoProvedoresPage';
+import { FaturasProvedoresPage } from '../pages/FaturasProvedoresPage';
 import { AuditoriaPage } from '../pages/AuditoriaPage';
 import { BackupsPage } from '../pages/BackupsPage';
 import { ConfiguracaoSeguraPage } from '../pages/ConfiguracaoSeguraPage';
@@ -65,6 +66,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'integracoes', element: <IntegracoesPage /> },
               { path: 'integracoes/historico-provedores', element: <HistoricoProvedoresPage /> },
+              { path: 'integracoes/faturas', element: <FaturasProvedoresPage /> },
             ],
           },
           {
