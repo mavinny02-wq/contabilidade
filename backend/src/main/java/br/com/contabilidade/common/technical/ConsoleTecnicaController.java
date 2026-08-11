@@ -4,6 +4,7 @@ import br.com.contabilidade.common.execution.ExecucaoIntegracaoRepository;
 import br.com.contabilidade.common.execution.StatusExecucao;
 import br.com.contabilidade.common.intervention.SolicitacaoIntervencaoRepository;
 import br.com.contabilidade.common.intervention.StatusIntervencao;
+import br.com.contabilidade.common.worker.WorkerHeartbeatStatusService;
 import java.nio.file.FileStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,27 +24,42 @@ public class ConsoleTecnicaController {
     private final JdbcTemplate jdbcTemplate;
     private final ExecucaoIntegracaoRepository execucaoRepository;
     private final SolicitacaoIntervencaoRepository intervencaoRepository;
+    private final WorkerHeartbeatStatusService workerHeartbeatStatusService;
     private final Path storagePath;
 
     public ConsoleTecnicaController(
             JdbcTemplate jdbcTemplate,
             ExecucaoIntegracaoRepository execucaoRepository,
             SolicitacaoIntervencaoRepository intervencaoRepository,
+            WorkerHeartbeatStatusService workerHeartbeatStatusService,
             @Value("${app.storage.local-path:./dados/documentos}") String storagePath
     ) {
         this.jdbcTemplate = jdbcTemplate;
         this.execucaoRepository = execucaoRepository;
         this.intervencaoRepository = intervencaoRepository;
+        this.workerHeartbeatStatusService = workerHeartbeatStatusService;
         this.storagePath = Path.of(storagePath).toAbsolutePath().normalize();
     }
 
     @GetMapping("/resumo")
     @PreAuthorize("@permissaoService.tem('CONSOLE_TECNICA_LER')")
     public ResumoTecnico resumo() {
+        Instant agora = Instant.now();
+        WorkerHeartbeatStatusService.ResumoWorkers workers = workerHeartbeatStatusService.resumir(agora);
         return new ResumoTecnico(
-                Instant.now(),
+                agora,
                 verificarBanco(),
                 verificarStorage(),
+                new ComponenteTecnico(
+                        "automation-worker",
+                        workers.status(),
+                        workers.motivoSeguro()
+                ),
+                workers.workers(),
+                workers.totalRegistrados(),
+                workers.listaLimitada(),
+                workers.degradadoAposSegundos(),
+                workers.indisponivelAposSegundos(),
                 execucaoRepository.countByStatusIn(List.of(
                         StatusExecucao.NA_FILA,
                         StatusExecucao.EXECUTANDO,
@@ -88,6 +104,12 @@ public class ConsoleTecnicaController {
             Instant observadoEm,
             ComponenteTecnico banco,
             ComponenteTecnico storage,
+            ComponenteTecnico worker,
+            List<WorkerHeartbeatStatusService.WorkerResumo> workers,
+            long workersRegistrados,
+            boolean workersListaLimitada,
+            long workerDegradadoAposSegundos,
+            long workerIndisponivelAposSegundos,
             long execucoesAbertas,
             long execucoesComFalha,
             long intervencoesPendentes
