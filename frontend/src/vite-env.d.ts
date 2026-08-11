@@ -9,5 +9,5 @@ interface ContabilidadeRuntimeConfig {
 }
 
 interface Window {
-  __CONTABILIDADE_CONFIG__?: ContabilidadeRuntimeConfig;
+  __CONTABILIDADE_CONFIG__?: Partial<ContabilidadeRuntimeConfig>;
 }
