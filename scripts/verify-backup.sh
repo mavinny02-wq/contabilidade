@@ -62,6 +62,9 @@ seen_files='|'
 old_ifs=$IFS
 IFS='
 '
+# A atribuição acima é substituída abaixo por um newline literal para manter cada componente em uma linha.
+IFS='
+'
 for line in $component_lines; do
   name="$(printf '%s\n' "$line" | sed -n 's/.*"name":"\([^"]*\)".*/\1/p')"
   file="$(printf '%s\n' "$line" | sed -n 's/.*"file":"\([^"]*\)".*/\1/p')"
