@@ -45,6 +45,7 @@ const MAX_SIGNATURE_LENGTH = 128;
 
 export class SessionTicketVerifier {
   private readonly grants = new Map<string, SessionGrant>();
+  private readonly grantKeyBySession = new Map<string, string>();
 
   constructor(private readonly consumeJti: SessionTicketConsumer) {}
 
@@ -52,12 +53,13 @@ export class SessionTicketVerifier {
     const now = Math.floor(Date.now() / 1000);
     this.prune(now);
 
-    const cookieName = grantCookieName(input.expectedSessionId);
+    const sessionKey = input.expectedSessionId.toLowerCase();
+    const cookieName = grantCookieName(sessionKey);
 
     // Um ticket explicitamente apresentado sempre é consumido e rotaciona o grant.
     // Isso evita deixar um jti novo e ainda reutilizável quando a sessão já possui cookie.
     if (input.ticket) {
-      const payload = this.verifySignedTicket(input.ticket, input.expectedSessionId, now);
+      const payload = this.verifySignedTicket(input.ticket, sessionKey, now);
 
       let consumption: 'CONSUMED' | 'REPLAY';
       try {
@@ -69,15 +71,18 @@ export class SessionTicketVerifier {
         throw new TicketError('TICKET_REUTILIZADO');
       }
 
-      // A troca bem-sucedida também revoga o grant anterior desta sessão.
-      const grantTokenAnterior = readCookie(input.cookieHeader, cookieName);
-      if (grantTokenAnterior) this.grants.delete(hashGrant(grantTokenAnterior));
+      // Há no máximo um grant ativo por sessão. A troca de um ticket novo
+      // revoga grants anteriores mesmo quando vieram de outra aba do navegador.
+      const grantKeyAnterior = this.grantKeyBySession.get(sessionKey);
+      if (grantKeyAnterior) this.grants.delete(grantKeyAnterior);
 
       const grantTokenNovo = randomBytes(32).toString('base64url');
-      this.grants.set(hashGrant(grantTokenNovo), {
+      const grantKeyNovo = hashGrant(grantTokenNovo);
+      this.grants.set(grantKeyNovo, {
         payload,
         expiresAt: payload.exp,
       });
+      this.grantKeyBySession.set(sessionKey, grantKeyNovo);
       this.trimGrants();
 
       return {
@@ -85,7 +90,7 @@ export class SessionTicketVerifier {
         setCookie: buildGrantCookie(
           cookieName,
           grantTokenNovo,
-          input.expectedSessionId,
+          sessionKey,
           payload.exp,
           now,
           input.secureCookie,
@@ -100,11 +105,12 @@ export class SessionTicketVerifier {
       if (
         grant
         && grant.expiresAt > now
-        && grant.payload.sid.toLowerCase() === input.expectedSessionId.toLowerCase()
+        && grant.payload.sid.toLowerCase() === sessionKey
+        && this.grantKeyBySession.get(sessionKey) === grantKey
       ) {
         return { payload: grant.payload };
       }
-      this.grants.delete(grantKey);
+      this.deleteGrant(grantKey, grant?.payload.sid.toLowerCase() ?? sessionKey);
     }
 
     throw new TicketError('TICKET_AUSENTE');
@@ -163,7 +169,7 @@ export class SessionTicketVerifier {
       || !payload.sub.trim()
       || payload.sub.length > 200
       || !Number.isSafeInteger(payload.exp)
-      || payload.sid.toLowerCase() !== expectedSessionId.toLowerCase()
+      || payload.sid.toLowerCase() !== expectedSessionId
     ) {
       throw new TicketError('TICKET_PAYLOAD_INVALIDO');
     }
@@ -175,15 +181,24 @@ export class SessionTicketVerifier {
 
   private prune(now: number): void {
     for (const [key, grant] of this.grants) {
-      if (grant.expiresAt <= now) this.grants.delete(key);
+      if (grant.expiresAt <= now) {
+        this.deleteGrant(key, grant.payload.sid.toLowerCase());
+      }
     }
   }
 
   private trimGrants(): void {
     while (this.grants.size > MAX_ACTIVE_GRANTS) {
-      const oldest = this.grants.keys().next().value as string | undefined;
+      const oldest = this.grants.entries().next().value as [string, SessionGrant] | undefined;
       if (!oldest) return;
-      this.grants.delete(oldest);
+      this.deleteGrant(oldest[0], oldest[1].payload.sid.toLowerCase());
+    }
+  }
+
+  private deleteGrant(grantKey: string, sessionKey: string): void {
+    this.grants.delete(grantKey);
+    if (this.grantKeyBySession.get(sessionKey) === grantKey) {
+      this.grantKeyBySession.delete(sessionKey);
     }
   }
 }
@@ -208,7 +223,7 @@ function decodeBase64Url(value: string): Buffer {
 }
 
 function grantCookieName(sessionId: string): string {
-  return `contabilidade_session_${sessionId.replaceAll('-', '').toLowerCase()}`;
+  return `contabilidade_session_${sessionId.replaceAll('-', '')}`;
 }
 
 function readCookie(header: string | undefined, name: string): string | undefined {
@@ -239,7 +254,7 @@ function buildGrantCookie(
   const maxAge = Math.max(1, expiresAt - now);
   const attributes = [
     `${name}=${token}`,
-    `Path=/automation/sessions/${sessionId.toLowerCase()}`,
+    `Path=/automation/sessions/${sessionId}`,
     `Max-Age=${maxAge}`,
     `Expires=${new Date(expiresAt * 1000).toUTCString()}`,
     'HttpOnly',
