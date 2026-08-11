@@ -56,4 +56,5 @@ O registro é dono da identidade permanente e do status atual.
 | `DOC-ORP-001` | Operação | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | reconciliação read-only sem seguir links, sem paths e sem correção automática |
 | `EMP-HIS-001` | Funcionalidade | Empresas | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | histórico cadastral da empresa e das filiais baseado em auditoria sem detalhes JSON |
 | `CRT-BULK-001` | Funcionalidade | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | solicitação de até 500 acompanhamentos por lote com idempotência e resultado por item |
+| `AUT-LIM-001` | Segurança | Automação | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | limites por worker para sessões interativas e assinantes SSE com resposta 429 |
 | `AMB-003` | Ambiente | Serpro | ABERTO | contrato, credenciais, custo e runtime autorizado |

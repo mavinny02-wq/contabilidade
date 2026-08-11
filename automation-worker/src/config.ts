@@ -21,6 +21,8 @@ export type WorkerConfig = {
   heartbeatIntervalMs: number;
   pollIntervalMs: number;
   leaseSeconds: number;
+  interactiveMaxSessions: number;
+  interactiveMaxSubscribersPerSession: number;
   sessionSigningSecret: string;
   federalPortalUrl: string;
   federalNavigationTimeoutMs: number;
@@ -86,6 +88,18 @@ export const config: WorkerConfig = {
   ),
   pollIntervalMs: integerValue(process.env.POLL_INTERVAL_MS, 5_000, 500, 60_000),
   leaseSeconds: integerValue(process.env.LEASE_SECONDS, 180, 30, 1_800),
+  interactiveMaxSessions: integerValue(
+    process.env.WORKER_MAX_INTERACTIVE_SESSIONS,
+    2,
+    1,
+    20,
+  ),
+  interactiveMaxSubscribersPerSession: integerValue(
+    process.env.WORKER_MAX_SSE_SUBSCRIBERS_PER_SESSION,
+    3,
+    1,
+    20,
+  ),
   sessionSigningSecret: requiredSecret(
     process.env.APP_AUTOMATION_SESSION_SIGNING_SECRET
       ?? process.env.AUTOMATION_SESSION_SIGNING_SECRET,

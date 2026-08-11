@@ -49,6 +49,7 @@
 - [DOC-ORP-001 — Reconciliação read-only do storage](implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md)
 - [EMP-HIS-001 — Histórico cadastral de empresas](implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md)
 - [CRT-BULK-001 — Solicitação de certidões em lote](implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md)
+- [AUT-LIM-001 — Limites da sessão interativa](implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md)
 
 ## Integrações
 

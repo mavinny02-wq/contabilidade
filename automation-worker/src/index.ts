@@ -15,7 +15,10 @@ import { criarServidor } from './server.js';
 const VERSAO = '0.5.1';
 const runtime = new BrowserRuntime();
 const registry = new FluxoRegistry();
-const sessions = new InteractiveSessionManager();
+const sessions = new InteractiveSessionManager({
+  maxSessions: config.interactiveMaxSessions,
+  maxSubscribersPerSession: config.interactiveMaxSubscribersPerSession,
+});
 const backend = new BackendClient();
 const tickets = new SessionTicketVerifier(
   async (payload) => await backend.consumirTicketSessao(payload),
@@ -43,6 +46,10 @@ servidor.listen(config.port, '0.0.0.0', () => {
   if (encerramentoEmCurso) return;
   console.log(`Worker de integrações ${VERSAO} disponível na porta ${config.port}`);
   console.log(`Fluxos registrados: ${registry.codigos().join(', ') || 'nenhum'}`);
+  console.log(
+    `Limites interativos: ${config.interactiveMaxSessions} sessões e `
+      + `${config.interactiveMaxSubscribersPerSession} assinantes SSE por sessão.`,
+  );
   if (registry.possuiPortal()) {
     void runtime.iniciar().catch((error) => {
       console.warn('O browser não pôde ser iniciado no startup; fluxos API continuam disponíveis.', error);

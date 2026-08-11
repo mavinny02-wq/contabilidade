@@ -27,13 +27,16 @@
 - o ticket é trocado por grant opaco em cookie HttpOnly, sem reutilização nas URLs de eventos/input;
 - grant bruto e ticket bruto não são persistidos nem registrados em logs;
 - `AUT-SHD-001`: `SIGTERM`/`SIGINT` interrompe novas aquisições, aguarda a execução atual e respeita
-  grace period do Compose; evidência em `docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md`.
+  grace period do Compose; evidência em `docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md`;
+- `AUT-LIM-001`: limites de sessões ativas e assinantes SSE com reserva para criações concorrentes,
+  resposta `429` e capacidade agregada no health; evidência em
+  `docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md`.
 
 ## Pendências
 
 - validação runtime do anti-replay em PostgreSQL/worker/frontend;
 - runtime real Serpro e portais;
-- múltiplos workers/limites de concorrência;
-- validação runtime do shutdown gracioso;
+- múltiplos workers e coordenação distribuída;
+- validação runtime do shutdown gracioso e dos limites interativos;
 - telemetria histórica;
 - testes permanentes e E2E.

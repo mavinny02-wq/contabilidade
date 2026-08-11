@@ -35,6 +35,17 @@ type SessionRecord = {
   closed: boolean;
 };
 
+export type InteractiveSessionLimits = {
+  maxSessions: number;
+  maxSubscribersPerSession: number;
+};
+
+export type InteractiveSessionCapacity = InteractiveSessionLimits & {
+  activeSessions: number;
+  pendingCreations: number;
+  totalSubscribers: number;
+};
+
 export type SessionInfo = {
   sessionId: string;
   executionId: string;
@@ -80,6 +91,20 @@ export type SessionInput =
 
 export class InteractiveSessionManager {
   private readonly sessions = new Map<string, SessionRecord>();
+  private readonly configuredLimits: InteractiveSessionLimits;
+  private pendingCreations = 0;
+
+  constructor(limits: Partial<InteractiveSessionLimits> = {}) {
+    this.configuredLimits = {
+      maxSessions: boundedInteger(limits.maxSessions, 2, 1, 20),
+      maxSubscribersPerSession: boundedInteger(
+        limits.maxSubscribersPerSession,
+        3,
+        1,
+        20,
+      ),
+    };
+  }
 
   async create(input: {
     executionId: string;
@@ -87,68 +112,83 @@ export class InteractiveSessionManager {
     context: BrowserContext;
     timeoutMinutes: number;
   }): Promise<{ sessionId: string; expiresAt: Date }> {
-    const id = randomUUID();
-    const timeoutMinutes = Math.min(Math.max(input.timeoutMinutes, 1), 120);
-    const expiresAt = new Date(Date.now() + timeoutMinutes * 60_000);
-    const cdp = await input.context.newCDPSession(input.page);
-    const continuation = deferred<Continuation>();
-    const resumeAcknowledged = deferred<void>();
+    if (this.sessions.size + this.pendingCreations >= this.configuredLimits.maxSessions) {
+      throw new SessionError('LIMITE_SESSOES_INTERATIVAS_ATINGIDO', 429);
+    }
 
-    const record: SessionRecord = {
-      id,
-      executionId: input.executionId,
-      page: input.page,
-      context: input.context,
-      cdp,
-      createdAt: new Date(),
-      expiresAt,
-      state: 'AGUARDANDO' as SessionState,
-      subscribers: new Set<ServerResponse>(),
-      continuation,
-      resumeAcknowledged,
-      closed: false,
-    };
+    this.pendingCreations++;
+    let record: SessionRecord | undefined;
+    try {
+      const id = randomUUID();
+      const timeoutMinutes = Math.min(Math.max(input.timeoutMinutes, 1), 120);
+      const expiresAt = new Date(Date.now() + timeoutMinutes * 60_000);
+      const cdp = await input.context.newCDPSession(input.page);
+      const continuation = deferred<Continuation>();
+      const resumeAcknowledged = deferred<void>();
 
-    record.keepAliveTimer = setInterval(() => {
-      this.broadcast(record, {
-        type: 'keepalive',
-        timestamp: new Date().toISOString(),
-        state: record.state,
+      record = {
+        id,
+        executionId: input.executionId,
+        page: input.page,
+        context: input.context,
+        cdp,
+        createdAt: new Date(),
+        expiresAt,
+        state: 'AGUARDANDO' as SessionState,
+        subscribers: new Set<ServerResponse>(),
+        continuation,
+        resumeAcknowledged,
+        closed: false,
+      };
+
+      record.keepAliveTimer = setInterval(() => {
+        this.broadcast(record!, {
+          type: 'keepalive',
+          timestamp: new Date().toISOString(),
+          state: record!.state,
+        });
+      }, 15_000);
+
+      record.expiryTimer = setTimeout(() => {
+        this.expire(record!, 'SESSAO_INTERATIVA_EXPIRADA');
+      }, timeoutMinutes * 60_000);
+
+      this.sessions.set(id, record);
+
+      await cdp.send('Page.enable');
+      await cdp.send('Input.setIgnoreInputEvents', { ignore: false });
+      cdp.on('Page.screencastFrame', (event: unknown) => {
+        void this.onFrame(record!, event as ScreencastFrameEvent);
       });
-    }, 15_000);
+      input.page.once('close', () => {
+        if (!record!.closed) this.expire(record!, 'PAGINA_INTERATIVA_FECHADA');
+      });
+      input.context.once('close', () => {
+        if (!record!.closed) this.expire(record!, 'CONTEXTO_INTERATIVO_FECHADO');
+      });
+      await input.page.bringToFront();
+      await cdp.send('Page.startScreencast', {
+        format: 'jpeg',
+        quality: 72,
+        maxWidth: 1440,
+        maxHeight: 900,
+        everyNthFrame: 2,
+      });
 
-    record.expiryTimer = setTimeout(() => {
-      this.expire(record, 'SESSAO_INTERATIVA_EXPIRADA');
-    }, timeoutMinutes * 60_000);
-
-    this.sessions.set(id, record);
-
-    await cdp.send('Page.enable');
-    await cdp.send('Input.setIgnoreInputEvents', { ignore: false });
-    cdp.on('Page.screencastFrame', (event: unknown) => {
-      void this.onFrame(record, event as ScreencastFrameEvent);
-    });
-    input.page.once('close', () => {
-      if (!record.closed) this.expire(record, 'PAGINA_INTERATIVA_FECHADA');
-    });
-    input.context.once('close', () => {
-      if (!record.closed) this.expire(record, 'CONTEXTO_INTERATIVO_FECHADO');
-    });
-    await input.page.bringToFront();
-    await cdp.send('Page.startScreencast', {
-      format: 'jpeg',
-      quality: 72,
-      maxWidth: 1440,
-      maxHeight: 900,
-      everyNthFrame: 2,
-    });
-
-    this.broadcast(record, {
-      type: 'state',
-      state: record.state,
-      expiresAt: record.expiresAt.toISOString(),
-    });
-    return { sessionId: id, expiresAt };
+      this.broadcast(record, {
+        type: 'state',
+        state: record.state,
+        expiresAt: record.expiresAt.toISOString(),
+      });
+      return { sessionId: id, expiresAt };
+    } catch (error) {
+      if (record) {
+        await this.dispose(record.id, 'FALHA_INICIALIZACAO_SESSAO');
+      }
+      throw error;
+    } finally {
+      this.pendingCreations--;
+    }
   }
 
   info(sessionId: string): SessionInfo {
@@ -166,6 +206,10 @@ export class InteractiveSessionManager {
 
   connectEvents(sessionId: string, response: ServerResponse): void {
     const session = this.require(sessionId);
+    if (session.subscribers.size >= this.configuredLimits.maxSubscribersPerSession) {
+      throw new SessionError('LIMITE_ASSINANTES_SESSAO_ATINGIDO', 429);
+    }
+
     response.writeHead(200, {
       'Content-Type': 'text/event-stream; charset=utf-8',
       'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -280,6 +324,19 @@ export class InteractiveSessionManager {
     return this.sessions.size;
   }
 
+  limits(): InteractiveSessionCapacity {
+    let totalSubscribers = 0;
+    for (const session of this.sessions.values()) {
+      totalSubscribers += session.subscribers.size;
+    }
+    return {
+      ...this.configuredLimits,
+      activeSessions: this.sessions.size,
+      pendingCreations: this.pendingCreations,
+      totalSubscribers,
+    };
+  }
+
   private async pointer(
     session: SessionRecord,
     command: Extract<SessionInput, { type: 'pointer' }>,
@@ -388,7 +445,10 @@ export class InteractiveSessionManager {
 }
 
 export class SessionError extends Error {
-  constructor(readonly code: string) {
+  constructor(
+    readonly code: string,
+    readonly status?: number,
+  ) {
     super(code);
     this.name = 'SessionError';
   }
@@ -452,4 +512,14 @@ async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, code: stri
 function bounded(value: number, min: number, max: number): number {
   if (!Number.isFinite(value)) return min;
   return Math.min(Math.max(value, min), max);
+}
+
+function boundedInteger(
+  value: number | undefined,
+  fallback: number,
+  min: number,
+  max: number,
+): number {
+  if (!Number.isFinite(value)) return fallback;
+  return Math.min(Math.max(Math.trunc(value!), min), max);
 }
