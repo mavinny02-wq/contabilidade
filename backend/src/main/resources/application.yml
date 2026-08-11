@@ -104,3 +104,5 @@ app:
     initialization-batch-size: ${APP_CERTIFICATE_INITIALIZATION_BATCH_SIZE:100}
     scheduler-batch-size: ${APP_CERTIFICATE_SCHEDULER_BATCH_SIZE:200}
     alert-batch-size: ${APP_CERTIFICATE_ALERT_BATCH_SIZE:300}
+    export-batch-size: ${APP_CERTIFICATE_EXPORT_BATCH_SIZE:500}
+    export-max-rows: ${APP_CERTIFICATE_EXPORT_MAX_ROWS:10000}

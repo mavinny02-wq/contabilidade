@@ -1,0 +1,10 @@
+{
+  "certidoes": {
+    "acoes": {
+      "exportarCsv": "Exportar CSV"
+    },
+    "mensagens": {
+      "exportacaoGerada": "O arquivo CSV foi gerado com os filtros atuais."
+    }
+  }
+}

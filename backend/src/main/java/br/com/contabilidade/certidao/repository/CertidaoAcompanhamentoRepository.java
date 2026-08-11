@@ -55,4 +55,50 @@ public interface CertidaoAcompanhamentoRepository extends JpaRepository<Certidao
              order by certidao.id
             """)
     List<UUID> buscarIdsAtivosApos(@Param("cursor") UUID cursor, Pageable pageable);
+
+    @Query("""
+            select new br.com.contabilidade.certidao.repository.CertidaoExportacaoLinha(
+                    certidao,
+                    estabelecimento.cnpj,
+                    empresa.razaoSocial
+            )
+              from CertidaoAcompanhamento certidao,
+                   Estabelecimento estabelecimento,
+                   Empresa empresa
+             where certidao.ativa = true
+               and estabelecimento.id = certidao.estabelecimentoId
+               and empresa.id = certidao.empresaId
+               and (:empresaId is null or certidao.empresaId = :empresaId)
+               and (:tipo is null or certidao.tipo = :tipo)
+             order by certidao.id
+            """)
+    List<CertidaoExportacaoLinha> buscarPrimeirasLinhasExportacao(
+            @Param("empresaId") UUID empresaId,
+            @Param("tipo") TipoCertidao tipo,
+            Pageable pageable
+    );
+
+    @Query("""
+            select new br.com.contabilidade.certidao.repository.CertidaoExportacaoLinha(
+                    certidao,
+                    estabelecimento.cnpj,
+                    empresa.razaoSocial
+            )
+              from CertidaoAcompanhamento certidao,
+                   Estabelecimento estabelecimento,
+                   Empresa empresa
+             where certidao.ativa = true
+               and estabelecimento.id = certidao.estabelecimentoId
+               and empresa.id = certidao.empresaId
+               and (:empresaId is null or certidao.empresaId = :empresaId)
+               and (:tipo is null or certidao.tipo = :tipo)
+               and certidao.id > :cursor
+             order by certidao.id
+            """)
+    List<CertidaoExportacaoLinha> buscarLinhasExportacaoApos(
+            @Param("empresaId") UUID empresaId,
+            @Param("tipo") TipoCertidao tipo,
+            @Param("cursor") UUID cursor,
+            Pageable pageable
+    );
 }

@@ -32,6 +32,7 @@ export function CertidoesPage() {
   const [erro, setErro] = useState<ApiError>();
   const [mensagem, setMensagem] = useState('');
   const [carregando, setCarregando] = useState(false);
+  const [exportando, setExportando] = useState(false);
   const [manual, setManual] = useState<Certidao>();
   const [historico, setHistorico] = useState<Certidao>();
   const [solicitando, setSolicitando] = useState<Set<string>>(new Set());
@@ -114,6 +115,32 @@ export function CertidoesPage() {
     }
   };
 
+  const exportarCsv = async () => {
+    setExportando(true);
+    setErro(undefined);
+    try {
+      const params = new URLSearchParams();
+      if (empresaId) params.set('empresaId', empresaId);
+      if (filtroTipo) params.set('tipo', filtroTipo);
+      if (filtroStatus) params.set('status', filtroStatus);
+      const query = params.toString();
+      const download = await baixarArquivo(`/certidoes/exportacao.csv${query ? `?${query}` : ''}`);
+      const url = URL.createObjectURL(download.blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = download.nome ?? 'certidoes.csv';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setMensagem(t('certidoes.mensagens.exportacaoGerada'));
+    } catch (exception) {
+      setErro(exception as ApiError);
+    } finally {
+      setExportando(false);
+    }
+  };
+
   return (
     <>
       <PageHeader
@@ -121,6 +148,9 @@ export function CertidoesPage() {
         descricao={t('certidoes.descricao')}
         acoes={
           <>
+            <Button variante="secundario" onClick={() => void exportarCsv()} disabled={exportando}>
+              {t('certidoes.acoes.exportarCsv')}
+            </Button>
             <Button variante="secundario" onClick={carregar}>{t('acoes.atualizar')}</Button>
             {empresaId && temPermissao(PERMISSOES.CERTIDAO_SOLICITAR) ? (
               <Button onClick={() => void solicitarTodas()} disabled={carregando}>
