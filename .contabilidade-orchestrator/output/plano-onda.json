@@ -9,14 +9,15 @@
     "commitDaOndaImplementada": "b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01",
     "pullRequestsDaOnda": [14, 15, 16, 17, 18],
     "commitAposExpCrt001": "99df51e9b37195692e35c6651fafb10905f83b32",
-    "pullRequestsPosteriores": [20],
+    "commitAposEmpFil001": "4468f98f4b57a3a5d233f5ae890447ac6a73002a",
+    "pullRequestsPosteriores": [20, 23],
     "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
-  "fase": "GATE_VAL_001_ONDA_E_EXP_CRT_001_IMPLEMENTADOS_RUNTIME_LOCAL_PENDENTE",
+  "fase": "GATE_VAL_001_IMPLEMENTACOES_ADICIONAIS_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Comprovar a main atual, já contendo a onda de segurança, performance, backup e observabilidade e a exportação CSV de certidões, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "descricao": "Comprovar a main atual, já contendo a onda de segurança, performance, backup e observabilidade, a exportação CSV de certidões e a manutenção individual de filiais, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
     "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
     "evidenciaCloudHistorica": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "classificacaoCloudHistorica": "CLOUD_AMARELO",
@@ -79,6 +80,15 @@
       "branch": "feat/exp-crt-001-csv-export",
       "migrationOwnership": null,
       "evidencia": "docs/implementacao/EXP_CRT_001_EXPORTACAO_CSV.md"
+    },
+    {
+      "itemId": "EMP-FIL-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 23,
+      "mergeCommit": "4468f98f4b57a3a5d233f5ae890447ac6a73002a",
+      "branch": "feat/emp-fil-001-edit-inactivate-v2",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/EMP_FIL_001_EDICAO_FILIAL.md"
     }
   ],
   "ondaCandidataAposGate": [],
@@ -122,7 +132,9 @@
     "OPS_BKP_001_POWERSHELL_AND_REAL_BACKUP_PENDING",
     "OBS_WRK_001_HEARTBEAT_STATES_RUNTIME_PENDING",
     "SEC_DOC_001_STORAGE_TAMPER_RUNTIME_PENDING",
-    "EXP_CRT_001_CSV_RUNTIME_PENDING"
+    "EXP_CRT_001_CSV_RUNTIME_PENDING",
+    "EMP_FIL_001_EDIT_INACTIVATE_RUNTIME_PENDING",
+    "EMP_FIL_001_CERTIFICATE_LIFECYCLE_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }
