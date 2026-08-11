@@ -47,14 +47,24 @@ Os verificadores podem usar um manifesto explícito ou selecionar o mais recente
 ## Compatibilidade
 
 O JSON é deliberadamente line-oriented para permitir verificação cruzada entre PowerShell e shell
-sem `jq` ou Python. O shell aceita `sha256sum` e `shasum -a 256`.
+sem `jq` ou Python. O shell aceita `sha256sum` e `shasum -a 256`. O backup shell chama o verificador
+por `sh`, portanto não depende de o checkout preservar o bit executável do arquivo novo.
+
+## Validações realizadas
+
+Em diretório temporário sem dados reais:
+
+- `sh -n scripts/backup.sh`: verde;
+- `sh -n scripts/verify-backup.sh`: verde;
+- verificação de manifesto sintético com dois componentes: verde;
+- tamanho e SHA-256 esperados: comprovados;
+- adulteração controlada de um byte: rejeitada por divergência de tamanho antes de qualquer restore;
+- nenhum arquivo de produção ou backup real foi lido.
 
 ## Validações ainda necessárias
 
 - análise sintática em Windows PowerShell 5.1/PowerShell 7;
-- `sh -n` em Linux;
-- geração contra dados temporários não reais;
+- geração real autorizada contra o container PostgreSQL local;
 - verificação cruzada PowerShell → shell e shell → PowerShell;
-- adulteração controlada de um byte para comprovar falha de SHA-256;
 - cópia para outro diretório e nova verificação;
 - teste de restauração periódico permanece uma operação humana separada.
