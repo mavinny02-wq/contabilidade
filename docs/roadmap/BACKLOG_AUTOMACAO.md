@@ -14,7 +14,7 @@
 - diagnóstico seguro por fluxo;
 - health degradado sem bloquear APIs quando o browser está indisponível.
 
-## Segurança
+## Segurança e operação após v0.5.1 — aguardando runtime
 
 - nenhum bypass de CAPTCHA;
 - nenhum segredo em diagnóstico;
@@ -25,13 +25,15 @@
 - `SEC-AUT-001`: ticket HMAC da sessão é consumido uma única vez no backend;
 - `jti` permanece bloqueado entre reinícios do worker enquanto estiver válido;
 - o ticket é trocado por grant opaco em cookie HttpOnly, sem reutilização nas URLs de eventos/input;
-- grant bruto e ticket bruto não são persistidos nem registrados em logs.
+- grant bruto e ticket bruto não são persistidos nem registrados em logs;
+- `AUT-SHD-001`: `SIGTERM`/`SIGINT` interrompe novas aquisições, aguarda a execução atual e respeita
+  grace period do Compose; evidência em `docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md`.
 
 ## Pendências
 
 - validação runtime do anti-replay em PostgreSQL/worker/frontend;
 - runtime real Serpro e portais;
 - múltiplos workers/limites de concorrência;
-- shutdown gracioso aguardando execução;
+- validação runtime do shutdown gracioso;
 - telemetria histórica;
 - testes permanentes e E2E.
