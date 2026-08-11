@@ -6,70 +6,68 @@
     "previousVersion": "0.5.0",
     "commitDeValidacaoCloudHistorica": "6c101a3a0699cd843e9257f685550c61d662360f",
     "pullRequestDeValidacaoCloudHistorica": 12,
-    "commitDaPrimeiraOndaImplementada": "b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01",
-    "pullRequestsDaPrimeiraOnda": [14, 15, 16, 17, 18],
-    "commitDaOndaAnterior": "9fdfe8b2af8170397d49925027c55ad7e6365760",
-    "pullRequestsDaOndaAnterior": [25, 26, 27, 28, 29],
-    "commitDaOndaMaisRecente": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
-    "pullRequestsDaOndaMaisRecente": [31, 32, 33, 34, 35],
+    "commitDaOndaAnterior": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
+    "pullRequestsDaOndaAnterior": [31, 32, 33, 34, 35],
+    "commitDaOndaMaisRecente": "d7e50e55ad7c2ee0dafbf48736d22507470e0c92",
+    "pullRequestsDaOndaMaisRecente": [37, 38, 39, 40, 41],
     "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
   "fase": "GATE_VAL_001_MULTIPLAS_ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Comprovar a main atual, contendo as implementações de segurança, performance, backup, observabilidade, empresas, certidões, auditoria, storage e governança documental, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "descricao": "Comprovar a main atual, com Flyway V1-V9 e todas as implementações integradas, no Windows alvo com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
     "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
     "evidenciaCloudHistorica": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "classificacaoCloudHistorica": "CLOUD_AMARELO",
     "evidenciaRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md",
     "classificacaoRuntime": "BLOQUEADO_POR_AMBIENTE",
-    "criterioDeFechamento": "O usuário executa os scripts locais sobre o commit atual, commita evidência verde de Maven, frontend, worker, imagens artifact-only, Compose, schemas, endpoints, smoke UI e provas focadas dos itens implementados; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
+    "criterioDeFechamento": "Executar build e runtime da main atual, registrar evidência verde e reconciliar o mesmo SHA no Codex Cloud."
   },
   "slotsOficiais": [],
   "ondaMaisRecente": {
     "status": "IMPLEMENTADA_POR_AUTORIZACAO_DIRETA_AGUARDANDO_VALIDACAO_RUNTIME",
-    "baselineInicial": "9f616a9d5d5298c5eb66f29e1806dce519f44b3a",
-    "commitFinalImplementacao": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
+    "baselineInicial": "7a686c729c514b7e3bd69cbcaf7d5766213f5392",
+    "commitFinalImplementacao": "d7e50e55ad7c2ee0dafbf48736d22507470e0c92",
     "slots": [
       {
         "slot": 1,
-        "itemId": "EMP-HIS-001",
-        "pullRequest": 31,
-        "mergeCommit": "fb738e6f196e970c6b6b9a948713b44a1a4390ea",
-        "evidencia": "docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md",
-        "migrationOwnership": null
+        "itemId": "EMP-GRP-001",
+        "pullRequest": 37,
+        "mergeCommit": "97fbc006ffc2a7dd973450bc26517bb20a2028d4",
+        "evidencia": "docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md",
+        "migrationOwnership": "V9__empresa_grupos_tags.sql"
       },
       {
         "slot": 2,
-        "itemId": "CRT-BULK-001",
-        "pullRequest": 32,
-        "mergeCommit": "9cab6c4fc89bfaeeceb09344d4d38afe9376cf68",
-        "evidencia": "docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md",
+        "itemId": "CRT-CAL-001",
+        "pullRequest": 38,
+        "mergeCommit": "5d35b19f9d2891c18e528d570859402d86b0c530",
+        "evidencia": "docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md",
         "migrationOwnership": null
       },
       {
         "slot": 3,
-        "itemId": "AUT-LIM-001",
-        "pullRequest": 33,
-        "mergeCommit": "fad4af788f00e05aab534d1495698b905359f692",
-        "evidencia": "docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md",
+        "itemId": "OBS-PRV-001",
+        "pullRequest": 39,
+        "mergeCommit": "3294aa937c8edc3319391256c161a56cc49c94e1",
+        "evidencia": "docs/implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md",
         "migrationOwnership": null
       },
       {
         "slot": 4,
-        "itemId": "OPS-BKP-UI-001",
-        "pullRequest": 34,
-        "mergeCommit": "a592810aa951c5c032da82f3caa8d76663cce746",
-        "evidencia": "docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md",
+        "itemId": "ADM-CFG-001",
+        "pullRequest": 40,
+        "mergeCommit": "b719f0b29f528ee77571d613e0e9a734733bb93b",
+        "evidencia": "docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md",
         "migrationOwnership": null
       },
       {
         "slot": 5,
-        "itemId": "DOC-RET-001",
-        "pullRequest": 35,
-        "mergeCommit": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
-        "evidencia": "docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md",
+        "itemId": "DOC-PRE-001",
+        "pullRequest": 41,
+        "mergeCommit": "d7e50e55ad7c2ee0dafbf48736d22507470e0c92",
+        "evidencia": "docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md",
         "migrationOwnership": null
       }
     ]
@@ -227,6 +225,51 @@
       "branch": "feat/doc-ret-001-retention-preview",
       "migrationOwnership": null,
       "evidencia": "docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md"
+    },
+    {
+      "itemId": "EMP-GRP-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 37,
+      "mergeCommit": "97fbc006ffc2a7dd973450bc26517bb20a2028d4",
+      "branch": "feat/emp-grp-001-grupos-tags",
+      "migrationOwnership": "V9__empresa_grupos_tags.sql",
+      "evidencia": "docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md"
+    },
+    {
+      "itemId": "CRT-CAL-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 38,
+      "mergeCommit": "5d35b19f9d2891c18e528d570859402d86b0c530",
+      "branch": "feat/crt-cal-001-agenda-vencimentos",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md"
+    },
+    {
+      "itemId": "OBS-PRV-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 39,
+      "mergeCommit": "3294aa937c8edc3319391256c161a56cc49c94e1",
+      "branch": "feat/obs-prv-001-historico-provedores",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md"
+    },
+    {
+      "itemId": "ADM-CFG-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 40,
+      "mergeCommit": "b719f0b29f528ee77571d613e0e9a734733bb93b",
+      "branch": "feat/adm-cfg-001-resumo-seguro",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md"
+    },
+    {
+      "itemId": "DOC-PRE-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 41,
+      "mergeCommit": "d7e50e55ad7c2ee0dafbf48736d22507470e0c92",
+      "branch": "feat/doc-pre-001-preview-seguro",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md"
     }
   ],
   "ondaCandidataAposGate": [],
@@ -243,23 +286,15 @@
     "SYNTHETIC_PDF_PARSE_CLOUD_LINUX_GREEN",
     "COMPOSE_YAML_STATIC_VALIDATION_GREEN",
     "DOCKERFILES_STATIC_REVIEW_GREEN",
-    "MIGRATIONS_V1_V7_STATIC_REVIEW_GREEN",
     "SHELL_JSON_STATIC_VALIDATION_GREEN",
     "CODEX_EXECUTOR_CONTRACT_DOCUMENTED"
   ],
   "provasDeImplementacao": [
-    "EXP_CRT_001_JAVA21_SYNTHETIC_COMPILE_GREEN",
-    "EXP_CRT_001_CSV_SECURITY_REVIEW_GREEN",
-    "EMP_IMP_001_STATIC_REVIEW_RECORDED",
-    "AUT_SHD_001_STATIC_REVIEW_RECORDED",
-    "CRT_DASH_001_STATIC_REVIEW_RECORDED",
-    "AUD_EXP_001_STATIC_REVIEW_RECORDED",
-    "DOC_ORP_001_STATIC_REVIEW_RECORDED",
-    "EMP_HIS_001_STATIC_REVIEW_RECORDED",
-    "CRT_BULK_001_STATIC_REVIEW_RECORDED",
-    "AUT_LIM_001_STATIC_REVIEW_RECORDED",
-    "OPS_BKP_UI_001_STATIC_REVIEW_RECORDED",
-    "DOC_RET_001_STATIC_REVIEW_RECORDED"
+    "EMP_GRP_001_STATIC_REVIEW_RECORDED",
+    "CRT_CAL_001_STATIC_REVIEW_RECORDED",
+    "OBS_PRV_001_STATIC_REVIEW_RECORDED",
+    "ADM_CFG_001_STATIC_REVIEW_RECORDED",
+    "DOC_PRE_001_STATIC_REVIEW_RECORDED"
   ],
   "provasPendentes": [
     "MAVEN_CURRENT_MAIN_VERIFY_PENDING",
@@ -268,31 +303,18 @@
     "DOCKER_COMPOSE_DEV_EFFECTIVE_CONFIG_PENDING",
     "DOCKER_COMPOSE_ONPREMISE_EFFECTIVE_CONFIG_PENDING",
     "ARTIFACT_ONLY_IMAGES_RUNTIME_PENDING",
-    "WORKER_ARTIFACT_ONLY_IMAGE_RUNTIME_PENDING",
     "POSTGRES_BOOTSTRAP_RUNTIME_PENDING",
-    "POSTGRESQL_FLYWAY_V1_V8_PENDING",
+    "POSTGRESQL_FLYWAY_V1_V9_PENDING",
     "KEYCLOAK_LIQUIBASE_RUNTIME_PENDING",
     "WINDOWS_BAT_RUNTIME_PENDING",
     "TECHNICAL_ENDPOINTS_RUNTIME_PENDING",
     "UI_SMOKE_RUNTIME_PENDING",
-    "SEC_AUT_001_ANTI_REPLAY_RUNTIME_PENDING",
-    "PERF_CRT_001_BATCH_CURSOR_RUNTIME_PENDING",
-    "OPS_BKP_001_POWERSHELL_AND_REAL_BACKUP_PENDING",
-    "OBS_WRK_001_HEARTBEAT_STATES_RUNTIME_PENDING",
-    "SEC_DOC_001_STORAGE_TAMPER_RUNTIME_PENDING",
-    "EXP_CRT_001_CSV_RUNTIME_PENDING",
-    "EMP_FIL_001_EDIT_INACTIVATE_RUNTIME_PENDING",
-    "EMP_FIL_001_CERTIFICATE_LIFECYCLE_RUNTIME_PENDING",
-    "EMP_IMP_001_CSV_RUNTIME_PENDING",
-    "AUT_SHD_001_GRACEFUL_SHUTDOWN_RUNTIME_PENDING",
-    "CRT_DASH_001_COUNTS_RUNTIME_PENDING",
-    "AUD_EXP_001_CSV_RUNTIME_PENDING",
-    "DOC_ORP_001_STORAGE_RECONCILIATION_RUNTIME_PENDING",
-    "EMP_HIS_001_ISOLATION_RUNTIME_PENDING",
-    "CRT_BULK_001_IDEMPOTENCY_PARTIAL_RUNTIME_PENDING",
-    "AUT_LIM_001_CONCURRENCY_SSE_RUNTIME_PENDING",
-    "OPS_BKP_UI_001_MANIFEST_HASH_RUNTIME_PENDING",
-    "DOC_RET_001_PREVIEW_RUNTIME_PENDING"
+    "ALL_PREVIOUS_IMPLEMENTATION_RUNTIME_PROOFS_PENDING",
+    "EMP_GRP_001_MIGRATION_SEARCH_LIMITS_RUNTIME_PENDING",
+    "CRT_CAL_001_PERIOD_STATUS_PARTIAL_RUNTIME_PENDING",
+    "OBS_PRV_001_STATUS_COST_CURRENCY_RUNTIME_PENDING",
+    "ADM_CFG_001_NO_SECRET_EXPOSURE_RUNTIME_PENDING",
+    "DOC_PRE_001_INTEGRITY_HEADERS_BLOB_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }

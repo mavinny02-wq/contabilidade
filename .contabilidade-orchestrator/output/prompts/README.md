@@ -3,42 +3,28 @@
 ## Estado atual
 
 A onda mais recente foi implementada por autorização direta do usuário e integrada pelas PRs
-`#31` a `#35`.
+`#37` a `#41`.
 
 | Slot | Item | PR | Estado | Evidência |
 |---:|---|---:|---|---|
-| 1 | `EMP-HIS-001` | `#31` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md` |
-| 2 | `CRT-BULK-001` | `#32` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md` |
-| 3 | `AUT-LIM-001` | `#33` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md` |
-| 4 | `OPS-BKP-UI-001` | `#34` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md` |
-| 5 | `DOC-RET-001` | `#35` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md` |
+| 1 | `EMP-GRP-001` | `#37` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md` |
+| 2 | `CRT-CAL-001` | `#38` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md` |
+| 3 | `OBS-PRV-001` | `#39` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md` |
+| 4 | `ADM-CFG-001` | `#40` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md` |
+| 5 | `DOC-PRE-001` | `#41` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md` |
 
 O commit final de implementação da onda é:
 
 ```text
-0e310acecedf186bb62339e152bd7d5ee7bc0e2e
+d7e50e55ad7c2ee0dafbf48736d22507470e0c92
 ```
 
 Não existem prompts executáveis para esses cinco itens. Não os reenvie ao Codex.
 
 ## Implementações anteriores
 
-Também permanecem aguardando prova runtime:
-
-```text
-SEC-AUT-001
-PERF-CRT-001
-OPS-BKP-001
-OBS-WRK-001
-SEC-DOC-001
-EXP-CRT-001
-EMP-FIL-001
-EMP-IMP-001
-AUT-SHD-001
-CRT-DASH-001
-AUD-EXP-001
-DOC-ORP-001
-```
+Também permanecem aguardando prova runtime todos os itens funcionais integrados pelas PRs `#14` a
+`#35`, conforme `plano-onda.json` e o Registro de Itens do Roadmap.
 
 Os prompts `PREVIEW_SLOT_*` antigos são apenas referências históricas.
 
@@ -52,19 +38,19 @@ A PR `#12` comprovou, em uma baseline anterior:
 - sintaxe YAML/JSON/shell;
 - revisão estática de Compose, Dockerfiles, BAT, PowerShell e migrations V1–V7.
 
-As implementações posteriores modificaram backend, frontend e worker. Portanto, essa prova não
-classifica a `main` atual como verde.
+As implementações posteriores modificaram backend, frontend, worker e migrations. Portanto, essa
+prova não classifica a `main` atual como verde.
 
 ## Provas obrigatórias da onda mais recente
 
-- `EMP-HIS-001`: isolamento entre empresas, paginação, permissão e ausência de detalhes JSON;
-- `CRT-BULK-001`: limite, deduplicação, idempotência e resultado parcial;
-- `AUT-LIM-001`: concorrência de criação, limite SSE, liberação e health;
-- `OPS-BKP-UI-001`: manifesto, tamanho, SHA-256, symlink e mount read-only;
-- `DOC-RET-001`: critérios, filtro, resultado parcial e zero alteração.
+- `EMP-GRP-001`: V9, busca, deduplicação, limites e isolamento do cadastro fiscal;
+- `CRT-CAL-001`: períodos, filtro por empresa, status e resultado parcial;
+- `OBS-PRV-001`: status, moedas, duração, taxa e ausência de payload/segredo;
+- `ADM-CFG-001`: alertas seguros e ausência de valores sensíveis na resposta;
+- `DOC-PRE-001`: PDF/PNG/JPEG, integridade, headers, Blob URL, auditoria e MIME não suportado.
 
-Essas provas se somam ao ciclo geral Maven, npm, Docker, PostgreSQL/Flyway, Keycloak/Liquibase,
-endpoints e smoke UI.
+Essas provas se somam ao ciclo geral Maven, npm, Docker, PostgreSQL/Flyway V1–V9,
+Keycloak/Liquibase, endpoints e smoke UI.
 
 ## Coleta da prova runtime
 

@@ -148,11 +148,58 @@
 - não exclui, inativa, move ou modifica documentos;
 - mantém execução futura de retenção condicionada a governança específica.
 
+### Grupos e tags de empresas
+
+- adiciona grupo opcional e até vinte tags por empresa;
+- mantém classificação interna separada do cadastro fiscal;
+- deduplica tags sem diferenciar maiúsculas e minúsculas;
+- amplia a busca para grupo e tag;
+- adiciona card e modal próprios na Empresa 360;
+- cria a migration V9 com `empresas.grupo`, `empresa_tags` e índices normalizados;
+- audita somente presença de grupo e quantidade de tags, sem copiar os valores.
+
+### Agenda de vencimentos de certidões
+
+- adiciona agenda por período de até 366 dias;
+- permite filtro opcional por empresa;
+- utiliza o status autoritativo do domínio;
+- informa prazo em dias e acesso contextual ao Centro de Certidões;
+- limita a quantidade detalhada e marca resultado parcial;
+- não chama provider nem altera acompanhamento, fila ou resultado fiscal.
+
+### Histórico de providers
+
+- consolida status de execução por provider;
+- calcula taxa de sucesso, duração média e última execução;
+- acumula custo estimado separadamente por moeda;
+- limita o número de providers detalhados e marca resultado parcial;
+- não retorna payload, resultado JSON, protocolo, empresa, segredo ou referência de segredo;
+- não realiza chamadas externas.
+
+### Configuração efetiva segura
+
+- apresenta ambiente, versão, segurança, storage e TTL do ticket;
+- informa somente presença/adequação do token do worker e segredo da sessão;
+- apresenta presença segura de Base URL, referência de segredo, custo e moeda por provider;
+- sinaliza valores de exemplo ou configuração incompleta;
+- nunca serializa token, segredo, URL completa ou referência sensível;
+- não altera configuração nem chama provider externo.
+
+### Pré-visualização segura de documentos
+
+- adiciona preview inline para PDF, PNG e JPEG;
+- recalcula tamanho e SHA-256 antes de cada resposta;
+- reutiliza a mesma permissão `DOCUMENTO_BAIXAR` do download;
+- aplica `inline`, `no-store`, `nosniff`, same-origin e CSP sandbox;
+- usa Blob URL temporária e revoga o objeto ao fechar/trocar o modal;
+- recusa formatos não suportados com HTTP 415;
+- audita sem hash bruto, path ou conteúdo.
+
 ### Pendências
 
 - build completo Maven/frontend/worker da `main` atual;
-- execução Docker, Flyway V1–V8, Keycloak/Liquibase e smoke UI;
-- provas runtime focadas dos itens integrados pelas PRs `#14` a `#35`;
+- execução Docker, Flyway V1–V9, Keycloak/Liquibase e smoke UI;
+- provas runtime focadas dos itens integrados pelas PRs `#14` a `#41`;
 - testes automatizados permanentes e E2E.
 
 ## 0.5.1 — 2026-08-09

@@ -4,8 +4,9 @@
 
 - branch de integração: `main`;
 - versão declarada: `0.5.1`;
-- commit final da onda mais recente: `0e310acecedf186bb62339e152bd7d5ee7bc0e2e`;
-- PRs da onda mais recente: `#31` a `#35`;
+- commit final da onda mais recente: `d7e50e55ad7c2ee0dafbf48736d22507470e0c92`;
+- PRs da onda mais recente: `#37` a `#41`;
+- migration mais recente: `V9__empresa_grupos_tags.sql`;
 - validação Cloud canônica permanece histórica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
 - validação runtime permanece parcial: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
 - gate ativo: `GATE-VAL-001`;
@@ -17,31 +18,32 @@
 
 | Slot | Item | PR | Merge | Estado | Evidência |
 |---:|---|---:|---|---|---|
-| 1 | `EMP-HIS-001` | `#31` | `fb738e6` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md` |
-| 2 | `CRT-BULK-001` | `#32` | `9cab6c4` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md` |
-| 3 | `AUT-LIM-001` | `#33` | `fad4af7` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md` |
-| 4 | `OPS-BKP-UI-001` | `#34` | `a592810` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md` |
-| 5 | `DOC-RET-001` | `#35` | `0e310ac` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md` |
+| 1 | `EMP-GRP-001` | `#37` | `97fbc00` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md` |
+| 2 | `CRT-CAL-001` | `#38` | `5d35b19` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md` |
+| 3 | `OBS-PRV-001` | `#39` | `3294aa9` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md` |
+| 4 | `ADM-CFG-001` | `#40` | `b719f0b` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/ADM_CFG_001_CONFIGURACAO_SEGURA.md` |
+| 5 | `DOC-PRE-001` | `#41` | `d7e50e5` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md` |
 
 ### Resultado funcional preparado
 
-- aba Histórico da Empresa 360 baseada na auditoria da empresa e de seus estabelecimentos;
-- seleção e solicitação de até 500 acompanhamentos de certidão por lote, com idempotência por item;
-- limites locais de sessões interativas e assinantes SSE, com reserva para criações concorrentes;
-- inventário read-only dos backups e verificação SHA-256 explícita pela interface;
-- prévia bounded de candidatos à retenção documental, sem exclusão ou alteração do storage.
+- grupos e tags separados do cadastro fiscal, pesquisáveis e persistidos pela V9;
+- agenda bounded de vencimentos de certidões, com período, empresa, status e prazo;
+- histórico operacional de providers com status, duração e custo separado por moeda;
+- configuração efetiva exibida sem serialização de tokens, segredos ou URLs completas;
+- preview de PDF/PNG/JPEG após recálculo de tamanho e SHA-256.
 
 ## Implementações anteriores ainda aguardando runtime
 
-Também continuam abertas as provas de:
+Também continuam abertas as provas de todas as PRs funcionais anteriores, incluindo:
 
-- primeira onda: `SEC-AUT-001`, `PERF-CRT-001`, `OPS-BKP-001`, `OBS-WRK-001` e `SEC-DOC-001`;
-- adicionais: `EXP-CRT-001` e `EMP-FIL-001`;
-- onda anterior: `EMP-IMP-001`, `AUT-SHD-001`, `CRT-DASH-001`, `AUD-EXP-001` e `DOC-ORP-001`.
+- segurança, scheduler, backup, heartbeat e integridade: `#14` a `#18`;
+- exportação e filiais: `#20` e `#23`;
+- importação, shutdown, dashboard, auditoria e storage: `#25` a `#29`;
+- histórico, bulk, limites, backup UI e retenção: `#31` a `#35`.
 
 Todos os itens integrados permanecem `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`. A prova Cloud da
-PR `#12` não classifica a `main` atual, porque backend, frontend e worker foram modificados depois
-daquela execução.
+PR `#12` não classifica a `main` atual, porque backend, frontend, worker e migrations foram
+modificados depois daquela execução.
 
 ## Provas necessárias para fechar o gate
 
@@ -52,14 +54,14 @@ Todas devem partir da `main` atual ou de descendente reconciliado:
 3. worker `npm ci`, typecheck e build com Node 22.12+;
 4. Compose efetivo para `dev` e `onpremise`;
 5. execução do `START_CONTABILIDADE.bat dev` sem chamadas fiscais externas;
-6. imagens artifact-only, PostgreSQL, `postgres-bootstrap`, Keycloak/Liquibase e Flyway V1–V8;
+6. imagens artifact-only, PostgreSQL, `postgres-bootstrap`, Keycloak/Liquibase e Flyway V1–V9;
 7. endpoints técnicos, proxies e smoke UI;
-8. provas focadas das implementações anteriores;
-9. `EMP-HIS-001`: isolamento entre empresas, paginação, ator e ausência de `detalhes_json`;
-10. `CRT-BULK-001`: lotes, duplicidades, idempotência e resultado parcialmente aceito;
-11. `AUT-LIM-001`: concorrência de criação, limite SSE, liberação e health agregado;
-12. `OPS-BKP-UI-001`: manifesto válido/inválido, tamanho, hash, symlink e mount read-only;
-13. `DOC-RET-001`: critérios isolados/combinados, filtro, resultado parcial e zero alteração;
+8. provas focadas de todas as implementações anteriores;
+9. `EMP-GRP-001`: V9, busca, deduplicação, limites e isolamento do cadastro fiscal;
+10. `CRT-CAL-001`: períodos, filtro, status e resultado parcial;
+11. `OBS-PRV-001`: status, moedas, duração, taxa e ausência de payload/segredo;
+12. `ADM-CFG-001`: alertas corretos e nenhuma exposição de valor sensível;
+13. `DOC-PRE-001`: formatos permitidos, integridade, headers, Blob URL e auditoria;
 14. aplicação mantida em `http://localhost:8088` durante a coleta.
 
 A execução é humana no Windows local. Depois, uma task `CODEX_CLOUD_LINUX` reconcilia o commit de
