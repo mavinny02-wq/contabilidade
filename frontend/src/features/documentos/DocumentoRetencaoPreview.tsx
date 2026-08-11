@@ -96,7 +96,7 @@ export function DocumentoRetencaoPreview({
         <div className="retention-preview__reasons">
           {Object.entries(preview.porMotivo).map(([motivo, quantidade]) => (
             <StatusBadge key={motivo} tom="neutro">
-              {motivoRetencao(t, motivo)}: {quantidade}
+              {`${motivoRetencao(t, motivo)}: ${quantidade}`}
             </StatusBadge>
           ))}
         </div>
