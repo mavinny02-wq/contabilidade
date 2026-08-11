@@ -55,6 +55,7 @@ export function criarServidor(
           capacidades: registry.capacidades(),
           diagnosticos,
           sessoesInterativasAtivas: sessions.activeCount(),
+          capacidadeSessoesInterativas: sessions.limits(),
           loop: loop.state,
         });
         return;
@@ -122,7 +123,7 @@ export function criarServidor(
         return;
       }
       if (error instanceof SessionError) {
-        const status = error.code.includes('EXPIRADA') ? 410 : 409;
+        const status = error.status ?? (error.code.includes('EXPIRADA') ? 410 : 409);
         json(response, status, { codigo: error.code });
         return;
       }
