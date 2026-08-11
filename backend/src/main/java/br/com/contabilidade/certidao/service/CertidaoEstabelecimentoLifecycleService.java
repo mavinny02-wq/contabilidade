@@ -25,7 +25,8 @@ public class CertidaoEstabelecimentoLifecycleService {
                 .forEach(item -> existentes.put(item.getTipo(), item));
 
         for (TipoCertidao tipo : TipoCertidao.values()) {
-            boolean aplicavel = estabelecimento.isAtivo()
+            boolean aplicavel = estabelecimento.getEmpresa().isAtiva()
+                    && estabelecimento.isAtivo()
                     && tipo.aplicavel(estabelecimento.getUf(), estabelecimento.isMatriz());
             CertidaoAcompanhamento acompanhamento = existentes.get(tipo);
 
