@@ -17,29 +17,35 @@ public interface EmpresaRepository extends JpaRepository<Empresa, UUID> {
             select distinct e
               from Empresa e
               left join e.estabelecimentos est
+              left join e.tags tag
              where :termo is null
                 or lower(e.razaoSocial) like lower(concat('%', :termo, '%'))
                 or lower(coalesce(e.nomeFantasia, '')) like lower(concat('%', :termo, '%'))
+                or lower(coalesce(e.grupo, '')) like lower(concat('%', :termo, '%'))
+                or lower(tag) like lower(concat('%', :termo, '%'))
                 or est.cnpj like concat('%', :termoNumerico, '%')
             """,
             countQuery = """
             select count(distinct e.id)
               from Empresa e
               left join e.estabelecimentos est
+              left join e.tags tag
              where :termo is null
                 or lower(e.razaoSocial) like lower(concat('%', :termo, '%'))
                 or lower(coalesce(e.nomeFantasia, '')) like lower(concat('%', :termo, '%'))
+                or lower(coalesce(e.grupo, '')) like lower(concat('%', :termo, '%'))
+                or lower(tag) like lower(concat('%', :termo, '%'))
                 or est.cnpj like concat('%', :termoNumerico, '%')
             """)
     Page<Empresa> buscar(@Param("termo") String termo,
                          @Param("termoNumerico") String termoNumerico,
                          Pageable pageable);
 
-    @EntityGraph(attributePaths = {"estabelecimentos", "estabelecimentos.inscricoes"})
+    @EntityGraph(attributePaths = {"estabelecimentos", "estabelecimentos.inscricoes", "tags"})
     @Query("select distinct e from Empresa e where e.id = :id")
     Optional<Empresa> buscarDetalhada(@Param("id") UUID id);
 
-    @EntityGraph(attributePaths = {"estabelecimentos", "estabelecimentos.inscricoes"})
+    @EntityGraph(attributePaths = {"estabelecimentos", "estabelecimentos.inscricoes", "tags"})
     List<Empresa> findByAtivaTrueOrderByRazaoSocialAsc();
 
     @Query("select empresa.id from Empresa empresa where empresa.ativa = true order by empresa.id")
