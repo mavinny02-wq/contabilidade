@@ -3,9 +3,17 @@ import { initReactI18next } from 'react-i18next';
 import ptBR from './pt-BR.json';
 import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
+import ptBRFiliais from './pt-BR-filiais.json';
 
 const translation = {
   ...ptBR,
+  empresas: {
+    ...ptBR.empresas,
+    filiais: {
+      ...ptBR.empresas.filiais,
+      ...ptBRFiliais.empresas.filiais,
+    },
+  },
   certidoes: {
     ...ptBR.certidoes,
     ...ptBRExportacaoCertidoes.certidoes,
