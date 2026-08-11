@@ -3,10 +3,10 @@
 ## Checkpoint
 
 - versão declarada: `0.5.1`;
-- commit final da onda mais recente: `9fdfe8b2af8170397d49925027c55ad7e6365760`;
-- PRs da onda mais recente: `#25` a `#29`;
+- commit final da onda mais recente: `0e310acecedf186bb62339e152bd7d5ee7bc0e2e`;
+- PRs da onda mais recente: `#31` a `#35`;
 - validação Cloud canônica é histórica para uma baseline anterior;
-- classificação atual: `ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE`;
+- classificação atual: `MULTIPLAS_ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE`;
 - executor da prova runtime: `LOCAL_WINDOWS_MANUAL`;
 - próxima onda: não selecionada.
 
@@ -14,65 +14,70 @@
 
 A autorização direta do usuário produziu cinco slots independentes:
 
-1. `EMP-IMP-001` — importação CSV de empresas;
-2. `AUT-SHD-001` — shutdown gracioso do automation worker;
-3. `CRT-DASH-001` — dashboard gerencial de certidões;
-4. `AUD-EXP-001` — filtros e exportação CSV da auditoria;
-5. `DOC-ORP-001` — reconciliação read-only do storage documental.
+1. `EMP-HIS-001` — histórico cadastral da Empresa 360;
+2. `CRT-BULK-001` — solicitação de certidões selecionadas em lote;
+3. `AUT-LIM-001` — limites de recursos da sessão interativa;
+4. `OPS-BKP-UI-001` — inventário e verificação read-only de backups;
+5. `DOC-RET-001` — prévia read-only de retenção documental.
 
-Os cinco itens foram integrados pelas PRs `#25` a `#29` e permanecem
+Os cinco itens foram integrados pelas PRs `#31` a `#35` e permanecem
 `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`.
 
 ## Capacidades preparadas
 
 ### Empresas
 
-- modelo CSV UTF-8;
-- validação sem gravação por padrão;
-- detecção de delimitador, aspas e BOM;
-- validação por linha, duplicidade no arquivo/banco e limites;
-- importação pela mesma regra autoritativa do cadastro individual;
-- relatório de válidas, importadas e rejeitadas.
-
-### Automação
-
-- `SIGTERM`/`SIGINT` interrompe novas aquisições;
-- execução atual pode concluir durante o grace period;
-- servidor HTTP e browser são fechados por último;
-- timeout e segundo sinal não são mascarados como sucesso;
-- Compose aguarda o prazo configurado antes de `SIGKILL`.
+- a aba Histórico deixou de ser placeholder;
+- eventos da empresa e de seus estabelecimentos são obtidos da auditoria existente;
+- paginação e ordenação decrescente;
+- ator, data, recurso e correlation ID;
+- `detalhes_json` não é exposto;
+- `EMPRESA_LER` é suficiente sem conceder acesso à auditoria global.
 
 ### Certidões
 
-- consolidação gerencial bounded;
-- distribuição por status e tipo;
-- vencimentos em 30 dias e ausência de validade;
-- regra de status compartilhada com o Centro de Certidões;
-- indicador explícito quando o teto de análise produz visão parcial.
+- seleção individual e das certidões filtradas;
+- até 500 IDs por chamada;
+- deduplicação preservando ordem;
+- idempotência derivada por acompanhamento;
+- erro de negócio isolado por item;
+- resultado de lote integral ou parcialmente aceito;
+- nenhuma chamada direta a provider pelo endpoint de lote.
 
-### Auditoria
+### Automação
 
-- filtros de ação, recurso, ator e período;
-- CSV paginado, com snapshot e limite;
-- proteção contra fórmula de planilha;
-- `detalhes_json` deliberadamente excluído;
-- evento seguro de exportação.
+- limite configurável de sessões interativas por worker;
+- reserva de capacidade para criações concorrentes;
+- limite de assinantes SSE por sessão;
+- HTTP `429` quando a capacidade se esgota;
+- limpeza de sessão parcialmente criada;
+- capacidade agregada no health sem identificadores sensíveis.
 
-### Documentos e storage
+### Backup
 
-- comparação sob demanda de banco e filesystem;
-- documentos ativos e inativos considerados;
-- nenhum symlink seguido;
-- nenhuma exclusão ou correção automática;
-- paths substituídos por fingerprints;
-- resultado conclusivo somente após varredura integral.
+- nova página administrativa de inventário;
+- validação de manifesto, ID, componentes, tamanho e paths;
+- diretório montado como read-only no backend;
+- verificação SHA-256 sob demanda;
+- nenhuma criação, restauração, exclusão ou download pela interface;
+- auditoria segura da verificação.
+
+### Retenção documental
+
+- simulação global ou por empresa;
+- critérios configuráveis para inatividade, validade expirada e documento antigo sem validade;
+- total real, amostra bounded e flag parcial;
+- contagem por motivo e tamanho da amostra;
+- zero alteração no PostgreSQL ou storage;
+- execução futura de retenção continua fora do escopo e exige governança específica.
 
 ## Itens anteriores
 
 Continuam integrados e aguardando prova runtime:
 
-- `SEC-AUT-001`, `PERF-CRT-001`, `OPS-BKP-001`, `OBS-WRK-001`, `SEC-DOC-001`;
-- `EXP-CRT-001` e `EMP-FIL-001`.
+- primeira onda: `SEC-AUT-001`, `PERF-CRT-001`, `OPS-BKP-001`, `OBS-WRK-001`, `SEC-DOC-001`;
+- adicionais: `EXP-CRT-001`, `EMP-FIL-001`;
+- onda anterior: `EMP-IMP-001`, `AUT-SHD-001`, `CRT-DASH-001`, `AUD-EXP-001`, `DOC-ORP-001`.
 
 Nenhum provider fiscal foi acionado durante qualquer implementação.
 
