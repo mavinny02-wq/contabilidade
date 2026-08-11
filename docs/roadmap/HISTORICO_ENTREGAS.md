@@ -20,3 +20,4 @@ Registrar aqui resultados integrados e pacotes candidatos de forma explícita.
 | 2026-08-11 | v0.5.1 — heartbeat do worker | `OBS-WRK-001`, PR `#17` | Console Técnica passou a classificar heartbeat saudável, atrasado, expirado e ausente; runtime pendente |
 | 2026-08-11 | v0.5.1 — integridade documental | `SEC-DOC-001`, PR `#18` | download recalcula tamanho/SHA-256, bloqueia divergência e audita em transação isolada; runtime pendente |
 | 2026-08-11 | v0.5.1 — onda implementada | PRs `#14` a `#18` | cinco itens integrados na main `b50fd182`; nova validação completa obrigatória antes da próxima onda |
+| 2026-08-11 | v0.5.1 — reconciliação da onda | PR `#19` | docs, status e prompts arquivados; gate mantido aberto e próxima onda não selecionada |
