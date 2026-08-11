@@ -4,6 +4,7 @@ import { PermissionRoute } from '../auth/PermissionRoute';
 import { PERMISSOES } from '../auth/permissoes';
 import { AppShell } from './AppShell';
 import { AgendaCertidoesPage } from '../pages/AgendaCertidoesPage';
+import { AtualizacaoPreflightPage } from '../pages/AtualizacaoPreflightPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { EmpresasPage } from '../pages/EmpresasPage';
 import { EmpresaDetalhePage } from '../pages/EmpresaDetalhePage';
@@ -79,6 +80,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'console-tecnica', element: <ConsoleTecnicaPage /> },
               { path: 'console-tecnica/workers/historico', element: <HistoricoWorkersPage /> },
+              { path: 'atualizacoes', element: <AtualizacaoPreflightPage /> },
               { path: 'backups', element: <BackupsPage /> },
               { path: 'configuracao-segura', element: <ConfiguracaoSeguraPage /> },
             ],

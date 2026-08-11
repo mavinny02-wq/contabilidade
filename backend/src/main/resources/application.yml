@@ -98,6 +98,8 @@ app:
     inventory-max-manifests: ${APP_BACKUP_INVENTORY_MAX_MANIFESTS:50}
     manifest-max-size-bytes: ${APP_BACKUP_MANIFEST_MAX_SIZE_BYTES:1048576}
     hash-max-component-size-bytes: ${APP_BACKUP_HASH_MAX_COMPONENT_SIZE_BYTES:53687091200}
+  update:
+    preflight-max-manifest-size-bytes: ${APP_UPDATE_PREFLIGHT_MAX_MANIFEST_SIZE_BYTES:1048576}
   company:
     csv-import-max-file-size-bytes: ${APP_COMPANY_CSV_IMPORT_MAX_FILE_SIZE_BYTES:2097152}
     csv-import-max-rows: ${APP_COMPANY_CSV_IMPORT_MAX_ROWS:2000}
