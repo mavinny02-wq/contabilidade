@@ -9,7 +9,7 @@ type CanvasRuntime = {
   Path2D?: unknown;
 };
 
-type PdfRuntimeGlobals = typeof globalThis & {
+type PdfRuntimeGlobals = {
   DOMMatrix?: unknown;
   ImageData?: unknown;
   Path2D?: unknown;
@@ -90,7 +90,7 @@ const require = createRequire(import.meta.url);
 let pdfJsModulePromise: Promise<PdfJsModule> | undefined;
 
 function preparePdfJsRuntime(): void {
-  const runtime = globalThis as PdfRuntimeGlobals;
+  const runtime = globalThis as unknown as PdfRuntimeGlobals;
   let canvas: CanvasRuntime | undefined;
 
   try {
