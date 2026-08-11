@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/http';
-import type { EmpresaDetalhe, Estabelecimento } from '../api/types';
+import type { EmpresaDetalhe, Estabelecimento, Pagina } from '../api/types';
 import { useAuth } from '../auth/AuthProvider';
 import { PERMISSOES } from '../auth/permissoes';
 import { Alert } from '../components/Alert';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
+import { EmptyState } from '../components/EmptyState';
 import { ModulePending } from '../components/ModulePending';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge } from '../components/StatusBadge';
@@ -16,6 +17,16 @@ import { FilialFormModal } from '../features/empresas/FilialFormModal';
 
 const abas = ['resumo', 'certidoes', 'obrigacoes', 'pendencias', 'mensagens', 'guias', 'documentos', 'automacao', 'historico'] as const;
 type Aba = (typeof abas)[number];
+
+type EmpresaHistoricoEvento = {
+  id: string;
+  acao: string;
+  recursoTipo: 'EMPRESA' | 'ESTABELECIMENTO' | string;
+  recursoId?: string;
+  ator: string;
+  correlationId?: string;
+  criadoEm: string;
+};
 
 export function EmpresaDetalhePage() {
   const { t } = useTranslation();
@@ -29,6 +40,9 @@ export function EmpresaDetalhePage() {
   const [filialAberta, setFilialAberta] = useState(false);
   const [filialSelecionada, setFilialSelecionada] = useState<Estabelecimento>();
   const [mensagem, setMensagem] = useState('');
+  const [historico, setHistorico] = useState<EmpresaHistoricoEvento[]>([]);
+  const [historicoCarregando, setHistoricoCarregando] = useState(false);
+  const [historicoErro, setHistoricoErro] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -36,6 +50,16 @@ export function EmpresaDetalhePage() {
       .then(setEmpresa)
       .catch(() => setErro(true));
   }, [id]);
+
+  useEffect(() => {
+    if (!id || aba !== 'historico') return;
+    setHistoricoCarregando(true);
+    setHistoricoErro(false);
+    void api<Pagina<EmpresaHistoricoEvento>>(`/empresas/${id}/historico?pagina=0&tamanho=100`)
+      .then((response) => setHistorico(response.content))
+      .catch(() => setHistoricoErro(true))
+      .finally(() => setHistoricoCarregando(false));
+  }, [aba, id]);
 
   if (erro) return <Alert tipo="erro">{t('comum.erroCarregamento')}</Alert>;
   if (!empresa || !id) return null;
@@ -159,6 +183,12 @@ export function EmpresaDetalhePage() {
             <Button onClick={() => navigate(`/documentos?empresaId=${empresa.id}`)}>{t('menu.documentos')}</Button>
           </div>
         </Card>
+      ) : aba === 'historico' ? (
+        <HistoricoEmpresa
+          eventos={historico}
+          carregando={historicoCarregando}
+          erro={historicoErro}
+        />
       ) : (
         <Card><ModulePending /></Card>
       )}
@@ -184,6 +214,48 @@ export function EmpresaDetalhePage() {
         aoSalvar={salvarFilial}
       />
     </>
+  );
+}
+
+function HistoricoEmpresa({
+  eventos,
+  carregando,
+  erro,
+}: {
+  eventos: EmpresaHistoricoEvento[];
+  carregando: boolean;
+  erro: boolean;
+}) {
+  const { t } = useTranslation();
+  if (erro) return <Alert tipo="erro">{t('comum.erroCarregamento')}</Alert>;
+  if (carregando) return <Card><p className="muted">{t('empresas.historico.carregando')}</p></Card>;
+  if (eventos.length === 0) {
+    return <EmptyState titulo={t('empresas.historico.vazio')} descricao={t('empresas.historico.vazioDescricao')} />;
+  }
+  return (
+    <div className="card-list">
+      {eventos.map((evento) => (
+        <Card key={evento.id} className="card-row">
+          <div>
+            <div className="card-row__title">
+              <strong>{t(`empresas.historico.acoes.${evento.acao}`, { defaultValue: evento.acao })}</strong>
+              <StatusBadge tom="neutro">
+                {t(evento.recursoTipo === 'EMPRESA'
+                  ? 'empresas.historico.recursos.empresa'
+                  : 'empresas.historico.recursos.estabelecimento')}
+              </StatusBadge>
+            </div>
+            <p className="muted">
+              {t('empresas.historico.realizadoPor', { ator: evento.ator })}
+            </p>
+            <small>
+              {formatarDataHora(evento.criadoEm)}
+              {evento.correlationId ? ` · ${t('empresas.historico.correlationId')}: ${evento.correlationId}` : ''}
+            </small>
+          </div>
+        </Card>
+      ))}
+    </div>
   );
 }
 
@@ -229,4 +301,11 @@ function EstabelecimentoCard({
 function formatarCnpj(cnpj?: string) {
   if (!cnpj || cnpj.length !== 14) return cnpj ?? '';
   return cnpj.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+}
+
+function formatarDataHora(value: string) {
+  return new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(new Date(value));
 }
