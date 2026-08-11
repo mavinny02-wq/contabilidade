@@ -37,11 +37,11 @@ O registro é dono da identidade permanente e do status atual.
 | `DEC-003` | Decisão | Segurança | PARCIAL | storage local e secrets por ambiente |
 | `DEC-004` | Decisão | Infra | ABERTA | TLS e DNS internos |
 | `AMB-001` | Ambiente | Git | RESOLVIDO | main remota |
-| `AMB-002` | Ambiente | Dependências | ONDA_IMPLEMENTADA_RUNTIME_LOCAL_PENDENTE | main atual alterada após a prova Cloud; Maven, Node suportado, Docker e runtime precisam ser repetidos |
+| `AMB-002` | Ambiente | Dependências | MULTIPLAS_ONDAS_RUNTIME_LOCAL_PENDENTE | main atual alterada após a prova Cloud; Maven, Node, Docker e runtime precisam ser repetidos |
 | `HIST-VAL-001` | História | Validação | INTEGRADO_COM_PROVAS_PENDENTES | análise canônica, BAT artifact-only, startup sequencial e validações de schema integrados |
 | `VAL-RUNTIME-V051-001` | Validação | Runtime | BLOQUEADO_POR_AMBIENTE | relatório histórico: runtime Windows/Docker, schemas, endpoints e UI não executados no Cloud |
-| `VAL-CLOUD-V051-002` | Validação | Cloud | CLOUD_AMARELO_HISTORICO | PR #12: provas válidas para baseline anterior à onda; main atual exige revalidação |
-| `GATE-VAL-001` | Gate | Validação | ONDA_IMPLEMENTADA_RUNTIME_LOCAL_PENDENTE | cinco itens integrados; prova completa da main atual obrigatória antes de selecionar nova onda |
+| `VAL-CLOUD-V051-002` | Validação | Cloud | CLOUD_AMARELO_HISTORICO | PR #12: provas válidas para baseline anterior; main atual exige revalidação |
+| `GATE-VAL-001` | Gate | Validação | MULTIPLAS_ONDAS_RUNTIME_LOCAL_PENDENTE | PRs funcionais #14–#41 integradas; Flyway esperado V1–V9 e prova completa obrigatória |
 | `SEC-AUT-001` | Segurança | Automação | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | PR #14: jti consumido uma vez, migration V8 e grant HttpOnly |
 | `PERF-CRT-001` | Performance | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | PR #15: lotes bounded, cursores rotativos e transações por item |
 | `OPS-BKP-001` | Operação | Backup | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | PR #16: manifesto, tamanho, SHA-256 e verificadores não destrutivos |
@@ -58,5 +58,10 @@ O registro é dono da identidade permanente e do status atual.
 | `CRT-BULK-001` | Funcionalidade | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | solicitação de até 500 acompanhamentos por lote com idempotência e resultado por item |
 | `AUT-LIM-001` | Segurança | Automação | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | limites por worker para sessões interativas e assinantes SSE com resposta 429 |
 | `OPS-BKP-UI-001` | Operação | Backup | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | inventário read-only e verificação explícita dos conjuntos de backup na interface |
-| `DOC-RET-001` | Governança | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | prévia read-only de candidatos à retenção por critérios configuráveis e bounded |
+| `DOC-RET-001` | Governança | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | prévia bounded de retenção sem exclusão, inativação ou alteração do storage |
+| `EMP-GRP-001` | Funcionalidade | Empresas | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | grupos e tags pesquisáveis, separados do cadastro fiscal, com migration V9 |
+| `CRT-CAL-001` | Funcionalidade | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | agenda bounded de vencimentos por período e empresa, sem chamada fiscal |
+| `OBS-PRV-001` | Observabilidade | Integrações | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | histórico de status, duração e custo por provider, separado por moeda |
+| `ADM-CFG-001` | Segurança | Administração | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | configuração efetiva apresentada sem tokens, segredos ou URLs completas |
+| `DOC-PRE-001` | Segurança | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | preview de PDF/PNG/JPEG após validação de integridade e com headers restritivos |
 | `AMB-003` | Ambiente | Serpro | ABERTO | contrato, credenciais, custo e runtime autorizado |
