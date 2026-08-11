@@ -25,7 +25,10 @@
   `docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md`;
 - `DOC-RET-001`: prévia read-only de retenção por critérios configuráveis, com limite, amostra
   parcial explícita e nenhuma alteração dos documentos; evidência em
-  `docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md`.
+  `docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md`;
+- `DOC-PRE-001`: pré-visualização inline de PDF/PNG/JPEG após nova validação de tamanho e SHA-256,
+  com headers restritivos e auditoria segura; evidência em
+  `docs/implementacao/DOC_PRE_001_PREVIEW_SEGURO.md`.
 
 ## Pendências
 
@@ -36,7 +39,6 @@
 - aprovação e execução governada de retenção documental;
 - e-mail;
 - administração de usuários;
-- histórico de saúde/custo por provider;
 - hardening e observabilidade de produção;
 - antivírus;
 - agendamento periódico da reconciliação de storage após prova operacional.
