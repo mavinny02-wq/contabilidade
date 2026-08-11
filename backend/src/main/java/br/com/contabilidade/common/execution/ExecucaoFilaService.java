@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
 import java.time.Instant;
+import java.sql.Timestamp;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -155,7 +156,7 @@ public class ExecucaoFilaService {
                 .addValue("operacoes", operacoesSeguras)
                 .addValue("provedores", provedoresSeguros)
                 .addValue("token", token)
-                .addValue("leaseAte", leaseAte)
+                .addValue("leaseAte", parametroTemporal(leaseAte))
                 .addValue("workerId", workerSeguro);
         List<ExecucaoLease> rows = jdbc.query(sql, params, new LeaseRowMapper());
         Optional<ExecucaoLease> lease = rows.stream().findFirst();
@@ -170,6 +171,10 @@ public class ExecucaoFilaService {
             );
         });
         return lease;
+    }
+
+    static Timestamp parametroTemporal(Instant instante) {
+        return Timestamp.from(instante);
     }
 
     @Transactional
