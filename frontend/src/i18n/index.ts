@@ -7,6 +7,7 @@ import ptBRDashboardCertidoes from './pt-BR-dashboard-certidoes.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
 import ptBRFiliais from './pt-BR-filiais.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
+import ptBRStorageReconciliacao from './pt-BR-storage-reconciliacao.json';
 
 const translation = {
   ...ptBR,
@@ -47,6 +48,10 @@ const translation = {
   consoleTecnica: {
     ...ptBR.consoleTecnica,
     ...ptBRConsoleTecnica.consoleTecnica,
+    ...ptBRStorageReconciliacao.consoleTecnica,
+    storageReconciliacao: {
+      ...ptBRStorageReconciliacao.consoleTecnica.storageReconciliacao,
+    },
   },
 };
 
