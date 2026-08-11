@@ -1,0 +1,28 @@
+{
+  "menu": {
+    "historicoProvedores": "Saúde dos providers"
+  },
+  "historicoProvedores": {
+    "titulo": "Saúde e custo dos providers",
+    "descricao": "Consolidação histórica das execuções registradas, sem realizar novas chamadas externas.",
+    "inicio": "Data inicial",
+    "fim": "Data final",
+    "periodo": "Período analisado",
+    "totalExecucoes": "Execuções",
+    "totalProvedores": "Providers",
+    "parcial": "Existem {{total}} providers no período, mas somente {{exibidos}} foram detalhados devido ao limite operacional.",
+    "vazio": "Nenhuma execução no período",
+    "vazioDescricao": "Altere as datas para consultar outro intervalo.",
+    "taxa": "{{valor}}% de sucesso",
+    "total": "Total",
+    "sucesso": "Sucesso",
+    "parciais": "Parciais",
+    "falhas": "Falhas",
+    "indisponiveis": "Fonte indisponível",
+    "abertas": "Em aberto",
+    "duracaoMedia": "Duração média",
+    "ultimaExecucao": "Última execução",
+    "custos": "Custo estimado acumulado",
+    "semCusto": "Nenhum custo estimado registrado"
+  }
+}

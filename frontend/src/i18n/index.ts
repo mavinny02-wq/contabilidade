@@ -11,6 +11,7 @@ import ptBREmpresasClassificacao from './pt-BR-empresas-classificacao.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
 import ptBRFiliais from './pt-BR-filiais.json';
 import ptBRHistoricoEmpresas from './pt-BR-historico-empresas.json';
+import ptBRHistoricoProvedores from './pt-BR-historico-provedores.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
 import ptBRRetencaoDocumentos from './pt-BR-retencao-documentos.json';
 import ptBRStorageReconciliacao from './pt-BR-storage-reconciliacao.json';
@@ -20,6 +21,7 @@ const translation = {
   menu: {
     ...ptBR.menu,
     ...ptBRBackups.menu,
+    ...ptBRHistoricoProvedores.menu,
   },
   auditoria: {
     ...ptBR.auditoria,
@@ -30,6 +32,9 @@ const translation = {
   },
   backups: {
     ...ptBRBackups.backups,
+  },
+  historicoProvedores: {
+    ...ptBRHistoricoProvedores.historicoProvedores,
   },
   dashboard: {
     ...ptBR.dashboard,

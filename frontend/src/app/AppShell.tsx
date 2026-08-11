@@ -22,6 +22,7 @@ const items: NavItem[] = [
   { to: '/intervencoes', labelKey: 'menu.intervencoes', sigla: 'I', permissao: PERMISSOES.INTERVENCAO_LER, grupo: 'menu.operacao' },
   { to: '/notificacoes', labelKey: 'menu.notificacoes', sigla: 'N', permissao: PERMISSOES.NOTIFICACAO_LER },
   { to: '/integracoes', labelKey: 'menu.integracoes', sigla: 'P', permissao: PERMISSOES.INTEGRACAO_LER, grupo: 'menu.administracao' },
+  { to: '/integracoes/historico-provedores', labelKey: 'menu.historicoProvedores', sigla: 'H', permissao: PERMISSOES.INTEGRACAO_LER, grupo: 'menu.administracao' },
   { to: '/auditoria', labelKey: 'menu.auditoria', sigla: 'A', permissao: PERMISSOES.AUDITORIA_LER, grupo: 'menu.administracao' },
   { to: '/backups', labelKey: 'menu.backups', sigla: 'B', permissao: PERMISSOES.CONSOLE_TECNICA_LER, grupo: 'menu.administracao' },
   { to: '/console-tecnica', labelKey: 'menu.consoleTecnica', sigla: 'T', permissao: PERMISSOES.CONSOLE_TECNICA_LER, grupo: 'menu.administracao' },
