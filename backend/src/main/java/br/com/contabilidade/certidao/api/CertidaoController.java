@@ -60,6 +60,7 @@ public class CertidaoController {
                 tipo,
                 status
         );
+        byte[] conteudo = exportacao.conteudo();
         ContentDisposition disposition = ContentDisposition.attachment()
                 .filename(exportacao.nomeArquivo(), StandardCharsets.UTF_8)
                 .build();
@@ -68,8 +69,8 @@ public class CertidaoController {
                 .header(HttpHeaders.CACHE_CONTROL, "no-store")
                 .header("X-Content-Type-Options", "nosniff")
                 .contentType(MediaType.parseMediaType("text/csv;charset=UTF-8"))
-                .contentLength(exportacao.conteudo().length)
-                .body(exportacao.conteudo());
+                .contentLength(conteudo.length)
+                .body(conteudo);
     }
 
     @PostMapping("/{id}/solicitar")
