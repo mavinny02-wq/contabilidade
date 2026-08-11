@@ -1,0 +1,13 @@
+{
+  "certidoes": {
+    "lote": {
+      "solicitarSelecionadas": "Solicitar selecionadas ({{quantidade}})",
+      "selecionadas": "{{quantidade}} certidões selecionadas",
+      "selecionarFiltradas": "Selecionar filtradas ({{quantidade}})",
+      "limparSelecao": "Limpar seleção",
+      "selecionarItem": "Selecionar {{tipo}}",
+      "resultadoSucesso": "{{quantidade}} certidões foram aceitas para processamento.",
+      "resultadoParcial": "Lote processado: {{aceitas}} aceitas e {{rejeitadas}} rejeitadas."
+    }
+  }
+}
