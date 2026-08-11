@@ -54,6 +54,7 @@
 - [DOC-RET-001 — Prévia de retenção documental](implementacao/DOC_RET_001_PREVIA_RETENCAO.md)
 - [EMP-GRP-001 — Grupos e tags de empresas](implementacao/EMP_GRP_001_GRUPOS_TAGS.md)
 - [CRT-CAL-001 — Agenda de vencimentos](implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md)
+- [OBS-PRV-001 — Histórico de providers](implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md)
 
 ## Integrações
 
