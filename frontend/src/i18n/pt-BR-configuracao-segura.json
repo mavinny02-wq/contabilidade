@@ -1,0 +1,45 @@
+{
+  "menu": {
+    "configuracaoSegura": "Configuração segura"
+  },
+  "configuracaoSegura": {
+    "titulo": "Configuração efetiva segura",
+    "descricao": "Visão operacional sem exibir senhas, tokens, URLs completas ou referências sensíveis.",
+    "status": "Estado da configuração",
+    "statusValores": {
+      "SAUDAVEL": "Saudável",
+      "DEGRADADO": "Requer revisão"
+    },
+    "ambiente": "Ambiente",
+    "versao": "Versão",
+    "seguranca": "Autenticação e autorização",
+    "workerToken": "Token interno do worker",
+    "segredoSessao": "Segredo da sessão interativa",
+    "storage": "Provider de storage",
+    "ticketTtl": "Validade do ticket interativo",
+    "provedoresHabilitados": "Providers habilitados",
+    "provedoresPagos": "Providers pagos habilitados",
+    "provedor": "Provider",
+    "baseUrl": "Base URL configurada",
+    "referenciaSegredo": "Referência de segredo",
+    "custo": "Custo e moeda",
+    "timeout": "Timeout e retry",
+    "configurado": "Configurado",
+    "revisar": "Revisar",
+    "naoAplicavel": "Não aplicável",
+    "semProvedores": "Nenhum provider definido",
+    "componente": "Componente: {{componente}}",
+    "observadoEm": "Observado em {{valor}}",
+    "naoExibeValores": "Esta tela apresenta somente presença, estado e parâmetros operacionais seguros. Valores de segredos não são retornados pela API.",
+    "avisos": {
+      "SEGURANCA_DESABILITADA": "A segurança da aplicação está desabilitada.",
+      "WORKER_TOKEN_PADRAO_OU_AUSENTE": "O token interno do worker está ausente, curto ou ainda usa valor de exemplo.",
+      "SEGREDO_SESSAO_PADRAO_OU_AUSENTE": "O segredo da sessão interativa está ausente, curto ou ainda usa valor de exemplo.",
+      "STORAGE_LOCAL_EM_AMBIENTE_NAO_LOCAL": "O storage local está ativo em ambiente diferente de LOCAL; confirme persistência e backup.",
+      "PROVEDOR_HABILITADO_SEM_BASE_URL": "Existe provider habilitado sem Base URL configurada.",
+      "PROVEDOR_API_SEM_REFERENCIA_SEGREDO": "Existe provider de API habilitado sem referência de segredo.",
+      "PROVEDOR_PAGO_SEM_CUSTO": "Existe provider pago habilitado sem custo estimado configurado.",
+      "PROVEDOR_PAGO_SEM_MOEDA": "Existe provider pago habilitado sem moeda configurada."
+    }
+  }
+}
