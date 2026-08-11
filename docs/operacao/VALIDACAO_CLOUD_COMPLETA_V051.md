@@ -194,3 +194,120 @@ Branch de entrega: `validation/cloud-v051-002`. Arquivos intencionalmente altera
 `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md` e `docs/ai/REGRAS_TASKS_CODEX.md`. O status, o
 diff check, o commit e a PR são registrados na entrega final, pois o SHA do próprio commit não pode
 ser autorreferenciado neste arquivo.
+
+---
+
+## Validação consolidada `VAL-CLOUD-CONSOLIDATED-V051-001` — baseline `fc310e0b147db8e3fccf41febc9cf84bce617909`
+
+### Identificação e pré-condições
+
+Execução realizada em 2026-08-11 no executor efêmero `CODEX_CLOUD_LINUX`, branch
+`validation/cloud-consolidated-v051`, a partir do SHA
+`fc310e0b147db8e3fccf41febc9cf84bce617909` e da versão `0.5.1`. Esse SHA é também o SHA final do
+código validado: a única alteração desta entrega é o acréscimo desta evidência documental. O SHA do
+commit que contém o relatório é informado na entrega e na PR, pois um arquivo não pode conter de
+forma autorreferente o hash do próprio commit.
+
+A preparação `contabilidade-prepare e2e` terminou com exit 0. O comando obrigatório
+`contabilidade-maintenance` não existe neste executor e terminou com exit 127. Além disso, o
+checkout recebido não contém os scripts permanentes de startup Cloud e E2E atribuídos ao Slot 4:
+a busca em `scripts/` não encontrou arquivo Cloud/E2E/startup Linux. Portanto, a pré-condição de
+executar somente após a integração dos Slots 1–4 não pôde ser confirmada e a prova full-stack
+prescrita não pôde ser iniciada. Não foi criado substituto ad hoc, para não produzir evidência
+canônica diferente da automação permanente que deveria estar em `main`.
+
+### Toolchain exata
+
+| Ferramenta | Versão |
+|---|---|
+| Git | `2.43.0` |
+| Java | OpenJDK `21.0.2` |
+| Maven | `3.9.10` |
+| Node.js | `20.20.2` |
+| npm | `11.4.2` |
+| PostgreSQL/psql | `16.14` (`Ubuntu 16.14-0ubuntu0.24.04.1`) |
+| Playwright | `1.60.0` |
+| Chromium do Playwright | Chrome for Testing `148.0.7778.96` |
+
+O perfil instalou Node 24.15.0, mas o shell da task continuou resolvendo Node 20.20.2. Por isso os
+`npm ci` emitiram `EBADENGINE`; instalações, testes e builds ainda terminaram com sucesso. Esta
+divergência ambiental não foi mascarada nem corrigida por alteração de dependências.
+
+### Backend, banco e Flyway
+
+A primeira tentativa de `mvn -B clean verify` terminou com exit 1 porque PostgreSQL ainda não estava
+instalado/ativo. Após instalar PostgreSQL 16 no executor e criar um banco local dedicado sem dados
+reais, uma tentativa expôs que as variáveis `SPRING_DATASOURCE_*` predefinidas pelo executor
+sobrepunham o nome padrão do teste; o banco apontado por esse ambiente foi então criado localmente,
+sem alterar código ou configuração versionada.
+
+O gate reiniciado com `cd backend && mvn -B clean verify` terminou com exit 0: compilou 163 fontes,
+executou o teste de integração PostgreSQL (1 teste, 0 falhas, 0 erros), aplicou V1–V12 sobre schema
+vazio e gerou o JAR. A primeira inicialização aplicou exatamente 12 migrations. Uma segunda
+inicialização do JAR terminou com readiness `{"status":"UP"}`, validou as 12 migrations, reconheceu
+a versão 12 e informou que nenhuma migration era necessária. Assim, criação limpa e repetição
+Flyway ficaram verdes.
+
+### Frontend
+
+| Comando | Exit | Evidência |
+|---|---:|---|
+| `npm ci --prefer-offline --no-audit --no-fund` | 0 | 232 pacotes instalados pelo lockfile |
+| `npm run locale:validate` | 0 | 22 catálogos, 64 arquivos e 86 entradas dinâmicas |
+| `npm run typecheck` | 0 | TypeScript sem erro |
+| `npm test` | 0 | 7 arquivos e 20 testes aprovados |
+| `npm run build` | 0 | 152 módulos; bundle produzido |
+
+O build alertou somente que o chunk principal minificado tem 543,27 kB. O artefato local foi
+ignorado pelo Git e o arquivo incremental rastreado foi restaurado, evitando alteração gerada.
+
+### Automation worker, PDF e Chromium
+
+| Comando | Exit | Evidência |
+|---|---:|---|
+| `npm ci --prefer-offline --no-audit --no-fund` | 0 | 50 pacotes instalados pelo lockfile |
+| `npm run typecheck` | 0 | TypeScript sem erro |
+| `npm test` | 0 | 7 testes aprovados |
+| `npm run build` | 0 | compilação aprovada |
+
+Os testes cobriram runtime/configuração, ticket e sessão, PDF sintético temporário, registry com
+providers reais desabilitados, shutdown gracioso e smoke do Chromium restrito a páginas locais. O
+Chromium empacotado foi realmente iniciado e encerrado pelo teste Playwright. Nenhum dado fiscal
+real foi usado.
+
+### Full stack, API e navegador E2E
+
+A segunda inicialização local comprovou backend, PostgreSQL, Flyway e readiness da API. A prova
+full-stack/browser E2E permanente não foi executada porque os scripts que o enunciado atribui ao
+Slot 4 não existem no baseline recebido. Isso não foi interpretado como aprovação e impede
+`CLOUD_VERDE`. Não há Docker neste executor e nenhuma conclusão Windows/Docker foi inferida.
+
+### Defeitos, regressões e chamadas externas
+
+As duas falhas iniciais do backend foram reproduzidas e classificadas como preparação de ambiente:
+PostgreSQL ausente e database indicado por variáveis já presentes no executor ausente. Não houve
+defeito determinístico de repositório demonstrado depois da preparação, portanto nenhum código ou
+teste foi alterado. A indisponibilidade dos scripts do Slot 4 é uma violação da pré-condição do
+baseline, não algo que este slot de consolidação deva ocultar com script improvisado.
+
+Nenhum portal, provider externo, CAPTCHA, credencial, documento fiscal, dado pessoal ou operação
+paga foi chamado. Todos os testes de browser/PDF foram determinísticos e locais; os providers reais
+permaneceram desabilitados.
+
+### Higiene e provas restantes
+
+`git diff --check` terminou com exit 0. A inspeção de arquivos rastreados não encontrou `dist/`,
+`target/` ou `node_modules/`; somente `.env.example` é rastreado, e nenhum segredo, `.env`, payload
+fiscal ou dado real foi acrescentado. A alteração intencional é exclusivamente este relatório.
+
+Continuam pendentes: integrar e executar os scripts permanentes do Slot 4 para full-stack/API/E2E;
+executar a prova manual separada em Windows/Docker; validar Compose, Keycloak, persistência/restart
+e operação on-premise no runtime alvo. Evidência Cloud não fecha o gate Windows/Docker e não
+classifica a aplicação inteira como pronta para produção.
+
+### Classificação Cloud consolidada
+
+**`CLOUD_AMARELO`** — backend, PostgreSQL/Flyway limpo e repetido, frontend e worker (incluindo PDF,
+runtime e Chromium local) passaram. `CLOUD_VERDE` é vedado porque o baseline não contém a automação
+permanente do Slot 4 e, consequentemente, o full-stack/API/browser E2E consolidado não foi executado.
+O executor Cloud é efêmero e não pode manter uma URL permanente de serviço após o término da task.
