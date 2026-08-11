@@ -5,6 +5,7 @@ import ptBRAgendaCertidoes from './pt-BR-agenda-certidoes.json';
 import ptBRAuditoriaExportacao from './pt-BR-auditoria-exportacao.json';
 import ptBRBackups from './pt-BR-backups.json';
 import ptBRCertidoesLote from './pt-BR-certidoes-lote.json';
+import ptBRConfiguracaoSegura from './pt-BR-configuracao-segura.json';
 import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
 import ptBRDashboardCertidoes from './pt-BR-dashboard-certidoes.json';
 import ptBREmpresasClassificacao from './pt-BR-empresas-classificacao.json';
@@ -22,6 +23,7 @@ const translation = {
     ...ptBR.menu,
     ...ptBRBackups.menu,
     ...ptBRHistoricoProvedores.menu,
+    ...ptBRConfiguracaoSegura.menu,
   },
   auditoria: {
     ...ptBR.auditoria,
@@ -32,6 +34,9 @@ const translation = {
   },
   backups: {
     ...ptBRBackups.backups,
+  },
+  configuracaoSegura: {
+    ...ptBRConfiguracaoSegura.configuracaoSegura,
   },
   historicoProvedores: {
     ...ptBRHistoricoProvedores.historicoProvedores,
