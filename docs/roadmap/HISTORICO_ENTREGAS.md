@@ -28,3 +28,9 @@ Registrar aqui resultados integrados e pacotes candidatos de forma explícita.
 | 2026-08-11 | v0.5.1 — exportação de auditoria | `AUD-EXP-001`, PR `#28` | filtros e CSV bounded sem detalhes JSON, com snapshot e proteção contra fórmula; runtime pendente |
 | 2026-08-11 | v0.5.1 — reconciliação documental | `DOC-ORP-001`, PR `#29` | comparação read-only entre banco e storage, sem symlinks, paths ou correção automática; runtime pendente |
 | 2026-08-11 | v0.5.1 — onda Empresas/Automação/Certidões/Auditoria/Documentos | PRs `#25` a `#29` | cinco slots integrados na `main` até `9fdfe8b`; gate runtime permanece aberto |
+| 2026-08-11 | v0.5.1 — histórico cadastral | `EMP-HIS-001`, PR `#31` | Empresa 360 passou a exibir auditoria da empresa e das filiais sem detalhes JSON; runtime pendente |
+| 2026-08-11 | v0.5.1 — certidões em lote | `CRT-BULK-001`, PR `#32` | até 500 acompanhamentos por lote, idempotência por item e resultado parcial; runtime pendente |
+| 2026-08-11 | v0.5.1 — limites interativos | `AUT-LIM-001`, PR `#33` | limites de sessões e assinantes SSE com resposta 429 e capacidade no health; runtime pendente |
+| 2026-08-11 | v0.5.1 — inventário de backups | `OPS-BKP-UI-001`, PR `#34` | listagem read-only e verificação SHA-256 dos conjuntos pela interface; runtime pendente |
+| 2026-08-11 | v0.5.1 — prévia de retenção | `DOC-RET-001`, PR `#35` | simulação bounded por critérios, sem alteração no PostgreSQL ou storage; runtime pendente |
+| 2026-08-11 | v0.5.1 — onda Histórico/Bulk/Limites/Backup/Retenção | PRs `#31` a `#35` | cinco slots integrados na `main` até `0e310ac`; gate runtime permanece aberto |

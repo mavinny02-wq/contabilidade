@@ -100,11 +100,59 @@
 - só apresenta divergências conclusivas após varredura integral;
 - substitui paths por fingerprints e registra auditoria sem conteúdo sensível.
 
+### Histórico cadastral da Empresa 360
+
+- transforma a aba Histórico em uma visão funcional;
+- reutiliza eventos de auditoria da empresa, matriz e filiais;
+- pagina e ordena os eventos mais recentes primeiro;
+- apresenta ação, recurso, ator, data e correlation ID;
+- permite leitura com `EMPRESA_LER` sem ampliar acesso à auditoria global;
+- não retorna `detalhes_json`, payload fiscal ou documento.
+
+### Solicitação de certidões em lote
+
+- permite selecionar acompanhamentos individualmente ou pelos filtros atuais;
+- recebe até 500 IDs por chamada;
+- deduplica mantendo a ordem;
+- deriva idempotência por lote e acompanhamento;
+- isola erros de negócio por item;
+- retorna totais e resultado individual;
+- audita apenas contagens e identificador do lote, sem lista completa ou chave bruta.
+
+### Limites da sessão interativa
+
+- limita sessões interativas ativas por worker;
+- reserva capacidade durante criações concorrentes;
+- limita assinantes SSE por sessão;
+- retorna HTTP `429` quando a capacidade se esgota;
+- limpa sessões parcialmente criadas quando o CDP ou screencast falha;
+- publica contagens agregadas no health sem expor IDs, tickets ou usuários.
+
+### Inventário de backups
+
+- adiciona página administrativa read-only dos manifestos de backup;
+- valida schema, identificador, componentes, nomes, tamanhos e path traversal;
+- monta o diretório de backups como read-only no backend;
+- confere existência e tamanho na listagem;
+- recalcula SHA-256 somente sob solicitação explícita;
+- não permite criar, restaurar, excluir ou baixar backups pela interface;
+- audita a verificação sem hashes ou paths.
+
+### Prévia de retenção documental
+
+- adiciona simulação global ou por empresa;
+- aplica critérios configuráveis para inatividade, validade expirada e documento antigo sem validade;
+- informa total de candidatos, amostra bounded e flag parcial;
+- consolida tamanho e motivos da amostra;
+- não retorna referência do storage, hash ou conteúdo;
+- não exclui, inativa, move ou modifica documentos;
+- mantém execução futura de retenção condicionada a governança específica.
+
 ### Pendências
 
 - build completo Maven/frontend/worker da `main` atual;
 - execução Docker, Flyway V1–V8, Keycloak/Liquibase e smoke UI;
-- provas runtime focadas dos itens integrados pelas PRs `#14` a `#29`;
+- provas runtime focadas dos itens integrados pelas PRs `#14` a `#35`;
 - testes automatizados permanentes e E2E.
 
 ## 0.5.1 — 2026-08-09
