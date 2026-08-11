@@ -68,7 +68,7 @@ export class SessionTicketVerifier {
         throw new TicketError('TICKET_VALIDACAO_INDISPONIVEL', 503);
       }
       if (consumption === 'REPLAY') {
-        throw new TicketError('TICKET_REUTILIZADO');
+        throw new TicketError('TICKET_REUTILIZADO', 409);
       }
 
       // Há no máximo um grant ativo por sessão. A troca de um ticket novo
