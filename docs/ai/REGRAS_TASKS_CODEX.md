@@ -31,17 +31,47 @@ Fora de task explicitamente de teste:
 
 ## Contrato de ambiente
 
-Antes de listar comandos, toda task deve declarar as capacidades exigidas e selecionar explicitamente
-um dos executores abaixo:
+### Executor disponível para tasks Codex
 
-- `CODEX_CLOUD_LINUX`: nunca pressupor Windows, Docker Desktop, WSL, caminho local ou stack
-  persistente. Validar somente as capacidades efetivamente disponíveis no runner Cloud;
-- `LOCAL_WINDOWS`: a task não deve ser enviada ao Codex Cloud e sua evidência deve ser produzida no
-  executor local compatível.
+Neste projeto, as tasks Codex são executadas em:
 
-Quando o executor não possuir uma capacidade exigida, registrar a limitação uma vez e não executar
-dezenas de comandos sabidamente inválidos. Resultado Cloud e resultado de runtime local são provas
-diferentes e não podem ser reclassificados um como o outro.
+```text
+CODEX_CLOUD_LINUX
+```
+
+Portanto, prompts enviados ao Codex não podem pressupor:
+
+- Windows;
+- `D:\...` ou outro caminho da máquina do usuário;
+- `cmd.exe`;
+- execução de `.bat`;
+- Docker Desktop;
+- WSL;
+- `.env` local;
+- acesso ao `localhost` da máquina do usuário;
+- stack persistente depois que a task termina.
+
+O Cloud deve validar somente capacidades realmente disponíveis no runner. Quando Docker ou outra
+capacidade estiver ausente, a limitação é registrada uma vez; não se executa uma sequência de
+comandos sabidamente inválidos.
+
+### Prova local Windows
+
+```text
+LOCAL_WINDOWS_MANUAL
+```
+
+é um contexto de prova humana, não um executor Codex. Quando uma evidência depender do Windows local,
+o fluxo correto é:
+
+1. o Codex Cloud cria ou corrige scripts, BATs, runbooks e checklists;
+2. o usuário executa esses artefatos localmente;
+3. a saída é salva no relatório canônico ou commitada no repositório;
+4. uma task posterior `CODEX_CLOUD_LINUX` reconcilia a evidência produzida.
+
+Nunca criar uma task Codex com `EXECUTION MODE: LOCAL_WINDOWS` enquanto o único executor disponível
+for o Cloud. Resultado Cloud e resultado de runtime local são provas diferentes e não podem ser
+reclassificados um como o outro.
 
 Não abrir nem fazer merge de PR apenas para registrar novamente um blocker de ambiente já conhecido,
 salvo quando houver correção documental necessária ou outra evidência substancial e nova.
