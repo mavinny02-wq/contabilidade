@@ -1,0 +1,12 @@
+{
+  "empresas": {
+    "filiais": {
+      "edicaoTitulo": "Editar filial",
+      "situacaoCadastro": "Situação do cadastro",
+      "ativa": "Ativa",
+      "inativa": "Inativa",
+      "cnpjImutavel": "O CNPJ da filial é imutável. Para outro CNPJ, inative este cadastro e adicione uma nova filial.",
+      "mensagemAtualizada": "Filial atualizada com sucesso."
+    }
+  }
+}
