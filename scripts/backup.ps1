@@ -43,34 +43,29 @@ try {
 
     if ($LASTEXITCODE -ne 0) { throw "Falha no backup dos documentos." }
 
-    $components = @(
-        [ordered]@{
-            name = "postgresql"
-            file = $databaseFileName
-            format = "pg_dump_custom"
-            sizeBytes = (Get-Item -LiteralPath $databasePath).Length
-            sha256 = (Get-FileHash -LiteralPath $databasePath -Algorithm SHA256).Hash.ToLowerInvariant()
-        },
-        [ordered]@{
-            name = "documents"
-            file = $documentsFileName
-            format = "tar_gzip"
-            sizeBytes = (Get-Item -LiteralPath $documentsPath).Length
-            sha256 = (Get-FileHash -LiteralPath $documentsPath -Algorithm SHA256).Hash.ToLowerInvariant()
-        }
+    $databaseSize = (Get-Item -LiteralPath $databasePath).Length
+    $documentsSize = (Get-Item -LiteralPath $documentsPath).Length
+    $databaseHash = (Get-FileHash -LiteralPath $databasePath -Algorithm SHA256).Hash.ToLowerInvariant()
+    $documentsHash = (Get-FileHash -LiteralPath $documentsPath -Algorithm SHA256).Hash.ToLowerInvariant()
+    $createdAt = [DateTimeOffset]::UtcNow.ToString("o")
+
+    # Formato deliberadamente line-oriented para ser verificável tanto pelo PowerShell quanto pelo sh
+    # sem exigir jq, Python ou outra dependência adicional no servidor on-premise.
+    $manifestLines = @(
+        "{",
+        "  `"schemaVersion`":`"1.0`"," ,
+        "  `"backupId`":`"$timestamp`"," ,
+        "  `"createdAt`":`"$createdAt`"," ,
+        "  `"applicationVersion`":`"$version`"," ,
+        "  `"components`":[",
+        "    {`"name`":`"postgresql`",`"file`":`"$databaseFileName`",`"format`":`"pg_dump_custom`",`"sizeBytes`":$databaseSize,`"sha256`":`"$databaseHash`"},",
+        "    {`"name`":`"documents`",`"file`":`"$documentsFileName`",`"format`":`"tar_gzip`",`"sizeBytes`":$documentsSize,`"sha256`":`"$documentsHash`"}",
+        "  ]",
+        "}"
     )
 
-    $manifest = [ordered]@{
-        schemaVersion = "1.0"
-        backupId = $timestamp
-        createdAt = [DateTimeOffset]::UtcNow.ToString("o")
-        applicationVersion = $version
-        components = $components
-    }
-
-    $json = $manifest | ConvertTo-Json -Depth 6
     $utf8SemBom = New-Object System.Text.UTF8Encoding($false)
-    [System.IO.File]::WriteAllText($manifestPath, $json + [Environment]::NewLine, $utf8SemBom)
+    [System.IO.File]::WriteAllLines($manifestPath, $manifestLines, $utf8SemBom)
 
     & (Join-Path $PSScriptRoot "verify-backup.ps1") -ManifestPath $manifestPath
     if (-not $?) { throw "A verificação do manifesto recém-gerado falhou." }
