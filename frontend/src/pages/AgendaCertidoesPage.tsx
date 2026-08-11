@@ -66,7 +66,7 @@ export function AgendaCertidoesPage() {
 
   useEffect(() => {
     void carregar();
-  }, []); // consulta inicial deliberadamente executada uma vez
+  }, [carregar]);
 
   const consultar = (event: FormEvent) => {
     event.preventDefault();
