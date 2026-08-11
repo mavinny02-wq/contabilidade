@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api/http';
-import type { EmpresaDetalhe, Estabelecimento, Pagina } from '../api/types';
+import type { Estabelecimento, Pagina } from '../api/types';
 import { useAuth } from '../auth/AuthProvider';
 import { PERMISSOES } from '../auth/permissoes';
 import { Alert } from '../components/Alert';
@@ -12,6 +12,10 @@ import { EmptyState } from '../components/EmptyState';
 import { ModulePending } from '../components/ModulePending';
 import { PageHeader } from '../components/PageHeader';
 import { StatusBadge } from '../components/StatusBadge';
+import {
+  EmpresaClassificacaoModal,
+  type EmpresaClassificada,
+} from '../features/empresas/EmpresaClassificacaoModal';
 import { EmpresaFormModal } from '../features/empresas/EmpresaFormModal';
 import { FilialFormModal } from '../features/empresas/FilialFormModal';
 
@@ -33,10 +37,11 @@ export function EmpresaDetalhePage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const { temPermissao } = useAuth();
-  const [empresa, setEmpresa] = useState<EmpresaDetalhe>();
+  const [empresa, setEmpresa] = useState<EmpresaClassificada>();
   const [aba, setAba] = useState<Aba>('resumo');
   const [erro, setErro] = useState(false);
   const [modalAberto, setModalAberto] = useState(false);
+  const [classificacaoAberta, setClassificacaoAberta] = useState(false);
   const [filialAberta, setFilialAberta] = useState(false);
   const [filialSelecionada, setFilialSelecionada] = useState<Estabelecimento>();
   const [mensagem, setMensagem] = useState('');
@@ -46,7 +51,7 @@ export function EmpresaDetalhePage() {
 
   useEffect(() => {
     if (!id) return;
-    void api<EmpresaDetalhe>(`/empresas/${id}`)
+    void api<EmpresaClassificada>(`/empresas/${id}`)
       .then(setEmpresa)
       .catch(() => setErro(true));
   }, [id]);
@@ -137,6 +142,29 @@ export function EmpresaDetalhePage() {
                 <div><dt>{t('empresas.campos.responsavelEmail')}</dt><dd>{empresa.responsavelEmail ?? t('comum.naoInformado')}</dd></div>
               </dl>
             </Card>
+            <Card titulo={t('empresas.classificacao.titulo')}>
+              <div className="section-toolbar">
+                <p className="muted">{t('empresas.classificacao.descricao')}</p>
+                {podeEditar ? (
+                  <Button variante="texto" onClick={() => setClassificacaoAberta(true)}>
+                    {t('acoes.editar')}
+                  </Button>
+                ) : null}
+              </div>
+              <dl className="definition-list definition-list--compact">
+                <div>
+                  <dt>{t('empresas.classificacao.grupo')}</dt>
+                  <dd>{empresa.grupo ?? t('empresas.classificacao.semGrupo')}</dd>
+                </div>
+              </dl>
+              {empresa.tags.length === 0 ? (
+                <p className="muted">{t('empresas.classificacao.semTags')}</p>
+              ) : (
+                <div className="card-row__title">
+                  {empresa.tags.map((tag) => <StatusBadge key={tag} tom="neutro">{tag}</StatusBadge>)}
+                </div>
+              )}
+            </Card>
             {matriz ? <EstabelecimentoCard item={matriz} titulo={t('empresas.filiais.matriz')} /> : null}
           </div>
           <Card titulo={t('empresas.filiais.titulo')} className="company-establishments">
@@ -198,9 +226,19 @@ export function EmpresaDetalhePage() {
         empresa={empresa}
         aoFechar={() => setModalAberto(false)}
         aoSalvar={(atualizada) => {
-          setEmpresa(atualizada);
+          setEmpresa(atualizada as EmpresaClassificada);
           setModalAberto(false);
           setMensagem(t('empresas.mensagens.atualizada'));
+        }}
+      />
+      <EmpresaClassificacaoModal
+        aberto={classificacaoAberta}
+        empresa={empresa}
+        aoFechar={() => setClassificacaoAberta(false)}
+        aoSalvar={(atualizada) => {
+          setEmpresa(atualizada);
+          setClassificacaoAberta(false);
+          setMensagem(t('empresas.classificacao.salva'));
         }}
       />
       <FilialFormModal

@@ -13,6 +13,7 @@
       "acoes": {
         "EMPRESA_CRIADA": "Empresa criada",
         "EMPRESA_ATUALIZADA": "Dados da empresa atualizados",
+        "EMPRESA_CLASSIFICACAO_ATUALIZADA": "Grupo e tags atualizados",
         "EMPRESA_ATIVADA": "Empresa ativada",
         "EMPRESA_INATIVADA": "Empresa inativada",
         "FILIAL_ADICIONADA": "Filial adicionada",

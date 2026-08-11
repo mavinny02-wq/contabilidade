@@ -4,6 +4,7 @@ import br.com.contabilidade.certidao.service.CertidaoEstabelecimentoLifecycleSer
 import br.com.contabilidade.common.audit.AuditoriaService;
 import br.com.contabilidade.common.error.ExcecaoNegocio;
 import br.com.contabilidade.common.error.RecursoNaoEncontradoException;
+import br.com.contabilidade.empresa.api.EmpresaClassificacaoRequest;
 import br.com.contabilidade.empresa.api.EmpresaDetalheResponse;
 import br.com.contabilidade.empresa.api.EmpresaRequest;
 import br.com.contabilidade.empresa.api.EmpresaResumoResponse;
@@ -16,6 +17,7 @@ import br.com.contabilidade.empresa.domain.Estabelecimento;
 import br.com.contabilidade.empresa.domain.TipoInscricaoTributaria;
 import br.com.contabilidade.empresa.repository.EmpresaRepository;
 import br.com.contabilidade.empresa.repository.EstabelecimentoRepository;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -100,6 +102,17 @@ public class EmpresaService {
                 request.complemento(), request.bairro(), request.municipio(), request.uf(), request.cep());
         certidaoLifecycleService.sincronizar(matriz);
         auditoriaService.registrar("EMPRESA_ATUALIZADA", "EMPRESA", id, Map.of("cnpj", cnpj));
+        return mapper.detalhe(empresaRepository.save(empresa));
+    }
+
+    @Transactional
+    public EmpresaDetalheResponse atualizarClassificacao(UUID id, EmpresaClassificacaoRequest request) {
+        Empresa empresa = buscar(id);
+        empresa.atualizarClassificacao(request.grupo(), request.tags());
+        Map<String, Object> detalhes = new LinkedHashMap<>();
+        detalhes.put("grupoInformado", empresa.getGrupo() != null);
+        detalhes.put("quantidadeTags", empresa.getTags().size());
+        auditoriaService.registrar("EMPRESA_CLASSIFICACAO_ATUALIZADA", "EMPRESA", id, detalhes);
         return mapper.detalhe(empresaRepository.save(empresa));
     }
 
