@@ -7,6 +7,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -70,6 +72,19 @@ public class Documento extends EntidadeBase {
         this.hashSha256 = hashSha256;
         this.origem = origem;
         this.referenciaStorage = referenciaStorage;
+        this.emitidoEm = emitidoEm;
+        this.validoAte = validoAte;
+    }
+
+    public void atualizarMetadados(String tipo, LocalDate emitidoEm, LocalDate validoAte) {
+        String tipoNormalizado = Objects.requireNonNull(tipo, "tipo").trim().toUpperCase(Locale.ROOT);
+        if (tipoNormalizado.isBlank()) {
+            throw new IllegalArgumentException("O tipo do documento é obrigatório");
+        }
+        if (emitidoEm != null && validoAte != null && validoAte.isBefore(emitidoEm)) {
+            throw new IllegalArgumentException("A validade não pode ser anterior à emissão");
+        }
+        this.tipo = tipoNormalizado;
         this.emitidoEm = emitidoEm;
         this.validoAte = validoAte;
     }

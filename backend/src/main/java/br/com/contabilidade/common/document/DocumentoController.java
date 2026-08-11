@@ -1,5 +1,6 @@
 package br.com.contabilidade.common.document;
 
+import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -14,6 +15,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,15 +29,18 @@ public class DocumentoController {
     private final DocumentoService service;
     private final DocumentoDownloadService downloadService;
     private final DocumentoPreviewService previewService;
+    private final DocumentoMetadadosService metadadosService;
 
     public DocumentoController(
             DocumentoService service,
             DocumentoDownloadService downloadService,
-            DocumentoPreviewService previewService
+            DocumentoPreviewService previewService,
+            DocumentoMetadadosService metadadosService
     ) {
         this.service = service;
         this.downloadService = downloadService;
         this.previewService = previewService;
+        this.metadadosService = metadadosService;
     }
 
     @GetMapping
@@ -59,6 +65,15 @@ public class DocumentoController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validoAte
     ) {
         return service.enviar(empresaId, tipo, arquivo, emitidoEm, validoAte);
+    }
+
+    @PutMapping("/{id}/metadados")
+    @PreAuthorize("@permissaoService.tem('DOCUMENTO_ENVIAR')")
+    public DocumentoService.DocumentoResponse atualizarMetadados(
+            @PathVariable UUID id,
+            @Valid @RequestBody DocumentoMetadadosRequest request
+    ) {
+        return metadadosService.atualizar(id, request);
     }
 
     @GetMapping("/{id}/preview")

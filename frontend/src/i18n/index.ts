@@ -17,6 +17,7 @@ import ptBRHistoricoEmpresas from './pt-BR-historico-empresas.json';
 import ptBRHistoricoProvedores from './pt-BR-historico-provedores.json';
 import ptBRHistoricoWorkers from './pt-BR-historico-workers.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
+import ptBRMetadadosDocumentos from './pt-BR-metadados-documentos.json';
 import ptBRPreviewDocumentos from './pt-BR-preview-documentos.json';
 import ptBRResponsaveisModulo from './pt-BR-responsaveis-modulo.json';
 import ptBRRetencaoDocumentos from './pt-BR-retencao-documentos.json';
@@ -84,6 +85,9 @@ const translation = {
   },
   documentos: {
     ...ptBR.documentos,
+    metadados: {
+      ...ptBRMetadadosDocumentos.documentos.metadados,
+    },
     preview: {
       ...ptBRPreviewDocumentos.documentos.preview,
     },

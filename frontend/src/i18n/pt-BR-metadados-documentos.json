@@ -1,0 +1,11 @@
+{
+  "documentos": {
+    "metadados": {
+      "acao": "Editar metadados",
+      "titulo": "Editar metadados do documento",
+      "descricao": "O arquivo, o hash, o MIME, a origem e o vínculo com a empresa não serão alterados.",
+      "arquivo": "Arquivo protegido",
+      "mensagemSalva": "Metadados do documento atualizados."
+    }
+  }
+}
