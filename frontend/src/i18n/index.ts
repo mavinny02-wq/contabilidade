@@ -2,9 +2,17 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import ptBR from './pt-BR.json';
 import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
+import ptBRFiliais from './pt-BR-filiais.json';
 
 const translation = {
   ...ptBR,
+  empresas: {
+    ...ptBR.empresas,
+    filiais: {
+      ...ptBR.empresas.filiais,
+      ...ptBRFiliais.empresas.filiais,
+    },
+  },
   consoleTecnica: {
     ...ptBR.consoleTecnica,
     ...ptBRConsoleTecnica.consoleTecnica,
