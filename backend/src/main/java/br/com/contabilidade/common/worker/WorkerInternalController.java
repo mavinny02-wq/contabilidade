@@ -17,10 +17,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class WorkerInternalController {
 
     private final WorkerHeartbeatRepository repository;
+    private final WorkerHeartbeatHistoricoService historicoService;
     private final WorkerTokenService tokenService;
 
-    public WorkerInternalController(WorkerHeartbeatRepository repository, WorkerTokenService tokenService) {
+    public WorkerInternalController(
+            WorkerHeartbeatRepository repository,
+            WorkerHeartbeatHistoricoService historicoService,
+            WorkerTokenService tokenService
+    ) {
         this.repository = repository;
+        this.historicoService = historicoService;
         this.tokenService = tokenService;
     }
 
@@ -35,6 +41,7 @@ public class WorkerInternalController {
                         existente -> existente.atualizar(request.versao(), request.status()),
                         () -> repository.save(new WorkerHeartbeat(request.workerId(), request.versao(), request.status()))
                 );
+        historicoService.registrarSeNecessario(request.workerId(), request.versao(), request.status());
     }
 
     public record HeartbeatRequest(@NotBlank String workerId, @NotBlank String versao,

@@ -20,6 +20,7 @@ import { AuditoriaPage } from '../pages/AuditoriaPage';
 import { BackupsPage } from '../pages/BackupsPage';
 import { ConfiguracaoSeguraPage } from '../pages/ConfiguracaoSeguraPage';
 import { ConsoleTecnicaPage } from '../pages/ConsoleTecnicaPage';
+import { HistoricoWorkersPage } from '../pages/HistoricoWorkersPage';
 import { ErrorPage } from '../pages/ErrorPage';
 
 export const router = createBrowserRouter([
@@ -77,6 +78,7 @@ export const router = createBrowserRouter([
             element: <PermissionRoute permissao={PERMISSOES.CONSOLE_TECNICA_LER} />,
             children: [
               { path: 'console-tecnica', element: <ConsoleTecnicaPage /> },
+              { path: 'console-tecnica/workers/historico', element: <HistoricoWorkersPage /> },
               { path: 'backups', element: <BackupsPage /> },
               { path: 'configuracao-segura', element: <ConfiguracaoSeguraPage /> },
             ],
