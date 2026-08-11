@@ -41,6 +41,7 @@
 - [OBS-WRK-001 — Heartbeat vencido na Console Técnica](implementacao/OBS_WRK_001_HEARTBEAT_STALE.md)
 - [SEC-DOC-001 — Integridade antes do download](implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md)
 - [EXP-CRT-001 — Exportação CSV do Centro de Certidões](implementacao/EXP_CRT_001_EXPORTACAO_CSV.md)
+- [EMP-FIL-001 — Edição e inativação individual de filial](implementacao/EMP_FIL_001_EDICAO_FILIAL.md)
 
 ## Integrações
 
