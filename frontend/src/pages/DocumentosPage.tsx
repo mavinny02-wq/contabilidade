@@ -10,6 +10,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { EmptyState } from '../components/EmptyState';
 import { PageHeader } from '../components/PageHeader';
+import { DocumentoPreviewModal } from '../features/documentos/DocumentoPreviewModal';
 import {
   DocumentoRetencaoPreview,
   type DocumentoRetencaoPreviewData,
@@ -26,6 +27,7 @@ export function DocumentosPage() {
   const [emitidoEm, setEmitidoEm] = useState('');
   const [validoAte, setValidoAte] = useState('');
   const [arquivo, setArquivo] = useState<File>();
+  const [preview, setPreview] = useState<Documento>();
   const [mensagem, setMensagem] = useState('');
   const [erro, setErro] = useState<ApiError>();
   const [enviando, setEnviando] = useState(false);
@@ -53,6 +55,7 @@ export function DocumentosPage() {
   const selecionarEmpresa = (id: string) => {
     setEmpresaId(id);
     setRetencao(undefined);
+    setPreview(undefined);
     if (id) setSearchParams({ empresaId: id });
     else setSearchParams({});
   };
@@ -105,12 +108,16 @@ export function DocumentosPage() {
       const link = document.createElement('a');
       link.href = url;
       link.download = download.nome ?? documento.nomeOriginal;
+      document.body.appendChild(link);
       link.click();
+      link.remove();
       URL.revokeObjectURL(url);
     } catch (exception) {
       setErro(exception as ApiError);
     }
   };
+
+  const podeBaixar = temPermissao(PERMISSOES.DOCUMENTO_BAIXAR);
 
   return (
     <>
@@ -132,7 +139,8 @@ export function DocumentosPage() {
       {mensagem ? <Alert tipo="sucesso" onClose={() => setMensagem('')}>{mensagem}</Alert> : null}
       {erro ? (
         <Alert tipo="erro" onClose={() => setErro(undefined)}>
-          {erro.mensagem ?? t('erros.inesperado')}
+          <strong>{erro.mensagem ?? t('erros.inesperado')}</strong>
+          {erro.correlationId ? <small>{t('erros.correlationId', { valor: erro.correlationId })}</small> : null}
         </Alert>
       ) : null}
 
@@ -207,7 +215,12 @@ export function DocumentosPage() {
                       <td>{formatarTamanho(documento.tamanhoBytes)}</td>
                       <td>{documento.validoAte ? formatarData(documento.validoAte) : t('comum.naoInformado')}</td>
                       <td className="table-actions">
-                        {temPermissao(PERMISSOES.DOCUMENTO_BAIXAR) ? (
+                        {podeBaixar && previewSuportado(documento.mimeType) ? (
+                          <Button variante="texto" onClick={() => setPreview(documento)}>
+                            {t('documentos.preview.acao')}
+                          </Button>
+                        ) : null}
+                        {podeBaixar ? (
                           <Button variante="texto" onClick={() => void baixar(documento)}>{t('acoes.baixar')}</Button>
                         ) : null}
                       </td>
@@ -219,8 +232,18 @@ export function DocumentosPage() {
           </div>
         )
       ) : null}
+
+      <DocumentoPreviewModal
+        documento={preview}
+        aoFechar={() => setPreview(undefined)}
+        aoBaixar={(documento) => void baixar(documento)}
+      />
     </>
   );
+}
+
+function previewSuportado(mimeType: string) {
+  return ['application/pdf', 'image/png', 'image/jpeg'].includes(mimeType);
 }
 
 function formatarTamanho(bytes: number) {
