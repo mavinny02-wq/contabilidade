@@ -60,8 +60,18 @@ public class EmpresaController {
     public ResponseEntity<EstabelecimentoResponse> adicionarFilial(@PathVariable UUID id,
                                                                     @Valid @RequestBody FilialRequest request) {
         EstabelecimentoResponse filial = service.adicionarFilial(id, request);
-        return ResponseEntity.created(URI.create("/api/empresas/" + id + "/estabelecimentos/" + filial.id()))
+        return ResponseEntity.created(URI.create("/api/empresas/" + id + "/filiais/" + filial.id()))
                 .body(filial);
+    }
+
+    @PutMapping("/{id}/filiais/{filialId}")
+    @PreAuthorize("@permissaoService.tem('EMPRESA_EDITAR')")
+    public EstabelecimentoResponse atualizarFilial(
+            @PathVariable UUID id,
+            @PathVariable UUID filialId,
+            @Valid @RequestBody FilialAtualizacaoRequest request
+    ) {
+        return service.atualizarFilial(id, filialId, request);
     }
 
     @PatchMapping("/{id}/ativa")
