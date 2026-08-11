@@ -1,26 +1,25 @@
-# PREVIEW SLOT 2 — PERF-CRT-001
+# ARQUIVADO — PERF-CRT-001
 
-- **TASK:** limitar consultas globais do scheduler do Centro de Certidões
-- **TYPE:** IMPLEMENTAÇÃO DE PERFORMANCE
+> Não executar novamente. Implementação integrada pela PR `#15`.
+
 - **ITEM:** `PERF-CRT-001`
-- **BASELINE:** futuro `main` após `GATE-VAL-001` verde
-- **EXECUTION MODE:** CLOUD_FIRST
+- **STATUS:** `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`
+- **BASELINE DA IMPLEMENTAÇÃO:** merge da PR `#14`
+- **BRANCH:** `feat/perf-crt-001-bounded-scheduler`
+- **PR:** `#15`
+- **MERGE:** `1b0827c887ad3637fa061521f43bcb15658d99ea`
+- **EVIDÊNCIA:** `docs/implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md`
 
-## Objetivo
+## Resultado implementado
 
-Substituir cargas globais não limitadas por consultas paginadas/bounded para agendamento e
-reconciliação de certidões, preservando estados e idempotência.
+- queries bounded de IDs;
+- lotes configuráveis para inicialização, agendamento e alertas;
+- cursores rotativos com wrap;
+- transação por item;
+- preservação da idempotência diária;
+- configurações esperadamente indisponíveis não bloqueiam o restante do lote.
 
-## Caminhos próprios
+## Estado de validação
 
-- `backend/src/main/java/br/com/contabilidade/certidao/**`;
-- repositories específicos de estabelecimento usados pelo scheduler;
-- backlog Certidões e uma evidência curta.
-
-## Excluídos
-
-Remote session, worker, documentos, backup, Console Técnica e migrations.
-
-## Validação permitida
-
-Compilação backend e `git diff --check`. Não criar/executar testes nesta task.
+Permanecem pendentes Maven e prova runtime com quantidade de registros superior aos limites,
+avanço/wrap dos cursores, memória/tempo e ausência de duplicação.
