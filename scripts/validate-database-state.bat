@@ -66,17 +66,17 @@ if /i not "!FLYWAY_TABLE_STATUS!"=="PRESENT" (
 )
 
 set "FLYWAY_SCHEMA_STATUS="
-for /f "usebackq delims=" %%R in (`docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T postgres psql -U "!POSTGRES_USER!" -d "!POSTGRES_DB!" -Atc "SELECT CASE WHEN NOT EXISTS (SELECT 1 FROM flyway_schema_history WHERE success = FALSE) AND (SELECT COUNT(*) FROM flyway_schema_history WHERE success = TRUE AND version IN ('1','2','3','4','5','6','7','8','9')) = 9 AND to_regclass('public.tickets_sessao_interativa_consumidos') IS NOT NULL AND to_regclass('public.empresa_tags') IS NOT NULL AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'empresas' AND column_name = 'grupo') THEN 'OK' ELSE 'INVALID' END;" 2^>nul`) do set "FLYWAY_SCHEMA_STATUS=%%R"
+for /f "usebackq delims=" %%R in (`docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T postgres psql -U "!POSTGRES_USER!" -d "!POSTGRES_DB!" -Atc "SELECT CASE WHEN NOT EXISTS (SELECT 1 FROM flyway_schema_history WHERE success = FALSE) AND (SELECT COUNT(*) FROM flyway_schema_history WHERE success = TRUE AND version IN ('1','2','3','4','5','6','7','8','9','10')) = 10 AND to_regclass('public.tickets_sessao_interativa_consumidos') IS NOT NULL AND to_regclass('public.empresa_tags') IS NOT NULL AND to_regclass('public.empresa_responsaveis_modulo') IS NOT NULL AND EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema = 'public' AND table_name = 'empresas' AND column_name = 'grupo') THEN 'OK' ELSE 'INVALID' END;" 2^>nul`) do set "FLYWAY_SCHEMA_STATUS=%%R"
 
 if /i not "!FLYWAY_SCHEMA_STATUS!"=="OK" (
-  echo [DB-VALIDATION] Historico Flyway incompleto, com falha ou sem estruturas obrigatorias das V8/V9.
+  echo [DB-VALIDATION] Historico Flyway incompleto, com falha ou sem estruturas obrigatorias das V8/V9/V10.
   docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T postgres psql -U "!POSTGRES_USER!" -d "!POSTGRES_DB!" -c "SELECT installed_rank, version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
   exit /b 1
 )
 
-echo [OK] Flyway V1-V9 aplicado sem registro de falha.
+echo [OK] Flyway V1-V10 aplicado sem registro de falha.
 echo [OK] Ledger anti-replay da sessao interativa presente.
-echo [OK] Estruturas de grupo e tags de empresas presentes.
+echo [OK] Estruturas de grupo, tags e responsaveis por modulo presentes.
 echo.
 echo [DB-VALIDATION] Schemas PostgreSQL validados.
 exit /b 0
