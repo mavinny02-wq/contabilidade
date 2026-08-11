@@ -8,6 +8,8 @@ public record EmpresaDetalheResponse(
         UUID id,
         String razaoSocial,
         String nomeFantasia,
+        String grupo,
+        List<String> tags,
         boolean ativa,
         String responsavelNome,
         String responsavelEmail,
@@ -15,4 +17,8 @@ public record EmpresaDetalheResponse(
         Instant criadoEm,
         Instant atualizadoEm
 ) {
+    public EmpresaDetalheResponse {
+        tags = List.copyOf(tags);
+        estabelecimentos = List.copyOf(estabelecimentos);
+    }
 }
