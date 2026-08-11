@@ -40,6 +40,7 @@ const heartbeat = async () => {
 };
 
 servidor.listen(config.port, '0.0.0.0', () => {
+  if (encerramentoEmCurso) return;
   console.log(`Worker de integrações ${VERSAO} disponível na porta ${config.port}`);
   console.log(`Fluxos registrados: ${registry.codigos().join(', ') || 'nenhum'}`);
   if (registry.possuiPortal()) {
@@ -96,6 +97,7 @@ process.on('SIGTERM', () => void encerrar('SIGTERM'));
 process.on('SIGINT', () => void encerrar('SIGINT'));
 
 async function fecharServidor(timeoutMs: number): Promise<boolean> {
+  if (!servidor.listening) return true;
   const fechamento = new Promise<void>((resolve) => {
     servidor.close(() => resolve());
     servidor.closeIdleConnections();
