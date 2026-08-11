@@ -2,8 +2,34 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const localePath = path.join(root, 'src', 'i18n', 'pt-BR.json');
-const locale = JSON.parse(fs.readFileSync(localePath, 'utf8'));
+const i18nDirectory = path.join(root, 'src', 'i18n');
+const localeFiles = fs.readdirSync(i18nDirectory)
+  .filter((name) => name === 'pt-BR.json' || /^pt-BR-.+\.json$/.test(name))
+  .sort((left, right) => {
+    if (left === 'pt-BR.json') return -1;
+    if (right === 'pt-BR.json') return 1;
+    return left.localeCompare(right);
+  });
+
+const mergeDeep = (target, source) => {
+  for (const [key, value] of Object.entries(source)) {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const current = target[key];
+      target[key] = mergeDeep(
+        current && typeof current === 'object' && !Array.isArray(current) ? current : {},
+        value,
+      );
+    } else {
+      target[key] = value;
+    }
+  }
+  return target;
+};
+
+const locale = localeFiles.reduce((bundle, name) => {
+  const content = JSON.parse(fs.readFileSync(path.join(i18nDirectory, name), 'utf8'));
+  return mergeDeep(bundle, content);
+}, {});
 
 const resolvePath = (dottedPath) => {
   let current = locale;
@@ -141,5 +167,5 @@ if (missing.size > 0) {
 }
 
 console.log(
-  `Bundle pt-BR válido. ${sourceFiles.length} arquivos e ${Object.values(catalogs).flat().length} entradas dinâmicas verificadas.`,
+  `Bundle pt-BR válido. ${localeFiles.length} catálogos, ${sourceFiles.length} arquivos e ${Object.values(catalogs).flat().length} entradas dinâmicas verificadas.`,
 );

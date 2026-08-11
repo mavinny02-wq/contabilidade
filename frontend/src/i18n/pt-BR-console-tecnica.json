@@ -1,0 +1,33 @@
+{
+  "consoleTecnica": {
+    "worker": {
+      "titulo": "Automation worker",
+      "listaTitulo": "Heartbeats dos workers",
+      "registrados": "{{quantidade}} registrados",
+      "limiares": "Degradado após {{degradado}} sem heartbeat; indisponível após {{indisponivel}}.",
+      "listaLimitada": "A lista foi limitada aos heartbeats mais recentes.",
+      "nenhum": "Nenhum heartbeat de worker foi registrado. Isso indica ausência operacional do worker, não resultado fiscal.",
+      "versao": "Versão",
+      "ultimoHeartbeat": "Último heartbeat",
+      "idade": "Idade",
+      "motivos": {
+        "semHeartbeatRegistrado": "Nenhum worker enviou heartbeat até o momento.",
+        "nenhumWorkerSaudavel": "Nenhum worker registrado está saudável neste momento.",
+        "todosWorkersIndisponiveis": "Todos os workers registrados estão indisponíveis.",
+        "heartbeatSemData": "O heartbeat não possui data de observação válida.",
+        "relogioDivergente": "O heartbeat está no futuro além da tolerância configurada.",
+        "heartbeatExpirado": "O heartbeat ultrapassou o limite de indisponibilidade.",
+        "heartbeatAtrasado": "O heartbeat está atrasado e o worker foi classificado como degradado.",
+        "workerInicializando": "O worker informou que ainda está inicializando.",
+        "statusDegradado": "O worker informou estado degradado.",
+        "statusIndisponivel": "O worker informou estado indisponível.",
+        "statusDesconhecido": "O worker informou um estado não reconhecido."
+      },
+      "tempo": {
+        "segundos": "{{quantidade}} s",
+        "minutos": "{{quantidade}} min",
+        "horas": "{{quantidade}} h"
+      }
+    }
+  }
+}
