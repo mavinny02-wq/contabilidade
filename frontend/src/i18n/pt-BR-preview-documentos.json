@@ -1,0 +1,11 @@
+{
+  "documentos": {
+    "preview": {
+      "acao": "Visualizar",
+      "titulo": "Pré-visualização do documento",
+      "carregando": "Carregando pré-visualização segura...",
+      "pdfNaoSuportado": "O navegador não conseguiu exibir o PDF neste painel. Use o botão Baixar para abrir o arquivo.",
+      "integridade": "O conteúdo exibido foi validado novamente por tamanho e SHA-256 antes de ser entregue."
+    }
+  }
+}

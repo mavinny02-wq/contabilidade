@@ -25,13 +25,16 @@ public class DocumentoController {
 
     private final DocumentoService service;
     private final DocumentoDownloadService downloadService;
+    private final DocumentoPreviewService previewService;
 
     public DocumentoController(
             DocumentoService service,
-            DocumentoDownloadService downloadService
+            DocumentoDownloadService downloadService,
+            DocumentoPreviewService previewService
     ) {
         this.service = service;
         this.downloadService = downloadService;
+        this.previewService = previewService;
     }
 
     @GetMapping
@@ -56,6 +59,24 @@ public class DocumentoController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate validoAte
     ) {
         return service.enviar(empresaId, tipo, arquivo, emitidoEm, validoAte);
+    }
+
+    @GetMapping("/{id}/preview")
+    @PreAuthorize("@permissaoService.tem('DOCUMENTO_BAIXAR')")
+    public ResponseEntity<Resource> preview(@PathVariable UUID id) {
+        DocumentoPreviewService.PreviewDocumento preview = previewService.carregar(id);
+        ContentDisposition disposition = ContentDisposition.inline()
+                .filename(preview.nome(), StandardCharsets.UTF_8)
+                .build();
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
+                .header(HttpHeaders.CACHE_CONTROL, "no-store, private")
+                .header("X-Content-Type-Options", "nosniff")
+                .header("Cross-Origin-Resource-Policy", "same-origin")
+                .header("Content-Security-Policy", "sandbox; default-src 'none'; img-src 'self' data: blob:")
+                .contentType(MediaType.parseMediaType(preview.mimeType()))
+                .contentLength(preview.tamanhoBytes())
+                .body(preview.resource());
     }
 
     @GetMapping("/{id}/conteudo")
