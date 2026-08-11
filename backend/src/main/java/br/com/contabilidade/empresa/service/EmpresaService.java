@@ -4,6 +4,7 @@ import br.com.contabilidade.certidao.service.CertidaoEstabelecimentoLifecycleSer
 import br.com.contabilidade.common.audit.AuditoriaService;
 import br.com.contabilidade.common.error.ExcecaoNegocio;
 import br.com.contabilidade.common.error.RecursoNaoEncontradoException;
+import br.com.contabilidade.empresa.api.EmpresaClassificacaoRequest;
 import br.com.contabilidade.empresa.api.EmpresaDetalheResponse;
 import br.com.contabilidade.empresa.api.EmpresaRequest;
 import br.com.contabilidade.empresa.api.EmpresaResumoResponse;
@@ -71,7 +72,6 @@ public class EmpresaService {
 
         Empresa empresa = new Empresa(request.razaoSocial(), request.nomeFantasia(),
                 request.responsavelNome(), request.responsavelEmail());
-        empresa.atualizarClassificacao(request.grupo(), request.tags());
         Estabelecimento matriz = criarEstabelecimento(cnpj, true, request.status(), request.cnaePrincipal(),
                 request.regimeTributario(), request.inscricaoEstadual(), request.inscricaoMunicipal(),
                 request.logradouro(), request.numero(), request.complemento(), request.bairro(),
@@ -79,8 +79,7 @@ public class EmpresaService {
         empresa.adicionarEstabelecimento(matriz);
         Empresa salva = empresaRepository.saveAndFlush(empresa);
         certidaoLifecycleService.sincronizar(matriz);
-        auditoriaService.registrar("EMPRESA_CRIADA", "EMPRESA", salva.getId(),
-                classificacaoAuditavel(cnpj, salva));
+        auditoriaService.registrar("EMPRESA_CRIADA", "EMPRESA", salva.getId(), Map.of("cnpj", cnpj));
         return mapper.detalhe(salva);
     }
 
@@ -98,13 +97,22 @@ public class EmpresaService {
         }
         empresa.atualizarDados(request.razaoSocial(), request.nomeFantasia(),
                 request.responsavelNome(), request.responsavelEmail());
-        empresa.atualizarClassificacao(request.grupo(), request.tags());
         atualizarEstabelecimento(matriz, request.status(), request.cnaePrincipal(), request.regimeTributario(),
                 request.inscricaoEstadual(), request.inscricaoMunicipal(), request.logradouro(), request.numero(),
                 request.complemento(), request.bairro(), request.municipio(), request.uf(), request.cep());
         certidaoLifecycleService.sincronizar(matriz);
-        auditoriaService.registrar("EMPRESA_ATUALIZADA", "EMPRESA", id,
-                classificacaoAuditavel(cnpj, empresa));
+        auditoriaService.registrar("EMPRESA_ATUALIZADA", "EMPRESA", id, Map.of("cnpj", cnpj));
+        return mapper.detalhe(empresaRepository.save(empresa));
+    }
+
+    @Transactional
+    public EmpresaDetalheResponse atualizarClassificacao(UUID id, EmpresaClassificacaoRequest request) {
+        Empresa empresa = buscar(id);
+        empresa.atualizarClassificacao(request.grupo(), request.tags());
+        Map<String, Object> detalhes = new LinkedHashMap<>();
+        detalhes.put("grupoInformado", empresa.getGrupo() != null);
+        detalhes.put("quantidadeTags", empresa.getTags().size());
+        auditoriaService.registrar("EMPRESA_CLASSIFICACAO_ATUALIZADA", "EMPRESA", id, detalhes);
         return mapper.detalhe(empresaRepository.save(empresa));
     }
 
@@ -219,13 +227,5 @@ public class EmpresaService {
                 bairro, municipio, uf, cep);
         estabelecimento.definirInscricao(TipoInscricaoTributaria.ESTADUAL, ie, uf, null);
         estabelecimento.definirInscricao(TipoInscricaoTributaria.MUNICIPAL, im, null, municipio);
-    }
-
-    private Map<String, Object> classificacaoAuditavel(String cnpj, Empresa empresa) {
-        Map<String, Object> detalhes = new LinkedHashMap<>();
-        detalhes.put("cnpj", cnpj);
-        detalhes.put("grupoInformado", empresa.getGrupo() != null);
-        detalhes.put("quantidadeTags", empresa.getTags().size());
-        return detalhes;
     }
 }
