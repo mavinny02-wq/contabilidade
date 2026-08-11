@@ -11,9 +11,10 @@
       "porTipo": "Distribuição por tipo",
       "porStatus": "Distribuição por status",
       "analisadas": "{{analisadas}} de {{total}} certidões analisadas",
-      "parcial": "O limite operacional foi atingido. Os números abaixo representam uma amostra bounded da base ativa.",
+      "parcial": "O limite operacional foi atingido. Os números abaixo representam uma amostra limitada da base ativa.",
       "ultimaAtualizacao": "Última atualização observada: {{valor}}",
-      "semDados": "Ainda não existem acompanhamentos ativos para consolidar."
+      "semDados": "Ainda não existem acompanhamentos ativos para consolidar.",
+      "erro": "Não foi possível carregar a visão gerencial das certidões."
     }
   }
 }
