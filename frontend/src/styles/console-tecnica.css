@@ -1,0 +1,10 @@
+.console-technical__workers-title {
+  justify-content: space-between;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.console-technical__workers-title h2 {
+  margin: 0;
+  font-size: 1rem;
+}
