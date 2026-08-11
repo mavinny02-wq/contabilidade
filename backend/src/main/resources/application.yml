@@ -112,6 +112,8 @@ app:
       unavailable-after: ${APP_WORKER_HEARTBEAT_UNAVAILABLE_AFTER:PT5M}
       future-tolerance: ${APP_WORKER_HEARTBEAT_FUTURE_TOLERANCE:PT30S}
       max-listed: ${APP_WORKER_HEARTBEAT_MAX_LISTED:100}
+      history-sample-interval: ${APP_WORKER_HEARTBEAT_HISTORY_SAMPLE_INTERVAL:PT5M}
+      history-max-rows: ${APP_WORKER_HEARTBEAT_HISTORY_MAX_ROWS:5000}
   automation:
     session:
       public-path: ${APP_AUTOMATION_PUBLIC_PATH:/automation}
