@@ -3,11 +3,13 @@ package br.com.contabilidade.empresa.api;
 import br.com.contabilidade.empresa.domain.RegimeTributario;
 import br.com.contabilidade.empresa.domain.StatusEmpresa;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record FilialRequest(
+public record FilialAtualizacaoRequest(
         @NotBlank String cnpj,
+        @NotNull Boolean ativa,
         StatusEmpresa status,
         @Size(max = 10) String cnaePrincipal,
         RegimeTributario regimeTributario,

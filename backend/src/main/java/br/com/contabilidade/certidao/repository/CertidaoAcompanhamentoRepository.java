@@ -13,6 +13,7 @@ import org.springframework.data.repository.query.Param;
 
 public interface CertidaoAcompanhamentoRepository extends JpaRepository<CertidaoAcompanhamento, UUID> {
     Optional<CertidaoAcompanhamento> findByEstabelecimentoIdAndTipo(UUID estabelecimentoId, TipoCertidao tipo);
+    List<CertidaoAcompanhamento> findByEstabelecimentoId(UUID estabelecimentoId);
     List<CertidaoAcompanhamento> findByEmpresaIdAndAtivaTrueOrderByEstabelecimentoIdAscTipoAsc(UUID empresaId);
     List<CertidaoAcompanhamento> findByAtivaTrueOrderByEmpresaIdAscEstabelecimentoIdAscTipoAsc();
     List<CertidaoAcompanhamento> findByAtivaTrueAndProximaConsultaEmBefore(Instant agora);
