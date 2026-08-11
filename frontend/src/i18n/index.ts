@@ -1,6 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import ptBR from './pt-BR.json';
+import ptBRAgendaCertidoes from './pt-BR-agenda-certidoes.json';
 import ptBRAuditoriaExportacao from './pt-BR-auditoria-exportacao.json';
 import ptBRBackups from './pt-BR-backups.json';
 import ptBRCertidoesLote from './pt-BR-certidoes-lote.json';
@@ -70,6 +71,9 @@ const translation = {
     },
     lote: {
       ...ptBRCertidoesLote.certidoes.lote,
+    },
+    agenda: {
+      ...ptBRAgendaCertidoes.certidoes.agenda,
     },
   },
   consoleTecnica: {
