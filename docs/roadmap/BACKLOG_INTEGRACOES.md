@@ -9,6 +9,12 @@
 - `INFOSIMPLES` — somente definição;
 - `MANUAL` — contingência operacional.
 
+## Observabilidade após v0.5.1 — aguardando runtime
+
+- `OBS-PRV-001`: histórico operacional por provider com status, taxa de sucesso, duração média e
+  custo estimado separado por moeda; evidência em
+  `docs/implementacao/OBS_PRV_001_HISTORICO_PROVEDORES.md`.
+
 ## HIST-CRT-007 — Serpro Consulta CND
 
 **Estado:** pacote v0.5.0 preparado; contrato e runtime pendentes.
