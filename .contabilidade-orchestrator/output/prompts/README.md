@@ -20,14 +20,34 @@ docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md
 A classificação é `CLOUD_AMARELO`: o backend Maven ficou bloqueado por HTTP 403 do registry e o
 Cloud não possui Docker/Windows para comprovar a stack.
 
+## SEC-AUT-001
+
+O usuário autorizou explicitamente a implementação antecipada de `SEC-AUT-001`. O item foi retirado
+da onda candidata e está em:
+
+```text
+IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME
+```
+
+Evidência:
+
+```text
+docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md
+```
+
+O arquivo `PREVIEW_SLOT_1_SEC_AUT_001_anti_replay_sessao.md` está arquivado como referência e não
+deve ser executado novamente. A implementação usa a migration V8, consumo único de `jti` no backend
+e grant HttpOnly no worker. Ela não fecha o gate nem libera os demais previews.
+
 ## Provas ainda obrigatórias
 
 - Maven verde em ambiente com acesso ao registry;
 - builds no Windows com Node 22.12+;
 - Compose efetivo `dev` e `onpremise`;
 - imagens artifact-only reais;
-- PostgreSQL, `postgres-bootstrap`, Flyway, Keycloak e Liquibase;
-- BAT, healthchecks, endpoints, proxies e smoke UI.
+- PostgreSQL, `postgres-bootstrap`, Flyway V1–V8, Keycloak e Liquibase;
+- BAT, healthchecks, endpoints, proxies e smoke UI;
+- prova runtime do anti-replay de `SEC-AUT-001`.
 
 A extração de PDF sintético já foi resolvida no Linux Cloud. No ambiente local resta comprovar o
 empacotamento da imagem artifact-only do worker, não repetir o mesmo teste apenas por formalidade.
@@ -42,6 +62,7 @@ Cloud Linux. O fluxo correto é:
 3. salvar a saída no relatório canônico ou em um commit de evidência;
 4. enviar uma task `CODEX_CLOUD_LINUX` apenas para reconciliar esse commit.
 
-Os arquivos `PREVIEW_SLOT_*` continuam apenas como candidatos. Eles não estão selecionados e não
-devem ser executados até que a evidência runtime local seja `VERDE` no mesmo commit atualizado de
-`main`.
+Os arquivos `PREVIEW_SLOT_2_*` a `PREVIEW_SLOT_5_*` continuam apenas como candidatos. Eles não estão
+selecionados e não devem ser executados até que a evidência runtime local seja `VERDE` no mesmo
+commit atualizado de `main`. Uma quinta vaga da futura onda deverá ser selecionada durante a próxima
+reconciliação canônica.
