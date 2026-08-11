@@ -10,6 +10,7 @@ import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
 import ptBRDashboardCertidoes from './pt-BR-dashboard-certidoes.json';
 import ptBREmpresasClassificacao from './pt-BR-empresas-classificacao.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
+import ptBRFaturasProvedores from './pt-BR-faturas-provedores.json';
 import ptBRFiliais from './pt-BR-filiais.json';
 import ptBRHistoricoEmpresas from './pt-BR-historico-empresas.json';
 import ptBRHistoricoProvedores from './pt-BR-historico-provedores.json';
@@ -26,6 +27,7 @@ const translation = {
     ...ptBRBackups.menu,
     ...ptBRHistoricoProvedores.menu,
     ...ptBRConfiguracaoSegura.menu,
+    ...ptBRFaturasProvedores.menu,
   },
   auditoria: {
     ...ptBR.auditoria,
@@ -39,6 +41,9 @@ const translation = {
   },
   configuracaoSegura: {
     ...ptBRConfiguracaoSegura.configuracaoSegura,
+  },
+  faturasProvedores: {
+    ...ptBRFaturasProvedores.faturasProvedores,
   },
   responsaveisModulo: {
     ...ptBRResponsaveisModulo.responsaveisModulo,
