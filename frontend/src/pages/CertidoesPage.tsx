@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api, baixarArquivo, type ApiError } from '../api/http';
 import type { Certidao, EmpresaResumo, Pagina, StatusCertidao, TipoCertidao } from '../api/types';
 import { useAuth } from '../auth/AuthProvider';
@@ -37,6 +37,7 @@ type SolicitacaoLoteResponse = {
 
 export function CertidoesPage() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { temPermissao } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [empresas, setEmpresas] = useState<EmpresaResumo[]>([]);
@@ -220,6 +221,9 @@ export function CertidoesPage() {
         descricao={t('certidoes.descricao')}
         acoes={
           <>
+            <Button variante="secundario" onClick={() => navigate('/certidoes/agenda')}>
+              {t('certidoes.agenda.acao')}
+            </Button>
             {podeSolicitar ? (
               <Button
                 onClick={() => void solicitarSelecionadas()}
