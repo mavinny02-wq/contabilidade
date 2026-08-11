@@ -208,3 +208,95 @@ Em Windows com Docker Desktop Linux, Node compatível, `.env` seguro e acesso ao
 ## Git final
 
 Branch de entrega: `validation/runtime-completa-v051`. Arquivos intencionalmente alterados: `automation-worker/src/PdfTextExtractor.ts` e este relatório. A evidência final de `git diff --check`, `git status --short`, commit e PR é registrada na entrega Git e na resposta final, pois o SHA do próprio commit não pode ser autorreferenciado dentro de seu conteúdo.
+
+## Execução local Windows — 2026-08-11 00:39 UTC
+
+### Baseline
+
+O checkout disponível estava limpo no commit `e46f85efc47d5c5cbfea15994e2930b97c844646`, com `VERSION` igual a `0.5.1`. A execução iniciou na branch `work` e criou a branch dedicada `validation/windows-runtime-v051`. Não foi possível atualizar `main`: o checkout não possui remoto `origin` configurado e `git fetch origin` terminou com exit code 128. Assim, o baseline esperado foi identificado localmente, mas sua atualidade remota não foi comprovada.
+
+### Toolchain
+
+O ambiente fornecido é um container **Linux** (`uname -a`: Linux x86_64), não a máquina Windows obrigatória em `D:\priv\priv\projeto\contabilidade`. O caminho Windows não existe, `cmd.exe`, Docker, Docker Compose, WSL e `.env` não estão disponíveis. Estavam disponíveis Git 2.43.0, OpenJDK/Javac 21.0.2, Maven 3.9.10 usando Java 21.0.2, Node 20.20.2 e npm 11.4.2. Os dois lockfiles npm estão presentes. Essa combinação não satisfaz as precondições explícitas da validação local Windows com Docker Desktop.
+
+### Builds e testes
+
+**NÃO EXECUTADOS NESTA EXECUÇÃO LOCAL WINDOWS — BLOQUEADO_POR_AMBIENTE.** Não foram reaproveitados resultados Cloud como prova Windows e não foram simulados `mvn clean verify`, builds ou testes npm.
+
+### Imagens artifact-only
+
+**NÃO RECONSTRUÍDAS — BLOQUEADO_POR_AMBIENTE.** Docker não está instalado neste ambiente.
+
+### Containers
+
+Nenhum dos seis serviços foi iniciado ou comprovado nesta execução: PostgreSQL, `postgres-bootstrap`, Keycloak, backend, automation worker e frontend permanecem **NÃO COMPROVADOS**.
+
+### PostgreSQL e bootstrap
+
+**NÃO COMPROVADOS — BLOQUEADO_POR_AMBIENTE.** Nenhum volume foi apagado e nenhuma operação destrutiva foi executada.
+
+### Keycloak e Liquibase
+
+**NÃO COMPROVADOS — BLOQUEADO_POR_AMBIENTE.** `databasechangelog`, `databasechangeloglock` e o estado do lock Liquibase não foram consultados. Nenhuma tabela foi criada manualmente.
+
+### Backend e Flyway
+
+**NÃO COMPROVADOS — BLOQUEADO_POR_AMBIENTE.** O histórico V1–V7 não foi consultado em banco, nenhuma migration foi alterada e `flyway repair` não foi executado.
+
+### Worker
+
+**NÃO COMPROVADO EM RUNTIME — BLOQUEADO_POR_AMBIENTE.** Nenhum browser ou provider foi aberto.
+
+### Frontend
+
+**NÃO COMPROVADO EM RUNTIME — BLOQUEADO_POR_AMBIENTE.** Não houve renderização local nem captura de screenshot.
+
+### Endpoints
+
+**NÃO EXECUTADOS — BLOQUEADO_POR_AMBIENTE.** Sem stack Windows, não há prova válida de `/healthz`, liveness, readiness, saúde do worker ou proxies `/api`, `/auth` e `/automation`.
+
+### Smoke UI
+
+**NÃO EXECUTADO — BLOQUEADO_POR_AMBIENTE.** A aplicação não estava disponível em `http://localhost:8088`; o CRUD sintético também não foi executado por segurança.
+
+### PDF sintético
+
+**NÃO EXECUTADO — BLOQUEADO_POR_AMBIENTE.** Nenhum documento real ou sintético foi criado ou versionado.
+
+### Segurança e observabilidade
+
+Nenhum provider externo foi chamado, nenhum provider real foi habilitado e nenhum segredo, `.env`, token, cookie, certificado, CNPJ ou payload fiscal foi exibido. Por ausência da stack, token interno, heartbeat, Console Técnica, autorização documental e logs de runtime não foram comprovados.
+
+### Correções realizadas
+
+Nenhuma correção de código ou configuração foi realizada: o blocker é exclusivamente a incompatibilidade do ambiente de execução disponibilizado com o Windows local exigido. Esta seção documental registra o resultado sem promover o gate.
+
+### Comandos e exit codes
+
+| Comando | Resultado |
+|---|---|
+| `git status --short` | 0; árvore inicialmente limpa |
+| `git branch --show-current` | 0; `work` |
+| `git rev-parse HEAD` | 0; baseline esperado |
+| `git fetch origin` | 128; remoto `origin` ausente |
+| `uname -a` | 0; Linux x86_64 |
+| teste do caminho `D:\priv\priv\projeto\contabilidade` | 1; ausente |
+| `cmd.exe` | 1; executável ausente |
+| `git --version` | 0; 2.43.0 |
+| `java -version` / `javac -version` | 0; 21.0.2 |
+| `mvn --version` | 0; Maven 3.9.10 sobre Java 21.0.2 |
+| `node --version` | 0; 20.20.2 |
+| `npm --version` | 0; 11.4.2 |
+| `docker --version` / `docker compose version` | 127; Docker ausente |
+| `wsl --version` | 127; WSL ausente |
+| teste de presença de `.env` | 1; ausente, sem exibir conteúdo |
+| testes dos dois `package-lock.json` | 0; presentes |
+| `git switch -c validation/windows-runtime-v051` | 0 |
+
+### Estado final
+
+A aplicação **não está rodando** em `http://localhost:8088`. Estado dos seis serviços: PostgreSQL **não iniciado**; `postgres-bootstrap` **não iniciado**; Keycloak **não iniciado**; backend **não iniciado**; automation worker **não iniciado**; frontend **não iniciado**. O gate `GATE-VAL-001` e o item `AMB-002` permanecem abertos; nenhum arquivo de reconciliação foi promovido.
+
+### Classificação local
+
+**BLOQUEADO_POR_AMBIENTE.** A prova integral só pode ser produzida na máquina Windows indicada, com o repositório em `D:\priv\priv\projeto\contabilidade`, Docker Desktop ativo em containers Linux, `cmd.exe`, WSL, `.env` seguro e remoto Git configurado. Esta execução não fundamenta classificação VERDE e não autoriza merge automático.
