@@ -7,6 +7,7 @@ import { AgendaCertidoesPage } from '../pages/AgendaCertidoesPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { EmpresasPage } from '../pages/EmpresasPage';
 import { EmpresaDetalhePage } from '../pages/EmpresaDetalhePage';
+import { ResponsaveisModuloPage } from '../pages/ResponsaveisModuloPage';
 import { DocumentosPage } from '../pages/DocumentosPage';
 import { CertidoesPage } from '../pages/CertidoesPage';
 import { ExecucoesPage } from '../pages/ExecucoesPage';
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
             children: [
               { path: 'empresas', element: <EmpresasPage /> },
               { path: 'empresas/:id', element: <EmpresaDetalhePage /> },
+              { path: 'empresas/:id/responsaveis-modulo', element: <ResponsaveisModuloPage /> },
             ],
           },
           {

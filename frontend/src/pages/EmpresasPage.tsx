@@ -145,6 +145,9 @@ export function EmpresasPage() {
                     <td>{empresa.regimeTributario ? t(`empresas.regimes.${empresa.regimeTributario}`) : t('comum.naoInformado')}</td>
                     <td>{[empresa.municipio, empresa.uf].filter(Boolean).join(' / ') || t('comum.naoInformado')}</td>
                     <td className="table-actions">
+                      <Button variante="texto" onClick={() => navigate(`/empresas/${empresa.id}/responsaveis-modulo`)}>
+                        {t('responsaveisModulo.acao')}
+                      </Button>
                       <Button variante="texto" onClick={() => navigate(`/empresas/${empresa.id}`)}>
                         {t('acoes.abrir')}
                       </Button>

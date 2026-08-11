@@ -1,0 +1,24 @@
+{
+  "responsaveisModulo": {
+    "acao": "Responsáveis",
+    "titulo": "Responsáveis por módulo",
+    "descricao": "Defina os contatos operacionais de cada área sem alterar o cadastro fiscal.",
+    "descricaoEmpresa": "Contatos operacionais de {{empresa}}.",
+    "configurados": "Módulos configurados",
+    "empresa": "Empresa",
+    "nome": "Nome do responsável",
+    "email": "E-mail",
+    "telefone": "Telefone",
+    "ativo": "Ativo",
+    "naoConfigurado": "Não configurado",
+    "mensagemSalvo": "Responsável de {{modulo}} atualizado.",
+    "modulos": {
+      "FISCAL": "Fiscal",
+      "CONTABIL": "Contábil",
+      "FINANCEIRO": "Financeiro",
+      "DOCUMENTOS": "Documentos",
+      "AUTOMACAO": "Automação",
+      "ADMINISTRACAO": "Administração"
+    }
+  }
+}

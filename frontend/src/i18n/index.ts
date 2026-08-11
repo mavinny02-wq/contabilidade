@@ -15,6 +15,7 @@ import ptBRHistoricoEmpresas from './pt-BR-historico-empresas.json';
 import ptBRHistoricoProvedores from './pt-BR-historico-provedores.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
 import ptBRPreviewDocumentos from './pt-BR-preview-documentos.json';
+import ptBRResponsaveisModulo from './pt-BR-responsaveis-modulo.json';
 import ptBRRetencaoDocumentos from './pt-BR-retencao-documentos.json';
 import ptBRStorageReconciliacao from './pt-BR-storage-reconciliacao.json';
 
@@ -38,6 +39,9 @@ const translation = {
   },
   configuracaoSegura: {
     ...ptBRConfiguracaoSegura.configuracaoSegura,
+  },
+  responsaveisModulo: {
+    ...ptBRResponsaveisModulo.responsaveisModulo,
   },
   historicoProvedores: {
     ...ptBRHistoricoProvedores.historicoProvedores,

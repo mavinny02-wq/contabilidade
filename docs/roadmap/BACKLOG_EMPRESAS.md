@@ -29,11 +29,12 @@
   paginado e sem exposição de `detalhes_json`; evidência em
   `docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md`;
 - `EMP-GRP-001`: grupo opcional, até vinte tags, busca integrada e edição separada do cadastro
-  fiscal; evidência em `docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md`.
+  fiscal; evidência em `docs/implementacao/EMP_GRP_001_GRUPOS_TAGS.md`;
+- `EMP-RSP-001`: responsáveis distintos por módulo com contato opcional, ativação não destrutiva e
+  auditoria sem PII; evidência em `docs/implementacao/EMP_RSP_001_RESPONSAVEIS_MODULO.md`.
 
 ## Pendências
 
 - importação Excel nativa;
 - enriquecimento oficial;
-- validação específica de IE/IM;
-- responsáveis por módulo.
+- validação específica de IE/IM.
