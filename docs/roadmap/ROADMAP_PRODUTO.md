@@ -13,7 +13,7 @@
 - Docker, PostgreSQL/Flyway, Keycloak/Liquibase, endpoints e interface ainda exigem prova no ambiente-alvo;
 - a próxima onda permanece condicionada à validação runtime local verde.
 
-## Gate imediato
+## Gate imediato — execução humana local
 
 1. atualizar `main` no workspace Windows;
 2. confirmar JDK 21, Node 22.12+ e Docker Desktop;
@@ -25,7 +25,11 @@
 8. confirmar Keycloak/Liquibase e Flyway V1–V7;
 9. validar endpoints técnicos, proxies e smoke da interface;
 10. anexar a evidência local ao relatório runtime;
-11. reconciliar o gate e promover os cinco previews somente após classificação `VERDE`.
+11. executar uma task Cloud apenas para reconciliar o commit de evidência;
+12. promover os cinco previews somente após classificação `VERDE`.
+
+Não criar outra task Codex com executor Windows: o usuário executa a prova local, e o Codex Cloud
+reconcilia o resultado posteriormente.
 
 A extração com PDF sintético já foi comprovada no Linux Cloud. A prova pendente relacionada ao worker
 é a execução da imagem artifact-only construída pelo BAT no Docker real, não a repetição formal do
