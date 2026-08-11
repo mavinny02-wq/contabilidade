@@ -2,12 +2,17 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import ptBR from './pt-BR.json';
 import ptBRConsoleTecnica from './pt-BR-console-tecnica.json';
+import ptBRDashboardCertidoes from './pt-BR-dashboard-certidoes.json';
 import ptBRExportacaoCertidoes from './pt-BR-exportacao-certidoes.json';
 import ptBRFiliais from './pt-BR-filiais.json';
 import ptBRImportacaoEmpresas from './pt-BR-importacao-empresas.json';
 
 const translation = {
   ...ptBR,
+  dashboard: {
+    ...ptBR.dashboard,
+    ...ptBRDashboardCertidoes.dashboard,
+  },
   empresas: {
     ...ptBR.empresas,
     ...ptBRImportacaoEmpresas.empresas,
