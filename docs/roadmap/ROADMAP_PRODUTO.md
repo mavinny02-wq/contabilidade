@@ -5,6 +5,7 @@
 - baseline integrada: `0.5.1`;
 - commit da onda de segurança/performance/operação: `b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01`;
 - commit após a exportação CSV: `99df51e9b37195692e35c6651fafb10905f83b32`;
+- commit após a manutenção individual de filiais: `4468f98f4b57a3a5d233f5ae890447ac6a73002a`;
 - validação Cloud canônica histórica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
 - validação runtime histórica/parcial: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
 - classificação do gate: `IMPLEMENTACOES_ATUAIS_RUNTIME_LOCAL_PENDENTE`;
@@ -21,11 +22,12 @@ As PRs `#14` a `#18` integraram:
 4. `OBS-WRK-001` — heartbeat atrasado/expirado na Console Técnica;
 5. `SEC-DOC-001` — integridade do storage antes do download.
 
-A PR `#20` integrou:
+As PRs posteriores integraram:
 
-6. `EXP-CRT-001` — exportação CSV filtrável do Centro de Certidões.
+6. `EXP-CRT-001` — exportação CSV filtrável do Centro de Certidões (`#20`);
+7. `EMP-FIL-001` — edição e inativação individual de filiais (`#23`).
 
-Os seis itens estão `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`. Nenhum provider fiscal foi acionado
+Os sete itens estão `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`. Nenhum provider fiscal foi acionado
 durante as implementações.
 
 ## Resultados preparados
@@ -51,7 +53,9 @@ durante as implementações.
 - classificação de worker saudável, degradado e indisponível;
 - exibição de último heartbeat, idade e motivo seguro;
 - exportação respeita filtros de empresa, tipo e status exibido;
-- operação de exportação gera auditoria sem conteúdo fiscal sensível.
+- operação de exportação gera auditoria sem conteúdo fiscal sensível;
+- Empresa 360 permite editar, inativar e reativar cada filial sem alterar seu CNPJ;
+- ciclo ativo da filial sincroniza os acompanhamentos aplicáveis sem apagar resultado, documento ou histórico.
 
 ## Gate imediato — execução humana local
 
@@ -62,7 +66,7 @@ durante as implementações.
 5. comprovar imagens artifact-only e serviços saudáveis;
 6. validar Keycloak/Liquibase e Flyway V1–V8;
 7. executar endpoints e smoke UI;
-8. provar anti-replay, lotes, backup, heartbeat, integridade documental e exportação CSV;
+8. provar anti-replay, lotes, backup, heartbeat, integridade documental, exportação CSV e manutenção de filiais;
 9. anexar a evidência ao relatório runtime;
 10. executar uma task Cloud apenas para reconciliar o commit de evidência.
 
