@@ -18,7 +18,10 @@
   `docs/implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md`;
 - `EXP-CRT-001`: exportação CSV do Centro de Certidões com filtros, leitura em lotes, limite de
   linhas, proteção contra fórmula de planilha e auditoria segura; evidência em
-  `docs/implementacao/EXP_CRT_001_EXPORTACAO_CSV.md`.
+  `docs/implementacao/EXP_CRT_001_EXPORTACAO_CSV.md`;
+- `CRT-DASH-001`: dashboard gerencial bounded com distribuição por status/tipo, vencimentos e
+  identificação explícita de amostra parcial; evidência em
+  `docs/implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md`.
 
 ## Provider Serpro
 
@@ -35,7 +38,6 @@ Resultado normalizado:
 - runtime dos quatro providers reais;
 - amostras oficiais e anonimizadas de PDFs;
 - reconciliação de custo estimado com fatura;
-- dashboard gerencial;
 - bulk de alto volume;
 - testes de unidade, integração, concorrência e E2E;
 - InfoSimples real.

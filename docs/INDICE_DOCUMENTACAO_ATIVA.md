@@ -44,6 +44,7 @@
 - [EMP-FIL-001 — Edição e inativação individual de filial](implementacao/EMP_FIL_001_EDICAO_FILIAL.md)
 - [EMP-IMP-001 — Importação CSV de empresas](implementacao/EMP_IMP_001_IMPORTACAO_CSV.md)
 - [AUT-SHD-001 — Shutdown gracioso do worker](implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md)
+- [CRT-DASH-001 — Dashboard gerencial de certidões](implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md)
 
 ## Integrações
 

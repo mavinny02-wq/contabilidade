@@ -1,0 +1,20 @@
+{
+  "dashboard": {
+    "certidoesGerencial": {
+      "titulo": "Visão gerencial das certidões",
+      "descricao": "Distribuição atual dos acompanhamentos ativos, calculada pelas mesmas regras do Centro de Certidões.",
+      "total": "Acompanhamentos ativos",
+      "atencao": "Precisam de atenção",
+      "emAndamento": "Em andamento",
+      "vencem30Dias": "Vencem em até 30 dias",
+      "semValidade": "Sem validade informada",
+      "porTipo": "Distribuição por tipo",
+      "porStatus": "Distribuição por status",
+      "analisadas": "{{analisadas}} de {{total}} certidões analisadas",
+      "parcial": "O limite operacional foi atingido. Os números abaixo representam uma amostra limitada da base ativa.",
+      "ultimaAtualizacao": "Última atualização observada: {{valor}}",
+      "semDados": "Ainda não existem acompanhamentos ativos para consolidar.",
+      "erro": "Não foi possível carregar a visão gerencial das certidões."
+    }
+  }
+}
