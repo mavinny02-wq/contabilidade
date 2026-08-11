@@ -72,24 +72,29 @@ export function criarServidor(
 
       const sessionRoute = parseSessionRoute(url.pathname);
       if (sessionRoute) {
+        const ticketQuery = url.searchParams.get('ticket') ?? undefined;
+        if (ticketQuery && !(request.method === 'GET' && sessionRoute.action === 'info')) {
+          throw new TicketError('TICKET_TROCA_ROTA_INVALIDA', 400);
+        }
+
         const authentication = await tickets.authenticate({
-          ticket: url.searchParams.get('ticket') ?? undefined,
+          ticket: ticketQuery,
           expectedSessionId: sessionRoute.sessionId,
           cookieHeader: request.headers.cookie,
           secureCookie: isSecureRequest(request),
         });
+
+        const ticketPayload = authentication.payload;
+        const sessionInfo = sessions.info(sessionRoute.sessionId);
+        if (sessionInfo.executionId !== ticketPayload.eid) {
+          throw new TicketError('TICKET_EXECUCAO_DIVERGENTE');
+        }
         if (authentication.setCookie) {
           response.setHeader('Set-Cookie', authentication.setCookie);
         }
 
-        const ticket = authentication.payload;
-        const sessionInfo = sessions.info(sessionRoute.sessionId);
-        if (sessionInfo.executionId !== ticket.eid) {
-          throw new TicketError('TICKET_EXECUCAO_DIVERGENTE');
-        }
-
         if (request.method === 'GET' && sessionRoute.action === 'info') {
-          json(response, 200, sessions.info(sessionRoute.sessionId));
+          json(response, 200, sessionInfo);
           return;
         }
 
@@ -103,7 +108,7 @@ export function criarServidor(
           await sessions.input(
             sessionRoute.sessionId,
             validateInput(body),
-            ticket.sub,
+            ticketPayload.sub,
           );
           json(response, 202, { aceito: true });
           return;
