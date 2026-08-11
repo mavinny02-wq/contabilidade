@@ -4,17 +4,21 @@
     "branch": "main",
     "requiredVersion": "0.5.1",
     "previousVersion": "0.5.0",
-    "commitDeValidacaoCloud": "beabe35bd6aef2dc4e64515a1b2255963629218d",
-    "pullRequestDeValidacaoCloud": 9,
-    "relatorioCloud": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
+    "commitDeValidacaoCloud": "6c101a3a0699cd843e9257f685550c61d662360f",
+    "pullRequestDeValidacaoCloud": 12,
+    "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
+    "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
-  "fase": "GATE_VAL_001_VALIDACAO_CLOUD_PARCIAL_WINDOWS_PENDENTE",
+  "fase": "GATE_VAL_001_CLOUD_AMARELO_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Comprovar a baseline v0.5.1 no Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
-    "evidenciaParcial": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md",
-    "classificacaoParcial": "BLOQUEADO_POR_AMBIENTE",
-    "criterioDeFechamento": "Anexar prova local Windows verde de builds, Compose, schemas, endpoints e smoke UI no mesmo commit de main."
+    "descricao": "Comprovar a baseline v0.5.1 no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
+    "evidenciaCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
+    "classificacaoCloud": "CLOUD_AMARELO",
+    "evidenciaRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md",
+    "classificacaoRuntime": "BLOQUEADO_POR_AMBIENTE",
+    "criterioDeFechamento": "O usuário executa os scripts locais, commita a evidência verde de Maven, imagens artifact-only, Compose, schemas, endpoints e smoke UI; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
   },
   "slotsOficiais": [],
   "ondaCandidataAposGate": [
@@ -58,21 +62,28 @@
     "NPM_LOCKFILES_VERSIONED",
     "FRONTEND_CODEX_CLOUD_BUILD_GREEN",
     "WORKER_CODEX_CLOUD_BUILD_GREEN",
-    "WORKER_PDFJS_IMPORT_STARTUP_GREEN"
+    "WORKER_PDFJS_IMPORT_STARTUP_GREEN",
+    "SYNTHETIC_PDF_PARSE_CLOUD_LINUX_GREEN",
+    "COMPOSE_YAML_STATIC_VALIDATION_GREEN",
+    "DOCKERFILES_STATIC_REVIEW_GREEN",
+    "MIGRATIONS_V1_V7_STATIC_REVIEW_GREEN",
+    "SHELL_JSON_STATIC_VALIDATION_GREEN",
+    "CODEX_EXECUTOR_CONTRACT_DOCUMENTED"
   ],
   "provasPendentes": [
-    "MAVEN_WINDOWS_VERIFY_PENDING",
+    "MAVEN_TARGET_ENV_VERIFY_PENDING",
     "FRONTEND_WINDOWS_NODE22_BUILD_PENDING",
     "WORKER_WINDOWS_NODE22_BUILD_PENDING",
-    "DOCKER_COMPOSE_DEV_CONFIG_PENDING",
-    "DOCKER_COMPOSE_ONPREMISE_CONFIG_PENDING",
+    "DOCKER_COMPOSE_DEV_EFFECTIVE_CONFIG_PENDING",
+    "DOCKER_COMPOSE_ONPREMISE_EFFECTIVE_CONFIG_PENDING",
+    "ARTIFACT_ONLY_IMAGES_RUNTIME_PENDING",
+    "WORKER_ARTIFACT_ONLY_IMAGE_RUNTIME_PENDING",
     "POSTGRES_BOOTSTRAP_RUNTIME_PENDING",
     "POSTGRESQL_FLYWAY_V1_V7_PENDING",
     "KEYCLOAK_LIQUIBASE_RUNTIME_PENDING",
     "WINDOWS_BAT_RUNTIME_PENDING",
     "TECHNICAL_ENDPOINTS_RUNTIME_PENDING",
-    "UI_SMOKE_RUNTIME_PENDING",
-    "SYNTHETIC_PDF_PARSE_PENDING"
+    "UI_SMOKE_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }

@@ -37,10 +37,11 @@ O registro é dono da identidade permanente e do status atual.
 | `DEC-003` | Decisão | Segurança | PARCIAL | storage local e secrets por ambiente |
 | `DEC-004` | Decisão | Infra | ABERTA | TLS e DNS internos |
 | `AMB-001` | Ambiente | Git | RESOLVIDO | main remota |
-| `AMB-002` | Ambiente | Dependências | VALIDACAO_CLOUD_PARCIAL_WINDOWS_PENDENTE | lockfiles e builds frontend/worker comprovados no Codex Cloud; Maven, Node suportado e Docker Windows pendentes |
+| `AMB-002` | Ambiente | Dependências | CLOUD_AMARELO_RUNTIME_LOCAL_PENDENTE | lockfiles, frontend, worker e PDF sintético comprovados no Cloud; Maven no ambiente-alvo, Node suportado e Docker ainda pendentes |
 | `HIST-VAL-001` | História | Validação | INTEGRADO_COM_PROVAS_PENDENTES | análise canônica, BAT artifact-only, startup sequencial e validações de schema integrados |
-| `VAL-RUNTIME-V051-001` | Validação | Runtime | BLOQUEADO_POR_AMBIENTE | PR #9: frontend/worker verdes no Codex Cloud; runtime Windows/Docker, schemas, endpoints e UI não executados |
-| `GATE-VAL-001` | Gate | Validação | VALIDACAO_CLOUD_PARCIAL_WINDOWS_PENDENTE | reprodutibilidade parcialmente comprovada; prova local Windows/Docker ainda obrigatória antes da onda oficial |
+| `VAL-RUNTIME-V051-001` | Validação | Runtime | BLOQUEADO_POR_AMBIENTE | relatório histórico: runtime Windows/Docker, schemas, endpoints e UI não executados no Cloud |
+| `VAL-CLOUD-V051-002` | Validação | Cloud | CLOUD_AMARELO | PR #12: frontend/worker, PDF sintético e análises estáticas verdes; Maven bloqueado por registry e runtime local fora do escopo Cloud |
+| `GATE-VAL-001` | Gate | Validação | CLOUD_AMARELO_RUNTIME_LOCAL_PENDENTE | reprodutibilidade parcialmente comprovada; prova Docker/Windows ainda obrigatória antes da onda oficial |
 | `SEC-AUT-001` | Segurança | Automação | CANDIDATO_BLOQUEADO_PELO_GATE | anti-replay de ticket da sessão interativa |
 | `PERF-CRT-001` | Performance | Certidões | CANDIDATO_BLOQUEADO_PELO_GATE | limitar consultas globais do scheduler de certidões |
 | `OPS-BKP-001` | Operação | Backup | CANDIDATO_BLOQUEADO_PELO_GATE | manifesto e verificação dos backups |

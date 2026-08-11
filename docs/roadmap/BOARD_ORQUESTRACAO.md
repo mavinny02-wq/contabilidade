@@ -4,14 +4,19 @@
 
 - branch de integração: `main`;
 - versão atual: `0.5.1`;
-- evidência cloud integrada: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
-- merge da validação cloud: PR `#9`, commit `beabe35bd6aef2dc4e64515a1b2255963629218d`;
-- classificação da evidência cloud: `BLOQUEADO_POR_AMBIENTE` para runtime completo;
+- validação Cloud canônica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
+- validação runtime histórica/parcial: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
+- merge da validação Cloud mais recente: PR `#12`, commit `6c101a3a0699cd843e9257f685550c61d662360f`;
+- classificação Cloud: `CLOUD_AMARELO`;
 - lockfiles versionados: comprovado;
 - frontend `npm ci`/i18n/typecheck/build no Codex Cloud: comprovado;
-- worker `npm ci`/typecheck/build e startup sem crash de PDF.js no Codex Cloud: comprovado após correção;
+- worker `npm ci`/typecheck/build e startup sem crash de PDF.js no Codex Cloud: comprovado;
+- extração de PDF sintético no Linux Cloud: comprovada com texto fictício e arquivo temporário removido;
+- sintaxe YAML/JSON/shell e revisão estática de Compose, Dockerfiles, BAT, PowerShell e migrations V1–V7: comprovadas no limite Cloud;
+- backend Maven no Cloud: bloqueado por HTTP 403 do registry, sem evidência de defeito no código;
 - gate ativo: `GATE-VAL-001`;
-- validação ainda obrigatória: Windows + JDK 21 + Node 22.12+ + Maven + Docker Desktop;
+- validação ainda obrigatória: ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop;
+- executor da prova runtime: `LOCAL_WINDOWS_MANUAL`; não criar outra task Codex fingindo acesso ao Windows;
 - slots oficiais selecionados: zero enquanto o gate não estiver verde;
 - próxima onda: cinco candidatos independentes mantidos como `PREVIEW`.
 
@@ -19,22 +24,30 @@
 
 Todas devem partir do mesmo commit atualizado de `main`:
 
-1. `mvn -B clean verify` verde no Windows com JDK 21 e acesso ao repositório Maven;
+1. `mvn -B clean verify` verde em ambiente com JDK 21 e acesso funcional ao repositório Maven;
 2. frontend e worker verdes no Windows com Node 22.12 ou superior;
-3. `docker compose config` verde para `dev` e `onpremise`;
+3. `docker compose config` efetivo para `dev` e `onpremise` com o `.env` local, sem expor segredos;
 4. execução do `START_CONTABILIDADE.bat dev` sem chamadas fiscais externas;
-5. `postgres` saudável e `postgres-bootstrap` finalizado com código `0`;
-6. Keycloak/Liquibase e Flyway V1–V7 validados por `scripts/validate-database-state.bat dev`;
-7. backend, worker e frontend saudáveis;
-8. endpoints técnicos e smoke da interface aprovados;
-9. parser PDF comprovado com amostra sintética local, sem documento fiscal real;
+5. imagens artifact-only reais construídas e verificadas no Docker Desktop;
+6. `postgres` saudável e `postgres-bootstrap` finalizado com código `0`;
+7. Keycloak/Liquibase e Flyway V1–V7 validados por `scripts/validate-database-state.bat dev`;
+8. backend, worker e frontend saudáveis, sem restart loop;
+9. endpoints técnicos, proxies e smoke da interface aprovados;
 10. aplicação deixada rodando em `http://localhost:8088` durante a prova.
+
+A extração com PDF sintético já foi comprovada no runtime Linux do Codex Cloud. Ela não precisa ser
+repetida apenas por formalidade no Windows; o que continua pendente é comprovar o empacotamento e a
+execução da imagem artifact-only do worker no Docker real.
+
+A coleta dessa evidência é humana: o usuário executa os scripts locais e salva a saída no relatório
+canônico. Depois, uma task `CODEX_CLOUD_LINUX` reconcilia o commit de evidência.
 
 ## Regra de promoção
 
 Os prompts `PREVIEW_SLOT_*` só podem ser promovidos a slots oficiais depois que a evidência local for
-anexada ao relatório runtime e a classificação geral mudar para `VERDE`. A validação cloud da PR #9
-resolveu blockers de lockfile/build frontend/worker, mas não substitui a prova Windows/Docker.
+anexada ao relatório runtime e a classificação geral mudar para `VERDE`. A classificação
+`CLOUD_AMARELO` resolve provas estáticas e de build Cloud, mas não substitui PostgreSQL, Keycloak,
+Docker, endpoints e interface no ambiente-alvo.
 
 ## Candidatos da onda após o gate
 
