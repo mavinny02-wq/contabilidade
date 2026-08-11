@@ -1,31 +1,36 @@
-# PREVIEW SLOT 1 — SEC-AUT-001
+# ARQUIVADO — SEC-AUT-001
 
-- **TASK:** implementar anti-replay de tickets da sessão interativa
-- **TYPE:** IMPLEMENTAÇÃO DE SEGURANÇA
+> Não executar novamente. O usuário autorizou a implementação direta antes do fechamento de
+> `GATE-VAL-001`.
+
 - **ITEM:** `SEC-AUT-001`
-- **BASELINE:** futuro `main` após `GATE-VAL-001` verde
-- **EXECUTION MODE:** CLOUD_FIRST
+- **STATUS:** `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`
+- **BASELINE DA IMPLEMENTAÇÃO:** `4b4716d0edac248d35c7a678bdce8c33ee384e13`
+- **BRANCH:** `feat/sec-aut-001-anti-replay-session-ticket`
+- **MIGRATION:** `V8__interactive_session_ticket_replay.sql`
+- **EVIDÊNCIA:** `docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md`
 
-## Objetivo
+## Resultado implementado
 
-Tornar cada `jti` de ticket de sessão interativa consumível uma única vez ou rotacionável, mantendo
-expiração, vínculo de usuário, execução, intervenção e sessão.
+- cada `jti` é consumido atomicamente uma única vez no PostgreSQL;
+- intervenção, execução, sessão, operador, status e expiração são revalidados no backend;
+- o ticket HMAC aparece somente no primeiro `GET /info`;
+- o worker troca o ticket por um grant opaco e mantém no máximo um grant ativo por sessão;
+- o grant é entregue em cookie `HttpOnly`, `SameSite=Strict`, com escopo da sessão e `Secure` em HTTPS;
+- eventos e comandos não reutilizam o ticket;
+- restart do worker remove o grant local, mas não reabilita o `jti` persistido;
+- nenhum ticket, grant ou segredo bruto é registrado em logs;
+- nenhum bypass ou resolução automática de CAPTCHA foi introduzido.
 
-## Caminhos próprios
+## Estado de validação
 
-- `backend/src/main/java/br/com/contabilidade/common/remote/**`;
-- `automation-worker/src/SessionTicket.ts`;
-- migration `V8__interactive_session_ticket_replay.sql` somente se persistência for necessária;
-- backlog Automação e uma evidência curta.
+A implementação requer prova runtime manual no ambiente-alvo:
 
-## Excluídos
+- Flyway V8 aplicada;
+- primeira troca com cookie HttpOnly;
+- replay respondendo `409 / TICKET_REUTILIZADO`;
+- eventos/input funcionando com grant;
+- reinício do worker sem reabilitar o ticket;
+- logs Nginx sem query string do ticket.
 
-Frontend, Certidões, providers, documentos, backup e Console Técnica.
-
-## Segurança
-
-Não enfraquecer HMAC, expiração ou autorização. Não registrar ticket bruto em logs.
-
-## Validação permitida
-
-Compilação backend/worker, build e `git diff --check`. Não criar/executar testes nesta task.
+O item não fecha `GATE-VAL-001` e não promove os demais previews.
