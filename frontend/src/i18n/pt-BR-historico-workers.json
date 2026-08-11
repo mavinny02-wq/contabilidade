@@ -1,0 +1,28 @@
+{
+  "menu": {
+    "historicoWorkers": "Histórico de workers"
+  },
+  "historicoWorkers": {
+    "titulo": "Histórico de workers",
+    "descricao": "Amostras persistentes de heartbeat para investigar disponibilidade e mudanças de estado.",
+    "inicio": "Data inicial",
+    "fim": "Data final",
+    "workerId": "Worker ID",
+    "versao": "Versão",
+    "observadoEm": "Observado em",
+    "total": "Amostras",
+    "saudavel": "Saudáveis",
+    "degradado": "Degradadas",
+    "indisponivel": "Indisponíveis",
+    "parcial": "Exibindo {{exibidos}} de {{total}} amostras. Restrinja o período ou o worker.",
+    "vazio": "Nenhuma amostra no período",
+    "vazioDescricao": "Os heartbeats serão amostrados quando o worker estiver ativo.",
+    "status": {
+      "SAUDAVEL": "Saudável",
+      "DEGRADADO": "Degradado",
+      "INDISPONIVEL": "Indisponível",
+      "INICIALIZANDO": "Inicializando",
+      "DESCONHECIDO": "Desconhecido"
+    }
+  }
+}
