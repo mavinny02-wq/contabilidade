@@ -49,11 +49,21 @@
 - preserva a evidência divergente para investigação;
 - registra ocorrência segura em auditoria isolada, sem hash bruto, path ou conteúdo.
 
+### Exportação CSV do Centro de Certidões
+
+- adiciona exportação filtrável por empresa, tipo e status exibido;
+- processa acompanhamentos ativos em lotes ordenados e limita a quantidade total de linhas;
+- gera CSV UTF-8 com BOM, separador `;`, cabeçalho estável e nome de arquivo versionável;
+- normaliza quebras de linha, escapa delimitadores e impede fórmula de planilha;
+- não exporta conteúdo de documentos, segredos, tokens ou payload completo de execução;
+- registra quantidade e filtros em auditoria segura;
+- adiciona botão de exportação na interface e configuração operacional por ambiente.
+
 ### Pendências
 
 - build completo Maven/frontend/worker da main atual;
 - execução Docker, Flyway V1–V8, Keycloak/Liquibase e smoke UI;
-- provas runtime focadas dos cinco itens integrados pelas PRs #14 a #18;
+- provas runtime focadas dos itens integrados pelas PRs #14 a #18 e #20;
 - testes automatizados permanentes e E2E.
 
 ## 0.5.1 — 2026-08-09

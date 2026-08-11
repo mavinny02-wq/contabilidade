@@ -8,19 +8,21 @@
     "pullRequestDeValidacaoCloudHistorica": 12,
     "commitDaOndaImplementada": "b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01",
     "pullRequestsDaOnda": [14, 15, 16, 17, 18],
+    "commitAposExpCrt001": "99df51e9b37195692e35c6651fafb10905f83b32",
+    "pullRequestsPosteriores": [20],
     "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
-  "fase": "GATE_VAL_001_ONDA_IMPLEMENTADA_RUNTIME_LOCAL_PENDENTE",
+  "fase": "GATE_VAL_001_ONDA_E_EXP_CRT_001_IMPLEMENTADOS_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Comprovar a main atual, já contendo a onda de segurança, performance, backup e observabilidade, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "descricao": "Comprovar a main atual, já contendo a onda de segurança, performance, backup e observabilidade e a exportação CSV de certidões, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
     "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
     "evidenciaCloudHistorica": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "classificacaoCloudHistorica": "CLOUD_AMARELO",
     "evidenciaRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md",
     "classificacaoRuntime": "BLOQUEADO_POR_AMBIENTE",
-    "criterioDeFechamento": "O usuário executa os scripts locais sobre o commit atual, commita a evidência verde de Maven, frontend, worker, imagens artifact-only, Compose, schemas, endpoints, smoke UI e provas focadas da onda; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
+    "criterioDeFechamento": "O usuário executa os scripts locais sobre o commit atual, commita a evidência verde de Maven, frontend, worker, imagens artifact-only, Compose, schemas, endpoints, smoke UI e provas focadas dos itens implementados; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
   },
   "slotsOficiais": [],
   "itensImplementadosPorAutorizacaoDireta": [
@@ -68,6 +70,15 @@
       "branch": "feat/sec-doc-001-integrity-download",
       "migrationOwnership": null,
       "evidencia": "docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md"
+    },
+    {
+      "itemId": "EXP-CRT-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 20,
+      "mergeCommit": "99df51e9b37195692e35c6651fafb10905f83b32",
+      "branch": "feat/exp-crt-001-csv-export",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/EXP_CRT_001_EXPORTACAO_CSV.md"
     }
   ],
   "ondaCandidataAposGate": [],
@@ -88,6 +99,10 @@
     "SHELL_JSON_STATIC_VALIDATION_GREEN",
     "CODEX_EXECUTOR_CONTRACT_DOCUMENTED"
   ],
+  "provasDeImplementacao": [
+    "EXP_CRT_001_JAVA21_SYNTHETIC_COMPILE_GREEN",
+    "EXP_CRT_001_CSV_SECURITY_REVIEW_GREEN"
+  ],
   "provasPendentes": [
     "MAVEN_CURRENT_MAIN_VERIFY_PENDING",
     "FRONTEND_CURRENT_MAIN_NODE22_BUILD_PENDING",
@@ -106,7 +121,8 @@
     "PERF_CRT_001_BATCH_CURSOR_RUNTIME_PENDING",
     "OPS_BKP_001_POWERSHELL_AND_REAL_BACKUP_PENDING",
     "OBS_WRK_001_HEARTBEAT_STATES_RUNTIME_PENDING",
-    "SEC_DOC_001_STORAGE_TAMPER_RUNTIME_PENDING"
+    "SEC_DOC_001_STORAGE_TAMPER_RUNTIME_PENDING",
+    "EXP_CRT_001_CSV_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }
