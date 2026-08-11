@@ -3,60 +3,68 @@
 ## Checkpoint
 
 - baseline integrada: `0.5.1`;
-- análise canônica: `docs/analise/ANALISE_COMPLETA_BASELINE_V050.md`;
-- validação Cloud canônica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
+- commit mais recente da onda implementada: `b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01`;
+- validação Cloud canônica histórica: `docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md`;
 - validação runtime histórica/parcial: `docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md`;
-- PR `#12` comprovou frontend, worker, startup controlado e extração de PDF sintético no Codex Cloud;
-- Compose, Dockerfiles, scripts e migrations V1–V7 foram revisados estaticamente no Cloud;
-- classificação Cloud atual: `CLOUD_AMARELO`;
-- Maven permaneceu bloqueado por HTTP 403 do registry no Cloud;
-- `SEC-AUT-001` foi implementado por autorização direta e aguarda prova runtime com a migration V8;
-- Docker, PostgreSQL/Flyway, Keycloak/Liquibase, endpoints e interface ainda exigem prova no ambiente-alvo;
-- a próxima onda permanece condicionada à validação runtime local verde.
+- classificação do gate: `ONDA_IMPLEMENTADA_RUNTIME_LOCAL_PENDENTE`;
+- executor da prova runtime: `LOCAL_WINDOWS_MANUAL`;
+- próxima onda: ainda não selecionada.
 
-## Implementação antecipada
+## Onda de segurança, performance e operação implementada
 
-`SEC-AUT-001` não faz mais parte da onda candidata. A solução integrada na branch de implementação:
+As PRs `#14` a `#18` integraram:
 
-- consome o `jti` uma única vez no PostgreSQL;
-- revalida intervenção, execução, sessão, operador, estado e expiração;
-- usa `V8__interactive_session_ticket_replay.sql`;
-- entrega o ticket somente no primeiro `GET /info`;
-- troca o ticket por um único grant ativo por sessão em cookie HttpOnly;
-- mantém o replay bloqueado após restart do worker;
-- não resolve ou contorna CAPTCHA.
+1. `SEC-AUT-001` — anti-replay de tickets da sessão interativa;
+2. `PERF-CRT-001` — lotes bounded no scheduler de certidões;
+3. `OPS-BKP-001` — manifesto e verificação de backups;
+4. `OBS-WRK-001` — heartbeat atrasado/expirado na Console Técnica;
+5. `SEC-DOC-001` — integridade do storage antes do download.
 
-O item permanece `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` e não fecha o gate.
+Os cinco itens estão `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`. Nenhum provider fiscal foi
+acionado durante as implementações.
+
+## Resultados preparados
+
+### Segurança
+
+- migration V8 e ledger de `jti` consumido;
+- ticket usado somente na troca inicial e grant HttpOnly para eventos/comandos;
+- recálculo de tamanho e SHA-256 antes do download documental;
+- auditoria isolada quando a evidência diverge.
+
+### Performance
+
+- inicialização, agendamento e alertas de certidões em lotes configuráveis;
+- queries de IDs bounded;
+- cursores rotativos e transações por item;
+- preservação da idempotência diária.
+
+### Operação e observabilidade
+
+- backup com manifesto, versão, tamanhos e SHA-256;
+- verificação não destrutiva em PowerShell e shell;
+- classificação de worker saudável, degradado e indisponível;
+- exibição de último heartbeat, idade e motivo seguro.
 
 ## Gate imediato — execução humana local
 
-1. atualizar `main` no workspace Windows;
-2. confirmar JDK 21, Node 22.12+ e Docker Desktop;
-3. executar `mvn -B clean verify` em ambiente com acesso funcional ao repositório Maven;
+1. atualizar a main para o commit atual;
+2. executar Maven Java 21, frontend e worker com Node suportado;
+3. validar Compose `dev` e `onpremise`;
 4. executar `START_CONTABILIDADE.bat dev`;
-5. confirmar as três imagens artifact-only reais;
-6. executar `scripts/validate-database-state.bat dev`;
-7. confirmar `postgres` saudável e `postgres-bootstrap` finalizado com código `0`;
-8. confirmar Keycloak/Liquibase e Flyway V1–V8;
-9. validar endpoints técnicos, proxies e smoke da interface;
-10. validar troca do ticket, replay 409, cookie HttpOnly e restart do worker;
-11. anexar a evidência local ao relatório runtime;
-12. executar uma task Cloud apenas para reconciliar o commit de evidência;
-13. promover os quatro previews remanescentes e selecionar uma quinta vaga somente após classificação `VERDE`.
+5. comprovar imagens artifact-only e serviços saudáveis;
+6. validar Keycloak/Liquibase e Flyway V1–V8;
+7. executar endpoints e smoke UI;
+8. provar os cenários focados de anti-replay, lotes, backup, heartbeat e integridade documental;
+9. anexar a evidência ao relatório runtime;
+10. executar uma task Cloud apenas para reconciliar o commit de evidência.
 
-Não criar outra task Codex com executor Windows: o usuário executa a prova local, e o Codex Cloud
-reconcilia o resultado posteriormente.
+A evidência Cloud da PR `#12` é histórica e não substitui build/runtime da main atual, porque a onda
+alterou backend, worker e frontend depois daquela prova.
 
-A extração com PDF sintético já foi comprovada no Linux Cloud. A prova pendente relacionada ao worker
-é a execução da imagem artifact-only construída pelo BAT no Docker real, não a repetição formal do
-mesmo PDF no Windows.
+## Próxima onda
 
-## Candidatos remanescentes após gate verde
+Ainda não há IDs selecionados nem prompts executáveis. A próxima onda deve ser criada somente após o
+gate verde e terá exatamente cinco slots independentes com ownership sem sobreposição crítica.
 
-- escalabilidade das consultas de certidões;
-- backup verificável;
-- observabilidade de heartbeat do worker;
-- integridade de documentos no download;
-- uma quinta vaga ainda a selecionar.
-
-Nenhum provider externo deve ser acionado durante o gate ou durante essas implementações.
+Nenhum provider externo deve ser acionado durante o gate ou durante reconciliações.

@@ -1,68 +1,65 @@
 # Prompts preparados
 
-`GATE-VAL-001` recebeu validação Cloud substancial integrada pela PR `#12`.
+## Estado atual
 
-## Provas já comprovadas no Codex Cloud
+A onda de cinco itens foi implementada por autorização direta do usuário e integrada pelas PRs
+`#14` a `#18` sobre a versão declarada `0.5.1`.
 
-- lockfiles versionados e usados por `npm ci`;
-- frontend com i18n, typecheck e build verdes;
-- worker com typecheck, build e startup controlado sem crash de PDF.js;
-- extração de texto de PDF sintético fictício no Linux Cloud;
-- sintaxe YAML/JSON/shell e revisão estática de Compose, Dockerfiles, BAT, PowerShell e migrations V1–V7;
-- contrato permanente que separa `CODEX_CLOUD_LINUX` de `LOCAL_WINDOWS_MANUAL`.
+| Item | PR | Estado | Evidência |
+|---|---:|---|---|
+| `SEC-AUT-001` | `#14` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md` |
+| `PERF-CRT-001` | `#15` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md` |
+| `OPS-BKP-001` | `#16` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OPS_BKP_001_MANIFESTO_BACKUP.md` |
+| `OBS-WRK-001` | `#17` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/OBS_WRK_001_HEARTBEAT_STALE.md` |
+| `SEC-DOC-001` | `#18` | `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME` | `docs/implementacao/SEC_DOC_001_INTEGRIDADE_DOWNLOAD.md` |
 
-A evidência canônica está em:
+Os arquivos `PREVIEW_SLOT_1_*` a `PREVIEW_SLOT_5_*` estão arquivados como referência histórica. Eles
+não são prompts executáveis e não devem ser enviados novamente ao Codex.
+
+## Prova Cloud histórica
+
+A PR `#12` comprovou, em sua baseline:
+
+- lockfiles;
+- frontend e worker;
+- startup controlado e PDF sintético;
+- sintaxe YAML/JSON/shell;
+- revisão estática de Compose, Dockerfiles, BAT, PowerShell e migrations V1–V7.
+
+Essa evidência permanece em:
 
 ```text
 docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md
 ```
 
-A classificação é `CLOUD_AMARELO`: o backend Maven ficou bloqueado por HTTP 403 do registry e o
-Cloud não possui Docker/Windows para comprovar a stack.
+Entretanto, as PRs `#14` a `#18` alteraram backend, worker e frontend. Portanto a prova da PR `#12`
+é histórica e não classifica a main atual como verde.
 
-## SEC-AUT-001
+## Provas obrigatórias para a main atual
 
-O usuário autorizou explicitamente a implementação antecipada de `SEC-AUT-001`. O item foi retirado
-da onda candidata e está em:
-
-```text
-IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME
-```
-
-Evidência:
-
-```text
-docs/implementacao/SEC_AUT_001_ANTI_REPLAY_SESSAO.md
-```
-
-O arquivo `PREVIEW_SLOT_1_SEC_AUT_001_anti_replay_sessao.md` está arquivado como referência e não
-deve ser executado novamente. A implementação usa a migration V8, consumo único de `jti` no backend
-e grant HttpOnly no worker. Ela não fecha o gate nem libera os demais previews.
-
-## Provas ainda obrigatórias
-
-- Maven verde em ambiente com acesso ao registry;
-- builds no Windows com Node 22.12+;
+- Maven Java 21;
+- frontend e worker com Node 22.12+;
 - Compose efetivo `dev` e `onpremise`;
-- imagens artifact-only reais;
+- imagens artifact-only;
 - PostgreSQL, `postgres-bootstrap`, Flyway V1–V8, Keycloak e Liquibase;
 - BAT, healthchecks, endpoints, proxies e smoke UI;
-- prova runtime do anti-replay de `SEC-AUT-001`.
+- anti-replay de ticket/grant;
+- lotes e cursores do scheduler;
+- manifesto/backup PowerShell e geração real;
+- estados de heartbeat;
+- adulteração documental recusada e auditada.
 
-A extração de PDF sintético já foi resolvida no Linux Cloud. No ambiente local resta comprovar o
-empacotamento da imagem artifact-only do worker, não repetir o mesmo teste apenas por formalidade.
+## Coleta da prova runtime
 
-## Como coletar a prova local
+O Codex disponível é `CODEX_CLOUD_LINUX`. Não criar task com executor Windows fictício. O fluxo é:
 
-Não criar outra task Codex com `EXECUTION MODE: LOCAL_WINDOWS`. O único executor Codex disponível é o
-Cloud Linux. O fluxo correto é:
+1. o usuário atualiza e executa os scripts no Windows local;
+2. a saída é anexada ao relatório runtime ou commitada;
+3. uma task Cloud reconcilia o commit de evidência;
+4. somente após classificação verde a próxima onda é selecionada.
 
-1. usar os BATs e scripts já versionados;
-2. o usuário executá-los no Windows local;
-3. salvar a saída no relatório canônico ou em um commit de evidência;
-4. enviar uma task `CODEX_CLOUD_LINUX` apenas para reconciliar esse commit.
+## Próxima onda
 
-Os arquivos `PREVIEW_SLOT_2_*` a `PREVIEW_SLOT_5_*` continuam apenas como candidatos. Eles não estão
-selecionados e não devem ser executados até que a evidência runtime local seja `VERDE` no mesmo
-commit atualizado de `main`. Uma quinta vaga da futura onda deverá ser selecionada durante a próxima
-reconciliação canônica.
+Não há slots oficiais nem previews novos. A próxima onda terá exatamente cinco itens independentes,
+selecionados apenas depois da validação verde da main atual e da reconciliação de ownership,
+migrations e baseline.

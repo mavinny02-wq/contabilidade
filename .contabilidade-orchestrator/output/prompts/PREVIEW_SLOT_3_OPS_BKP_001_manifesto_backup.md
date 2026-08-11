@@ -1,29 +1,23 @@
-# PREVIEW SLOT 3 — OPS-BKP-001
+# ARQUIVADO — OPS-BKP-001
 
-- **TASK:** criar manifesto e verificação de backup on-premise
-- **TYPE:** IMPLEMENTAÇÃO OPERACIONAL
+> Não executar novamente. Implementação integrada pela PR `#16`.
+
 - **ITEM:** `OPS-BKP-001`
-- **BASELINE:** futuro `main` após `GATE-VAL-001` verde
-- **EXECUTION MODE:** CLOUD_FIRST
+- **STATUS:** `IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME`
+- **BRANCH:** `feat/ops-bkp-001-backup-manifest`
+- **PR:** `#16`
+- **MERGE:** `c432a007ca809f07826edcd5331ef50c0f4bfa7f`
+- **EVIDÊNCIA:** `docs/implementacao/OPS_BKP_001_MANIFESTO_BACKUP.md`
 
-## Objetivo
+## Resultado implementado
 
-Gerar manifesto com SHA-256, tamanho, timestamp, versão e componentes do backup; adicionar comando de
-verificação sem restaurar ou modificar dados.
+- manifesto JSON schema 1.0 por conjunto de backup;
+- versão, timestamp, componentes, tamanhos e SHA-256;
+- verificador PowerShell e shell sem restauração;
+- rejeição de ausência, divergência, duplicidade e path traversal;
+- limpeza somente de artefatos parciais do backup atual.
 
-## Caminhos próprios
+## Estado de validação
 
-- `scripts/backup.ps1`;
-- `scripts/backup.sh`;
-- novos scripts de verificação sob `scripts/`;
-- `docs/operacao/BACKUP_E_RESTAURACAO.md`;
-- uma evidência curta.
-
-## Excluídos
-
-Backend, frontend, worker, migrations, Compose e providers.
-
-## Validação permitida
-
-Análise sintática dos scripts, execução somente contra arquivos temporários sem dados reais e
-`git diff --check`. Não executar restauração real.
+A sintaxe shell e uma prova com arquivos temporários passaram. Permanecem pendentes PowerShell no
+ambiente-alvo, geração real autorizada, verificação cruzada e teste humano de restauração.
