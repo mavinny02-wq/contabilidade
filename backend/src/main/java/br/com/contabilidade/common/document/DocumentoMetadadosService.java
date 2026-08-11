@@ -39,15 +39,16 @@ public class DocumentoMetadadosService {
         LocalDate emissaoAnterior = documento.getEmitidoEm();
         LocalDate validadeAnterior = documento.getValidoAte();
         documento.atualizarMetadados(request.tipo(), request.emitidoEm(), request.validoAte());
+        Documento salvo = repository.saveAndFlush(documento);
 
         Map<String, Object> detalhes = new LinkedHashMap<>();
-        detalhes.put("empresaId", documento.getEmpresaId());
-        detalhes.put("tipoAlterado", !Objects.equals(tipoAnterior, documento.getTipo()));
-        detalhes.put("emissaoAlterada", !Objects.equals(emissaoAnterior, documento.getEmitidoEm()));
-        detalhes.put("validadeAlterada", !Objects.equals(validadeAnterior, documento.getValidoAte()));
+        detalhes.put("empresaId", salvo.getEmpresaId());
+        detalhes.put("tipoAlterado", !Objects.equals(tipoAnterior, salvo.getTipo()));
+        detalhes.put("emissaoAlterada", !Objects.equals(emissaoAnterior, salvo.getEmitidoEm()));
+        detalhes.put("validadeAlterada", !Objects.equals(validadeAnterior, salvo.getValidoAte()));
         auditoriaService.registrar("DOCUMENTO_METADADOS_ATUALIZADOS", "DOCUMENTO", id, detalhes);
 
-        return DocumentoService.DocumentoResponse.de(documento);
+        return DocumentoService.DocumentoResponse.de(salvo);
     }
 
     private void validarDatas(LocalDate emitidoEm, LocalDate validoAte) {
