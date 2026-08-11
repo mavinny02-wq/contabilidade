@@ -60,6 +60,7 @@
 - [EMP-RSP-001 — Responsáveis por módulo](implementacao/EMP_RSP_001_RESPONSAVEIS_MODULO.md)
 - [CRT-FAT-001 — Reconciliação de faturas](implementacao/CRT_FAT_001_RECONCILIACAO_FATURAS.md)
 - [AUT-TEL-001 — Histórico de heartbeats](implementacao/AUT_TEL_001_HISTORICO_HEARTBEATS.md)
+- [OPS-UPD-001 — Preflight de atualização](implementacao/OPS_UPD_001_PREFLIGHT_ATUALIZACAO.md)
 
 ## Integrações
 
