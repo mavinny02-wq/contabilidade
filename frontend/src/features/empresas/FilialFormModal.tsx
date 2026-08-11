@@ -6,8 +6,11 @@ import { Alert } from '../../components/Alert';
 import { Button } from '../../components/Button';
 import { Modal } from '../../components/Modal';
 
-const vazio: FilialPayload = {
+type FilialFormState = FilialPayload & { ativa: boolean };
+
+const vazio: FilialFormState = {
   cnpj: '',
+  ativa: true,
   status: 'ATIVA',
   cnaePrincipal: '',
   regimeTributario: 'NAO_INFORMADO',
@@ -24,28 +27,29 @@ const vazio: FilialPayload = {
 
 export function FilialFormModal({
   empresaId,
+  filial,
   aberto,
   aoFechar,
   aoSalvar,
 }: {
   empresaId: string;
+  filial?: Estabelecimento;
   aberto: boolean;
   aoFechar: () => void;
   aoSalvar: (filial: Estabelecimento) => void;
 }) {
   const { t } = useTranslation();
-  const [form, setForm] = useState<FilialPayload>({ ...vazio });
+  const [form, setForm] = useState<FilialFormState>({ ...vazio });
   const [erro, setErro] = useState<ApiError>();
   const [salvando, setSalvando] = useState(false);
 
   useEffect(() => {
-    if (aberto) {
-      setForm({ ...vazio });
-      setErro(undefined);
-    }
-  }, [aberto]);
+    if (!aberto) return;
+    setForm(filial ? estadoDaFilial(filial) : { ...vazio });
+    setErro(undefined);
+  }, [aberto, filial]);
 
-  const set = <K extends keyof FilialPayload>(campo: K, valor: FilialPayload[K]) => {
+  const set = <K extends keyof FilialFormState>(campo: K, valor: FilialFormState[K]) => {
     setForm((atual) => ({ ...atual, [campo]: valor }));
   };
 
@@ -54,11 +58,15 @@ export function FilialFormModal({
     setSalvando(true);
     setErro(undefined);
     try {
-      const filial = await api<Estabelecimento>(`/empresas/${empresaId}/filiais`, {
-        method: 'POST',
-        body: JSON.stringify(form),
+      const endpoint = filial
+        ? `/empresas/${empresaId}/filiais/${filial.id}`
+        : `/empresas/${empresaId}/filiais`;
+      const body = filial ? form : payloadCriacao(form);
+      const filialSalva = await api<Estabelecimento>(endpoint, {
+        method: filial ? 'PUT' : 'POST',
+        body: JSON.stringify(body),
       });
-      aoSalvar(filial);
+      aoSalvar(filialSalva);
     } catch (exception) {
       setErro(exception as ApiError);
     } finally {
@@ -69,7 +77,7 @@ export function FilialFormModal({
   return (
     <Modal
       aberto={aberto}
-      titulo={t('empresas.filiais.cadastroTitulo')}
+      titulo={t(filial ? 'empresas.filiais.edicaoTitulo' : 'empresas.filiais.cadastroTitulo')}
       aoFechar={aoFechar}
       rodape={
         <>
@@ -87,8 +95,28 @@ export function FilialFormModal({
       <form id="filial-form" className="form-grid" onSubmit={enviar}>
         <label className="field">
           <span>{t('empresas.campos.cnpj')}</span>
-          <input required inputMode="numeric" maxLength={18} value={form.cnpj} onChange={(event) => set('cnpj', event.target.value)} />
+          <input
+            required
+            disabled={Boolean(filial)}
+            inputMode="numeric"
+            maxLength={18}
+            value={form.cnpj}
+            onChange={(event) => set('cnpj', event.target.value)}
+          />
+          {filial ? <small className="muted">{t('empresas.filiais.cnpjImutavel')}</small> : null}
         </label>
+        {filial ? (
+          <label className="field">
+            <span>{t('empresas.filiais.situacaoCadastro')}</span>
+            <select
+              value={form.ativa ? 'true' : 'false'}
+              onChange={(event) => set('ativa', event.target.value === 'true')}
+            >
+              <option value="true">{t('empresas.filiais.ativa')}</option>
+              <option value="false">{t('empresas.filiais.inativa')}</option>
+            </select>
+          </label>
+        ) : null}
         <label className="field">
           <span>{t('empresas.campos.status')}</span>
           <select value={form.status} onChange={(event) => set('status', event.target.value as StatusEmpresa)}>
@@ -144,6 +172,30 @@ export function FilialFormModal({
       </form>
     </Modal>
   );
+}
+
+function estadoDaFilial(filial: Estabelecimento): FilialFormState {
+  return {
+    cnpj: filial.cnpj,
+    ativa: filial.ativo,
+    status: filial.status,
+    cnaePrincipal: filial.cnaePrincipal ?? '',
+    regimeTributario: filial.regimeTributario,
+    inscricaoEstadual: filial.inscricaoEstadual ?? '',
+    inscricaoMunicipal: filial.inscricaoMunicipal ?? '',
+    logradouro: filial.logradouro ?? '',
+    numero: filial.numero ?? '',
+    complemento: filial.complemento ?? '',
+    bairro: filial.bairro ?? '',
+    municipio: filial.municipio ?? '',
+    uf: filial.uf ?? '',
+    cep: filial.cep ?? '',
+  };
+}
+
+function payloadCriacao(form: FilialFormState): FilialPayload {
+  const { ativa: _ativa, ...payload } = form;
+  return payload;
 }
 
 const statusEmpresa: StatusEmpresa[] = ['ATIVA', 'INATIVA', 'SUSPENSA', 'BAIXADA', 'DESCONHECIDA'];
