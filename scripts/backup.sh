@@ -82,7 +82,7 @@ cat > "$manifest_tmp" <<EOF
 EOF
 
 mv "$manifest_tmp" "$manifest_path"
-"$(dirname "$0")/verify-backup.sh" "$manifest_path"
+sh "$(dirname "$0")/verify-backup.sh" "$manifest_path"
 
 completed=1
 trap - EXIT HUP INT TERM
