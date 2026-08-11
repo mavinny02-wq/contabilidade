@@ -52,6 +52,8 @@
 - [AUT-LIM-001 — Limites da sessão interativa](implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md)
 - [OPS-BKP-UI-001 — Inventário de backups](implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md)
 - [DOC-RET-001 — Prévia de retenção documental](implementacao/DOC_RET_001_PREVIA_RETENCAO.md)
+- [EMP-GRP-001 — Grupos e tags de empresas](implementacao/EMP_GRP_001_GRUPOS_TAGS.md)
+- [CRT-CAL-001 — Agenda de vencimentos](implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md)
 
 ## Integrações
 

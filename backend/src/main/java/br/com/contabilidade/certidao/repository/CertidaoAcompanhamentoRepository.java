@@ -3,6 +3,7 @@ package br.com.contabilidade.certidao.repository;
 import br.com.contabilidade.certidao.domain.CertidaoAcompanhamento;
 import br.com.contabilidade.certidao.domain.TipoCertidao;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -56,6 +57,44 @@ public interface CertidaoAcompanhamentoRepository extends JpaRepository<Certidao
              order by certidao.id
             """)
     List<UUID> buscarIdsAtivosApos(@Param("cursor") UUID cursor, Pageable pageable);
+
+    @Query("""
+            select count(certidao.id)
+              from CertidaoAcompanhamento certidao
+             where certidao.ativa = true
+               and certidao.validaAte is not null
+               and certidao.validaAte between :inicio and :fim
+               and (:empresaId is null or certidao.empresaId = :empresaId)
+            """)
+    long contarAgendaVencimentos(
+            @Param("inicio") LocalDate inicio,
+            @Param("fim") LocalDate fim,
+            @Param("empresaId") UUID empresaId
+    );
+
+    @Query("""
+            select new br.com.contabilidade.certidao.repository.CertidaoAgendaLinha(
+                    certidao,
+                    estabelecimento.cnpj,
+                    empresa.razaoSocial
+            )
+              from CertidaoAcompanhamento certidao,
+                   Estabelecimento estabelecimento,
+                   Empresa empresa
+             where certidao.ativa = true
+               and certidao.validaAte is not null
+               and certidao.validaAte between :inicio and :fim
+               and estabelecimento.id = certidao.estabelecimentoId
+               and empresa.id = certidao.empresaId
+               and (:empresaId is null or certidao.empresaId = :empresaId)
+             order by certidao.validaAte asc, empresa.razaoSocial asc, certidao.tipo asc, certidao.id asc
+            """)
+    List<CertidaoAgendaLinha> buscarAgendaVencimentos(
+            @Param("inicio") LocalDate inicio,
+            @Param("fim") LocalDate fim,
+            @Param("empresaId") UUID empresaId,
+            Pageable pageable
+    );
 
     @Query("""
             select new br.com.contabilidade.certidao.repository.CertidaoExportacaoLinha(

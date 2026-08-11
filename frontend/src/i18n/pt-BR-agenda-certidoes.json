@@ -1,0 +1,23 @@
+{
+  "certidoes": {
+    "agenda": {
+      "acao": "Agenda de vencimentos",
+      "titulo": "Agenda de vencimentos",
+      "descricao": "Consulte certidões com validade dentro do período, sem acionar providers externos.",
+      "inicio": "Data inicial",
+      "fim": "Data final",
+      "total": "Vencimentos encontrados",
+      "periodo": "Período consultado",
+      "empresas": "Empresas no resultado",
+      "parcial": "A agenda possui {{total}} itens, mas somente {{quantidade}} foram exibidos devido ao limite operacional.",
+      "vazio": "Nenhum vencimento no período",
+      "vazioDescricao": "Altere o período ou a empresa para consultar outra faixa.",
+      "validade": "Validade",
+      "prazo": "Prazo",
+      "abrirCentro": "Abrir no Centro",
+      "venceHoje": "Vence hoje",
+      "venceEm": "Vence em {{dias}} dia(s)",
+      "vencidaHa": "Vencida há {{dias}} dia(s)"
+    }
+  }
+}

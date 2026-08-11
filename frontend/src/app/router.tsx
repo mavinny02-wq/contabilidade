@@ -3,6 +3,7 @@ import { ProtectedRoute } from '../auth/ProtectedRoute';
 import { PermissionRoute } from '../auth/PermissionRoute';
 import { PERMISSOES } from '../auth/permissoes';
 import { AppShell } from './AppShell';
+import { AgendaCertidoesPage } from '../pages/AgendaCertidoesPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { EmpresasPage } from '../pages/EmpresasPage';
 import { EmpresaDetalhePage } from '../pages/EmpresaDetalhePage';
@@ -38,7 +39,10 @@ export const router = createBrowserRouter([
           },
           {
             element: <PermissionRoute permissao={PERMISSOES.CERTIDAO_LER} />,
-            children: [{ path: 'certidoes', element: <CertidoesPage /> }],
+            children: [
+              { path: 'certidoes', element: <CertidoesPage /> },
+              { path: 'certidoes/agenda', element: <AgendaCertidoesPage /> },
+            ],
           },
           {
             element: <PermissionRoute permissao={PERMISSOES.EXECUCAO_LER} />,

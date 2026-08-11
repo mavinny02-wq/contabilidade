@@ -24,7 +24,9 @@
   `docs/implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md`;
 - `CRT-BULK-001`: seleção e solicitação de até 500 acompanhamentos por lote, com deduplicação,
   idempotência e resultado por item; evidência em
-  `docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md`.
+  `docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md`;
+- `CRT-CAL-001`: agenda bounded de vencimentos com período, empresa, prazo e status autoritativo;
+  evidência em `docs/implementacao/CRT_CAL_001_AGENDA_VENCIMENTOS.md`.
 
 ## Provider Serpro
 
