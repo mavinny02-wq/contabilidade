@@ -40,3 +40,9 @@ Registrar aqui resultados integrados e pacotes candidatos de forma explícita.
 | 2026-08-11 | v0.5.1 — configuração segura | `ADM-CFG-001`, PR `#40` | diagnóstico efetivo sem serializar tokens, segredos ou URLs completas; runtime pendente |
 | 2026-08-11 | v0.5.1 — preview documental | `DOC-PRE-001`, PR `#41` | PDF/PNG/JPEG inline após validação de integridade e com headers restritivos; runtime pendente |
 | 2026-08-11 | v0.5.1 — onda Grupos/Agenda/Providers/Configuração/Preview | PRs `#37` a `#41` | cinco slots integrados na `main` até `d7e50e5`; Flyway esperado V1–V9 e gate runtime aberto |
+| 2026-08-11 | v0.5.1 — responsáveis por módulo | `EMP-RSP-001`, PR `#43` | contatos operacionais por área, migration V10 e auditoria sem PII; runtime pendente |
+| 2026-08-11 | v0.5.1 — reconciliação de faturas | `CRT-FAT-001`, PR `#44` | fatura comparada com custo estimado por provider, competência e moeda; migration V11 e runtime pendente |
+| 2026-08-11 | v0.5.1 — telemetria histórica | `AUT-TEL-001`, PR `#45` | heartbeats amostrados por tempo ou mudança de estado/versão; migration V12 e runtime pendente |
+| 2026-08-11 | v0.5.1 — preflight de atualização | `OPS-UPD-001`, PR `#46` | manifesto validado sem download, execução, escrita, migration ou reinício; runtime pendente |
+| 2026-08-11 | v0.5.1 — metadados documentais | `DOC-MET-001`, PR `#47` | correção de tipo/emissão/validade sem substituir arquivo ou alterar hash/MIME/storage; runtime pendente |
+| 2026-08-11 | v0.5.1 — onda Responsáveis/Faturas/Telemetria/Update/Metadados | PRs `#43` a `#47` | cinco slots integrados na `main` até `8d7357b`; Flyway esperado V1–V12 e gate runtime aberto |
