@@ -15,7 +15,10 @@
 
 - `PERF-CRT-001`: scheduler com inicialização, agendamento e alertas processados em lotes bounded,
   cursores rotativos e transações por item; evidência em
-  `docs/implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md`.
+  `docs/implementacao/PERF_CRT_001_CONSULTAS_LIMITADAS.md`;
+- `EXP-CRT-001`: exportação CSV do Centro de Certidões com filtros, leitura em lotes, limite de
+  linhas, proteção contra fórmula de planilha e auditoria segura; evidência em
+  `docs/implementacao/EXP_CRT_001_EXPORTACAO_CSV.md`.
 
 ## Provider Serpro
 
@@ -32,7 +35,6 @@ Resultado normalizado:
 - runtime dos quatro providers reais;
 - amostras oficiais e anonimizadas de PDFs;
 - reconciliação de custo estimado com fatura;
-- exportação CSV;
 - dashboard gerencial;
 - bulk de alto volume;
 - testes de unidade, integração, concorrência e E2E;
