@@ -16,6 +16,7 @@
 - backend Maven no Cloud: bloqueado por HTTP 403 do registry, sem evidência de defeito no código;
 - gate ativo: `GATE-VAL-001`;
 - validação ainda obrigatória: ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop;
+- executor da prova runtime: `LOCAL_WINDOWS_MANUAL`; não criar outra task Codex fingindo acesso ao Windows;
 - slots oficiais selecionados: zero enquanto o gate não estiver verde;
 - próxima onda: cinco candidatos independentes mantidos como `PREVIEW`.
 
@@ -37,6 +38,9 @@ Todas devem partir do mesmo commit atualizado de `main`:
 A extração com PDF sintético já foi comprovada no runtime Linux do Codex Cloud. Ela não precisa ser
 repetida apenas por formalidade no Windows; o que continua pendente é comprovar o empacotamento e a
 execução da imagem artifact-only do worker no Docker real.
+
+A coleta dessa evidência é humana: o usuário executa os scripts locais e salva a saída no relatório
+canônico. Depois, uma task `CODEX_CLOUD_LINUX` reconcilia o commit de evidência.
 
 ## Regra de promoção
 
