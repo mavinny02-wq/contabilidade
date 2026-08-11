@@ -1,0 +1,123 @@
+.dashboard-management {
+  display: grid;
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.dashboard-management__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dashboard-management__header h2 {
+  margin-bottom: 6px;
+  font-size: 1.2rem;
+}
+
+.dashboard-management__header p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.management-metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.management-metric {
+  display: grid;
+  gap: 8px;
+  box-shadow: none;
+}
+
+.management-metric span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.management-metric strong {
+  font-size: 1.65rem;
+  color: var(--brand);
+}
+
+.management-metric--aviso strong {
+  color: var(--warning);
+}
+
+.management-metric--info strong {
+  color: var(--info);
+}
+
+.distribution-list,
+.status-summary-list {
+  display: grid;
+  gap: 14px;
+}
+
+.distribution-row {
+  display: grid;
+  gap: 7px;
+}
+
+.distribution-row__label,
+.status-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.distribution-row__label span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.distribution-bar {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-subtle);
+}
+
+.distribution-bar span {
+  display: block;
+  min-width: 2px;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.management-footnote {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+@media (max-width: 1100px) {
+  .management-metrics {
+    grid-template-columns: repeat(3, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .dashboard-management__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .management-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .management-metrics {
+    grid-template-columns: 1fr;
+  }
+}
