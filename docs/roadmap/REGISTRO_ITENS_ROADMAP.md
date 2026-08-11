@@ -41,7 +41,7 @@ O registro é dono da identidade permanente e do status atual.
 | `HIST-VAL-001` | História | Validação | INTEGRADO_COM_PROVAS_PENDENTES | análise canônica, BAT artifact-only, startup sequencial e validações de schema integrados |
 | `VAL-RUNTIME-V051-001` | Validação | Runtime | BLOQUEADO_POR_AMBIENTE | relatório histórico: runtime Windows/Docker, schemas, endpoints e UI não executados no Cloud |
 | `VAL-CLOUD-V051-002` | Validação | Cloud | CLOUD_AMARELO_HISTORICO | PR #12: provas válidas para baseline anterior; main atual exige revalidação |
-| `GATE-VAL-001` | Gate | Validação | MULTIPLAS_ONDAS_RUNTIME_LOCAL_PENDENTE | PRs funcionais #14–#41 integradas; Flyway esperado V1–V9 e prova completa obrigatória |
+| `GATE-VAL-001` | Gate | Validação | MULTIPLAS_ONDAS_RUNTIME_LOCAL_PENDENTE | PRs funcionais #14–#47 integradas; Flyway esperado V1–V12 e prova completa obrigatória |
 | `SEC-AUT-001` | Segurança | Automação | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | PR #14: jti consumido uma vez, migration V8 e grant HttpOnly |
 | `PERF-CRT-001` | Performance | Certidões | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | PR #15: lotes bounded, cursores rotativos e transações por item |
 | `OPS-BKP-001` | Operação | Backup | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | PR #16: manifesto, tamanho, SHA-256 e verificadores não destrutivos |
@@ -64,4 +64,9 @@ O registro é dono da identidade permanente e do status atual.
 | `OBS-PRV-001` | Observabilidade | Integrações | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | histórico de status, duração e custo por provider, separado por moeda |
 | `ADM-CFG-001` | Segurança | Administração | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | configuração efetiva apresentada sem tokens, segredos ou URLs completas |
 | `DOC-PRE-001` | Segurança | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | preview de PDF/PNG/JPEG após validação de integridade e com headers restritivos |
+| `EMP-RSP-001` | Funcionalidade | Empresas | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | responsáveis por módulo, migration V10 e auditoria sem PII dos contatos |
+| `CRT-FAT-001` | Funcionalidade | Integrações | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | faturas reconciliadas com custo estimado por provider, período e moeda; migration V11 |
+| `AUT-TEL-001` | Observabilidade | Worker | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | histórico amostrado de heartbeat por intervalo e mudança de estado/versão; migration V12 |
+| `OPS-UPD-001` | Operação | Atualização | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | preflight read-only de manifesto, sem download, execução ou escrita |
+| `DOC-MET-001` | Funcionalidade | Documentos | IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME | tipo, emissão e validade editáveis sem alterar a evidência física |
 | `AMB-003` | Ambiente | Serpro | ABERTO | contrato, credenciais, custo e runtime autorizado |
