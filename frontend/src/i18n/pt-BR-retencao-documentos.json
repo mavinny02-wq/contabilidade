@@ -1,0 +1,35 @@
+{
+  "documentos": {
+    "retencao": {
+      "titulo": "Prévia de retenção documental",
+      "descricao": "Simulação read-only baseada nos critérios operacionais configurados.",
+      "somenteLeitura": "Nenhum arquivo será excluído",
+      "analisar": "Analisar retenção",
+      "analisando": "Analisando...",
+      "todasEmpresas": "Todas as empresas",
+      "candidatos": "{{quantidade}} candidatos",
+      "totalAnalisados": "Itens analisados",
+      "tamanhoAnalisado": "Tamanho analisado",
+      "observadoEm": "Observado em",
+      "criteriosTitulo": "Critérios aplicados",
+      "criterios": {
+        "inativo": "Documento inativo sem atualização há pelo menos {{dias}} dias.",
+        "expirado": "Validade encerrada há pelo menos {{dias}} dias.",
+        "semValidade": "Documento sem validade registrado há pelo menos {{dias}} dias."
+      },
+      "parcial": "A prévia foi limitada: {{analisados}} de {{total}} candidatos estão detalhados.",
+      "vazio": "Nenhum candidato encontrado",
+      "vazioDescricao": "Nenhum documento atende aos critérios de retenção atualmente configurados.",
+      "documento": "Documento",
+      "motivo": "Motivo",
+      "ativo": "Ativo",
+      "inativo": "Inativo",
+      "naoExecutaExclusao": "Esta operação apenas apresenta candidatos. Exclusão, inativação ou alteração do storage não fazem parte desta funcionalidade.",
+      "motivos": {
+        "INATIVO_HA_TEMPO": "Inativo há tempo suficiente",
+        "VALIDADE_EXPIRADA_HA_TEMPO": "Validade expirada há tempo suficiente",
+        "SEM_VALIDADE_E_ANTIGO": "Sem validade e antigo"
+      }
+    }
+  }
+}
