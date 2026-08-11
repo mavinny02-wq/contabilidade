@@ -50,6 +50,7 @@
 - [EMP-HIS-001 — Histórico cadastral de empresas](implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md)
 - [CRT-BULK-001 — Solicitação de certidões em lote](implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md)
 - [AUT-LIM-001 — Limites da sessão interativa](implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md)
+- [OPS-BKP-UI-001 — Inventário de backups](implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md)
 
 ## Integrações
 
