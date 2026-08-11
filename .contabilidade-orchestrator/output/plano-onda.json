@@ -6,26 +6,86 @@
     "previousVersion": "0.5.0",
     "commitDeValidacaoCloudHistorica": "6c101a3a0699cd843e9257f685550c61d662360f",
     "pullRequestDeValidacaoCloudHistorica": 12,
-    "commitDaOndaImplementada": "b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01",
-    "pullRequestsDaOnda": [14, 15, 16, 17, 18],
+    "commitDaPrimeiraOndaImplementada": "b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01",
+    "pullRequestsDaPrimeiraOnda": [
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
     "commitAposExpCrt001": "99df51e9b37195692e35c6651fafb10905f83b32",
     "commitAposEmpFil001": "4468f98f4b57a3a5d233f5ae890447ac6a73002a",
-    "pullRequestsPosteriores": [20, 23],
+    "commitDaOndaMaisRecente": "9fdfe8b2af8170397d49925027c55ad7e6365760",
+    "pullRequestsDaOndaMaisRecente": [
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
     "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
-  "fase": "GATE_VAL_001_IMPLEMENTACOES_ADICIONAIS_RUNTIME_LOCAL_PENDENTE",
+  "fase": "GATE_VAL_001_ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Comprovar a main atual, já contendo a onda de segurança, performance, backup e observabilidade, a exportação CSV de certidões e a manutenção individual de filiais, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "descricao": "Comprovar a main atual, contendo as implementações de segurança, performance, backup, observabilidade, empresas, certidões, auditoria e storage, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
     "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
     "evidenciaCloudHistorica": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "classificacaoCloudHistorica": "CLOUD_AMARELO",
     "evidenciaRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md",
     "classificacaoRuntime": "BLOQUEADO_POR_AMBIENTE",
-    "criterioDeFechamento": "O usuário executa os scripts locais sobre o commit atual, commita a evidência verde de Maven, frontend, worker, imagens artifact-only, Compose, schemas, endpoints, smoke UI e provas focadas dos itens implementados; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
+    "criterioDeFechamento": "O usuário executa os scripts locais sobre o commit atual, commita evidência verde de Maven, frontend, worker, imagens artifact-only, Compose, schemas, endpoints, smoke UI e provas focadas dos itens implementados; depois o Codex Cloud reconcilia o mesmo commit atualizado de main."
   },
   "slotsOficiais": [],
+  "ondaMaisRecente": {
+    "status": "IMPLEMENTADA_POR_AUTORIZACAO_DIRETA_AGUARDANDO_VALIDACAO_RUNTIME",
+    "baselineInicial": "bf124ed6afc08cedfc9e025593162f657d6262db",
+    "commitFinalImplementacao": "9fdfe8b2af8170397d49925027c55ad7e6365760",
+    "slots": [
+      {
+        "slot": 1,
+        "itemId": "EMP-IMP-001",
+        "pullRequest": 25,
+        "mergeCommit": "ff91c9cad979bdf23c5abdb88d37e702634b1720",
+        "evidencia": "docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md",
+        "migrationOwnership": null
+      },
+      {
+        "slot": 2,
+        "itemId": "AUT-SHD-001",
+        "pullRequest": 26,
+        "mergeCommit": "68a1c154d5e96547fad4246281e98f579c5e0220",
+        "evidencia": "docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md",
+        "migrationOwnership": null
+      },
+      {
+        "slot": 3,
+        "itemId": "CRT-DASH-001",
+        "pullRequest": 27,
+        "mergeCommit": "ada8e91a691e833a2b4086fb875b6b927cd934ed",
+        "evidencia": "docs/implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md",
+        "migrationOwnership": null
+      },
+      {
+        "slot": 4,
+        "itemId": "AUD-EXP-001",
+        "pullRequest": 28,
+        "mergeCommit": "40abcbb5c03d3429b645f0986bfd0699b2239bd4",
+        "evidencia": "docs/implementacao/AUD_EXP_001_EXPORTACAO_CSV.md",
+        "migrationOwnership": null
+      },
+      {
+        "slot": 5,
+        "itemId": "DOC-ORP-001",
+        "pullRequest": 29,
+        "mergeCommit": "9fdfe8b2af8170397d49925027c55ad7e6365760",
+        "evidencia": "docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md",
+        "migrationOwnership": null
+      }
+    ]
+  },
   "itensImplementadosPorAutorizacaoDireta": [
     {
       "itemId": "SEC-AUT-001",
@@ -89,6 +149,51 @@
       "branch": "feat/emp-fil-001-edit-inactivate-v2",
       "migrationOwnership": null,
       "evidencia": "docs/implementacao/EMP_FIL_001_EDICAO_FILIAL.md"
+    },
+    {
+      "itemId": "EMP-IMP-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 25,
+      "mergeCommit": "ff91c9cad979bdf23c5abdb88d37e702634b1720",
+      "branch": "feat/emp-imp-001-importacao-csv",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md"
+    },
+    {
+      "itemId": "AUT-SHD-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 26,
+      "mergeCommit": "68a1c154d5e96547fad4246281e98f579c5e0220",
+      "branch": "feat/aut-shd-001-graceful-shutdown",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md"
+    },
+    {
+      "itemId": "CRT-DASH-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 27,
+      "mergeCommit": "ada8e91a691e833a2b4086fb875b6b927cd934ed",
+      "branch": "feat/crt-dash-001-dashboard-gerencial",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md"
+    },
+    {
+      "itemId": "AUD-EXP-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 28,
+      "mergeCommit": "40abcbb5c03d3429b645f0986bfd0699b2239bd4",
+      "branch": "feat/aud-exp-001-exportacao-csv",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/AUD_EXP_001_EXPORTACAO_CSV.md"
+    },
+    {
+      "itemId": "DOC-ORP-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 29,
+      "mergeCommit": "9fdfe8b2af8170397d49925027c55ad7e6365760",
+      "branch": "feat/doc-orp-001-storage-reconciliation",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md"
     }
   ],
   "ondaCandidataAposGate": [],
@@ -111,7 +216,12 @@
   ],
   "provasDeImplementacao": [
     "EXP_CRT_001_JAVA21_SYNTHETIC_COMPILE_GREEN",
-    "EXP_CRT_001_CSV_SECURITY_REVIEW_GREEN"
+    "EXP_CRT_001_CSV_SECURITY_REVIEW_GREEN",
+    "EMP_IMP_001_STATIC_REVIEW_RECORDED",
+    "AUT_SHD_001_STATIC_REVIEW_RECORDED",
+    "CRT_DASH_001_STATIC_REVIEW_RECORDED",
+    "AUD_EXP_001_STATIC_REVIEW_RECORDED",
+    "DOC_ORP_001_STATIC_REVIEW_RECORDED"
   ],
   "provasPendentes": [
     "MAVEN_CURRENT_MAIN_VERIFY_PENDING",
@@ -134,7 +244,12 @@
     "SEC_DOC_001_STORAGE_TAMPER_RUNTIME_PENDING",
     "EXP_CRT_001_CSV_RUNTIME_PENDING",
     "EMP_FIL_001_EDIT_INACTIVATE_RUNTIME_PENDING",
-    "EMP_FIL_001_CERTIFICATE_LIFECYCLE_RUNTIME_PENDING"
+    "EMP_FIL_001_CERTIFICATE_LIFECYCLE_RUNTIME_PENDING",
+    "EMP_IMP_001_CSV_RUNTIME_PENDING",
+    "AUT_SHD_001_GRACEFUL_SHUTDOWN_RUNTIME_PENDING",
+    "CRT_DASH_001_COUNTS_RUNTIME_PENDING",
+    "AUD_EXP_001_CSV_RUNTIME_PENDING",
+    "DOC_ORP_001_STORAGE_RECONCILIATION_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }
