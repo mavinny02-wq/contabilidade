@@ -7,30 +7,18 @@
     "commitDeValidacaoCloudHistorica": "6c101a3a0699cd843e9257f685550c61d662360f",
     "pullRequestDeValidacaoCloudHistorica": 12,
     "commitDaPrimeiraOndaImplementada": "b50fd182e4e4e1d0c1573bcb9e43fd8ff368cf01",
-    "pullRequestsDaPrimeiraOnda": [
-      14,
-      15,
-      16,
-      17,
-      18
-    ],
-    "commitAposExpCrt001": "99df51e9b37195692e35c6651fafb10905f83b32",
-    "commitAposEmpFil001": "4468f98f4b57a3a5d233f5ae890447ac6a73002a",
-    "commitDaOndaMaisRecente": "9fdfe8b2af8170397d49925027c55ad7e6365760",
-    "pullRequestsDaOndaMaisRecente": [
-      25,
-      26,
-      27,
-      28,
-      29
-    ],
+    "pullRequestsDaPrimeiraOnda": [14, 15, 16, 17, 18],
+    "commitDaOndaAnterior": "9fdfe8b2af8170397d49925027c55ad7e6365760",
+    "pullRequestsDaOndaAnterior": [25, 26, 27, 28, 29],
+    "commitDaOndaMaisRecente": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
+    "pullRequestsDaOndaMaisRecente": [31, 32, 33, 34, 35],
     "relatorioCloud": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "relatorioRuntime": "docs/operacao/VALIDACAO_RUNTIME_COMPLETA_V051.md"
   },
-  "fase": "GATE_VAL_001_ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE",
+  "fase": "GATE_VAL_001_MULTIPLAS_ONDAS_IMPLEMENTADAS_RUNTIME_LOCAL_PENDENTE",
   "gateSerial": {
     "itemId": "GATE-VAL-001",
-    "descricao": "Comprovar a main atual, contendo as implementações de segurança, performance, backup, observabilidade, empresas, certidões, auditoria e storage, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
+    "descricao": "Comprovar a main atual, contendo as implementações de segurança, performance, backup, observabilidade, empresas, certidões, auditoria, storage e governança documental, no ambiente-alvo Windows com JDK 21, Node suportado, Maven e Docker Desktop, sem chamadas fiscais externas.",
     "executorDaProvaRuntime": "LOCAL_WINDOWS_MANUAL",
     "evidenciaCloudHistorica": "docs/operacao/VALIDACAO_CLOUD_COMPLETA_V051.md",
     "classificacaoCloudHistorica": "CLOUD_AMARELO",
@@ -41,47 +29,47 @@
   "slotsOficiais": [],
   "ondaMaisRecente": {
     "status": "IMPLEMENTADA_POR_AUTORIZACAO_DIRETA_AGUARDANDO_VALIDACAO_RUNTIME",
-    "baselineInicial": "bf124ed6afc08cedfc9e025593162f657d6262db",
-    "commitFinalImplementacao": "9fdfe8b2af8170397d49925027c55ad7e6365760",
+    "baselineInicial": "9f616a9d5d5298c5eb66f29e1806dce519f44b3a",
+    "commitFinalImplementacao": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
     "slots": [
       {
         "slot": 1,
-        "itemId": "EMP-IMP-001",
-        "pullRequest": 25,
-        "mergeCommit": "ff91c9cad979bdf23c5abdb88d37e702634b1720",
-        "evidencia": "docs/implementacao/EMP_IMP_001_IMPORTACAO_CSV.md",
+        "itemId": "EMP-HIS-001",
+        "pullRequest": 31,
+        "mergeCommit": "fb738e6f196e970c6b6b9a948713b44a1a4390ea",
+        "evidencia": "docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md",
         "migrationOwnership": null
       },
       {
         "slot": 2,
-        "itemId": "AUT-SHD-001",
-        "pullRequest": 26,
-        "mergeCommit": "68a1c154d5e96547fad4246281e98f579c5e0220",
-        "evidencia": "docs/implementacao/AUT_SHD_001_SHUTDOWN_GRACIOSO.md",
+        "itemId": "CRT-BULK-001",
+        "pullRequest": 32,
+        "mergeCommit": "9cab6c4fc89bfaeeceb09344d4d38afe9376cf68",
+        "evidencia": "docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md",
         "migrationOwnership": null
       },
       {
         "slot": 3,
-        "itemId": "CRT-DASH-001",
-        "pullRequest": 27,
-        "mergeCommit": "ada8e91a691e833a2b4086fb875b6b927cd934ed",
-        "evidencia": "docs/implementacao/CRT_DASH_001_DASHBOARD_GERENCIAL.md",
+        "itemId": "AUT-LIM-001",
+        "pullRequest": 33,
+        "mergeCommit": "fad4af788f00e05aab534d1495698b905359f692",
+        "evidencia": "docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md",
         "migrationOwnership": null
       },
       {
         "slot": 4,
-        "itemId": "AUD-EXP-001",
-        "pullRequest": 28,
-        "mergeCommit": "40abcbb5c03d3429b645f0986bfd0699b2239bd4",
-        "evidencia": "docs/implementacao/AUD_EXP_001_EXPORTACAO_CSV.md",
+        "itemId": "OPS-BKP-UI-001",
+        "pullRequest": 34,
+        "mergeCommit": "a592810aa951c5c032da82f3caa8d76663cce746",
+        "evidencia": "docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md",
         "migrationOwnership": null
       },
       {
         "slot": 5,
-        "itemId": "DOC-ORP-001",
-        "pullRequest": 29,
-        "mergeCommit": "9fdfe8b2af8170397d49925027c55ad7e6365760",
-        "evidencia": "docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md",
+        "itemId": "DOC-RET-001",
+        "pullRequest": 35,
+        "mergeCommit": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
+        "evidencia": "docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md",
         "migrationOwnership": null
       }
     ]
@@ -194,6 +182,51 @@
       "branch": "feat/doc-orp-001-storage-reconciliation",
       "migrationOwnership": null,
       "evidencia": "docs/implementacao/DOC_ORP_001_RECONCILIACAO_STORAGE.md"
+    },
+    {
+      "itemId": "EMP-HIS-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 31,
+      "mergeCommit": "fb738e6f196e970c6b6b9a948713b44a1a4390ea",
+      "branch": "feat/emp-his-001-historico-cadastral",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/EMP_HIS_001_HISTORICO_CADASTRAL.md"
+    },
+    {
+      "itemId": "CRT-BULK-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 32,
+      "mergeCommit": "9cab6c4fc89bfaeeceb09344d4d38afe9376cf68",
+      "branch": "feat/crt-bulk-001-solicitacao-lote",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/CRT_BULK_001_SOLICITACAO_LOTE.md"
+    },
+    {
+      "itemId": "AUT-LIM-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 33,
+      "mergeCommit": "fad4af788f00e05aab534d1495698b905359f692",
+      "branch": "feat/aut-lim-001-limites-sessao-interativa",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/AUT_LIM_001_LIMITES_SESSAO_INTERATIVA.md"
+    },
+    {
+      "itemId": "OPS-BKP-UI-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 34,
+      "mergeCommit": "a592810aa951c5c032da82f3caa8d76663cce746",
+      "branch": "feat/ops-bkp-ui-001-inventario-backups",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/OPS_BKP_UI_001_INVENTARIO_BACKUPS.md"
+    },
+    {
+      "itemId": "DOC-RET-001",
+      "status": "IMPLEMENTADO_AGUARDANDO_VALIDACAO_RUNTIME",
+      "pullRequest": 35,
+      "mergeCommit": "0e310acecedf186bb62339e152bd7d5ee7bc0e2e",
+      "branch": "feat/doc-ret-001-retention-preview",
+      "migrationOwnership": null,
+      "evidencia": "docs/implementacao/DOC_RET_001_PREVIA_RETENCAO.md"
     }
   ],
   "ondaCandidataAposGate": [],
@@ -221,7 +254,12 @@
     "AUT_SHD_001_STATIC_REVIEW_RECORDED",
     "CRT_DASH_001_STATIC_REVIEW_RECORDED",
     "AUD_EXP_001_STATIC_REVIEW_RECORDED",
-    "DOC_ORP_001_STATIC_REVIEW_RECORDED"
+    "DOC_ORP_001_STATIC_REVIEW_RECORDED",
+    "EMP_HIS_001_STATIC_REVIEW_RECORDED",
+    "CRT_BULK_001_STATIC_REVIEW_RECORDED",
+    "AUT_LIM_001_STATIC_REVIEW_RECORDED",
+    "OPS_BKP_UI_001_STATIC_REVIEW_RECORDED",
+    "DOC_RET_001_STATIC_REVIEW_RECORDED"
   ],
   "provasPendentes": [
     "MAVEN_CURRENT_MAIN_VERIFY_PENDING",
@@ -249,7 +287,12 @@
     "AUT_SHD_001_GRACEFUL_SHUTDOWN_RUNTIME_PENDING",
     "CRT_DASH_001_COUNTS_RUNTIME_PENDING",
     "AUD_EXP_001_CSV_RUNTIME_PENDING",
-    "DOC_ORP_001_STORAGE_RECONCILIATION_RUNTIME_PENDING"
+    "DOC_ORP_001_STORAGE_RECONCILIATION_RUNTIME_PENDING",
+    "EMP_HIS_001_ISOLATION_RUNTIME_PENDING",
+    "CRT_BULK_001_IDEMPOTENCY_PARTIAL_RUNTIME_PENDING",
+    "AUT_LIM_001_CONCURRENCY_SSE_RUNTIME_PENDING",
+    "OPS_BKP_UI_001_MANIFEST_HASH_RUNTIME_PENDING",
+    "DOC_RET_001_PREVIEW_RUNTIME_PENDING"
   ],
   "operacoesExternasProibidasNoGate": true
 }
