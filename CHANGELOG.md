@@ -7,68 +7,65 @@
 - transforma o ticket HMAC em credencial de troca de uso único;
 - persiste o consumo do `jti` no PostgreSQL pela migration V8;
 - bloqueia replay entre workers e após restart do worker;
-- troca o ticket por grant opaco em cookie `HttpOnly` e `SameSite=Strict`;
-- limita sessões interativas e assinantes SSE por worker, com resposta 429 e capacidade no health;
-- preserva HMAC, TTL, autorização e a proibição de bypass de CAPTCHA.
+- revalida intervenção, execução, sessão, operador, estado e expiração no backend;
+- envia o ticket somente no primeiro `GET /info`;
+- troca o ticket por grant opaco de 256 bits em cookie `HttpOnly` e `SameSite=Strict`;
+- mantém no máximo um grant ativo por sessão e rotaciona o grant com ticket novo;
+- recusa ticket bruto em endpoints de eventos e comandos;
+- preserva HMAC, TTL, autorização e a proibição de bypass de CAPTCHA;
+- amplia a validação operacional para Flyway V1–V8 e o ledger anti-replay.
 
-### Performance e operação do Centro de Certidões
+### Performance do Centro de Certidões
 
 - substitui cargas globais do scheduler por queries bounded de IDs;
-- processa inicialização, agendamento e alertas em lotes configuráveis e transações por item;
+- processa inicialização, agendamento e alertas em lotes configuráveis;
 - usa cursores rotativos com wrap para evitar starvation;
-- adiciona solicitação de até 500 acompanhamentos por lote, com idempotência e resultado por item;
-- adiciona dashboard gerencial bounded e exportação CSV segura;
-- adiciona agenda de vencimentos por período e empresa, sem acionar providers externos.
+- executa cada empresa, solicitação e alerta em transação própria;
+- preserva a idempotency key diária;
+- impede que configuração de provider ausente bloqueie o restante do lote.
 
-### Backup e storage
+### Backup verificável
 
 - gera manifesto por conjunto com versão, timestamp, componentes, tamanhos e SHA-256;
-- adiciona verificadores PowerShell e shell sem restauração;
-- adiciona inventário read-only e verificação de integridade na interface;
-- monta o diretório de backups como read-only no backend;
-- reconcilia referências do PostgreSQL e arquivos do storage sem correção automática;
-- rejeita path traversal, symlinks e componentes inconsistentes.
+- adiciona verificador PowerShell e shell sem restauração;
+- rejeita componente ausente, tamanho/hash divergente, duplicidade e path traversal;
+- remove apenas arquivos parciais do backup atual quando há falha;
+- mantém o teste real de restauração como operação humana separada.
 
-### Observabilidade
+### Observabilidade do automation worker
 
 - classifica heartbeat recente, atrasado, expirado, futuro e ausente;
-- mostra versão, último heartbeat e idade na Console Técnica;
-- consolida histórico de providers por status, taxa de sucesso, duração média e última execução;
-- soma custo estimado separadamente por moeda;
-- não expõe payload, resultado, protocolo, empresa ou segredo no histórico de providers.
+- expõe estado saudável, degradado ou indisponível com motivo seguro;
+- adiciona versão, último heartbeat e idade na Console Técnica;
+- usa limiares e limite de listagem configuráveis;
+- mantém indisponibilidade do worker separada de resultado fiscal e contagem de execuções com falha.
 
-### Documentos e integridade
+### Integridade documental
 
 - recalcula tamanho e SHA-256 antes do download;
-- bloqueia divergência e registra ocorrência segura em auditoria isolada;
-- adiciona prévia read-only de retenção documental por critérios configuráveis;
-- adiciona preview inline seguro de PDF, PNG e JPEG após nova validação de integridade;
-- aplica `inline`, `no-store`, `nosniff`, same-origin e CSP sandbox no preview;
-- mantém formatos não suportados disponíveis apenas pelo download autorizado.
+- compara o digest em tempo constante;
+- entrega exatamente os bytes verificados;
+- bloqueia divergência, metadados inválidos e falha de verificação;
+- preserva a evidência divergente para investigação;
+- registra ocorrência segura em auditoria isolada, sem hash bruto, path ou conteúdo.
+
+### Exportação CSV do Centro de Certidões
+
+- adiciona exportação filtrável por empresa, tipo e status exibido;
+- processa acompanhamentos ativos em lotes ordenados e limita a quantidade total de linhas;
+- gera CSV UTF-8 com BOM, separador `;`, cabeçalho estável e nome de arquivo versionável;
+- normaliza quebras de linha, escapa delimitadores e impede fórmula de planilha;
+- não exporta conteúdo de documentos, segredos, tokens ou payload completo de execução;
+- registra quantidade e filtros em auditoria segura;
+- adiciona botão de exportação na interface e configuração operacional por ambiente.
 
 ### Empresas e filiais
 
 - permite editar, inativar e reativar cada filial sem alterar o CNPJ;
-- sincroniza acompanhamentos aplicáveis após mudança de UF ou estado ativo;
+- sincroniza de forma não destrutiva os acompanhamentos aplicáveis após mudança de UF ou estado ativo;
 - adiciona importação CSV UTF-8 com modelo, validação prévia e resultado por linha;
-- adiciona histórico cadastral da empresa e das filiais sem `detalhes_json`;
-- adiciona grupo opcional e até vinte tags por empresa;
-- amplia a busca para grupo e tag;
-- adiciona migration V9 com `empresas.grupo`, `empresa_tags` e índices normalizados.
-
-### Auditoria
-
-- adiciona filtros por ação, recurso, ator e período;
-- exporta CSV com snapshot temporal, lotes, limite e proteção contra fórmula;
-- exclui deliberadamente `detalhes_json` da exportação;
-- registra eventos seguros de exportação, classificação, preview, backup e retenção.
-
-### Administração segura
-
-- adiciona visão da configuração efetiva sem retornar tokens, segredos, URLs completas ou referências sensíveis;
-- sinaliza segurança desabilitada, valores de exemplo e providers habilitados com configuração incompleta;
-- apresenta apenas presença, adequação e parâmetros operacionais seguros;
-- não altera configuração nem chama providers externos.
+- rejeita duplicidades no arquivo e no banco;
+- mantém o cadastro autoritativo, auditoria e inicialização de certidões já existentes.
 
 ### Shutdown gracioso do worker
 
@@ -78,14 +75,132 @@
 - trata timeout e segundo sinal sem mascarar interrupção;
 - adiciona grace period configurável ao Compose `dev` e `onpremise`.
 
+### Dashboard gerencial de certidões
+
+- consolida status e tipos por leitura bounded;
+- utiliza a regra autoritativa de status do domínio;
+- destaca atenção, andamento, vencimentos em 30 dias e ausência de validade;
+- identifica explicitamente visão parcial quando o teto operacional é atingido;
+- respeita `CERTIDAO_LER` e não expõe documentos ou payloads fiscais.
+
+### Exportação da auditoria
+
+- adiciona filtros por ação, recurso, ator e período;
+- exporta CSV com snapshot temporal, lotes e limite configurável;
+- exclui deliberadamente `detalhes_json`;
+- escapa wildcards de busca e impede fórmula de planilha;
+- registra evento seguro da exportação sem copiar o ator filtrado para os detalhes.
+
+### Reconciliação do storage documental
+
+- compara referências do PostgreSQL com arquivos regulares do storage;
+- considera documentos ativos e inativos;
+- não segue links simbólicos;
+- não exclui, move ou corrige arquivos;
+- só apresenta divergências conclusivas após varredura integral;
+- substitui paths por fingerprints e registra auditoria sem conteúdo sensível.
+
+### Histórico cadastral da Empresa 360
+
+- transforma a aba Histórico em uma visão funcional;
+- reutiliza eventos de auditoria da empresa, matriz e filiais;
+- pagina e ordena os eventos mais recentes primeiro;
+- apresenta ação, recurso, ator, data e correlation ID;
+- permite leitura com `EMPRESA_LER` sem ampliar acesso à auditoria global;
+- não retorna `detalhes_json`, payload fiscal ou documento.
+
+### Solicitação de certidões em lote
+
+- permite selecionar acompanhamentos individualmente ou pelos filtros atuais;
+- recebe até 500 IDs por chamada;
+- deduplica mantendo a ordem;
+- deriva idempotência por lote e acompanhamento;
+- isola erros de negócio por item;
+- retorna totais e resultado individual;
+- audita apenas contagens e identificador do lote, sem lista completa ou chave bruta.
+
+### Limites da sessão interativa
+
+- limita sessões interativas ativas por worker;
+- reserva capacidade durante criações concorrentes;
+- limita assinantes SSE por sessão;
+- retorna HTTP `429` quando a capacidade se esgota;
+- limpa sessões parcialmente criadas quando o CDP ou screencast falha;
+- publica contagens agregadas no health sem expor IDs, tickets ou usuários.
+
+### Inventário de backups
+
+- adiciona página administrativa read-only dos manifestos de backup;
+- valida schema, identificador, componentes, nomes, tamanhos e path traversal;
+- monta o diretório de backups como read-only no backend;
+- confere existência e tamanho na listagem;
+- recalcula SHA-256 somente sob solicitação explícita;
+- não permite criar, restaurar, excluir ou baixar backups pela interface;
+- audita a verificação sem hashes ou paths.
+
+### Prévia de retenção documental
+
+- adiciona simulação global ou por empresa;
+- aplica critérios configuráveis para inatividade, validade expirada e documento antigo sem validade;
+- informa total de candidatos, amostra bounded e flag parcial;
+- consolida tamanho e motivos da amostra;
+- não retorna referência do storage, hash ou conteúdo;
+- não exclui, inativa, move ou modifica documentos;
+- mantém execução futura de retenção condicionada a governança específica.
+
+### Grupos e tags de empresas
+
+- adiciona grupo opcional e até vinte tags por empresa;
+- mantém classificação interna separada do cadastro fiscal;
+- deduplica tags sem diferenciar maiúsculas e minúsculas;
+- amplia a busca para grupo e tag;
+- adiciona card e modal próprios na Empresa 360;
+- cria a migration V9 com `empresas.grupo`, `empresa_tags` e índices normalizados;
+- audita somente presença de grupo e quantidade de tags, sem copiar os valores.
+
+### Agenda de vencimentos de certidões
+
+- adiciona agenda por período de até 366 dias;
+- permite filtro opcional por empresa;
+- utiliza o status autoritativo do domínio;
+- informa prazo em dias e acesso contextual ao Centro de Certidões;
+- limita a quantidade detalhada e marca resultado parcial;
+- não chama provider nem altera acompanhamento, fila ou resultado fiscal.
+
+### Histórico de providers
+
+- consolida status de execução por provider;
+- calcula taxa de sucesso, duração média e última execução;
+- acumula custo estimado separadamente por moeda;
+- limita o número de providers detalhados e marca resultado parcial;
+- não retorna payload, resultado JSON, protocolo, empresa, segredo ou referência de segredo;
+- não realiza chamadas externas.
+
+### Configuração efetiva segura
+
+- apresenta ambiente, versão, segurança, storage e TTL do ticket;
+- informa somente presença/adequação do token do worker e segredo da sessão;
+- apresenta presença segura de Base URL, referência de segredo, custo e moeda por provider;
+- sinaliza valores de exemplo ou configuração incompleta;
+- nunca serializa token, segredo, URL completa ou referência sensível;
+- não altera configuração nem chama provider externo.
+
+### Pré-visualização segura de documentos
+
+- adiciona preview inline para PDF, PNG e JPEG;
+- recalcula tamanho e SHA-256 antes de cada resposta;
+- reutiliza a mesma permissão `DOCUMENTO_BAIXAR` do download;
+- aplica `inline`, `no-store`, `nosniff`, same-origin e CSP sandbox;
+- usa Blob URL temporária e revoga o objeto ao fechar/trocar o modal;
+- recusa formatos não suportados com HTTP 415;
+- audita sem hash bruto, path ou conteúdo.
+
 ### Pendências
 
 - build completo Maven/frontend/worker da `main` atual;
-- execução Docker, Keycloak/Liquibase e Flyway V1–V9;
-- healthchecks, endpoints, proxies e smoke UI;
+- execução Docker, Flyway V1–V9, Keycloak/Liquibase e smoke UI;
 - provas runtime focadas dos itens integrados pelas PRs `#14` a `#41`;
-- testes automatizados permanentes e E2E;
-- providers fiscais reais somente após autorização, credenciais e ambiente adequados.
+- testes automatizados permanentes e E2E.
 
 ## 0.5.1 — 2026-08-09
 
@@ -94,59 +209,179 @@
 - exige que o Maven use a JVM 21 selecionada;
 - melhora detecção de Node 22.12+ e geração explícita de lockfiles;
 - ignora artefatos TypeScript/Docker locais gerados;
-- prepara o fluxo de validação artifact-only e startup sequencial.
+- prepara, sem selecionar, a próxima onda de cinco slots independentes.
 
 ## 0.5.0 — 2026-08-09
 
 ### Provider oficial Serpro
 
-- fluxo `SERPRO::CERTIDAO_FEDERAL_RFB_PGFN` em modo API sem browser;
-- OAuth2 `client_credentials`, cache e renovação de bearer token;
-- bearer estático somente com opt-in explícito para demonstração;
-- request oficial, status 1–15 e 99, continuidade do status 7 somente em memória;
+- fluxo `SERPRO::CERTIDAO_FEDERAL_RFB_PGFN`;
+- modo API separado do runtime de navegador;
+- OAuth2 `client_credentials`;
+- cache e renovação de bearer token;
+- bearer estático apenas para demonstração controlada;
+- requisição oficial com `TipoContribuinte`, `ContribuinteConsulta`, `CodigoIdentificacao` e PDF;
+- continuidade do status 7 com chave somente em memória;
+- espera mínima configurada em 500 ms;
+- tratamento dos status 1 a 15 e 99;
 - CND e CPEND normalizadas;
-- PDF, CNPJ base, emissão e validade validados;
+- PDF base64 validado por assinatura `%PDF-`;
+- raiz do CNPJ, emissão e validade validadas;
 - upload com origem `API_OFICIAL`;
-- custo estimado/acumulado e moeda preservados;
+- `X-Request-Tag` sanitizado e limitado;
 - provider desabilitado por padrão.
+
+### Custo e execução
+
+- chamadas HTTP 200 e 201 contabilizadas como bilhetáveis;
+- custo estimado unitário recebido da definição do provider;
+- custo acumulado entre retries na mesma execução;
+- fallback recebe timeout, custo e moeda do próximo provider;
+- worker publica modo e diagnóstico seguro dos fluxos.
 
 ### Modelo Federal
 
-- acompanhamento Federal somente na matriz;
-- acompanhamentos antigos de filiais inativados sem exclusão de documentos ou histórico.
+- acompanhamento Federal passa a existir somente na matriz;
+- acompanhamentos antigos de filiais são inativados sem exclusão de documentos ou histórico.
 
-### Pendências históricas
+### Pendências
 
-- contrato, credenciais, custo vigente e chamada autorizada;
-- amostras reais anonimizadas e conferência de faturamento;
+- credenciais e contrato reais;
+- custo vigente configurado pelo cliente;
+- build Maven/npm/Docker no ambiente do usuário;
+- PostgreSQL/Flyway real;
+- chamada autorizada à API;
+- amostras reais de CND e CPEND;
 - testes automatizados e E2E.
 
 ## 0.4.0 — 2026-08-09
 
-- integra fluxos assistidos SEFAZ-SP e PGE-SP;
-- preserva CAPTCHA para intervenção humana, sem bypass;
-- exige PDF oficial e valida CNPJ/CNPJ base;
-- mantém providers desabilitados até prova autorizada;
-- inativa acompanhamentos antigos de forma não destrutiva.
+### Portais estaduais de São Paulo
+
+- fluxo `SEFAZ_SP_PORTAL::CERTIDAO_SP_SEFAZ_NAO_INSCRITOS`;
+- fluxo `PGE_SP_PORTAL::CERTIDAO_SP_PGE_DIVIDA_ATIVA`;
+- CAPTCHA assistido pela sessão interativa existente;
+- captura exclusiva de PDF;
+- parsers específicos SEFAZ-SP e PGE-SP;
+- validação de CNPJ e CNPJ base;
+- SEFAZ-SP com janela operacional configurável;
+- impedimento de emissão eletrônica direcionado a fallback/manual;
+- PGE-SP consolidada por CNPJ base/matriz;
+- certidões PGE de filiais antigas inativadas sem exclusão física;
+- provider real mantido desabilitado por padrão.
+
+### Segurança e integridade
+
+- nenhum bypass de CAPTCHA;
+- nenhuma classificação fiscal conclusiva sem documento quando exigido;
+- PDF precisa possuir assinatura `%PDF-`;
+- HTML não é convertido em certidão oficial;
+- acompanhamentos inativos não aceitam nova consulta ou resultado manual.
+
+### Pendências
+
+- runtime autorizado da SEFAZ-SP e PGE-SP;
+- amostras reais/anonimizadas de PDF;
+- validação de seletores;
+- fluxo administrativo de CPEN da PGE-SP;
+- testes automatizados e E2E.
 
 ## 0.3.0 — 2026-08-09
 
-- integra portal Federal assistido;
-- adiciona sessão interativa CDP/SSE com mouse, teclado e retomada confirmada;
-- captura PDF por download, resposta, popup/blob e link;
-- rejeita HTML como certidão oficial;
-- valida PDF e CNPJ;
-- não persiste quadros do screencast nem contorna CAPTCHA.
+### Automação Federal
+
+- fluxo `FEDERAL_PORTAL::CERTIDAO_FEDERAL_RFB_PGFN` registrado no worker;
+- navegação e preenchimento sem ocultação anti-bot;
+- detecção de CAPTCHA e indisponibilidade;
+- sessão interativa por CDP screencast e entrada remota;
+- tickets HMAC temporários vinculados a usuário, intervenção, execução e sessão;
+- retomada da execução na mesma página e sem incrementar tentativa;
+- captura de bytes PDF por download, resposta HTTP, popup/blob e link de documento;
+- rejeição de página HTML como substituto de documento oficial;
+- validação de assinatura PDF;
+- parser de CND, CPEND e certidão positiva;
+- validação de CNPJ no documento;
+- upload automático e resultado normalizado;
+- provider mantido desabilitado até validação autorizada.
+
+### Frontend
+
+- modal de interação com o portal;
+- mouse, rolagem, teclado e envio de texto;
+- status de conexão e expiração;
+- ação “Continuar automação” sem resolução manual paralela.
+
+### Segurança
+
+- proxy de sessão sem access log do ticket;
+- ticket curto assinado com HMAC-SHA256;
+- validação de atribuição do operador;
+- nenhuma persistência de quadros do screencast;
+- nenhum bypass de CAPTCHA.
+
+### Pendências
+
+- validação em runtime contra o portal Federal autorizado;
+- amostras reais de CND e CPEND;
+- testes automatizados, concorrência e E2E;
+- providers SEFAZ-SP e PGE-SP.
 
 ## 0.2.0 — 2026-08-09
 
-- fila PostgreSQL com lease, retry, idempotência e fallback;
-- providers, políticas, custo e intervenção humana;
+### Common
+
+- fila PostgreSQL com aquisição atômica por `FOR UPDATE SKIP LOCKED`;
+- lease renovável e recuperação atômica de leases expirados;
+- idempotência com detecção de conflito de payload;
+- retry com backoff;
+- fallback entre providers;
+- políticas por operação;
+- provider pago com limite de custo;
+- intervenção humana, expiração e retomada;
 - worker Playwright com polling e heartbeat;
-- documentos, auditoria e notificações;
-- Empresas, matriz, filiais e Empresa 360;
-- Centro de Certidões Federal, SEFAZ-SP e PGE-SP;
-- administração de providers, execuções, intervenções e Console Técnica.
+- upload de documentos pelo worker;
+- validação de assinatura básica de arquivos;
+- limpeza de arquivo quando a persistência imediata falha;
+- auditoria e notificações ampliadas.
+
+### Empresas
+
+- domínio e APIs funcionais;
+- estabelecimento matriz;
+- filiais adicionais;
+- Empresa 360;
+- CNPJ, inscrições, regime e endereço.
+
+### Certidões
+
+- Centro de Certidões;
+- Federal RFB/PGFN;
+- SEFAZ-SP;
+- PGE-SP;
+- provider manual;
+- estados fiscal/técnico separados;
+- histórico;
+- documentos;
+- alertas;
+- scheduler;
+- políticas e fallback.
+
+### Administração
+
+- providers;
+- políticas de aquisição;
+- execuções;
+- intervenções;
+- auditoria;
+- Console Técnica.
+
+### Fora da versão
+
+- fluxos reais de navegador;
+- Serpro/InfoSimples reais;
+- sessão remota para CAPTCHA;
+- testes automatizados;
+- runtime PostgreSQL/Docker validado neste ambiente de geração.
 
 ## 0.1.0 — 2026-08-09
 
