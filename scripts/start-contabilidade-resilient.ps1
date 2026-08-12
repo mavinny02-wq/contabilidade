@@ -81,7 +81,7 @@ function Ensure-DockerAndBuildx {
 function Remove-IsolatedBuilder {
     Write-Warn "Removendo somente o builder isolado '$BuilderName' e o cache dele."
     Write-Host 'Volumes PostgreSQL, documentos, backups, containers e imagens da aplicacao nao serao removidos.'
-    Invoke-Docker -Arguments @('buildx', 'rm', '--force', $BuilderName) -AllowFailure | Out-Null
+    Invoke-Docker -Arguments @('buildx', 'rm', '--force', $BuilderName) | Out-Null
 }
 
 function Ensure-IsolatedBuilder {
@@ -150,7 +150,7 @@ function Invoke-CoreAttempt {
         Write-Host "Log:     $attemptLog"
 
         $commandLine = "(echo.)|call `"$CoreBat`" `"$Mode`""
-        & $env:ComSpec /d /s /c $commandLine 2>&1 |
+        & $env:ComSpec /d /c $commandLine 2>&1 |
             Tee-Object -FilePath $attemptLog
         $exitCode = $LASTEXITCODE
     }
