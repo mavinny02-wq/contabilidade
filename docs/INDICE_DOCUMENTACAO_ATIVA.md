@@ -75,6 +75,7 @@
 - [Instalação on-premise](operacao/INSTALACAO_ON_PREMISE.md)
 - [Backup e restauração](operacao/BACKUP_E_RESTAURACAO.md)
 - [Atualização e rollback](operacao/ATUALIZACAO_E_ROLLBACK.md)
+- [Build Docker resiliente e deploy on-premise sem build](operacao/BUILD_DOCKER_RESILIENTE_E_DEPLOY_PRODUCAO.md)
 - [Runbook inicial](operacao/RUNBOOK.md)
 - [Runbook Serpro CND](operacao/RUNBOOK_SERPRO_CND.md)
 - [Runbook Portal Federal](operacao/RUNBOOK_PORTAL_FEDERAL.md)
