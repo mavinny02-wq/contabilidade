@@ -26,6 +26,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+      - name: Validar scripts Docker
+        run: node scripts/codex/validate-docker-orchestration.mjs
       - name: Instalar
         working-directory: frontend
         run: if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
