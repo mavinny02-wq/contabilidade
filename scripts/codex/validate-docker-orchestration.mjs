@@ -7,7 +7,7 @@ const repositoryRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)))
 const read = (path) => readFileSync(resolve(repositoryRoot, path), 'utf8');
 
 const rootBat = read('START_CONTABILIDADE.bat');
-const coreBat = read('scripts/START_CONTABILIDADE_CORE.bat');
+const coreBat = read('START_CONTABILIDADE_CORE.bat');
 const resilient = read('scripts/start-contabilidade-resilient.ps1');
 const deployBat = read('DEPLOY_CONTABILIDADE_ONPREMISE.bat');
 const deploy = read('scripts/deploy-contabilidade-onpremise.ps1');
