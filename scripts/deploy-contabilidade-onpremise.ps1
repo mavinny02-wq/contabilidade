@@ -115,8 +115,8 @@ if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
     throw 'Docker CLI nao encontrado.'
 }
 
-Invoke-Docker @('info')
-Invoke-Docker @('compose', 'version')
+Invoke-Docker -Arguments @('info')
+Invoke-Docker -Arguments @('compose', 'version')
 
 if (-not (Test-Path -LiteralPath $EnvFile)) {
     throw '.env ausente. O deploy on-premise exige um arquivo revisado com segredos reais.'
@@ -172,7 +172,7 @@ try {
     if ($Pull) {
         Write-Section 'Baixando imagens publicadas'
         foreach ($image in $applicationImages) {
-            Invoke-Docker @('pull', $image)
+            Invoke-Docker -Arguments @('pull', $image)
         }
     }
 
@@ -200,7 +200,7 @@ services:
     Write-Utf8NoBomLf $ComposeOverride $override
 
     Write-Section 'Validando Compose sem build'
-    Invoke-Docker @(
+    Invoke-Docker -Arguments @(
         'compose', '--env-file', $EnvFile,
         '-f', $ComposeBase,
         '-f', $ComposeMode,
@@ -209,7 +209,7 @@ services:
     )
 
     Write-Section 'Iniciando stack com imagens pre-construidas'
-    & $env:ComSpec /d /s /c "call `"$SequentialBat`" onpremise"
+    & $env:ComSpec /d /c "call `"$SequentialBat`" onpremise"
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
         throw "Startup sequencial on-premise falhou. Exit code: $exitCode."
