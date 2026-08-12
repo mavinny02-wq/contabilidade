@@ -19,7 +19,7 @@ $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
 $ProjectDir = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$CoreBat = Join-Path $PSScriptRoot 'START_CONTABILIDADE_CORE.bat'
+$CoreBat = Join-Path $ProjectDir 'START_CONTABILIDADE_CORE.bat'
 $LogDir = Join-Path $ProjectDir '.docker-local\logs'
 $LockPath = Join-Path $ProjectDir '.docker-local\artifact-build\buildkit-resilient.lock'
 $Timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
@@ -74,14 +74,14 @@ function Ensure-DockerAndBuildx {
         throw 'Docker CLI nao encontrado.'
     }
 
-    Invoke-Docker @('info') | Out-Null
-    Invoke-Docker @('buildx', 'version') | Out-Null
+    Invoke-Docker -Arguments @('info') | Out-Null
+    Invoke-Docker -Arguments @('buildx', 'version') | Out-Null
 }
 
 function Remove-IsolatedBuilder {
     Write-Warn "Removendo somente o builder isolado '$BuilderName' e o cache dele."
     Write-Host 'Volumes PostgreSQL, documentos, backups, containers e imagens da aplicacao nao serao removidos.'
-    Invoke-Docker @('buildx', 'rm', '--force', $BuilderName) -AllowFailure | Out-Null
+    Invoke-Docker -Arguments @('buildx', 'rm', '--force', $BuilderName) -AllowFailure | Out-Null
 }
 
 function Ensure-IsolatedBuilder {
@@ -100,13 +100,13 @@ Remova ou renomeie esse builder, ou defina CONTABILIDADE_BUILDER_NAME com outro 
 "@
         }
 
-        Invoke-Docker @('buildx', 'inspect', $BuilderName, '--bootstrap') | Out-Null
+        Invoke-Docker -Arguments @('buildx', 'inspect', $BuilderName, '--bootstrap') | Out-Null
         Write-Ok "Builder isolado reutilizado: $BuilderName"
         return
     }
 
     Write-Section "Criando builder BuildKit isolado: $BuilderName"
-    Invoke-Docker @(
+    Invoke-Docker -Arguments @(
         'buildx', 'create',
         '--name', $BuilderName,
         '--driver', 'docker-container',
