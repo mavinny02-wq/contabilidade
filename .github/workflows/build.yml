@@ -47,7 +47,7 @@ jobs:
               [ref]$errors
             )
             if ($errors.Count -gt 0) {
-              $errors | ForEach-Object { Write-Error "$file: $($_.Message)" }
+              $errors | ForEach-Object { Write-Error "${file}: $($_.Message)" }
               throw "Sintaxe PowerShell invalida em $file"
             }
           }
