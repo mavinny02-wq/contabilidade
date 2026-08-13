@@ -24,7 +24,7 @@ goto :usage_and_finish
 :run_dev
 echo ============================================================
 echo CONTABILIDADE - MODO DESENVOLVIMENTO
-necho Um unico comando compilara e iniciara somente os servicos necessarios.
+echo Um unico comando compilara e iniciara somente os servicos necessarios.
 echo Keycloak nao sera iniciado porque a autenticacao esta desabilitada no modo dev.
 echo ============================================================
 
@@ -42,7 +42,7 @@ for %%A in (%*) do (
 
 echo ============================================================
 echo CONTABILIDADE - DEPLOY ON-PREMISE
-necho Este modo usa imagens prontas e nao executa Maven, npm ou docker build.
+echo Este modo usa imagens prontas e nao executa Maven, npm ou docker build.
 echo ============================================================
 
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\deploy-contabilidade-onpremise.ps1" %PULL_ARG% %DIGEST_ARG%
@@ -57,21 +57,21 @@ goto :finish
 :usage
 echo ============================================================
 echo CONTABILIDADE - UNICO BAT OFICIAL
-necho ============================================================
+echo ============================================================
 echo.
 echo Duplo clique ou sem argumentos:
 echo   START_CONTABILIDADE.bat
-necho   Compila e inicia o ambiente de desenvolvimento.
+echo   Compila e inicia o ambiente de desenvolvimento.
 echo.
 echo Desenvolvimento explicito:
 echo   START_CONTABILIDADE.bat dev
-necho.
+echo.
 echo Producao on-premise com imagens publicadas:
 echo   START_CONTABILIDADE.bat onpremise pull digest
-necho.
+echo.
 echo Utilitario manual de memoria Docker/WSL:
 echo   START_CONTABILIDADE.bat memoria
-necho.
+echo.
 echo Ajuda:
 echo   START_CONTABILIDADE.bat help
 set "RC=0"
