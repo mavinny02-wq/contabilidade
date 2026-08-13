@@ -3,9 +3,52 @@
 Plataforma interna de operações fiscais e contábeis em português, preparada para execução
 **on-premise first** e migração futura para nuvem.
 
-**Versão do pacote:** `0.5.0`
+**Versão atual:** `0.5.1`
 
-## Destaques desta versão
+## Inicialização
+
+Existe um único BAT oficial na raiz:
+
+```text
+START_CONTABILIDADE.bat
+```
+
+### Desenvolvimento
+
+Duplo clique no arquivo ou execute:
+
+```powershell
+.\START_CONTABILIDADE.bat dev
+```
+
+O fluxo compila backend, frontend e automation worker no Windows, cria imagens runtime-only e inicia
+somente PostgreSQL, backend, worker e frontend. Como o modo dev desabilita autenticação, Keycloak e o
+bootstrap do banco Keycloak não são iniciados.
+
+Aplicação:
+
+```text
+http://localhost:8088
+```
+
+### Produção on-premise
+
+```powershell
+.\START_CONTABILIDADE.bat onpremise pull digest
+```
+
+O modo on-premise não executa Maven, npm ou `docker build` no servidor. Ele usa imagens previamente
+publicadas e inicia PostgreSQL, bootstrap, Keycloak, backend, worker e frontend em sequência.
+
+### Manutenção manual de memória
+
+```powershell
+.\START_CONTABILIDADE.bat memoria
+```
+
+Esse utilitário nunca é executado automaticamente.
+
+## Principais capacidades
 
 ### API oficial Serpro Consulta CND
 
@@ -51,34 +94,9 @@ Plataforma interna de operações fiscais e contábeis em português, preparada 
 - os portais Playwright continuam sujeitos a validação autorizada de seletores, CAPTCHA e PDFs;
 - não existe bypass de CAPTCHA;
 - InfoSimples permanece apenas como definição de provider;
-- testes automatizados e E2E permanecem para tasks separadas;
-- build Maven, Docker e consulta Serpro real devem ser executados no ambiente do usuário.
+- chamadas fiscais reais não fazem parte do startup ou dos testes locais padrão.
 
-## Aplicação da atualização incremental
-
-Extraia o ZIP incremental diretamente na raiz do projeto e permita sobrescrever os arquivos
-existentes. O pacote não contém pasta wrapper nem scripts de patch.
-
-```powershell
-Set-Location "C:\work\contabilidade"
-.\scripts\gerar-lockfiles.ps1
-.\scripts\validar.ps1
-```
-
-Suba o ambiente:
-
-```powershell
-Copy-Item .env.example .env
-.\scripts\iniciar-dev.ps1
-```
-
-Aplicação:
-
-```text
-http://localhost:8088
-```
-
-Preflight do provider oficial:
+## Preflight do provider oficial
 
 ```powershell
 .\scripts\validar-serpro.ps1
@@ -91,6 +109,6 @@ backend/             domínio, APIs, fila e certidões
 frontend/            aplicação web em pt-BR
 automation-worker/   providers API e portais assistidos
 infra/               Keycloak, PostgreSQL e seccomp
-scripts/             validação, operação e backup
+scripts/             lógica interna de build, startup, validação e backup
 docs/                documentação canônica
 ```
