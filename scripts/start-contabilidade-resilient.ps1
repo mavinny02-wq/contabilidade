@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('dev', 'onpremise')]
+    [ValidateSet('dev')]
     [string]$Mode = 'dev',
 
     [string]$BuilderName = $(
@@ -19,7 +19,8 @@ $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
 $ProjectDir = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
-$CoreBat = Join-Path $ProjectDir 'START_CONTABILIDADE_CORE.bat'
+$CoreSourceBat = Join-Path $PSScriptRoot 'start-contabilidade-core.bat'
+$TemporaryCoreBat = Join-Path $ProjectDir '.START_CONTABILIDADE_CORE.runtime.bat'
 $LogDir = Join-Path $ProjectDir '.docker-local\logs'
 $LockPath = Join-Path $ProjectDir '.docker-local\artifact-build\buildkit-resilient.lock'
 $Timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
@@ -46,7 +47,6 @@ function Invoke-Docker {
     param(
         [Parameter(Mandatory = $true)]
         [string[]]$Arguments,
-
         [switch]$AllowFailure
     )
 
@@ -81,7 +81,7 @@ function Ensure-DockerAndBuildx {
 function Remove-IsolatedBuilder {
     Write-Warn "Removendo somente o builder isolado '$BuilderName' e o cache dele."
     Write-Host 'Volumes PostgreSQL, documentos, backups, containers e imagens da aplicacao nao serao removidos.'
-    Invoke-Docker -Arguments @('buildx', 'rm', '--force', $BuilderName) | Out-Null
+    Invoke-Docker -Arguments @('buildx', 'rm', '--force', $BuilderName) -AllowFailure | Out-Null
 }
 
 function Ensure-IsolatedBuilder {
@@ -94,10 +94,7 @@ function Ensure-IsolatedBuilder {
 
     if ($inspectExit -eq 0) {
         if ($inspection -notmatch '(?m)^Driver:\s+docker-container\s*$') {
-            throw @"
-O builder '$BuilderName' ja existe, mas nao usa o driver docker-container.
-Remova ou renomeie esse builder, ou defina CONTABILIDADE_BUILDER_NAME com outro nome.
-"@
+            throw "O builder '$BuilderName' existe, mas nao usa o driver docker-container."
         }
 
         Invoke-Docker -Arguments @('buildx', 'inspect', $BuilderName, '--bootstrap') | Out-Null
@@ -141,6 +138,8 @@ function Invoke-CoreAttempt {
     $oldBuildKit = [Environment]::GetEnvironmentVariable('DOCKER_BUILDKIT', 'Process')
 
     try {
+        Copy-Item -LiteralPath $CoreSourceBat -Destination $TemporaryCoreBat -Force
+
         $env:BUILDX_BUILDER = $BuilderName
         $env:BUILDX_NO_DEFAULT_ATTESTATIONS = '1'
         $env:DOCKER_BUILDKIT = '1'
@@ -149,12 +148,13 @@ function Invoke-CoreAttempt {
         Write-Host "Builder: $BuilderName"
         Write-Host "Log:     $attemptLog"
 
-        $commandLine = "(echo.)|call `"$CoreBat`" `"$Mode`""
+        $commandLine = "(echo.)|call `"$TemporaryCoreBat`" `"$Mode`""
         & $env:ComSpec /d /c $commandLine 2>&1 |
             Tee-Object -FilePath $attemptLog
         $exitCode = $LASTEXITCODE
     }
     finally {
+        Remove-Item -LiteralPath $TemporaryCoreBat -Force -ErrorAction SilentlyContinue
         Restore-ProcessEnvironment 'BUILDX_BUILDER' $oldBuilder
         Restore-ProcessEnvironment 'BUILDX_NO_DEFAULT_ATTESTATIONS' $oldAttestations
         Restore-ProcessEnvironment 'DOCKER_BUILDKIT' $oldBuildKit
@@ -166,8 +166,8 @@ function Invoke-CoreAttempt {
     }
 }
 
-if (-not (Test-Path -LiteralPath $CoreBat)) {
-    throw "Script core ausente: $CoreBat"
+if (-not (Test-Path -LiteralPath $CoreSourceBat)) {
+    throw "Script core interno ausente: $CoreSourceBat"
 }
 
 $lockStream = $null
@@ -181,7 +181,7 @@ try {
         )
     }
     catch {
-        throw 'Outro build da Contabilidade ja esta em execucao. Aguarde a finalizacao antes de iniciar novamente.'
+        throw 'Outro build da Contabilidade ja esta em execucao. Aguarde a finalizacao.'
     }
 
     Ensure-DockerAndBuildx
@@ -226,6 +226,7 @@ try {
     exit $second.ExitCode
 }
 finally {
+    Remove-Item -LiteralPath $TemporaryCoreBat -Force -ErrorAction SilentlyContinue
     if ($null -ne $lockStream) {
         $lockStream.Dispose()
     }
