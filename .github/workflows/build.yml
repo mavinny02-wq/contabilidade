@@ -15,9 +15,9 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
-      - name: Compilar backend sem testes
+      - name: Compilar e testar backend
         working-directory: backend
-        run: mvn -B -DskipTests compile
+        run: mvn -B clean verify
 
   frontend:
     runs-on: ubuntu-latest
@@ -26,14 +26,43 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Validar scripts Docker
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Validar contratos dos scripts Docker
         run: node scripts/codex/validate-docker-orchestration.mjs
-      - name: Instalar
+      - name: Validar sintaxe PowerShell operacional
+        shell: pwsh
+        run: |
+          $files = @(
+            'scripts/start-contabilidade-resilient.ps1',
+            'scripts/start-compose-sequential.ps1',
+            'scripts/deploy-contabilidade-onpremise.ps1'
+          )
+          foreach ($file in $files) {
+            $tokens = $null
+            $errors = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile(
+              (Resolve-Path $file),
+              [ref]$tokens,
+              [ref]$errors
+            )
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Error "$file: $($_.Message)" }
+              throw "Sintaxe PowerShell invalida em $file"
+            }
+          }
+      - name: Instalar frontend
         working-directory: frontend
-        run: if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+        run: npm ci --no-audit --no-fund
       - name: Validar i18n
         working-directory: frontend
         run: npm run locale:validate
+      - name: Typecheck
+        working-directory: frontend
+        run: npm run typecheck
+      - name: Testes
+        working-directory: frontend
+        run: npm test
       - name: Build
         working-directory: frontend
         run: npm run build
@@ -45,6 +74,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Instalar e compilar
+          cache: npm
+          cache-dependency-path: automation-worker/package-lock.json
+      - name: Instalar
         working-directory: automation-worker
-        run: if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi && npm run build
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+        run: npm ci --no-audit --no-fund
+      - name: Typecheck
+        working-directory: automation-worker
+        run: npm run typecheck
+      - name: Testes
+        working-directory: automation-worker
+        run: npm test
+      - name: Build
+        working-directory: automation-worker
+        run: npm run build
