@@ -3,7 +3,7 @@ setlocal EnableExtensions
 
 echo ============================================================
 echo CONTABILIDADE - LIBERAR MEMORIA DOCKER / WSL
-necho ============================================================
+echo ============================================================
 echo.
 echo Este utilitario nunca e executado automaticamente pelo startup.
 echo Ele existe apenas para manutencao manual e pode encerrar containers.
