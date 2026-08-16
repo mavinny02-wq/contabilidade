@@ -1,0 +1,59 @@
+name: Supply chain security
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  policy-and-sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Validate policy, expiry, severity, and redaction fixtures
+        run: python -m unittest discover -s scripts/security/supply-chain/tests -p 'test_*.py'
+      - name: Semgrep Java and TypeScript SAST
+        run: |
+          docker run --rm -v "$PWD:/src" semgrep/semgrep:1.136.0 semgrep scan \
+            --config /src/scripts/security/supply-chain/semgrep.yml --error \
+            /src/backend/src /src/frontend/src /src/automation-worker/src
+
+  filesystem-iac:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Trivy filesystem vulnerabilities, secrets, IaC, and Dockerfiles
+        run: |
+          docker run --rm -v "$PWD:/work" aquasec/trivy:0.66.0 fs \
+            --scanners vuln,secret,misconfig --severity HIGH,CRITICAL --exit-code 1 /work
+
+  local-container-provenance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Build three local images without publishing
+        run: |
+          docker build -t contabilidade-backend:${GITHUB_SHA} backend
+          docker build -t contabilidade-frontend:${GITHUB_SHA} frontend
+          docker build -t contabilidade-worker:${GITHUB_SHA} automation-worker
+      - name: Scan local images and record local provenance
+        run: |
+          mkdir -p supply-chain-evidence
+          for component in backend frontend worker; do
+            image="contabilidade-${component}:${GITHUB_SHA}"
+            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.66.0 image \
+              --severity HIGH,CRITICAL --exit-code 1 "$image"
+            docker image inspect "$image" > "supply-chain-evidence/${component}.inspect.json"
+            python scripts/security/supply-chain/provenance.py \
+              "supply-chain-evidence/${component}.inspect.json" --subject "$image" \
+              > "supply-chain-evidence/${component}.provenance.json"
+          done
+      - name: Upload non-published provenance
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: local-container-provenance
+          path: supply-chain-evidence/*.provenance.json
+          if-no-files-found: error

@@ -1,0 +1,1 @@
+{"scanner_status":"complete","findings":[{"rule":"sast.injection","resource":"backend/Fake.java","severity":"HIGH","secret":"must-not-appear","description":"untrusted confidential source"}]}

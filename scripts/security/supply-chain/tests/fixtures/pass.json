@@ -1,0 +1,1 @@
+{"scanner_status":"complete","findings":[{"rule":"iac.public-port","resource":"fixture/Dockerfile","severity":"LOW"}]}
