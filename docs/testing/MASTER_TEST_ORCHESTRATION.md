@@ -1,89 +1,96 @@
 # Master Test Orchestration
 
-**Classificação:** `CANONICAL_ACTIVE_TEST_LEDGER`
-**Reconciliado em:** `2026-08-16`
-**HEAD observado:** `4c07f16a8a66abb76983c9203c8e694c748f0af0`
+**Classificação:** `CANONICAL_ACTIVE_TEST_LEDGER`  
+**Reconciliado em:** `2026-08-16`  
+**Release HEAD observado:** `91a42c8e96775f2cbe3c09481beed879d4fbab31`
 
-Este ledger agenda, classifica e reutiliza evidência. Não é uma lista para executar tudo sempre.
+Este ledger classifica e reutiliza evidência. Não agenda rerun amplo sem invalidação comprovada.
 
 ## Política
 
-- validação executa apenas owner explicitamente liberado;
-- produção não é alterada para tornar teste verde;
-- Cloud Linux e Windows/Docker Desktop são ambientes distintos;
-- provider real/pago não é executado sem autorização;
-- `REUSE_PASS` precede rerun;
-- rerun é focado na lacuna ainda não comprovada;
-- coverage só é declarado quando realmente medido no mesmo baseline.
+- cada prova tem owner, baseline, ambiente, resultado, validade e disposição;
+- falha ambiental não é regressão de produto;
+- produção não é alterada para satisfazer teste incorreto;
+- Cloud Linux e Windows/Docker Desktop são evidências distintas;
+- provider real/pago não participa de validação comum;
+- evidência verde é reutilizada até mudança material no owner;
+- coverage agregado só existe quando medido no mesmo baseline.
 
-## Evidência reconciliada
+## Evidência integrada
 
-| ID | Baseline de código | Ambiente | Resultado | Classificação | Disposição |
-|---|---|---|---|---|---|
-| `VAL-STAB-FULLSTACK-001` | `7c6079c` | Linux, Java 21, PostgreSQL 16, Node 20, Chromium | PASS | `PASS_WITH_ENVIRONMENT_LIMITATION` | `REUSE_PASS_WITH_LIMITATION` |
-| `VAL-STAB-FRONTEND-001` | `7c6079c` | Linux, Node 20 | PASS | `PASS_WITH_ENVIRONMENT_LIMITATION` | `RERUN_FOCUSED_SUPPORTED_NODE` |
-| `VAL-STAB-BACKEND-001` | `7c6079c` | Linux sem PostgreSQL | ERROR | `ENVIRONMENT_LIMITATION` | `RERUN_FOCUSED_WITH_POSTGRESQL` |
-| `VAL-STAB-WORKER-001` | `7c6079c` | Linux, Node 20, sem Chromium | PARTIAL | `ENVIRONMENT_LIMITATION` | `RERUN_FOCUSED_SUPPORTED_NODE_AND_BROWSER` |
-| `VAL-STAB-INFRA-CONTRACT-001` | `7c6079c` | Linux sem pwsh/docker | FAIL/PARTIAL | `TEST_CONTRACT_DRIFT` + `ENVIRONMENT_LIMITATION` | `FIX_TEST_CONTRACT_THEN_RERUN_FOCUSED` |
-| `STR-ORQ-002` | PR `#61` | Node | PASS | `STRUCTURAL_GUARD_PASS` | `REUSE_PASS` |
-| `STR-RUN-001` | PR `#63` | Cloud tests | PASS | `TOOLING_IMPLEMENTED` | `WAITING_FOR_WINDOWS_EVIDENCE` |
+| ID | Owner | Baseline executado | Ambiente | Resultado | Classificação | Disposição |
+|---|---|---|---|---|---|---|
+| `VAL-STAB-FULLSTACK-001` | aplicação controlada | `4c07f16a...` ancestral da main atual | Linux + PostgreSQL + Chromium | backend/worker/frontend verdes; Flyway V12; 19 jornadas; zero externa/5xx | `PASS` | `REUSE_PASS` |
+| `BUG-INFRA-001` | guard Docker | `4c07f16a...` | Node/Linux | falso positivo removido; 2 regressões verdes | `TEST_CONTRACT_DRIFT_FIXED` | `REUSE_PASS` |
+| `VAL-STAB-BACKEND-PG-002` | backend + PostgreSQL | `4c07f16a...` | Linux + PostgreSQL 16.14 | 5 testes; 0 falhas/erros; Flyway V1–V12 | `PASS` | `REUSE_PASS` |
+| `VAL-STAB-FRONTEND-NODE24-002` | frontend | `4c07f16a...` | Node 24.19 | i18n, typecheck, 20 testes e build verdes | `PASS` | `REUSE_PASS` |
+| `VAL-STAB-WORKER-NODE24-PW-002` | worker/browser | `4c07f16a...` | Node 24.19 + Chromium 1223 | typecheck, 7 testes e build verdes; rede externa bloqueada | `PASS` | `REUSE_PASS` |
+| `STR-ORQ-002` | migration registry | main integrada | Node/Linux | V1–V12, checksums, duplicata e retrocesso protegidos | `PASS` | `DONE` |
+| `STR-RUN-001` | inventário Windows | main integrada | testes sintéticos PowerShell/schema | redaction e inventário aprovados, runtime não coletado | `PARTIAL_IMPLEMENTATION` | `FIX_PRODUCT: BUG-RUN-001` |
 
-## Autoridade da prova full-stack
+As provas específicas foram executadas em SHAs ancestrais, mas as integrações posteriores até
+`91a42c8e96775f2cbe3c09481beed879d4fbab31` adicionaram predominantemente relatórios e tooling.
+Nenhuma mudança posterior observada em backend, frontend ou worker invalida os owners verdes acima.
+Antes de reuse futuro, comparar o delta por owner.
 
-A campanha full-stack comprovou:
+## Owners atuais
 
-- backend readiness e liveness;
-- worker health;
-- frontend e proxy para backend;
-- Flyway com última migration `12:true`;
-- heartbeat persistido;
-- 19 jornadas Playwright;
-- zero chamada externa;
-- zero HTTP 5xx nos logs coletados.
-
-As PRs `#58` a `#64` não alteraram código funcional da aplicação nem migrations SQL. Assim, essa
-prova pode ser reutilizada para o runtime de aplicação do HEAD atual. Ela não prova Windows,
-Docker Desktop, Keycloak on-premise nem paridade Node 22.12+/24.
-
-## Classificação das aparentes falhas
-
-### Backend isolado
-
-A falha `Connection refused` em `127.0.0.1:5432` não prova regressão do backend. É
-`ENVIRONMENT_LIMITATION`. A prova full-stack posterior demonstrou backend e Flyway funcionando com
-PostgreSQL. Resta somente repetir `mvn clean verify` em ambiente preparado para fechar o owner da
-suíte isolada.
-
-### Worker isolado
-
-A ausência do executável Chromium não prova regressão do worker. É `ENVIRONMENT_LIMITATION`. O
-full-stack posterior instalou Chromium e aprovou browser smoke; resta a suíte completa em Node
-suportado.
-
-### Contrato de infraestrutura
-
-O guard interpretou uma mensagem descritiva contendo `Docker build` como execução de comando. Isso
-é `TEST_CONTRACT_DRIFT`. A correção deve restringir a detecção a invocações executáveis e adicionar
-regressão positiva/negativa antes do rerun.
-
-## Matriz atual
-
-| Owner | Estado | Próxima prova |
+| Owner | Estado | Próxima prova necessária |
 |---|---|---|
-| full-stack Cloud | `REUSE_PASS_WITH_LIMITATION` | nenhuma repetição ampla |
-| backend verify | `RERUN_FOCUSED` | PostgreSQL controlado |
-| frontend | `RERUN_FOCUSED` | Node 24 |
-| worker | `RERUN_FOCUSED` | Node 24 + Chromium Playwright |
-| infra contract | `FIX_TEST_CONTRACT` | guard + rerun focado |
-| Flyway registry | `REUSE_PASS` | apenas quando migrations mudarem |
-| Windows dev | `NO_PROOF` | execução manual com coletor |
-| Windows on-premise/Keycloak | `NO_PROOF` | somente após dev verde |
-| external providers | `NOT_AUTHORIZED_NOT_REQUIRED` | não executar |
-| aggregate coverage | `NOT_MEASURED` | campanha posterior |
+| backend compile/unit/integration | `GREEN_REUSABLE` | rerun somente após delta backend/dependência |
+| frontend Node suportado | `GREEN_REUSABLE` | rerun somente após delta frontend/dependência |
+| worker Node/Playwright | `GREEN_REUSABLE` | rerun somente após delta worker/dependência/browser |
+| Flyway V1–V12 controlado | `GREEN_REUSABLE` | validar novo frontier quando houver migration |
+| contrato Docker estático | `GREEN_REUSABLE` | rerun após alteração de startup/deploy/guard |
+| startup Windows dev | `NOT_PROVEN` | após `FIX-STARTUP-MAIN-001` |
+| segundo startup/reuso PostgreSQL | `NOT_PROVEN` | campanha Windows dev |
+| on-premise/Keycloak | `NOT_PROVEN` | somente após dev verde |
+| coletor runtime Windows | `INCOMPLETE` | `BUG-RUN-001` |
+| coverage agregado | `NOT_MEASURED` | campanha futura `STR-QA-001` |
+| providers reais | `NOT_AUTHORIZED_NOT_REQUIRED` | não executar |
 
-## Próxima campanha preparada
+## Wave 002
 
-`docs/orquestracao/waves/prepared/CONTABILIDADE_STABILIZATION_WAVE_002.md`
+`CONTABILIDADE_STABILIZATION_WAVE_002` está `CONSUMED`.
 
-Ela contém quatro owners, nenhuma migration e nenhum rerun amplo. Continua
-`PREPARED_NOT_RELEASED` até a integração das PRs abertas e refresh do HEAD.
+Resultados:
+
+- `BUG-INFRA-001`: `PASS`;
+- `VAL-STAB-BACKEND-PG-002`: `PASS`;
+- `VAL-STAB-FRONTEND-NODE24-002`: `PASS`;
+- `VAL-STAB-WORKER-NODE24-PW-002`: `PASS`.
+
+Não há successor de correção para backend/frontend/worker. Avisos de chunk, `allowScripts`,
+configuração npm obsoleta e futuro Byte Buddy permanecem backlog técnico, não blockers desta
+estabilização.
+
+## Wave 003
+
+`PREPARED_NOT_RELEASED`. Ela implementa o caminho real de startup, completa a coleta Windows e
+fecha lacunas estruturais de wave/version/ownership sem repetir a campanha Cloud.
+
+## Campanha Windows após startup
+
+Quando `FIX-STARTUP-MAIN-001` estiver integrado:
+
+1. executar `START_CONTABILIDADE.bat dev`;
+2. coletar evidência por `BUG-RUN-001`;
+3. provar somente PostgreSQL, backend, worker e frontend no modo dev;
+4. provar health/readiness, Flyway V12 e ausência de Keycloak/bootstrap;
+5. executar segunda inicialização e provar reuso do PostgreSQL/volumes;
+6. classificar qualquer falha antes de selecionar correção;
+7. só depois executar on-premise + Keycloak.
+
+## Invalidação
+
+Uma evidência `REUSE_PASS` é invalidada apenas por mudança material em:
+
+- código/testes/dependências do owner;
+- runtime mínimo suportado;
+- migration frontier;
+- contrato de segurança/ambiente;
+- comando ou fixture que produziu a prova.
+
+Mudanças apenas documentais não invalidam prova de aplicação.
+
+`MASTER_TEST_ORCHESTRATION_WAVE_002_CONSUMED`

@@ -1,83 +1,109 @@
 # Estado atual do Contabilidade
 
-**Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`
-**Reconciliado em:** `2026-08-16`
-**Branch de integração:** `main`
-**HEAD atual verificado:** `4c07f16a8a66abb76983c9203c8e694c748f0af0`
-**Baseline de aplicação validada no Cloud:** `7c6079caa54d1e7526a3e03c5ee41893581ff9b1`
-**Versão declarada:** `0.5.1`
-**Frontier Flyway observado:** `V12`
-**PRs abertas:** `#56`, `#57`
-**Modo:** `CLOUD_CORE_PROVEN_WINDOWS_PENDING`
+**Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`  
+**Reconciliado em:** `2026-08-16`  
+**Branch de integração:** `main`  
+**HEAD verificado:** `91a42c8e96775f2cbe3c09481beed879d4fbab31`  
+**Versão declarada:** `0.5.1`  
+**Frontier Flyway:** `V12`  
+**Modo:** `STABILIZATION_CLOUD_GREEN_WINDOWS_PENDING`
 
 ## Verdade de integração
 
-- As PRs `#58` a `#64` foram integradas após o baseline de aplicação `7c6079c`.
-- `#58`, `#59`, `#60`, `#62` e `#64` adicionaram resultados de validação.
-- `#61` adicionou registry/guard de migrations e `#63` adicionou o coletor de evidência Windows.
-- Esse delta não alterou código funcional da aplicação nem migrations SQL; portanto, a prova full-stack
-  de `7c6079c` permanece reutilizável para o runtime de aplicação presente no HEAD atual.
-- A PR `#56` continua aberta e contém a correção de startup dev/on-premise.
-- A PR `#57` continua aberta e contém esta governança v2; enquanto não for integrada, os launchers
-  v2 permanecem preparados, não liberados.
+A `main` contém as PRs de estabilização `#58` a `#68`, inclusive:
 
-## Disposição das evidências
+- correção do falso positivo do contrato Docker (`#65`);
+- backend com PostgreSQL sintético e `mvn clean verify` verde (`#66`);
+- frontend completo em Node.js 24 (`#67`);
+- worker completo em Node.js 24 com Chromium/Playwright (`#68`).
 
-| Evidência | Resultado | Classificação | Disposição |
+PRs ainda abertas:
+
+| PR | Owner | Estado |
+|---:|---|---|
+| `#56` | startup/dev/on-premise | `CONFLICTING / SUPERSESSION_REQUIRED` |
+| `#57` | fundação de orquestração v2 | `MERGEABLE / READY_FOR_INTEGRATION` |
+
+A PR `#56` não deve ser mergeada no estado atual: ela parte de uma baseline antiga e conflita com
+alterações já integradas no guard Docker e no workflow de migrations. Seu comportamento desejado
+será reaplicado por `FIX-STARTUP-MAIN-001` sobre a `main` atual.
+
+## Evidência reconciliada
+
+| Owner | Evidência | Resultado | Disposição |
 |---|---|---|---|
-| `VAL-STAB-FULLSTACK-001` | backend, worker, frontend, Flyway V12, heartbeat e 19 jornadas verdes | `PASS_WITH_ENVIRONMENT_LIMITATION` | `REUSE_PASS_WITH_LIMITATION`; Node 20 abaixo do contrato |
-| `VAL-STAB-FRONTEND-001` | i18n, typecheck, 20 testes e build verdes | `PASS_WITH_ENVIRONMENT_LIMITATION` | rerun somente em Node suportado |
-| `VAL-STAB-BACKEND-001` | erro de conexão com PostgreSQL ausente | `ENVIRONMENT_LIMITATION` | runtime supersedido pela prova full-stack; verify focado com PostgreSQL ainda selecionável |
-| `VAL-STAB-WORKER-001` | typecheck e seis testes verdes; browser ausente | `ENVIRONMENT_LIMITATION` | browser runtime supersedido pelo full-stack; suíte completa em Node suportado ainda selecionável |
-| `VAL-STAB-INFRA-CONTRACT-001` | guard falhou em texto descritivo; pwsh/docker ausentes | `TEST_CONTRACT_DRIFT` + `ENVIRONMENT_LIMITATION` | corrigir somente o guard e repetir prova focada |
+| full-stack controlado | `VAL-STAB-FULLSTACK-001` | saúde, Flyway V12, heartbeat, 19 jornadas e zero chamadas externas | `REUSE_PASS` |
+| backend + PostgreSQL | `VAL-STAB-BACKEND-PG-002` | 5 testes, 0 falhas/erros, `BUILD SUCCESS` | `REUSE_PASS` |
+| frontend Node 24 | `VAL-STAB-FRONTEND-NODE24-002` | i18n, typecheck, 20 testes e build verdes | `REUSE_PASS` |
+| worker Node 24 + Chromium | `VAL-STAB-WORKER-NODE24-PW-002` | typecheck, 7 testes, smoke local e build verdes | `REUSE_PASS` |
+| contrato Docker | `BUG-INFRA-001` | falso positivo corrigido; comandos reais continuam bloqueados | `REUSE_PASS` |
+| migrations | `STR-ORQ-002` | registry V1–V12 e guard de checksum/ordem integrados | `DONE` |
+| coletor Windows | `STR-RUN-001` | inventário de ferramentas/repo integrado | `PARTIAL_CONTRACT_GAP` |
 
-## O que está comprovado
+O resultado de `STR-RUN-001` não satisfaz todo o aceite original: o coletor atual não registra
+Compose efetivo, containers/health, Flyway, endpoints nem smoke do runtime. O sucessor corretivo é
+`BUG-RUN-001`.
 
-- aplicação full-stack sobe em ambiente Linux controlado;
-- PostgreSQL, Flyway V1–V12, backend, worker e frontend comunicam-se;
-- endpoints de saúde e proxy respondem HTTP 200;
-- heartbeat é persistido;
-- smoke Playwright percorre 19 jornadas com dados sintéticos;
-- zero chamada externa e zero HTTP 5xx foram observados na campanha full-stack;
-- registry monotônico de migrations V1–V12 está integrado;
-- coletor seguro de evidência Windows está integrado.
+## Estado de validação
 
-## O que não está comprovado
+```text
+CORE_APPLICATION_CLOUD: GREEN
+BACKEND_POSTGRESQL: GREEN
+FRONTEND_NODE24: GREEN
+WORKER_NODE24_PLAYWRIGHT: GREEN
+FLYWAY_V1_V12_CONTROLLED_POSTGRESQL: GREEN
+DOCKER_CONTRACT_STATIC: GREEN
+WINDOWS_DEV_DOCKER_DESKTOP: NOT_PROVEN
+WINDOWS_SECOND_START_REUSE: NOT_PROVEN
+ONPREMISE_KEYCLOAK_LOGIN: NOT_PROVEN
+AGGREGATE_COVERAGE: NOT_MEASURED
+REAL_EXTERNAL_PROVIDERS: NOT_AUTHORIZED_NOT_REQUIRED
+```
 
-- `START_CONTABILIDADE.bat dev` no Windows/Docker Desktop;
-- reutilização real do PostgreSQL no segundo startup Windows;
-- startup on-premise com bootstrap, Keycloak e login;
-- Compose efetivo em Docker Desktop;
-- frontend/worker sob Node oficialmente suportado;
-- coverage agregado atual.
+A evidência Cloud atual é reutilizável enquanto código/dependências/contratos afetados não mudarem.
+Não repetir o full-stack amplo para preencher uma wave.
 
 ## Ondas
 
-- `PREPARED_NOT_RELEASED`: `CONTABILIDADE_STABILIZATION_WAVE_002`;
-- `RELEASED_FOR_EXECUTION`: nenhuma;
-- migration owner aberto: nenhum;
-- Windows campaign: `NOT_EXECUTED_BY_USER`.
+- `CONTABILIDADE_STABILIZATION_WAVE_002`: `CONSUMED`;
+- `CONTABILIDADE_STABILIZATION_WAVE_003`: `PREPARED_NOT_RELEASED`;
+- migration owner aberto: `NONE`;
+- próxima prova de ambiente: Windows dev após integração do startup corrigido.
 
-### Gates de liberação da Wave 002
+## Wave 003 preparada
 
-1. integrar ou encerrar a PR `#56`;
-2. integrar a PR `#57`;
-3. atualizar uma vez o delta até o novo HEAD;
-4. confirmar ausência de owner concorrente nos quatro itens preparados;
-5. publicar os launchers exatos somente depois dessa verificação.
+Owners candidatos, todos sem migration:
 
-## Estado estrutural
+1. `FIX-STARTUP-MAIN-001`;
+2. `BUG-RUN-001`;
+3. `STR-ORQ-003`;
+4. `STR-REL-001`;
+5. `STR-OWN-001`.
 
-- `STR-ORQ-002`: `DONE`;
-- `STR-RUN-001`: `IMPLEMENTED_PENDING_WINDOWS_EXECUTION`;
-- `STR-TEST-001`: `DONE_BY_RECONCILIATION`;
-- `STR-ORQ-001`: pendente;
-- `STR-ORQ-003`: pronto para onda estrutural posterior;
-- `STR-OWN-001`: pronto para onda estrutural posterior.
+A wave só pode ser liberada após:
+
+1. integração da PR `#57`;
+2. classificação/encerramento da PR `#56` como superseded ou atualização explícita do mesmo owner;
+3. refresh do HEAD e da fila de PRs;
+4. confirmação de que os cinco owners continuam sem sobreposição.
+
+## Locks ativos
+
+- GitHub é a verdade de integração;
+- sem push direto na `main`;
+- até cinco owners, sem filler;
+- no máximo um owner de migration;
+- sem dependência same-wave;
+- provider real/pago negado por padrão;
+- sem credencial/dado real em automação;
+- sem bypass de CAPTCHA/MFA/anti-bot;
+- Cloud não substitui Windows;
+- falhas são classificadas antes de alterar produção;
+- evidência válida é reutilizada.
 
 ## Próxima transição
 
-Liberar a Wave 002 após os gates acima. Depois, executar a campanha Windows dev com o coletor
-integrado. O on-premise/Keycloak só é promovido após o dev ficar verde.
+Integrar a fundação v2, liberar a Wave 003 com baseline atualizado e, após o merge do owner de
+startup, executar a campanha manual Windows dev usando o coletor runtime corrigido.
 
-`CONTABILIDADE_CURRENT_STATE_AFTER_PR64_WAVE002_PREPARED`
+`CONTABILIDADE_CURRENT_STATE_STABILIZATION_WAVE_003_PREPARED`

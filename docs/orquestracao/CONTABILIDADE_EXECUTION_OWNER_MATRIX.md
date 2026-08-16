@@ -1,12 +1,13 @@
 # Matriz de owners e hotspots
 
-**Classificação:** `CANONICAL_ACTIVE_OWNER_MATRIX`
+**Classificação:** `CANONICAL_ACTIVE_OWNER_MATRIX`  
+**Reconciliado em:** `2026-08-16`  
+**HEAD observado:** `91a42c8e96775f2cbe3c09481beed879d4fbab31`
 
 ## Regra
 
 Um owner aberto/reservado bloqueia trabalho paralelo nos mesmos arquivos ou autoridade. Arquivos
-diferentes ainda podem conflitar quando compartilham contrato, migration frontier, versão ou
-workflow.
+diferentes também conflitam quando compartilham migration frontier, versão, workflow ou contrato.
 
 ## Hotspots serializados
 
@@ -15,43 +16,54 @@ workflow.
 | `ROOT_GOVERNANCE` | `AGENTS.md`, índice, governança | um owner por vez |
 | `ORCHESTRATION_STATE` | current state, waves, board, config | orquestrador somente |
 | `ROADMAP_REGISTRY` | registros/backlogs globais | reconciliação serial |
-| `TEST_LEDGER` | master ledger, campanhas, evidência reuse | validação/reconciliação serial |
-| `MIGRATION_LANE` | `backend/src/main/resources/db/migration/**` | máximo um owner por onda |
+| `TEST_LEDGER` | master ledger, campanhas, evidence reuse | reconciliação serial |
+| `MIGRATION_LANE` | migrations e registry | máximo um owner por wave |
 | `PERMISSION_AUTHORITY` | catálogo/permissões/backend auth | owner único |
-| `FRONTEND_SHELL` | app shell, routing, i18n comum, clients compartilhados | serializar overlap |
-| `WORKER_RUNTIME` | polling, leases, retry, browser/session, shutdown | serializar contratos |
-| `STARTUP_DEPLOY` | Compose, startup, deploy, Docker workflows | serializar |
-| `VERSION_RELEASE` | `VERSION`, manifests, package/pom versions, changelog | owner único |
-| `DEPENDENCY_LOCKS` | `pom.xml`, package manifests/lockfiles | owner explícito |
-| `DOCUMENT_STORAGE` | storage abstraction, download/preview/integrity | owner único por fluxo |
+| `FRONTEND_SHELL` | routing, i18n comum, clients compartilhados | serializar overlap |
+| `WORKER_RUNTIME` | polling, leases, browser/session, shutdown | serializar contratos |
+| `STARTUP_DEPLOY` | Compose, startup, deploy e build workflow | serializar |
+| `WINDOWS_EVIDENCE` | coletor, schema e fixtures Windows | separado de startup |
+| `WAVE_MANIFESTS` | manifests e validators de lifecycle | owner único |
+| `VERSION_RELEASE` | versão, manifests, imagens e release guard | owner único |
+| `DEPENDENCY_LOCKS` | POM/package/lockfiles | owner explícito |
+| `CODEOWNERS_HOTSPOTS` | `.github/CODEOWNERS` | identidades reais somente |
+| `DOCUMENT_STORAGE` | storage/download/preview/integrity | owner único por fluxo |
 
-## PR aberta no checkpoint
+## PRs abertas
 
-PR `#56` reserva atualmente:
+### PR `#56`
 
-```text
-.env.example
-.github/workflows/build.yml
-DEPLOY_CONTABILIDADE_ONPREMISE.bat
-INSTRUCOES_START_CONTABILIDADE.md
-README.md
-START_CONTABILIDADE.bat
-docs/operacao/BUILD_DOCKER_RESILIENTE_E_DEPLOY_PRODUCAO.md
-scripts/codex/validate-docker-orchestration.mjs
-scripts/maintenance/**
-scripts/start-compose-sequential.*
-scripts/start-contabilidade-core.bat
-scripts/start-contabilidade-resilient.ps1
-scripts/validate-database-state.bat
-```
+Estado: `CONFLICTING / SUPERSESSION_REQUIRED`.
 
-A lista acima é snapshot e deve ser confirmada no GitHub antes de liberar nova task.
+Reserva histórica os arquivos de `STARTUP_DEPLOY`, mas não deve ser mergeada sobre a main atual.
+Antes da release da Wave 003, ela deve ser encerrada como superseded; seu successor é
+`FIX-STARTUP-MAIN-001`.
+
+### PR `#57`
+
+Estado: `MERGEABLE / ROOT_GOVERNANCE + ORCHESTRATION_STATE`.
+
+Enquanto não integrada, bloqueia alterações paralelas na fundação de governança, current state,
+ledger, backlog e manifestos canônicos.
+
+## Wave 003 preparada
+
+| ITEM | Owner | Paths principais | Conflito conhecido |
+|---|---|---|---|
+| `FIX-STARTUP-MAIN-001` | `STARTUP_DEPLOY` | startup/Compose/build workflow | PR `#56`; resolver antes da release |
+| `BUG-RUN-001` | `WINDOWS_EVIDENCE` | windows collector/schema/tests | nenhum |
+| `STR-ORQ-003` | `WAVE_MANIFESTS` | wave manifests/validator/workflow próprio | PR `#57`; integrar antes |
+| `STR-REL-001` | `VERSION_RELEASE` | guard/version workflow próprio | nenhum |
+| `STR-OWN-001` | `CODEOWNERS_HOTSPOTS` | `.github/CODEOWNERS` | branch protection é ação posterior |
 
 ## Regras de wave
 
-- owners oficiais e extras contam para o mesmo máximo de cinco;
+- owners oficiais e extras contam no mesmo máximo de cinco;
 - no máximo um owner de migration;
-- sem dependência dentro da onda;
+- sem dependência dentro da wave;
 - baseline idêntico;
-- arquivos compartilhados ficam fora de slots paralelos, salvo owner consolidado explícito;
-- conflito descoberto depois da preparação torna o candidato `SUPERSEDED` ou o serializa.
+- arquivos compartilhados ficam fora de slots paralelos;
+- current state, ledger e backlog são atualizados pelo orquestrador depois dos merges;
+- conflito descoberto depois da preparação bloqueia release ou torna o candidato `SUPERSEDED`.
+
+`CONTABILIDADE_OWNER_MATRIX_WAVE_003_PREPARED`
