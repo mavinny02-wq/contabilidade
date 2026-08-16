@@ -33,6 +33,20 @@ type LeaseControl = {
   desativar: () => void;
 };
 
+export type WorkerLoopScheduler = {
+  setTimeout: (callback: () => void, delayMs: number) => unknown;
+  clearTimeout: (handle: unknown) => void;
+  setInterval: (callback: () => void, delayMs: number) => unknown;
+  clearInterval: (handle: unknown) => void;
+};
+
+const systemScheduler: WorkerLoopScheduler = {
+  setTimeout: (callback, delayMs) => setTimeout(callback, delayMs),
+  clearTimeout: (handle) => clearTimeout(handle as NodeJS.Timeout),
+  setInterval: (callback, delayMs) => setInterval(callback, delayMs),
+  clearInterval: (handle) => clearInterval(handle as NodeJS.Timeout),
+};
+
 export class WorkerLoop {
   readonly state: WorkerLoopState = { rodando: false };
   private stopping = false;
@@ -43,6 +57,8 @@ export class WorkerLoop {
     private readonly registry: FluxoRegistry,
     private readonly sessions: InteractiveSessionManager,
     private readonly client: BackendClient,
+    private readonly scheduler: WorkerLoopScheduler = systemScheduler,
+    private readonly now: () => Date = () => new Date(),
   ) {}
 
   async iniciar(): Promise<void> {
@@ -56,7 +72,7 @@ export class WorkerLoop {
           this.registry.operacoes(),
           this.registry.provedores(),
         );
-        this.state.ultimaAquisicaoEm = new Date().toISOString();
+        this.state.ultimaAquisicaoEm = this.now().toISOString();
         if (!execucao) {
           await this.esperarNovaAquisicao();
           continue;
@@ -80,9 +96,9 @@ export class WorkerLoop {
   private async esperarNovaAquisicao(): Promise<void> {
     if (this.stopping) return;
     await new Promise<void>((resolve) => {
-      const timer = setTimeout(resolve, config.pollIntervalMs);
+      const timer = this.scheduler.setTimeout(resolve, config.pollIntervalMs);
       this.wakeIdleWait = () => {
-        clearTimeout(timer);
+        this.scheduler.clearTimeout(timer);
         resolve();
       };
     });
@@ -294,16 +310,16 @@ export class WorkerLoop {
 
   private criarControleLease(getExecucao: () => ExecucaoLease): LeaseControl {
     let ativo = true;
-    let timer: NodeJS.Timeout | undefined;
+    let timer: unknown;
 
     const iniciar = () => {
       ativo = true;
-      if (timer) return;
+      if (timer !== undefined) return;
       const renewEvery = Math.max(
         10_000,
         Math.floor(config.leaseSeconds * 1_000 * 0.45),
       );
-      timer = setInterval(() => {
+      timer = this.scheduler.setInterval(() => {
         if (!ativo) return;
         const execucao = getExecucao();
         void this.client.renovar(execucao.id, execucao.leaseToken)
@@ -317,7 +333,7 @@ export class WorkerLoop {
     };
 
     const parar = () => {
-      if (timer) clearInterval(timer);
+      if (timer !== undefined) this.scheduler.clearInterval(timer);
       timer = undefined;
     };
 

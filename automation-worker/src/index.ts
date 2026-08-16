@@ -8,6 +8,7 @@ import { FluxoRegistry } from './FluxoRegistry.js';
 import { InteractiveSessionManager } from './InteractiveSessionManager.js';
 import { SessionTicketVerifier } from './SessionTicket.js';
 import { shutdownConfig } from './ShutdownConfig.js';
+import { concluirDentro } from './Shutdown.js';
 import { WorkerLoop } from './WorkerLoop.js';
 import { config } from './config.js';
 import { criarServidor } from './server.js';
@@ -110,21 +111,4 @@ async function fecharServidor(timeoutMs: number): Promise<boolean> {
     servidor.closeIdleConnections();
   });
   return await concluirDentro(fechamento, timeoutMs);
-}
-
-async function concluirDentro(promise: Promise<unknown>, timeoutMs: number): Promise<boolean> {
-  let timer: NodeJS.Timeout | undefined;
-  try {
-    return await Promise.race([
-      promise.then(() => true).catch((error) => {
-        console.warn('Uma etapa do encerramento terminou com falha.', error);
-        return false;
-      }),
-      new Promise<boolean>((resolve) => {
-        timer = setTimeout(() => resolve(false), timeoutMs);
-      }),
-    ]);
-  } finally {
-    if (timer) clearTimeout(timer);
-  }
 }
