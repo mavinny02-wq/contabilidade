@@ -2,27 +2,47 @@
 
 ## Objetivo
 
-Evitar limpeza manual e abrangente do Docker Desktop quando o BuildKit perde a referência interna de um snapshot, e impedir que esse tipo de cache exista no caminho normal de produção.
+Evitar limpeza manual e abrangente do Docker Desktop quando o BuildKit perde a referência interna de
+um snapshot, impedir que esse cache exista no caminho normal de produção e manter um único ponto de
+entrada na raiz do projeto.
+
+## Único ponto de entrada
+
+Todos os fluxos operacionais partem de:
+
+```text
+START_CONTABILIDADE.bat
+```
+
+Os scripts internos ficam em `scripts/` e não devem ser executados diretamente no uso normal.
 
 ## Desenvolvimento e validação local
 
-`START_CONTABILIDADE.bat` agora usa um builder dedicado:
+Execute por duplo clique ou:
+
+```powershell
+.\START_CONTABILIDADE.bat dev
+```
+
+O startup usa o builder dedicado:
 
 ```text
 contabilidade-runtime-builder
 ```
 
-O builder usa o driver `docker-container`, mantém o próprio estado em volume exclusivo do BuildKit e carrega automaticamente as imagens resultantes no Docker Engine.
+O builder usa o driver `docker-container`, mantém o próprio estado em volume exclusivo do BuildKit e
+carrega automaticamente as imagens resultantes no Docker Engine.
 
 O fluxo é:
 
 1. validar Docker e Buildx;
 2. criar ou reutilizar o builder isolado;
-3. executar o build e startup existentes;
-4. se houver falha comum, preservar o builder e devolver o erro original;
-5. se o log comprovar corrupção de snapshot, remover somente o builder isolado;
-6. recriar o builder e repetir uma vez;
-7. nunca executar `docker system prune`, `docker volume prune` ou `docker compose down -v`.
+3. executar Maven e npm no Windows;
+4. construir imagens runtime-only;
+5. se houver falha comum, preservar o builder e devolver o erro original;
+6. se o log comprovar corrupção de snapshot, remover somente o builder isolado;
+7. recriar o builder e repetir uma vez;
+8. nunca executar `docker system prune`, `docker volume prune` ou `docker compose down -v`.
 
 Assinaturas tratadas:
 
@@ -39,7 +59,7 @@ A recuperação não remove:
 - documentos;
 - backups;
 - imagens da aplicação já válidas;
-- containers de produção;
+- containers da aplicação;
 - redes ou volumes do Compose.
 
 Logs:
@@ -56,23 +76,29 @@ $env:CONTABILIDADE_BUILDER_NAME = 'contabilidade-runtime-builder-02'
 .\START_CONTABILIDADE.bat dev
 ```
 
-Para diagnóstico, a recuperação automática pode ser desabilitada chamando diretamente:
+## Serviços no modo dev
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass `
-  -File .\scripts\start-contabilidade-resilient.ps1 `
-  -Mode dev `
-  -NoAutoRecovery
+O `compose.dev.yaml` desabilita autenticação. Portanto o startup inicia apenas:
+
+```text
+PostgreSQL
+backend
+automation-worker
+frontend
 ```
+
+`postgres-bootstrap` e Keycloak são removidos do ambiente dev, pois não são necessários. O startup
+não executa mais `docker compose down`; PostgreSQL é preservado e apenas os serviços da aplicação são
+recriados após o build.
 
 ## Produção on-premise
 
 Produção não deve compilar Maven/npm nem construir imagens Docker no servidor de execução.
 
-Use:
+Use o mesmo BAT:
 
 ```powershell
-.\DEPLOY_CONTABILIDADE_ONPREMISE.bat
+.\START_CONTABILIDADE.bat onpremise pull digest
 ```
 
 Esse fluxo:
@@ -80,9 +106,10 @@ Esse fluxo:
 - não executa `docker build`;
 - não usa cache BuildKit;
 - não limpa cache;
-- valida as imagens já carregadas;
+- valida ou baixa imagens já publicadas;
+- pode exigir referências imutáveis por digest;
 - gera o override com `build: null`;
-- executa o startup sequencial já existente;
+- inicia PostgreSQL, bootstrap, Keycloak, backend, worker e frontend em sequência;
 - mantém as validações PostgreSQL, Keycloak, Flyway, worker e frontend.
 
 Imagens padrão:
@@ -101,19 +128,24 @@ CONTABILIDADE_FRONTEND_IMAGE=registry.example/contabilidade/frontend@sha256:<dig
 CONTABILIDADE_WORKER_IMAGE=registry.example/contabilidade/worker@sha256:<digest>
 ```
 
-Para baixar as imagens antes do deploy:
+Comandos disponíveis:
 
 ```powershell
-.\DEPLOY_CONTABILIDADE_ONPREMISE.bat pull
+# usa imagens já carregadas
+.\START_CONTABILIDADE.bat onpremise
+
+# baixa imagens por tag ou digest
+.\START_CONTABILIDADE.bat onpremise pull
+
+# baixa e exige digest imutável
+.\START_CONTABILIDADE.bat onpremise pull digest
 ```
 
-Para exigir referências imutáveis por digest:
+## Keycloak
 
-```powershell
-.\DEPLOY_CONTABILIDADE_ONPREMISE.bat pull digest
-```
-
-Sem `pull`, todas as imagens precisam estar previamente carregadas no Docker Engine.
+No on-premise, a primeira inicialização pode executar augmentação e importação do realm. O startup
+aguarda até 600 segundos por padrão e reporta o estado em intervalos de 15 segundos. Em execuções
+seguintes, o container saudável é reutilizado porque a stack não é derrubada integralmente.
 
 ## Publicação recomendada
 
@@ -124,7 +156,7 @@ O pipeline de entrega deve:
 3. publicar cada imagem em registry privado;
 4. registrar os digests SHA-256 aprovados;
 5. atualizar as três referências no `.env` produtivo;
-6. executar `DEPLOY_CONTABILIDADE_ONPREMISE.bat pull digest`;
+6. executar `START_CONTABILIDADE.bat onpremise pull digest`;
 7. manter a versão anterior disponível para rollback.
 
 ## Rollback
@@ -135,7 +167,18 @@ Para voltar à versão anterior:
 2. executar novamente:
 
 ```powershell
-.\DEPLOY_CONTABILIDADE_ONPREMISE.bat pull digest
+.\START_CONTABILIDADE.bat onpremise pull digest
 ```
 
-O rollback de aplicação não apaga o volume PostgreSQL. Compatibilidade de schema deve ser confirmada pela política de release antes da troca de versão.
+O rollback de aplicação não apaga o volume PostgreSQL. Compatibilidade de schema deve ser confirmada
+pela política de release antes da troca de versão.
+
+## Manutenção manual de memória
+
+O utilitário foi retirado da raiz e permanece acessível pelo único ponto de entrada:
+
+```powershell
+.\START_CONTABILIDADE.bat memoria
+```
+
+Ele nunca é executado automaticamente pelo startup ou pelo deploy.

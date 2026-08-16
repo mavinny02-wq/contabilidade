@@ -38,6 +38,12 @@ if errorlevel 1 (
   exit /b 1
 )
 
+if /i "%MODE%"=="dev" (
+  echo.
+  echo [DB-VALIDATION] Modo dev: autenticacao desabilitada; schema Keycloak nao sera exigido.
+  goto :validate_flyway
+)
+
 echo.
 echo [DB-VALIDATION 1/2] Validando schema do Keycloak em !KEYCLOAK_DB!...
 set "KEYCLOAK_SCHEMA_STATUS="
@@ -45,7 +51,6 @@ for /f "usebackq delims=" %%R in (`docker compose --env-file "%ENV_FILE%" -f "%C
 
 if /i not "!KEYCLOAK_SCHEMA_STATUS!"=="OK" (
   echo [DB-VALIDATION] Schema do Keycloak incompleto.
-  echo Tabelas encontradas:
   docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T postgres psql -U "!POSTGRES_USER!" -d "!KEYCLOAK_DB!" -c "SELECT tablename FROM pg_tables WHERE schemaname = 'public' AND tablename IN ('databasechangelog', 'databasechangeloglock', 'migration_model') ORDER BY tablename;"
   exit /b 1
 )
@@ -55,8 +60,14 @@ for /f "usebackq delims=" %%R in (`docker compose --env-file "%ENV_FILE%" -f "%C
 
 echo [OK] Liquibase do Keycloak inicializado. MIGRATION_MODEL=!MIGRATION_MODEL_STATUS!
 
+:validate_flyway
 echo.
-echo [DB-VALIDATION 2/2] Validando Flyway em !POSTGRES_DB!...
+if /i "%MODE%"=="dev" (
+  echo [DB-VALIDATION 1/1] Validando Flyway em !POSTGRES_DB!...
+) else (
+  echo [DB-VALIDATION 2/2] Validando Flyway em !POSTGRES_DB!...
+)
+
 set "FLYWAY_TABLE_STATUS="
 for /f "usebackq delims=" %%R in (`docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" exec -T postgres psql -U "!POSTGRES_USER!" -d "!POSTGRES_DB!" -Atc "SELECT CASE WHEN to_regclass('public.flyway_schema_history') IS NOT NULL THEN 'PRESENT' ELSE 'ABSENT' END;" 2^>nul`) do set "FLYWAY_TABLE_STATUS=%%R"
 
@@ -78,5 +89,9 @@ echo [OK] Flyway V1-V12 aplicado sem registro de falha.
 echo [OK] Ledger anti-replay da sessao interativa presente.
 echo [OK] Estruturas de empresas, faturas e historico de workers presentes.
 echo.
-echo [DB-VALIDATION] Schemas PostgreSQL validados.
+if /i "%MODE%"=="dev" (
+  echo [DB-VALIDATION] Banco da aplicacao validado; Keycloak omitido por configuracao dev.
+) else (
+  echo [DB-VALIDATION] Schemas PostgreSQL e Keycloak validados.
+)
 exit /b 0
