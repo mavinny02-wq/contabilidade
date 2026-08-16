@@ -6,44 +6,38 @@
 
 | Owner | Paths/autoridade | Regra |
 |---|---|---|
-| `ROOT_GOVERNANCE` | `AGENTS.md`, índices, locks | orquestrador/documentação direta |
-| `ORCHESTRATION_STATE` | checkpoint, ledger, backlog, manifests correntes | orquestrador somente |
+| `ROOT_GOVERNANCE` | AGENTS, índices, locks | orquestrador/documentação direta |
+| `ORCHESTRATION_STATE` | checkpoint, ledger, backlog, manifests | orquestrador somente |
 | `MIGRATION_LANE` | `backend/src/main/resources/db/migration/**` | máximo um owner |
-| `STARTUP_DEPLOY` | Compose/startup/deploy/build workflow | serial |
-| `DEPENDENCY_LOCKS` | POM, package manifests e lockfiles | owner explícito |
-| `VERSION_RELEASE` | VERSION, tags, metadata, changelog | owner único |
-| `FRONTEND_SHELL` | routing/i18n/clientes compartilhados | serial |
-| `WORKER_RUNTIME` | leases/retry/browser/shutdown | serial |
-| `DOCUMENT_STORAGE` | storage/download/preview/integrity | serial |
-| `SECURITY_POLICY` | scanners, policy e exceções | owner único por wave |
-| `DISPATCH_GOVERNANCE` | manifest/launcher/dispatch preflight | owner único por wave |
-| `REQUIRED_CI_GATE` | check agregador estável e scripts `scripts/ci/**` | owner único |
-| `COVERAGE_GOVERNANCE` | POM/package/lockfiles e `scripts/quality/**` | owner único de manifests |
-| `API_CONTRACT` | OpenAPI, compatibility guard e mapa frontend | serial por contrato |
-| `SYNTHETIC_DATA` | política/gerador/catálogo de fixtures sintéticas | paths próprios |
-| `PERFORMANCE_BUDGET` | budgets e medição de artefatos | não altera produto |
+| `REQUIRED_CI_GATE` | `.github/workflows/required-ci.yml`, `scripts/ci/**` | owner único |
+| `SUPPLY_CHAIN_SECURITY` | workflow/scripts/policy de supply chain | owner único |
+| `FRONTEND_BUNDLE` | router, lazy boundaries, Vite chunk config | serial |
+| `OBSERVABILITY` | correlação/logs/métricas backend-worker | serial |
+| `ARCHITECTURE_GUARD` | scripts/baseline/workflow de boundaries | source read-only |
+| `DEPENDENCY_LOCKS` | POM/package/lockfiles | owner explícito |
+| `WORKER_RUNTIME` | lease/retry/browser/shutdown | serial |
+| `STARTUP_DEPLOY` | Compose/startup/deploy | serial |
 
-## Wave 005
+## Wave 006
 
-| ITEM | Classificação | Owner exclusivo | Escrita permitida |
-|---|---|---|---|
-| `STR-CI-001` | principal | `REQUIRED_CI_GATE` | novo workflow required, scripts/ci, testes e resultado; workflows existentes read-only |
-| `STR-QA-001` | principal | `COVERAGE_GOVERNANCE` | POM/package/lockfiles, configs e scripts de coverage; sem workflow |
-| `STR-API-001` | principal | `API_CONTRACT` | contratos OpenAPI, guard, fixtures e testes; manifests read-only |
-| `STR-DATA-001` | extra | `SYNTHETIC_DATA` | `scripts/testing/**`, catálogo/policy/fixtures sintéticas e resultado |
-| `STR-PERF-001` | extra | `PERFORMANCE_BUDGET` | `scripts/performance/**`, baseline/budgets e resultado; código de produto read-only |
+| ITEM | Owner exclusivo | Escrita permitida |
+|---|---|---|
+| `STR-CI-002` | `REQUIRED_CI_GATE` | required-ci, canary opcional, `scripts/ci/**`, testes/result |
+| `STR-SEC-002` | `SUPPLY_CHAIN_SECURITY` | novo workflow e `scripts/security/supply-chain/**` |
+| `STR-FE-BUNDLE-001` | `FRONTEND_BUNDLE` | router/lazy/fallback/Vite/tests focados |
+| `STR-OBS-001` | `OBSERVABILITY` | observability backend/worker e `BackendClient.ts` |
+| `STR-ARCH-001` | `ARCHITECTURE_GUARD` | `scripts/architecture/**`, workflow próprio, baseline |
 
 ## Independência
 
-- os cinco partem do mesmo baseline de dispatch;
-- nenhum owner de migration;
-- `STR-CI-001` não incorpora outputs criados por outros slots da mesma wave;
-- `STR-QA-001` é o único owner de `backend/pom.xml`, `frontend/package*.json` e
-  `automation-worker/package*.json`;
-- `STR-API-001` não altera manifests, lockfiles nem o required gate;
-- `STR-DATA-001` não modifica o scanner de segredo/PII já integrado;
-- `STR-PERF-001` mede e governa budgets, mas não otimiza código nesta task;
-- checkpoint, ledger, backlog, shards e manifests são documentation-only do orquestrador;
+- todos usam a baseline observada `a3344a15a0581fd7f76f78766c6432b46f9a361e`;
+- nenhum owner cria migration;
+- documentação canônica fica fora dos executores;
+- `STR-CI-002` não altera workflows dedicados;
+- `STR-SEC-002` não altera required-ci nem produto;
+- `STR-FE-BUNDLE-001` é o único owner do frontend nesta wave;
+- `STR-OBS-001` é o único owner de código backend/worker compartilhado;
+- `STR-ARCH-001` lê produto, mas só escreve tooling;
 - overlap descoberto torna o owner posterior `SUPERSEDED` ou serializado.
 
-`OWNER_MATRIX_WAVE_005`
+`OWNER_MATRIX_WAVE_006`
