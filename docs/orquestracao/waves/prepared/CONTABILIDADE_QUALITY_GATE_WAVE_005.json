@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "2.0",
+  "waveId": "CONTABILIDADE_QUALITY_GATE_WAVE_005",
+  "state": "PREPARED_NOT_RELEASED",
+  "baseline": {
+    "branch": "main",
+    "commit": "c3c06e8cb5921f96ecdb9b1e397594d01dd4430f"
+  },
+  "owners": [
+    {
+      "item": "STR-CI-001",
+      "owner": "REQUIRED_CI_GATE",
+      "locks": ["LOCK-GIT-001", "LOCK-EVID-001", "LOCK-TEST-001", "LOCK-DB-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_CI_001_RESULT.md",
+      "dispatchKey": "d26681eceae7b6f3332378b27b3ce7e0b98f540519641153774217257f0a825f"
+    },
+    {
+      "item": "STR-QA-001",
+      "owner": "COVERAGE_GOVERNANCE",
+      "locks": ["LOCK-DEP-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_QA_001_RESULT.md",
+      "dispatchKey": "88f897e1dc468bd04488dba240ba6b6d67c6c535f01843f2f074a3a341180226"
+    },
+    {
+      "item": "STR-API-001",
+      "owner": "API_CONTRACT",
+      "locks": ["LOCK-EVID-001", "LOCK-TEST-001", "LOCK-DATA-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_API_001_RESULT.md",
+      "dispatchKey": "fbc08b313e084b952fdd0a3501df93a76e536bc56d687aa63cef7402b7c1b996"
+    },
+    {
+      "item": "STR-DATA-001",
+      "owner": "SYNTHETIC_DATA",
+      "locks": ["LOCK-DATA-001", "LOCK-EXT-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_DATA_001_RESULT.md",
+      "dispatchKey": "835bed59be0169475abb1edc00b554f04d773f255d478b691d7bd1903f25a6af"
+    },
+    {
+      "item": "STR-PERF-001",
+      "owner": "PERFORMANCE_BUDGET",
+      "locks": ["LOCK-EVID-001", "LOCK-TEST-001", "LOCK-EXT-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_PERF_001_RESULT.md",
+      "dispatchKey": "e7203ebb99c0a8858c4c7c2ee8071c11f7e58356d874c45876e6a81251e7d9a1"
+    }
+  ]
+}
