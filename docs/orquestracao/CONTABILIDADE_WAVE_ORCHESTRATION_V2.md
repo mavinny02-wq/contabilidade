@@ -131,6 +131,17 @@ Quando novo ID, lock, blocker, status ou shard for necessário:
 
 Documentation-only é trabalho do orquestrador e não consome slot.
 
+Aplique `LOCK-ORQ-DOC-001`:
+
+- se o orquestrador consegue criar ou atualizar a documentação diretamente pelo GitHub, ele faz a
+  alteração no próprio fluxo de análise/reconciliação;
+- não envie ao Codex task, launcher ou slot cujo único objetivo seja manter índice, checkpoint,
+  ledger, backlog, decisão, intake, reconciliação, seleção ou outro documento canônico;
+- não crie `RESULT_MD` apenas para provar que uma documentação-only foi atualizada;
+- a exceção é documentação inseparável de um owner executável, como o `RESULT_MD` da própria task,
+  contrato gerado/testado por tooling ou runbook que acompanha mudança de código/configuração;
+- ausência real de capacidade de escrita/edição deve ser registrada antes de delegar documentação.
+
 ## Evidência e testes
 
 - ordinary wave usa validação estrutural;
@@ -173,7 +184,8 @@ Não repita a onda em uma segunda lista abreviada.
 ## Merge e fechamento
 
 O usuário permanece merge owner de produção, testes, migrations, configuração e workflows, salvo
-instrução explícita. Depois dos merges:
+instrução explícita. Documentação-only mantida diretamente pelo orquestrador pode ser integrada por
+ele quando não colide com owner aberto e respeita o fluxo GitHub-first. Depois dos merges:
 
 - reconcilie resultados;
 - atualize checkpoint/ledger;

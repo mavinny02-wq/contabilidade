@@ -19,6 +19,7 @@ Estes locks impedem regressões silenciosas. Leia somente os IDs mapeados ao own
 | `LOCK-TEST-001` | falha é classificada antes de mudar produção |
 | `LOCK-EVID-001` | evidência válida é reutilizada; rerun é focado |
 | `LOCK-DOC-001` | conteúdo documental usa storage; acesso exige autorização/integridade |
+| `LOCK-ORQ-DOC-001` | documentação-only que o orquestrador consegue atualizar diretamente no GitHub é feita pelo próprio orquestrador; não vira task, launcher ou slot do Codex |
 | `LOCK-AI-001` | IA não executa ação fiscal autoritativa sem contrato/confirmação humana |
 
 ## Aplicação
@@ -28,3 +29,7 @@ Estes locks impedem regressões silenciosas. Leia somente os IDs mapeados ao own
 - Contratos ativos conflitantes sem lock resolutivo: `PRODUCT_CONTRACT_CONFLICT`.
 - Evidência antiga não remove reprodução atual do usuário.
 - Alteração de lock exige decisão/documentação explícita e guard proporcional.
+- `LOCK-ORQ-DOC-001` não retira do executor o `RESULT_MD` de uma task executável nem a documentação
+  inseparável de uma mudança de código/tooling; ele impede criar execução Codex somente para manter
+  índice, checkpoint, ledger, backlog, decisão, intake, reconciliação ou seleção que o orquestrador
+  consegue editar diretamente.

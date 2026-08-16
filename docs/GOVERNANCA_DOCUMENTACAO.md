@@ -27,7 +27,36 @@ Uma evidência de teste que contradiz lock ou contrato atual não autoriza regre
 - IDs estruturais: `docs/roadmap/BACKLOG_ESTRUTURAL.md`;
 - IDs de produto existentes: `docs/roadmap/REGISTRO_ITENS_ROADMAP.md`.
 
-## Atualização
+## Atualização direta pelo orquestrador
+
+Aplique `LOCK-ORQ-DOC-001`.
+
+Quando o orquestrador possui acesso de escrita ao GitHub e consegue criar ou atualizar uma
+alteração documentation-only, ele executa diretamente a manutenção por branch/PR e não delega ao
+Codex. Esse trabalho:
+
+- não consome slot de onda;
+- não recebe launcher;
+- não cria branch Codex;
+- não exige `RESULT_MD` artificial;
+- não entra no backlog apenas para justificar a atualização;
+- deve respeitar owners abertos, locks, histórico e fluxo GitHub-first.
+
+São exemplos de manutenção direta:
+
+- índice e roteamento;
+- checkpoint e estado atual;
+- ledger/classificação de evidência;
+- backlog e registro de IDs;
+- locks e decisões autorizadas;
+- intake, reconciliação, seleção e manifests;
+- análise e documentação canônica sem implementação associada.
+
+O executor continua owner do `RESULT_MD` da própria task e de documentação inseparável de uma
+mudança de código, configuração ou tooling. Uma delegação documental ao Codex só é aceitável quando
+o orquestrador comprovar que não possui a capacidade necessária.
+
+## Atualização por task executável
 
 Uma task comum altera somente owners autorizados e seu `RESULT_MD`. Estado global, seleção, intake,
 decisão, backlog e reconciliação documentation-only são responsabilidade do orquestrador e não
