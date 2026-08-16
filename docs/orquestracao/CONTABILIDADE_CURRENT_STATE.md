@@ -3,93 +3,81 @@
 **Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`
 **Reconciliado em:** `2026-08-16`
 **Branch de integração:** `main`
-**HEAD verificado antes desta mudança de governança:** `7c6079caa54d1e7526a3e03c5ee41893581ff9b1`
+**HEAD atual verificado:** `4c07f16a8a66abb76983c9203c8e694c748f0af0`
+**Baseline de aplicação validada no Cloud:** `7c6079caa54d1e7526a3e03c5ee41893581ff9b1`
 **Versão declarada:** `0.5.1`
 **Frontier Flyway observado:** `V12`
-**PR aberta no checkpoint:** `#56`
-**Modo:** `TRANSITION_TO_EVIDENCE_DRIVEN_ORCHESTRATION`
+**PRs abertas:** `#56`, `#57`
+**Modo:** `CLOUD_CORE_PROVEN_WINDOWS_PENDING`
 
 ## Verdade de integração
 
-- O HEAD verificado contém a integração da PR `#55`.
-- A PR `#56` está aberta, mergeable e não integrada.
-- Owners de startup/dev/on-premise, `.env.example`, `README.md`, `build.yml` e scripts relacionados
-  permanecem reservados à PR `#56`.
-- Esta fundação de governança usa owners separados e não assume o conteúdo da PR aberta.
-- Nenhuma próxima onda funcional está liberada.
+- As PRs `#58` a `#64` foram integradas após o baseline de aplicação `7c6079c`.
+- `#58`, `#59`, `#60`, `#62` e `#64` adicionaram resultados de validação.
+- `#61` adicionou registry/guard de migrations e `#63` adicionou o coletor de evidência Windows.
+- Esse delta não alterou código funcional da aplicação nem migrations SQL; portanto, a prova full-stack
+  de `7c6079c` permanece reutilizável para o runtime de aplicação presente no HEAD atual.
+- A PR `#56` continua aberta e contém a correção de startup dev/on-premise.
+- A PR `#57` continua aberta e contém esta governança v2; enquanto não for integrada, os launchers
+  v2 permanecem preparados, não liberados.
 
-## Estado de validação
+## Disposição das evidências
 
-A prova Cloud v0.5.1 é evidência histórica de baseline anterior. Ela não torna a `main` atual verde.
+| Evidência | Resultado | Classificação | Disposição |
+|---|---|---|---|
+| `VAL-STAB-FULLSTACK-001` | backend, worker, frontend, Flyway V12, heartbeat e 19 jornadas verdes | `PASS_WITH_ENVIRONMENT_LIMITATION` | `REUSE_PASS_WITH_LIMITATION`; Node 20 abaixo do contrato |
+| `VAL-STAB-FRONTEND-001` | i18n, typecheck, 20 testes e build verdes | `PASS_WITH_ENVIRONMENT_LIMITATION` | rerun somente em Node suportado |
+| `VAL-STAB-BACKEND-001` | erro de conexão com PostgreSQL ausente | `ENVIRONMENT_LIMITATION` | runtime supersedido pela prova full-stack; verify focado com PostgreSQL ainda selecionável |
+| `VAL-STAB-WORKER-001` | typecheck e seis testes verdes; browser ausente | `ENVIRONMENT_LIMITATION` | browser runtime supersedido pelo full-stack; suíte completa em Node suportado ainda selecionável |
+| `VAL-STAB-INFRA-CONTRACT-001` | guard falhou em texto descritivo; pwsh/docker ausentes | `TEST_CONTRACT_DRIFT` + `ENVIRONMENT_LIMITATION` | corrigir somente o guard e repetir prova focada |
 
-O antigo `GATE-VAL-001` é mantido como compatibilidade, porém passa a ser classificado:
+## O que está comprovado
 
-```text
-LEGACY_AGGREGATE_GATE_PENDING_DECOMPOSITION
-```
+- aplicação full-stack sobe em ambiente Linux controlado;
+- PostgreSQL, Flyway V1–V12, backend, worker e frontend comunicam-se;
+- endpoints de saúde e proxy respondem HTTP 200;
+- heartbeat é persistido;
+- smoke Playwright percorre 19 jornadas com dados sintéticos;
+- zero chamada externa e zero HTTP 5xx foram observados na campanha full-stack;
+- registry monotônico de migrations V1–V12 está integrado;
+- coletor seguro de evidência Windows está integrado.
 
-Ele não deve bloquear indiscriminadamente todo trabalho independente nem ser fechado por uma única
-execução parcial. A decomposição por owner, ambiente e validade de evidência é item P0
-`STR-TEST-001`.
+## O que não está comprovado
 
-Situação atual:
-
-- backend aggregate current-release: `NOT_PROVEN`;
-- frontend aggregate current-release: `NOT_PROVEN`;
-- worker aggregate current-release: `NOT_PROVEN`;
-- Flyway V1–V12 em PostgreSQL alvo: `LOCAL_RUNTIME_PROOF_PENDING`;
-- dev Windows/Docker Desktop: `LOCAL_RUNTIME_PROOF_PENDING`;
-- on-premise/Keycloak: `LOCAL_RUNTIME_PROOF_PENDING`;
-- providers fiscais reais/pagos: `NOT_AUTHORIZED_NOT_REQUIRED_FOR_ORDINARY_VALIDATION`;
-- coverage agregado atual: `NOT_MEASURED`.
+- `START_CONTABILIDADE.bat dev` no Windows/Docker Desktop;
+- reutilização real do PostgreSQL no segundo startup Windows;
+- startup on-premise com bootstrap, Keycloak e login;
+- Compose efetivo em Docker Desktop;
+- frontend/worker sob Node oficialmente suportado;
+- coverage agregado atual.
 
 ## Ondas
 
-- `PREPARED_NOT_RELEASED`: nenhuma;
+- `PREPARED_NOT_RELEASED`: `CONTABILIDADE_STABILIZATION_WAVE_002`;
 - `RELEASED_FOR_EXECUTION`: nenhuma;
-- owners executáveis em andamento visíveis no GitHub: PR `#56`;
-- migration owner aberto: nenhum observado;
-- próxima onda: `NOT_SELECTED`.
+- migration owner aberto: nenhum;
+- Windows campaign: `NOT_EXECUTED_BY_USER`.
 
-O backlog estrutural está registrado, mas registro não é liberação. Uma seleção posterior deve
-resolver owners e baseline no momento da liberação.
+### Gates de liberação da Wave 002
 
-## Locks ativos
+1. integrar ou encerrar a PR `#56`;
+2. integrar a PR `#57`;
+3. atualizar uma vez o delta até o novo HEAD;
+4. confirmar ausência de owner concorrente nos quatro itens preparados;
+5. publicar os launchers exatos somente depois dessa verificação.
 
-- on-premise first;
-- providers externos negados por padrão;
-- chamadas pagas exigem autorização explícita;
-- credenciais/dados reais proibidos em automação;
-- sem bypass de CAPTCHA/MFA/anti-bot;
-- prova Cloud não substitui prova Windows;
-- até cinco owners totais por onda, sem filler;
-- no máximo um owner de migration;
-- evidência válida é reutilizada; rerun é focado;
-- sem push direto na `main`.
+## Estado estrutural
 
-Ver `docs/decisoes/CONTABILIDADE_LOCKS_OPERACIONAIS.md`.
+- `STR-ORQ-002`: `DONE`;
+- `STR-RUN-001`: `IMPLEMENTED_PENDING_WINDOWS_EXECUTION`;
+- `STR-TEST-001`: `DONE_BY_RECONCILIATION`;
+- `STR-ORQ-001`: pendente;
+- `STR-ORQ-003`: pronto para onda estrutural posterior;
+- `STR-OWN-001`: pronto para onda estrutural posterior.
 
-## Owners reservados pela PR #56
+## Próxima transição
 
-Resumo de owner:
+Liberar a Wave 002 após os gates acima. Depois, executar a campanha Windows dev com o coletor
+integrado. O on-premise/Keycloak só é promovido após o dev ficar verde.
 
-- startup oficial e documentação de inicialização;
-- scripts de startup/maintenance/database state;
-- `.env.example`;
-- `.github/workflows/build.yml`;
-- `README.md`;
-- documentação de build/deploy resiliente.
-
-A lista exata é mantida na matriz de ownership e deve ser revalidada pelo GitHub antes de nova
-seleção.
-
-## Próximas transições
-
-1. integrar ou encerrar a PR `#56` e reconciliar seu resultado;
-2. integrar esta fundação de governança;
-3. executar `STR-TEST-001` para decompor o gate por owner/evidência;
-4. executar `STR-ORQ-002` para registrar e proteger o frontier de migrations;
-5. habilitar branch protection/required checks em `STR-ORQ-001`;
-6. somente então liberar a primeira onda v2 com no máximo cinco owners e um migration owner.
-
-`CONTABILIDADE_CURRENT_STATE_V2_FOUNDATION`
+`CONTABILIDADE_CURRENT_STATE_AFTER_PR64_WAVE002_PREPARED`

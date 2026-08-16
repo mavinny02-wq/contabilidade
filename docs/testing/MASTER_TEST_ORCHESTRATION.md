@@ -2,74 +2,88 @@
 
 **Classificação:** `CANONICAL_ACTIVE_TEST_LEDGER`
 **Reconciliado em:** `2026-08-16`
+**HEAD observado:** `4c07f16a8a66abb76983c9203c8e694c748f0af0`
 
 Este ledger agenda, classifica e reutiliza evidência. Não é uma lista para executar tudo sempre.
 
 ## Política
 
-- ordinary implementation/correction: validação estrutural somente;
 - validação executa apenas owner explicitamente liberado;
 - produção não é alterada para tornar teste verde;
-- Cloud Linux e Windows/Docker Desktop são ambientes diferentes;
+- Cloud Linux e Windows/Docker Desktop são ambientes distintos;
 - provider real/pago não é executado sem autorização;
-- evidence reuse precede rerun;
-- aggregate coverage só é declarado quando produzido no mesmo baseline verificado.
+- `REUSE_PASS` precede rerun;
+- rerun é focado na lacuna ainda não comprovada;
+- coverage só é declarado quando realmente medido no mesmo baseline.
 
-## Evidência existente
+## Evidência reconciliada
 
-| ID | Owner | Baseline | Ambiente | Resultado atual | Disposição |
+| ID | Baseline de código | Ambiente | Resultado | Classificação | Disposição |
 |---|---|---|---|---|---|
-| `VAL-CLOUD-V051-002` | aplicação ampla | baseline anterior à main atual | Cloud Linux | parcial/histórico | `BASELINE_DRIFT`; não classifica HEAD atual |
-| `VAL-RUNTIME-V051-001` | runtime on-premise | relatório parcial | Windows local | não concluído | `ENVIRONMENT_LIMITATION` no Cloud |
-| `GATE-VAL-001` | aplicação ampla | múltiplos SHAs | misto | agregado legado | decompor em `STR-TEST-001` |
-| `VAL-STARTUP-PR56-001` | startup dev/on-premise | PR aberta `#56` | CI + Windows pendente | não integrado | owner reservado; prova após merge |
+| `VAL-STAB-FULLSTACK-001` | `7c6079c` | Linux, Java 21, PostgreSQL 16, Node 20, Chromium | PASS | `PASS_WITH_ENVIRONMENT_LIMITATION` | `REUSE_PASS_WITH_LIMITATION` |
+| `VAL-STAB-FRONTEND-001` | `7c6079c` | Linux, Node 20 | PASS | `PASS_WITH_ENVIRONMENT_LIMITATION` | `RERUN_FOCUSED_SUPPORTED_NODE` |
+| `VAL-STAB-BACKEND-001` | `7c6079c` | Linux sem PostgreSQL | ERROR | `ENVIRONMENT_LIMITATION` | `RERUN_FOCUSED_WITH_POSTGRESQL` |
+| `VAL-STAB-WORKER-001` | `7c6079c` | Linux, Node 20, sem Chromium | PARTIAL | `ENVIRONMENT_LIMITATION` | `RERUN_FOCUSED_SUPPORTED_NODE_AND_BROWSER` |
+| `VAL-STAB-INFRA-CONTRACT-001` | `7c6079c` | Linux sem pwsh/docker | FAIL/PARTIAL | `TEST_CONTRACT_DRIFT` + `ENVIRONMENT_LIMITATION` | `FIX_TEST_CONTRACT_THEN_RERUN_FOCUSED` |
+| `STR-ORQ-002` | PR `#61` | Node | PASS | `STRUCTURAL_GUARD_PASS` | `REUSE_PASS` |
+| `STR-RUN-001` | PR `#63` | Cloud tests | PASS | `TOOLING_IMPLEMENTED` | `WAITING_FOR_WINDOWS_EVIDENCE` |
 
-## Matriz atual de owners
+## Autoridade da prova full-stack
 
-| Owner de prova | Estado | Ambiente requerido | Evidência reutilizável |
-|---|---|---|---|
-| backend compile/test-compile | `NO_CURRENT_RELEASE_PROOF` | Cloud Linux | não |
-| backend unit/integration | `NOT_SCHEDULED` | Cloud/PostgreSQL controlado | não |
-| frontend locale/typecheck/build | `NO_CURRENT_RELEASE_PROOF` | Cloud Linux Node 22.12+ | não |
-| frontend Vitest | `NOT_SCHEDULED` | Cloud Linux | não |
-| worker typecheck/build | `NO_CURRENT_RELEASE_PROOF` | Cloud Linux Node 22.12+ | não |
-| worker tests | `NOT_SCHEDULED` | Cloud Linux | não |
-| Flyway V1–V12 | `LOCAL_RUNTIME_PROOF_PENDING` | PostgreSQL alvo | não |
-| dev startup | `PR56_OWNER_OPEN` | Windows/Docker Desktop | não |
-| on-premise/Keycloak | `LOCAL_RUNTIME_PROOF_PENDING` | Windows/Docker Desktop | não |
-| smoke UI | `LOCAL_RUNTIME_PROOF_PENDING` | aplicação local | não |
-| external providers | `NOT_AUTHORIZED_NOT_REQUIRED` | ambiente contratado | não executar |
-| aggregate coverage | `NOT_MEASURED` | campanha única/baseline fixo | não |
+A campanha full-stack comprovou:
 
-## Decomposição obrigatória
+- backend readiness e liveness;
+- worker health;
+- frontend e proxy para backend;
+- Flyway com última migration `12:true`;
+- heartbeat persistido;
+- 19 jornadas Playwright;
+- zero chamada externa;
+- zero HTTP 5xx nos logs coletados.
 
-`STR-TEST-001` deve converter `GATE-VAL-001` em uma matriz por owner:
+As PRs `#58` a `#64` não alteraram código funcional da aplicação nem migrations SQL. Assim, essa
+prova pode ser reutilizada para o runtime de aplicação do HEAD atual. Ela não prova Windows,
+Docker Desktop, Keycloak on-premise nem paridade Node 22.12+/24.
 
-1. mapear cada implementação integrada ao código/teste/prova relevante;
-2. decidir `REUSE_PASS`, `RERUN_FOCUSED` ou blocker;
-3. separar Cloud de Windows;
-4. evitar reexecutar owners não afetados;
-5. criar campanha consolidada somente para lacunas transversais;
-6. registrar coverage como desconhecido até medida real.
+## Classificação das aparentes falhas
 
-## Formato de resultado
+### Backend isolado
 
-```text
-ITEM:
-BASELINE:
-ENVIRONMENT:
-COMMANDS:
-EXPECTED:
-ACTUAL:
-CLASSIFICATION:
-DISPOSITION:
-OWNERS_AFFECTED:
-EVIDENCE_REUSED:
-LIMITATIONS:
-REFERENCES:
-```
+A falha `Connection refused` em `127.0.0.1:5432` não prova regressão do backend. É
+`ENVIRONMENT_LIMITATION`. A prova full-stack posterior demonstrou backend e Flyway funcionando com
+PostgreSQL. Resta somente repetir `mvn clean verify` em ambiente preparado para fechar o owner da
+suíte isolada.
 
-## Próxima campanha
+### Worker isolado
 
-Nenhuma campanha ampla está liberada por este ledger. A próxima ação é documental/estrutural:
-`STR-TEST-001`. Owners executáveis de teste surgem apenas após a decomposição e seleção.
+A ausência do executável Chromium não prova regressão do worker. É `ENVIRONMENT_LIMITATION`. O
+full-stack posterior instalou Chromium e aprovou browser smoke; resta a suíte completa em Node
+suportado.
+
+### Contrato de infraestrutura
+
+O guard interpretou uma mensagem descritiva contendo `Docker build` como execução de comando. Isso
+é `TEST_CONTRACT_DRIFT`. A correção deve restringir a detecção a invocações executáveis e adicionar
+regressão positiva/negativa antes do rerun.
+
+## Matriz atual
+
+| Owner | Estado | Próxima prova |
+|---|---|---|
+| full-stack Cloud | `REUSE_PASS_WITH_LIMITATION` | nenhuma repetição ampla |
+| backend verify | `RERUN_FOCUSED` | PostgreSQL controlado |
+| frontend | `RERUN_FOCUSED` | Node 24 |
+| worker | `RERUN_FOCUSED` | Node 24 + Chromium Playwright |
+| infra contract | `FIX_TEST_CONTRACT` | guard + rerun focado |
+| Flyway registry | `REUSE_PASS` | apenas quando migrations mudarem |
+| Windows dev | `NO_PROOF` | execução manual com coletor |
+| Windows on-premise/Keycloak | `NO_PROOF` | somente após dev verde |
+| external providers | `NOT_AUTHORIZED_NOT_REQUIRED` | não executar |
+| aggregate coverage | `NOT_MEASURED` | campanha posterior |
+
+## Próxima campanha preparada
+
+`docs/orquestracao/waves/prepared/CONTABILIDADE_STABILIZATION_WAVE_002.md`
+
+Ela contém quatro owners, nenhuma migration e nenhum rerun amplo. Continua
+`PREPARED_NOT_RELEASED` até a integração das PRs abertas e refresh do HEAD.
