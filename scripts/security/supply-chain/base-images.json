@@ -1,0 +1,10 @@
+{
+  "images": [
+    {"component": "backend-build", "dockerfile": "backend/Dockerfile", "base": "maven:3.9.9-eclipse-temurin-21"},
+    {"component": "backend", "dockerfile": "backend/Dockerfile", "base": "eclipse-temurin:21-jre"},
+    {"component": "frontend-build", "dockerfile": "frontend/Dockerfile", "base": "node:24-alpine"},
+    {"component": "frontend", "dockerfile": "frontend/Dockerfile", "base": "nginx:1.27-alpine"},
+    {"component": "automation-worker", "dockerfile": "automation-worker/Dockerfile", "base": "mcr.microsoft.com/playwright:v1.60.0-noble"}
+  ],
+  "note": "Tags are the repository inventory; CI scan evidence records resolved digests without changing production Dockerfiles."
+}

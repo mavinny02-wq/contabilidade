@@ -1,0 +1,31 @@
+rules:
+  - id: java-runtime-exec
+    languages: [java]
+    severity: ERROR
+    message: Process execution requires security review.
+    patterns:
+      - pattern-either:
+          - pattern: Runtime.getRuntime().exec(...)
+          - pattern: new ProcessBuilder(...)
+  - id: java-user-controlled-path
+    languages: [java]
+    severity: WARNING
+    message: Request-derived filesystem paths require traversal validation.
+    pattern: Paths.get($REQUEST.getParameter(...), ...)
+  - id: ts-dynamic-code
+    languages: [typescript, javascript]
+    severity: ERROR
+    message: Dynamic code execution is prohibited.
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+  - id: ts-ssrf-fetch
+    languages: [typescript, javascript]
+    severity: WARNING
+    message: Request-derived URLs require an SSRF allowlist.
+    pattern: fetch($REQ.$FIELD, ...)
+  - id: sensitive-log
+    languages: [java, typescript, javascript]
+    severity: ERROR
+    message: Do not log authorization or secret values.
+    pattern-regex: '(?i)(log|console)\.(info|debug|warn|error)\([^\n]*(authorization|password|secret|token)'
