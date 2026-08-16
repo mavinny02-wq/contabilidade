@@ -3,6 +3,8 @@ name: Required CI
 on:
   pull_request:
     branches: [main]
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -24,6 +26,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+      - name: Report safe execution identity
+        run: |
+          printf 'event=%s\nref=%s\nsha=%s\n' "$GITHUB_EVENT_NAME" "$GITHUB_REF" "$GITHUB_SHA"
       - name: Validate governance, wave manifests, and launcher packs
         run: |
           python3 scripts/orchestration/validate_orchestration_governance.py --repo-root .
@@ -49,6 +54,22 @@ jobs:
         run: |
           python3 -m unittest scripts/dependencies/tests/test_dependency_guard.py -v
           bash scripts/dependencies/generate-sboms.sh
+      - name: Guard the synthetic fixture catalog
+        run: |
+          python3 scripts/testing/synthetic_fixture_guard.py
+          python3 -m unittest scripts/testing/test_synthetic_fixture_guard.py -v
+      - name: Guard the OpenAPI snapshot, compatibility, and frontend usage map
+        run: |
+          python3 scripts/contracts/test_openapi_guard.py
+          python3 scripts/contracts/openapi_guard.py check \
+            --baseline contracts/openapi/openapi.json \
+            --candidate contracts/openapi/openapi.json \
+            --usage-map contracts/openapi/frontend-usage.json
+      - name: Validate the coverage ratchet contract
+        run: |
+          python3 -m unittest scripts/quality/test_coverage_ratchet.py -v
+          python3 scripts/quality/coverage_ratchet.py \
+            --baseline scripts/quality/coverage-baseline.json
 
   backend-postgresql:
     runs-on: ubuntu-latest
@@ -68,6 +89,9 @@ jobs:
       - name: Verify backend with Testcontainers and PostgreSQL 17
         working-directory: backend
         run: mvn -B clean verify -Dsurefire.failIfNoTests=true
+      - name: Produce backend coverage report
+        working-directory: backend
+        run: mvn -B jacoco:report
 
   frontend:
     runs-on: ubuntu-latest
@@ -84,7 +108,7 @@ jobs:
         working-directory: frontend
       - run: npm run typecheck
         working-directory: frontend
-      - run: npm test
+      - run: npm run test:coverage
         working-directory: frontend
       - run: npm run build
         working-directory: frontend
@@ -106,17 +130,43 @@ jobs:
       - name: Typecheck worker
         working-directory: automation-worker
         run: npm run typecheck
-      - name: Run complete network-isolated worker suite including reliability.test
+      - name: Run complete network-isolated worker coverage suite including reliability.test
         working-directory: automation-worker
-        run: npm test
+        run: npm run test:coverage
       - name: Build worker
         working-directory: automation-worker
         run: npm run build
 
+  performance-budgets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Build the three budgeted artifacts
+        run: |
+          (cd backend && mvn -B -DskipTests package)
+          (cd frontend && npm ci --no-audit --no-fund && npm run build)
+          (cd automation-worker && npm ci --no-audit --no-fund && npm run build)
+      - name: Enforce artifact performance budgets
+        run: |
+          python3 -m unittest scripts/performance/test_artifact_budget.py -v
+          python3 scripts/performance/artifact_budget.py measure \
+            --source-sha "$GITHUB_SHA" --output /tmp/artifacts.json
+          python3 scripts/performance/artifact_budget.py guard \
+            --policy scripts/performance/artifact-budgets.json \
+            --current /tmp/artifacts.json
+
   required-ci:
     if: always()
     runs-on: ubuntu-latest
-    needs: [governance, backend-postgresql, frontend, worker]
+    needs: [governance, backend-postgresql, frontend, worker, performance-budgets]
     steps:
       - name: Require every mandatory lane to succeed
         env:
