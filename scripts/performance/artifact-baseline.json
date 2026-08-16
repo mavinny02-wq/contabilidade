@@ -1,0 +1,100 @@
+{
+  "component_versions": {
+    "backend": "0.5.1-SNAPSHOT",
+    "frontend": "0.5.1",
+    "worker": "0.5.1"
+  },
+  "components": {
+    "backend": {
+      "command": "cd backend && mvn -DskipTests package",
+      "metrics": {
+        "entry_count": 454,
+        "jar_bytes": 70423857,
+        "largest_entries": [
+          {
+            "bytes": 12093295,
+            "name": "BOOT-INF/lib/hibernate-core-6.6.53.Final.jar"
+          },
+          {
+            "bytes": 9018553,
+            "name": "BOOT-INF/lib/byte-buddy-1.17.8.jar"
+          },
+          {
+            "bytes": 3673934,
+            "name": "BOOT-INF/lib/tomcat-embed-core-10.1.55.jar"
+          },
+          {
+            "bytes": 3173223,
+            "name": "BOOT-INF/lib/swagger-ui-5.21.0.jar"
+          },
+          {
+            "bytes": 2190661,
+            "name": "BOOT-INF/lib/aspectjweaver-1.9.25.1.jar"
+          },
+          {
+            "bytes": 2108541,
+            "name": "BOOT-INF/lib/spring-security-config-6.5.11.jar"
+          },
+          {
+            "bytes": 2097175,
+            "name": "BOOT-INF/lib/prometheus-metrics-exposition-formats-1.3.10.jar"
+          },
+          {
+            "bytes": 2096068,
+            "name": "BOOT-INF/lib/spring-web-6.2.19.jar"
+          },
+          {
+            "bytes": 2088460,
+            "name": "BOOT-INF/lib/spring-boot-autoconfigure-3.5.16.jar"
+          },
+          {
+            "bytes": 1983775,
+            "name": "BOOT-INF/lib/spring-core-6.2.19.jar"
+          }
+        ],
+        "largest_entry_bytes": 12093295,
+        "sha256": "3850ac5f988ce65c8ee2ec9b1bf2dd927016ce48cc1256da35b1199e510f57ee"
+      }
+    },
+    "frontend": {
+      "command": "cd frontend && npm run build",
+      "metrics": {
+        "asset_count": 2,
+        "css_bytes": 23435,
+        "css_gzip_bytes": 5239,
+        "file_count": 4,
+        "js_chunk_count": 2,
+        "largest_js_bytes": 543274,
+        "largest_js_gzip_bytes": 157660,
+        "total_bytes": 567372
+      }
+    },
+    "worker": {
+      "command": "cd automation-worker && npm run build",
+      "metrics": {
+        "file_count": 72,
+        "largest_file_bytes": 22169,
+        "own_code_bytes": 375245,
+        "total_bytes": 375245
+      }
+    }
+  },
+  "reproducibility": {
+    "artifact_hash_differences": [
+      "backend.sha256"
+    ],
+    "clean_builds": 2,
+    "normalization": "Only the executable JAR hash is excluded from repeatability comparison because ZIP entry timestamps change between clean Maven builds; raw hashes remain recorded.",
+    "numeric_metric_differences": []
+  },
+  "schema_version": 1,
+  "scope": "artifact size only; this report makes no runtime, latency, or throughput claim",
+  "source_sha": "c3c06e8cb5921f96ecdb9b1e397594d01dd4430f",
+  "toolchain": {
+    "java": "openjdk version \"21.0.2\" 2024-01-16",
+    "maven": "Apache Maven 3.9.10 (5f519b97e944483d878815739f519b2eade0a91d)",
+    "node": "v20.20.2",
+    "npm": "11.4.2",
+    "os": "Linux"
+  }
+}
