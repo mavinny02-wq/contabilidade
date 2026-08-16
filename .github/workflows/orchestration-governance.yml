@@ -1,0 +1,68 @@
+name: Orchestration governance
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - AGENTS.md
+      - '**/AGENTS.md'
+      - docs/INDICE_DOCUMENTACAO_ATIVA.md
+      - docs/GOVERNANCA_DOCUMENTACAO.md
+      - docs/ai/**
+      - docs/orquestracao/**
+      - docs/testing/**
+      - docs/decisoes/**
+      - docs/roadmap/BACKLOG_ESTRUTURAL.md
+      - docs/roadmap/ROADMAP_MATURIDADE_ORQUESTRACAO.md
+      - docs/roadmap/estrutural/**
+      - docs/roadmap/BOARD_ORQUESTRACAO.md
+      - .contabilidade-orchestrator/**
+      - scripts/orchestration/**
+      - .github/workflows/orchestration-governance.yml
+  push:
+    branches:
+      - main
+    paths:
+      - AGENTS.md
+      - '**/AGENTS.md'
+      - docs/INDICE_DOCUMENTACAO_ATIVA.md
+      - docs/GOVERNANCA_DOCUMENTACAO.md
+      - docs/ai/**
+      - docs/orquestracao/**
+      - docs/testing/**
+      - docs/decisoes/**
+      - docs/roadmap/BACKLOG_ESTRUTURAL.md
+      - docs/roadmap/ROADMAP_MATURIDADE_ORQUESTRACAO.md
+      - docs/roadmap/estrutural/**
+      - docs/roadmap/BOARD_ORQUESTRACAO.md
+      - .contabilidade-orchestrator/**
+      - scripts/orchestration/**
+      - .github/workflows/orchestration-governance.yml
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate orchestration governance
+        run: python3 scripts/orchestration/validate_orchestration_governance.py --repo-root .
+
+      - name: Validate canonical chat prompts
+        run: |
+          python3 scripts/orchestration/validate_prompt.py docs/ai/CONTABILIDADE_NEW_CHAT_BOOTSTRAP.txt --mode bootstrap
+          python3 scripts/orchestration/validate_prompt.py docs/ai/CONTABILIDADE_EXISTING_CHAT_RESYNC.txt --mode resync
+          python3 scripts/orchestration/validate_prompt.py .contabilidade-orchestrator/templates/launcher-compacto.md --mode launcher
+
+      - name: Run deterministic tests
+        run: python3 -m unittest discover -s scripts/orchestration -p 'test_*.py' -v

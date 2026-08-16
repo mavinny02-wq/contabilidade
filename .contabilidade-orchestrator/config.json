@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0",
+  "schemaVersion": "2.0",
   "projeto": {
     "nome": "Contabilidade",
     "identificador": "contabilidade",
@@ -8,23 +8,63 @@
   },
   "git": {
     "branchIntegracao": "main",
-    "usuarioFazMerge": true
+    "sourceOfTruth": "GITHUB",
+    "pushDiretoIntegracaoPermitido": false,
+    "usuarioFazMergeProducao": true
   },
   "ondas": {
-    "slotsOficiais": 5,
+    "minOwnersExecutaveis": 1,
+    "maxOwnersExecutaveis": 5,
+    "extrasContamNaCapacidade": true,
+    "mesmoBaseline": true,
     "dependenciaMesmaOndaPermitida": false,
-    "extrasUrgentesPermitidos": true,
-    "reconciliacaoCompartilhadaSerial": true
+    "migrationOwnerLimit": 1,
+    "reconciliacaoCompartilhadaSerial": true,
+    "lifecycle": [
+      "CANDIDATE",
+      "PREPARED_NOT_RELEASED",
+      "RELEASED_FOR_EXECUTION",
+      "RESULTS_INTEGRATED",
+      "CONSUMED"
+    ]
   },
-  "testes": {
-    "somenteTaskExplicita": true
+  "orquestracao": {
+    "modoPadrao": "FAST_INCREMENTAL",
+    "documentacaoOwnedByOrchestrator": true,
+    "currentState": "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md",
+    "testLedger": "docs/testing/MASTER_TEST_ORCHESTRATION.md",
+    "intake": "docs/orquestracao/CONTABILIDADE_USER_REPORTED_INTAKE.md",
+    "ownerMatrix": "docs/orquestracao/CONTABILIDADE_EXECUTION_OWNER_MATRIX.md",
+    "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md"
   },
-  "validacaoImplementacao": [
-    "compilacao_backend",
-    "build_frontend",
-    "build_worker",
-    "validacao_i18n",
-    "docker_compose_config",
-    "git_diff_check"
-  ]
+  "validacao": {
+    "ordinaryTaskMode": "STRUCTURAL_ONLY",
+    "testesSomenteOwnerExplicito": true,
+    "realExternalE2EAllowed": false,
+    "classificacoesFalha": [
+      "PRODUCT_REGRESSION",
+      "TEST_CONTRACT_DRIFT",
+      "DATA_OR_FIXTURE_DEFECT",
+      "ENVIRONMENT_LIMITATION",
+      "BASELINE_DRIFT"
+    ]
+  },
+  "ambientes": {
+    "codex": "CODEX_CLOUD_LINUX",
+    "runtimeLocal": "LOCAL_WINDOWS_MANUAL",
+    "cloudPodeAlegarProvaWindows": false
+  },
+  "operacoesExternas": {
+    "providerRealDefault": "DENIED",
+    "paidCallRequiresExplicitAuthorization": true,
+    "realCredentialsAllowedInAutomation": false,
+    "realCompanyDataAllowedInAutomation": false,
+    "captchaBypassAllowed": false
+  },
+  "prompts": {
+    "template": "docs/ai/TEMPLATE_LAUNCHER_COMPACTO.md",
+    "targetNonEmptyLines": 12,
+    "hardMaxNonEmptyLines": 20,
+    "hardMaxCharacters": 2000
+  }
 }

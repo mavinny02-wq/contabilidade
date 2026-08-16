@@ -1,54 +1,42 @@
 # Fluxo de trabalho Codex
 
-## Fluxo padrão Cloud
+## Fluxo GitHub-first
 
 ```text
-baseline integrado
-  ↓
-reconciliação documental
-  ↓
-seleção de item
-  ↓
-prompt bounded — CODEX_CLOUD_LINUX
-  ↓
-PR
-  ↓
-review/merge pelo usuário
-  ↓
-reconciliação
-  ↓
-próxima onda segura
+GitHub HEAD + open PRs
+  -> reconciliação incremental
+  -> documentação/gates resolvidos pelo orquestrador
+  -> PREPARED_NOT_RELEASED
+  -> refresh final
+  -> 1–5 launchers RELEASED_FOR_EXECUTION
+  -> PRs
+  -> merge pelo usuário
+  -> resultados integrados
+  -> classificação/reuse de evidência
+  -> CONSUMED
 ```
 
-## Quando existe prova local obrigatória
+Uma onda pode ter menos de cinco tasks e possui no máximo um migration owner.
 
-O Codex Cloud não acessa a máquina Windows do usuário. Nesses casos:
+## Cloud versus prova local
+
+O executor é `CODEX_CLOUD_LINUX`. Windows, Docker Desktop e localhost do usuário são prova humana:
 
 ```text
-Codex Cloud cria/corrige script, BAT e runbook
-  ↓
-PR e merge
-  ↓
-usuário executa localmente no Windows
-  ↓
-saída é salva no relatório canônico ou commitada
-  ↓
-Codex Cloud reconcilia a evidência
-  ↓
-fecha gate ou registra blocker real
+Cloud cria/corrige artefato
+  -> PR/merge
+  -> usuário executa no Windows
+  -> evidência segura é persistida
+  -> Cloud reconcilia
 ```
 
-A execução `LOCAL_WINDOWS_MANUAL` é humana e não deve ser transformada em uma task Codex Cloud com
-comandos `cmd.exe`, WSL, Docker Desktop ou caminhos `D:\...`.
+Não crie task Cloud que finja executar `.bat`, caminho local, Docker Desktop ou stack persistente.
 
-Tipos separados:
+## Separação de responsabilidades
 
-- análise;
-- decisão;
-- implementação;
-- bug fix;
-- teste;
-- reconciliação;
-- ambiente.
-
-Uma onda oficial possui exatamente cinco slots independentes.
+- documentação-only: orquestrador;
+- implementação/correção: executor bounded;
+- teste: owner explícito;
+- runtime Windows: humano;
+- merge: usuário, salvo instrução explícita;
+- seleção de sucessor: orquestrador após evidência.

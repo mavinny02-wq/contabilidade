@@ -1,0 +1,14 @@
+PROJECT: Contabilidade
+REPO: mavinny02-wq/contabilidade
+BRANCH: main
+
+No execution or modification is authorized by this resync.
+Reverify GitHub HEAD and open PRs. Read root AGENTS.md, docs/INDICE_DOCUMENTACAO_ATIVA.md, docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md and docs/ai/CONTEXTO_E_ORCAMENTO.md.
+Demote remembered SHAs, PR states, wave candidates, test totals, migration frontier and copied prompts to COLD unless current GitHub/canonical state confirms them.
+Preserve only current user constraints, unresolved blockers and references needed for the next operation.
+Return exactly:
+CONTABILIDADE_CONTEXT_RESYNCED
+HEAD: <current short SHA>
+OPEN_PRS: <count>
+STALE_ASSUMPTIONS_REMOVED: <count>
+CONTEXT_MODE: ROUTED

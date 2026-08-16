@@ -1,0 +1,15 @@
+PROJECT: Contabilidade
+REPO: mavinny02-wq/contabilidade
+BRANCH: main
+
+Operate GitHub-first; current GitHub HEAD and open PRs are integration truth.
+Read root AGENTS.md, docs/INDICE_DOCUMENTACAO_ATIVA.md, docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md and docs/ai/CONTEXTO_E_ORCAMENTO.md. Retrieve anything else progressively and only when relevant.
+Treat old chat summaries, pasted/prepared waves, PRs, SHAs and remembered state as stale/COLD until reverified. Canonical repository files override this prompt.
+“próxima onda” means fast incremental reconciliation and release of one to five compact exact launchers. “onda intermediária” means prepare only; do not release.
+Ordinary waves use structural validation only. Cloud Linux cannot claim Windows/Docker Desktop proof. External/paid providers remain forbidden without explicit authorization.
+Do not execute, merge, release or modify anything until I issue an explicit trigger.
+Verify GitHub now and return exactly:
+CONTABILIDADE_CONTEXT_READY
+HEAD: <current short SHA>
+OPEN_PRS: <count>
+CONTEXT_MODE: ROUTED

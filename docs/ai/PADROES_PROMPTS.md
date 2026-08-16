@@ -1,67 +1,25 @@
 # Padrões de prompts
 
-Templates ficam em `.contabilidade-orchestrator/templates/`.
+**Autoridade:** `docs/ai/TEMPLATE_LAUNCHER_COMPACTO.md`
 
-## Cabeçalho obrigatório
+Templates antigos em `.contabilidade-orchestrator/templates/` são legados, salvo o launcher compacto
+v2.
 
-Todo prompt informa:
+## Regras
 
-- task;
-- tipo;
-- item;
-- baseline;
-- executor real;
-- capacidades necessárias;
-- caminhos próprios e excluídos;
-- validação permitida;
-- contrato de saída.
+- launcher não é segunda especificação;
+- até 12 linhas como alvo, 20/2.000 como hard limit;
+- um ITEM/owner/result;
+- referências canônicas, não requisitos copiados;
+- baseline e migration explícitos;
+- sem PR/SHA/data histórica reutilizável;
+- sem gate condicional;
+- policy comum é dita uma vez fora do pack;
+- pack possui de um a cinco launchers e no máximo um migration owner.
 
-## Executor
+## Tipos
 
-Para tasks Codex deste projeto, use:
-
-```text
-EXECUTION MODE: CODEX_CLOUD_LINUX
-```
-
-Não use `LOCAL_WINDOWS` como executor de uma task Codex. Quando a prova depender do Windows, o
-prompt Cloud deve criar ou revisar os artefatos de validação, e o resultado local será produzido
-manualmente pelo usuário e reconciliado depois.
-
-O prompt Cloud não deve incluir comandos `cmd.exe`, WSL, Docker Desktop, caminhos `D:\...` ou acesso
-a `localhost` da máquina do usuário como se estivessem disponíveis no runner.
-
-## Implementação
-
-Um item, um baseline, propriedade exclusiva, sem testes e validação proporcional.
-
-## Análise
-
-Sem alteração de produção; cria uma evidência e atualiza um backlog.
-
-## Decisão
-
-Opções, consequências e recomendação. Aprovação não implica implementação automática.
-
-## Teste Cloud
-
-Executa apenas provas suportadas no runner Linux: builds, typecheck, testes existentes, startup
-controlado, fixtures sintéticas temporárias e análise estática. Não promove resultado Cloud para
-runtime local.
-
-## Prova local manual
-
-A task Cloud pode preparar:
-
-- BAT;
-- PowerShell;
-- runbook;
-- checklist;
-- formato do relatório.
-
-O usuário executa localmente. Uma task posterior reconcilia o arquivo ou commit de evidência.
-
-## Reconciliação
-
-Compara código integrado e documentação, atualiza status comprovado, arquiva evidência e prepara a
-próxima onda sem implementar.
+- implementação/correção: owner de produção bounded + validação estrutural;
+- teste: owner de prova explícito, produção proibida;
+- documentação/reconciliação/intake/decisão: orquestrador, sem launcher por padrão;
+- prova Windows: artefato preparado no Cloud, execução humana e reconciliação posterior.
