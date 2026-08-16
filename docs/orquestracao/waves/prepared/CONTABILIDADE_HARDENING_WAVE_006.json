@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "2.0",
+  "waveId": "CONTABILIDADE_HARDENING_WAVE_006",
+  "state": "PREPARED_NOT_RELEASED",
+  "baseline": {
+    "branch": "main",
+    "commit": "a3344a15a0581fd7f76f78766c6432b46f9a361e"
+  },
+  "owners": [
+    {
+      "item": "STR-CI-002",
+      "owner": "REQUIRED_CI_GATE",
+      "locks": ["LOCK-GIT-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_CI_002_RESULT.md",
+      "dispatchKey": "637a4ff2255908913d33d005b70d0bf1431ea273302816583a2bce736bcae4cd"
+    },
+    {
+      "item": "STR-SEC-002",
+      "owner": "SUPPLY_CHAIN_SECURITY",
+      "locks": ["LOCK-DEP-001", "LOCK-DATA-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_SEC_002_RESULT.md",
+      "dispatchKey": "3088e636102f43188815c68c1cb2f9ab059befe9cfd09dc84da5b49b6d901547"
+    },
+    {
+      "item": "STR-FE-BUNDLE-001",
+      "owner": "FRONTEND_BUNDLE",
+      "locks": ["LOCK-EVID-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_FE_BUNDLE_001_RESULT.md",
+      "dispatchKey": "5bb7c05a84f55b04849a905fcdae4447b71f77ce9527c18b039cef2b15b8a04e"
+    },
+    {
+      "item": "STR-OBS-001",
+      "owner": "OBSERVABILITY",
+      "locks": ["LOCK-DATA-001", "LOCK-EXT-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_OBS_001_RESULT.md",
+      "dispatchKey": "12513604f08b8e970241633e0f7f9d9e0a2f01e2b7dc1594a837dd01f3037a65"
+    },
+    {
+      "item": "STR-ARCH-001",
+      "owner": "ARCHITECTURE_GUARD",
+      "locks": ["LOCK-EVID-001", "LOCK-TEST-001", "LOCK-WAVE-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_ARCH_001_RESULT.md",
+      "dispatchKey": "2a7a896f3fa04ee0feb9d60a91967b578bba52c516450af017cbd0bcc6e1a185"
+    }
+  ]
+}

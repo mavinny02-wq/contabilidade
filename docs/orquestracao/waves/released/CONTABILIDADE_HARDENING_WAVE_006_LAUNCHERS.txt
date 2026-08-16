@@ -1,0 +1,74 @@
+TASK: STR-CI-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_HARDENING_WAVE_006
+DISPATCH_KEY: 637a4ff2255908913d33d005b70d0bf1431ea273302816583a2bce736bcae4cd
+BASELINE: latest main
+PREPARE: ci + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_CI_002_REQUIRED_GATE_EVOLUTION.md
+LOCKS: LOCK-GIT-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: required-ci workflow, optional canary, scripts/ci, focused tests and result only
+MIGRATION: NONE
+VALIDATE: run gate/trigger/fan-in tests, YAML parse, inspect remote run when available and git diff --check
+RESULT_MD: docs/implementacao/STR_CI_002_RESULT.md
+
+TASK: STR-SEC-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_HARDENING_WAVE_006
+DISPATCH_KEY: 3088e636102f43188815c68c1cb2f9ab059befe9cfd09dc84da5b49b6d901547
+BASELINE: latest main
+PREPARE: supply-chain + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_SEC_002_SUPPLY_CHAIN_SECURITY.md
+LOCKS: LOCK-DEP-001, LOCK-DATA-001, LOCK-TEST-001
+OWNER: new supply-chain workflow, scripts/security/supply-chain, policy, fixtures, tests and result only
+MIGRATION: NONE
+VALIDATE: run SAST/IaC/container policy fixtures, exception-expiry/redaction tests, YAML parse and git diff --check
+RESULT_MD: docs/implementacao/STR_SEC_002_RESULT.md
+
+TASK: STR-FE-BUNDLE-001
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_HARDENING_WAVE_006
+DISPATCH_KEY: 5bb7c05a84f55b04849a905fcdae4447b71f77ce9527c18b039cef2b15b8a04e
+BASELINE: latest main
+PREPARE: frontend + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_FE_BUNDLE_001_FRONTEND_CHUNK_OPTIMIZATION.md
+LOCKS: LOCK-EVID-001, LOCK-TEST-001
+OWNER: frontend router/lazy boundaries/fallback/Vite/tests and result; manifests read-only
+MIGRATION: NONE
+VALIDATE: use Node 24; run locale, typecheck, tests, build, performance measurement and git diff --check
+RESULT_MD: docs/implementacao/STR_FE_BUNDLE_001_RESULT.md
+
+TASK: STR-OBS-001
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_HARDENING_WAVE_006
+DISPATCH_KEY: 12513604f08b8e970241633e0f7f9d9e0a2f01e2b7dc1594a837dd01f3037a65
+BASELINE: latest main
+PREPARE: observability + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_OBS_001_OBSERVABILITY.md
+LOCKS: LOCK-DATA-001, LOCK-EXT-001, LOCK-TEST-001
+OWNER: backend common observability, worker observability/BackendClient, focused tests and result only
+MIGRATION: NONE
+VALIDATE: run backend and worker focused correlation/redaction/cardinality tests, typecheck/build and git diff --check
+RESULT_MD: docs/implementacao/STR_OBS_001_RESULT.md
+
+TASK: STR-ARCH-001
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_HARDENING_WAVE_006
+DISPATCH_KEY: 2a7a896f3fa04ee0feb9d60a91967b578bba52c516450af017cbd0bcc6e1a185
+BASELINE: latest main
+PREPARE: architecture + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_ARCH_001_ARCHITECTURE_BOUNDARIES.md
+LOCKS: LOCK-EVID-001, LOCK-TEST-001, LOCK-WAVE-001
+OWNER: scripts/architecture, baseline/allowlist, focused tests, dedicated workflow and result only
+MIGRATION: NONE
+VALIDATE: run graph/cycle/boundary/allowlist tests, guard baseline, YAML parse and git diff --check
+RESULT_MD: docs/implementacao/STR_ARCH_001_RESULT.md
