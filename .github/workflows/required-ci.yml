@@ -1,0 +1,130 @@
+name: Required CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Validate governance, wave manifests, and launcher packs
+        run: |
+          python3 scripts/orchestration/validate_orchestration_governance.py --repo-root .
+          python3 scripts/orchestration/validate_wave_manifests.py --repo-root .
+          python3 scripts/orchestration/validate_prompt.py docs/ai/CONTABILIDADE_NEW_CHAT_BOOTSTRAP.txt --mode bootstrap
+          python3 scripts/orchestration/validate_prompt.py docs/ai/CONTABILIDADE_EXISTING_CHAT_RESYNC.txt --mode resync
+          python3 scripts/orchestration/validate_prompt.py .contabilidade-orchestrator/templates/launcher-compacto.md --mode launcher
+      - name: Test duplicate dispatch and orchestration contracts
+        run: python3 -m unittest discover -s scripts/orchestration -p 'test_*.py' -v
+      - name: Guard migration registry
+        run: |
+          node scripts/orchestration/validate-migration-registry.mjs
+          node --test scripts/orchestration/tests/validate-migration-registry.test.mjs
+      - name: Guard versions
+        run: |
+          python3 scripts/orchestration/validate-version-governance.py
+          python3 -m unittest scripts/orchestration/tests/test_validate_version_governance.py -v
+      - name: Guard secrets and PII
+        run: |
+          python3 scripts/security/secret_pii_guard.py
+          python3 scripts/security/test_secret_pii_guard.py
+      - name: Test deterministic SBOM and license policy
+        run: |
+          python3 -m unittest scripts/dependencies/tests/test_dependency_guard.py -v
+          bash scripts/dependencies/generate-sboms.sh
+
+  backend-postgresql:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Verify Docker availability
+        run: docker info
+      - name: Reject changes to existing Flyway migrations
+        run: bash scripts/ci/assert-migrations-immutable.sh
+      - name: Verify backend with Testcontainers and PostgreSQL 17
+        working-directory: backend
+        run: mvn -B clean verify -Dsurefire.failIfNoTests=true
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci --no-audit --no-fund
+        working-directory: frontend
+      - run: npm run locale:validate
+        working-directory: frontend
+      - run: npm run typecheck
+        working-directory: frontend
+      - run: npm test
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend
+
+  worker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: automation-worker/package-lock.json
+      - run: npm ci --no-audit --no-fund
+        working-directory: automation-worker
+      - name: Provision Playwright 1.60.0 Chromium before the network-isolated proof
+        working-directory: automation-worker
+        run: npx playwright@1.60.0 install --with-deps chromium
+      - name: Typecheck worker
+        working-directory: automation-worker
+        run: npm run typecheck
+      - name: Run complete network-isolated worker suite including reliability.test
+        working-directory: automation-worker
+        run: npm test
+      - name: Build worker
+        working-directory: automation-worker
+        run: npm run build
+
+  required-ci:
+    if: always()
+    runs-on: ubuntu-latest
+    needs: [governance, backend-postgresql, frontend, worker]
+    steps:
+      - name: Require every mandatory lane to succeed
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          results = {name: job["result"] for name, job in json.loads(os.environ["NEEDS_JSON"]).items()}
+          print(json.dumps(results, sort_keys=True))
+          sys.exit(0 if results and all(result == "success" for result in results.values()) else 1)
+          PY
