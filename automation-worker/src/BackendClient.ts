@@ -1,6 +1,12 @@
 import { basename } from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { config } from './config.js';
+import {
+  CORRELATION_HEADER,
+  currentCorrelationId,
+  safeCorrelationId,
+} from './observability/CorrelationContext.js';
+import { workerMetrics } from './observability/WorkerMetrics.js';
 import type {
   SessionTicketConsumption,
   SessionTicketPayload,
@@ -20,6 +26,8 @@ type HttpOptions = {
 };
 
 export class BackendClient {
+  private readonly executionCorrelations = new Map<string, string>();
+
   async heartbeat(status: string): Promise<void> {
     await this.request('/api/interno/workers/heartbeat', {
       method: 'POST',
@@ -77,7 +85,12 @@ export class BackendClient {
     });
     if (response.status === 204) return undefined;
     if (!response.ok) throw await this.error(response);
-    return await response.json() as ExecucaoLease;
+    const lease = await response.json() as ExecucaoLease;
+    this.executionCorrelations.set(
+      lease.id,
+      safeCorrelationId(response.headers.get(CORRELATION_HEADER)),
+    );
+    return lease;
   }
 
   async renovar(execucaoId: string, leaseToken: string): Promise<void> {
@@ -162,7 +175,10 @@ export class BackendClient {
 
     const response = await fetch(`${config.backendUrl}/api/interno/workers/documentos`, {
       method: 'POST',
-      headers: { 'X-Worker-Token': config.token },
+      headers: {
+        'X-Worker-Token': config.token,
+        [CORRELATION_HEADER]: this.correlationId(),
+      },
       body: form,
       signal: AbortSignal.timeout(60_000),
     });
@@ -182,6 +198,7 @@ export class BackendClient {
           moeda: resultado.moeda ?? null,
         },
       });
+      this.executionCorrelations.delete(execucao.id);
       return;
     }
 
@@ -219,6 +236,7 @@ export class BackendClient {
         moeda: resultado.moeda ?? null,
       },
     });
+    this.executionCorrelations.delete(execucao.id);
   }
 
   private async request<T = unknown>(path: string, options: HttpOptions): Promise<T> {
@@ -229,28 +247,60 @@ export class BackendClient {
   }
 
   private async raw(path: string, options: HttpOptions): Promise<Response> {
-    return fetch(`${config.backendUrl}${path}`, {
-      method: options.method ?? 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Worker-Token': config.token,
-      },
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
-      signal: AbortSignal.timeout(options.timeoutMs ?? 15_000),
-    });
+    const started = performance.now();
+    const operation = this.operation(path);
+    try {
+      const response = await fetch(`${config.backendUrl}${path}`, {
+        method: options.method ?? 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Worker-Token': config.token,
+          [CORRELATION_HEADER]: this.correlationId(path),
+        },
+        body: options.body === undefined ? undefined : JSON.stringify(options.body),
+        signal: AbortSignal.timeout(options.timeoutMs ?? 15_000),
+      });
+      workerMetrics.record(
+        operation,
+        response.ok ? 'success' : response.status >= 500 ? 'server_error' : 'client_error',
+        response.ok ? 'none' : response.status >= 500 ? 'http_5xx' : 'http_4xx',
+        performance.now() - started,
+      );
+      return response;
+    } catch (error) {
+      const timeout = error instanceof DOMException && error.name === 'TimeoutError';
+      workerMetrics.record(
+        operation,
+        timeout ? 'timeout' : 'server_error',
+        timeout ? 'timeout' : 'network',
+        performance.now() - started,
+      );
+      throw error;
+    }
   }
 
   private async error(response: Response): Promise<Error> {
-    let body = '';
-    try {
-      body = await response.text();
-    } catch {
-      body = response.statusText;
-    }
+    await response.body?.cancel().catch(() => undefined);
     return new BackendError(
       response.status,
-      `Backend rejeitou a operação: HTTP ${response.status} ${body.slice(0, 500)}`,
+      `Backend rejeitou a operação: HTTP ${response.status}`,
     );
+  }
+
+  private correlationId(path?: string): string {
+    const executionId = path?.match(/\/execucoes\/([^/]+)/)?.[1];
+    return safeCorrelationId(
+      currentCorrelationId() ?? (executionId ? this.executionCorrelations.get(executionId) : undefined),
+    );
+  }
+
+  private operation(path: string): string {
+    if (path.includes('/heartbeat')) return 'heartbeat';
+    if (path.includes('/adquirir')) return 'acquire';
+    if (path.includes('/renovar')) return 'renew';
+    if (path.includes('/documentos')) return 'document';
+    if (path.includes('/session')) return 'session';
+    return 'report';
   }
 }
 
