@@ -1,43 +1,36 @@
 {
   "schemaVersion": "2.0",
   "classification": "LEGACY_OUTPUT_ROUTER",
-  "status": "PREPARED_NOT_RELEASED",
+  "status": "RELEASED_FOR_EXECUTION",
   "canonical": {
     "currentState": "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md",
     "waveContract": "docs/orquestracao/CONTABILIDADE_WAVE_ORCHESTRATION_V2.md",
     "testLedger": "docs/testing/MASTER_TEST_ORCHESTRATION.md",
     "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md",
-    "preparedWave": "docs/orquestracao/waves/prepared/CONTABILIDADE_STABILIZATION_WAVE_003.md",
+    "releasedWave": "docs/orquestracao/waves/released/CONTABILIDADE_STABILIZATION_WAVE_003.md",
+    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_STABILIZATION_WAVE_003_LAUNCHERS.txt",
     "lastConsumedWave": "docs/orquestracao/waves/consumed/CONTABILIDADE_STABILIZATION_WAVE_002.md"
   },
-  "inspection": {
+  "release": {
     "branch": "main",
-    "head": "91a42c8e96775f2cbe3c09481beed879d4fbab31",
-    "openPullRequests": [
-      56,
-      57
-    ],
-    "migrationFrontier": 12
-  },
-  "execution": {
-    "preparedWavesAreExecutable": false,
-    "releasedWaveDirectory": "docs/orquestracao/waves/released",
-    "maxOwners": 5,
-    "migrationOwnerLimit": 1,
-    "preparedOwners": [
+    "baseline": "659ff87e4344cab235d87a443ea9ddb310fe03d5",
+    "openPullRequestsBeforeRelease": [],
+    "migrationFrontier": 12,
+    "owners": [
       "FIX-STARTUP-MAIN-001",
       "BUG-RUN-001",
       "STR-ORQ-003",
       "STR-REL-001",
       "STR-OWN-001"
-    ]
+    ],
+    "migrationOwner": null
   },
-  "gates": [
-    "MERGE_PR_57",
-    "SUPERSEDE_OR_RECONCILE_PR_56",
-    "REFRESH_HEAD_AND_OPEN_PRS",
-    "VERIFY_OWNER_DISJOINTNESS"
-  ],
+  "execution": {
+    "preparedWavesAreExecutable": false,
+    "releasedWaveDirectory": "docs/orquestracao/waves/released",
+    "maxOwners": 5,
+    "migrationOwnerLimit": 1
+  },
   "legacy": {
     "previousSchema": "1.0",
     "historyPreservedInGit": true,
