@@ -1,0 +1,15 @@
+{
+  "catalog_version": 1,
+  "fixtures": [
+    {
+      "checksum_sha256": "a0e33962fd7bc2eb6d840e6258a08a1b000e2dbfe8fc65aef1c137054dd38005",
+      "fixed_at": "2026-01-15T12:00:00Z",
+      "owner": "scripts/testing",
+      "path": "synthetic-company.v1.json",
+      "purpose": "Canonical company record for deterministic component tests",
+      "schema_id": "contabilidade.synthetic-company",
+      "schema_version": 1,
+      "seed": "str-data-001/company/v1"
+    }
+  ]
+}
