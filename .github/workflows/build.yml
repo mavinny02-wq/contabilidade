@@ -40,6 +40,29 @@ jobs:
           node-version: "24"
       - name: Validar scripts Docker
         run: node scripts/codex/validate-docker-orchestration.mjs
+      - name: Testar regressões dos scripts Docker
+        run: node --test scripts/codex/validate-docker-orchestration.test.mjs
+      - name: Validar sintaxe PowerShell operacional
+        shell: pwsh
+        run: |
+          $files = @(
+            'scripts/start-contabilidade-resilient.ps1',
+            'scripts/start-compose-sequential.ps1',
+            'scripts/deploy-contabilidade-onpremise.ps1'
+          )
+          foreach ($file in $files) {
+            $tokens = $null
+            $errors = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile(
+              (Resolve-Path $file),
+              [ref]$tokens,
+              [ref]$errors
+            )
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Error "${file}: $($_.Message)" }
+              throw "Sintaxe PowerShell invalida em $file"
+            }
+          }
       - name: Instalar
         working-directory: frontend
         run: if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi

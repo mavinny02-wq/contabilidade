@@ -1,63 +1,117 @@
-# Correção do START_CONTABILIDADE
+# START_CONTABILIDADE — ponto único de inicialização
 
-## Motivo
+## Regra principal
 
-O BAT anterior introduziu uma expressão `for /f` para interpretar `java -version`. Essa expressão
-não existe no BAT funcional do PRIMA e falhava no parser do `cmd.exe`, antes mesmo do build.
-
-A nova implementação mantém um BAT pequeno e coloca a lógica operacional em PowerShell, onde
-caminhos, argumentos e códigos de saída podem ser tratados sem os problemas de quoting do Batch.
-
-## Arquivos obrigatórios desta correção
-
-- `START_CONTABILIDADE.bat`
-- `scripts/start-contabilidade.ps1`
-
-Os outros três arquivos corrigem blockers TypeScript já encontrados pela análise v0.5.0.
-
-## Aplicação
-
-Extraia o ZIP diretamente em:
+Existe apenas um BAT operacional na raiz para iniciar ou implantar a aplicação:
 
 ```text
-D:\priv\priv\projeto\contabilidade
+START_CONTABILIDADE.bat
 ```
 
-Permita sobrescrever os arquivos existentes.
+Os BATs internos ficam em `scripts/` e não devem ser executados diretamente.
 
-## Execução
+## Desenvolvimento
+
+Duplo clique em `START_CONTABILIDADE.bat` ou execute:
 
 ```powershell
-Set-Location "D:\priv\priv\projeto\contabilidade"
 .\START_CONTABILIDADE.bat dev
 ```
 
-O BAT sempre volta ao `pause`, inclusive quando o PowerShell encontra erro.
+O modo `dev`:
 
-## Estratégia de build
+1. valida Java 21, Maven, Node, npm, Docker e Compose;
+2. compila backend, frontend e automation worker no Windows;
+3. cria imagens runtime-only com os artefatos prontos;
+4. inicia somente:
+   - PostgreSQL;
+   - backend;
+   - automation worker;
+   - frontend;
+5. valida Flyway V1–V12, readiness, health e Nginx;
+6. abre `http://localhost:8088`.
 
-- Maven roda no Windows usando `JAVA_HOME` apontado para JDK 21.
-- npm roda no Windows.
-- Playwright não baixa browsers no Windows.
-- Docker recebe somente JAR, `dist` e dependências JavaScript de produção.
-- `docker compose down` só ocorre depois que todos os builds e imagens passaram.
-- O build das imagens runtime usa `--network=none`; Maven/npm nunca são executados no Docker.
+A autenticação está desabilitada em `compose.dev.yaml`. Por isso, `postgres-bootstrap` e Keycloak não
+são necessários e são removidos do ambiente de desenvolvimento. Isso reduz memória e evita esperar a
+augmentação do Keycloak sem necessidade.
 
-## Java
+O startup não executa mais `docker compose down`. PostgreSQL permanece em execução e apenas backend,
+worker e frontend são recriados depois que as novas imagens ficam prontas.
 
-A busca prioriza:
+## Produção on-premise
 
-```text
-CONTABILIDADE_JAVA_HOME
-C:\work\java\zulu21.44.17-ca-jdk21.0.8-win_x64
-JAVA_HOME
-instalações comuns de JDK 21
+Use o mesmo BAT:
+
+```powershell
+.\START_CONTABILIDADE.bat onpremise pull digest
 ```
 
-O Java 17 do Windows não é removido.
+Esse modo:
+
+- não executa Maven;
+- não executa npm;
+- não executa `docker build`;
+- baixa e usa imagens previamente publicadas;
+- exige referências por digest quando `digest` é informado;
+- inicia PostgreSQL, bootstrap, Keycloak, backend, worker e frontend na ordem correta.
+
+## Keycloak
+
+No modo on-premise, a primeira inicialização do Keycloak pode executar augmentação e importação do
+realm. O timeout padrão é de 600 segundos e o script mostra o estado a cada 15 segundos, em vez de
+encerrar prematuramente em 60 tentativas.
+
+Nas execuções seguintes, o container saudável é reutilizado; o startup não derruba a stack inteira.
+
+## BuildKit resiliente
+
+O desenvolvimento usa o builder isolado:
+
+```text
+contabilidade-runtime-builder
+```
+
+Se ocorrer corrupção conhecida de snapshot, somente esse builder é recriado e o build é repetido uma
+vez. Volumes PostgreSQL, documentos, backups e containers da aplicação não são apagados.
+
+## Manutenção de memória
+
+O utilitário continua disponível pelo mesmo BAT:
+
+```powershell
+.\START_CONTABILIDADE.bat memoria
+```
+
+Ele nunca é executado automaticamente.
 
 ## Logs
 
 ```text
-.docker-local\logs\START_CONTABILIDADE_ultimo.log
+.docker-local\logs\START_CONTABILIDADE_RESILIENTE_<data>_tentativa1.log
+.docker-local\logs\START_CONTABILIDADE_RESILIENTE_<data>_tentativa2.log
 ```
+
+## Estado esperado no Docker Desktop
+
+### Desenvolvimento
+
+```text
+postgres             running / healthy
+backend              running
+automation-worker    running / healthy
+frontend             running / healthy
+```
+
+### On-premise
+
+```text
+postgres             running / healthy
+postgres-bootstrap   exited / 0
+keycloak             running / healthy
+backend              running
+automation-worker    running / healthy
+frontend             running / healthy
+```
+
+`postgres-bootstrap` é um job one-shot. No on-premise, terminar com `Exited (0)` é sucesso, não uma
+falha.
