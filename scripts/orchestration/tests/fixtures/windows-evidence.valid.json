@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "collectedAtUtc": "2026-08-16T12:00:00.0000000Z",
+  "collectorVersion": "1.0.0",
+  "platform": {
+    "os": "Microsoft Windows NT 10.0.22631.0",
+    "architecture": "X64",
+    "machineNameHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "powershell": { "edition": "Desktop", "version": "5.1.22621.4391" },
+  "git": {
+    "version": { "status": "disponivel", "exitCode": 0, "output": "git version 2.46.0.windows.1" },
+    "revision": { "status": "disponivel", "exitCode": 0, "output": "0123456789abcdef0123456789abcdef01234567" },
+    "status": { "status": "disponivel", "exitCode": 0, "output": "## main" }
+  },
+  "docker": {
+    "version": { "status": "indisponivel", "exitCode": null, "output": null },
+    "compose": { "status": "indisponivel", "exitCode": null, "output": null }
+  },
+  "wsl": { "status": "indisponivel", "exitCode": null, "output": null },
+  "environment": { "CI": false, "WSL_DISTRO_NAME": false, "DOCKER_HOST": false }
+}
