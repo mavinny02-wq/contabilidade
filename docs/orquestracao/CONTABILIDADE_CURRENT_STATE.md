@@ -3,46 +3,45 @@
 **Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`  
 **Reconciliado em:** `2026-08-16`  
 **Branch de integração:** `main`  
-**HEAD verificado:** `91a42c8e96775f2cbe3c09481beed879d4fbab31`  
+**HEAD de liberação:** `659ff87e4344cab235d87a443ea9ddb310fe03d5`  
 **Versão declarada:** `0.5.1`  
 **Frontier Flyway:** `V12`  
-**Modo:** `STABILIZATION_CLOUD_GREEN_WINDOWS_PENDING`
+**Modo:** `STABILIZATION_WAVE_003_RELEASED`
 
 ## Verdade de integração
 
-A `main` contém as PRs de estabilização `#58` a `#68`, inclusive:
+- A fundação de orquestração v2 foi integrada pela PR `#57`.
+- A antiga PR de startup `#56` foi encerrada sem merge como `SUPERSEDED`.
+- **PR aberta na verificação anterior à liberação:** nenhuma.
+- O HEAD de liberação contém os resultados integrados das PRs `#58` a `#68`.
+- Nenhum owner de migration está aberto.
 
-- correção do falso positivo do contrato Docker (`#65`);
-- backend com PostgreSQL sintético e `mvn clean verify` verde (`#66`);
-- frontend completo em Node.js 24 (`#67`);
-- worker completo em Node.js 24 com Chromium/Playwright (`#68`).
-
-PRs ainda abertas:
-
-| PR | Owner | Estado |
-|---:|---|---|
-| `#56` | startup/dev/on-premise | `CONFLICTING / SUPERSESSION_REQUIRED` |
-| `#57` | fundação de orquestração v2 | `MERGEABLE / READY_FOR_INTEGRATION` |
-
-A PR `#56` não deve ser mergeada no estado atual: ela parte de uma baseline antiga e conflita com
-alterações já integradas no guard Docker e no workflow de migrations. Seu comportamento desejado
-será reaplicado por `FIX-STARTUP-MAIN-001` sobre a `main` atual.
-
-## Evidência reconciliada
+## Evidência reutilizada
 
 | Owner | Evidência | Resultado | Disposição |
 |---|---|---|---|
-| full-stack controlado | `VAL-STAB-FULLSTACK-001` | saúde, Flyway V12, heartbeat, 19 jornadas e zero chamadas externas | `REUSE_PASS` |
+| aplicação full-stack controlada | `VAL-STAB-FULLSTACK-001` | saúde, Flyway V12, heartbeat, 19 jornadas e zero chamadas externas | `REUSE_PASS` |
 | backend + PostgreSQL | `VAL-STAB-BACKEND-PG-002` | 5 testes, 0 falhas/erros, `BUILD SUCCESS` | `REUSE_PASS` |
 | frontend Node 24 | `VAL-STAB-FRONTEND-NODE24-002` | i18n, typecheck, 20 testes e build verdes | `REUSE_PASS` |
 | worker Node 24 + Chromium | `VAL-STAB-WORKER-NODE24-PW-002` | typecheck, 7 testes, smoke local e build verdes | `REUSE_PASS` |
 | contrato Docker | `BUG-INFRA-001` | falso positivo corrigido; comandos reais continuam bloqueados | `REUSE_PASS` |
-| migrations | `STR-ORQ-002` | registry V1–V12 e guard de checksum/ordem integrados | `DONE` |
-| coletor Windows | `STR-RUN-001` | inventário de ferramentas/repo integrado | `PARTIAL_CONTRACT_GAP` |
+| migrations | `STR-ORQ-002` | registry V1–V12, checksum, ordem e retrocesso protegidos | `DONE` |
 
-O resultado de `STR-RUN-001` não satisfaz todo o aceite original: o coletor atual não registra
-Compose efetivo, containers/health, Flyway, endpoints nem smoke do runtime. O sucessor corretivo é
-`BUG-RUN-001`.
+Não repetir backend, frontend, worker ou full-stack sem mudança material no respectivo owner.
+
+## Gap preservado
+
+`STR-RUN-001` foi integrado parcialmente. O coletor atual registra ferramentas, Git, Docker/Compose,
+WSL e redaction, mas ainda não registra:
+
+- Compose efetivo;
+- containers e health;
+- Flyway;
+- endpoints técnicos;
+- ausência de Keycloak/bootstrap em dev;
+- comparação de container IDs no segundo startup.
+
+O successor exato é `BUG-RUN-001`.
 
 ## Estado de validação
 
@@ -60,32 +59,23 @@ AGGREGATE_COVERAGE: NOT_MEASURED
 REAL_EXTERNAL_PROVIDERS: NOT_AUTHORIZED_NOT_REQUIRED
 ```
 
-A evidência Cloud atual é reutilizável enquanto código/dependências/contratos afetados não mudarem.
-Não repetir o full-stack amplo para preencher uma wave.
-
 ## Ondas
 
 - `CONTABILIDADE_STABILIZATION_WAVE_002`: `CONSUMED`;
-- `CONTABILIDADE_STABILIZATION_WAVE_003`: `PREPARED_NOT_RELEASED`;
-- migration owner aberto: `NONE`;
-- próxima prova de ambiente: Windows dev após integração do startup corrigido.
+- `CONTABILIDADE_STABILIZATION_WAVE_003`: `RELEASED_FOR_EXECUTION`;
+- owners executáveis liberados: `5`;
+- migration owner: `NONE`;
+- launcher pack: `docs/orquestracao/waves/released/CONTABILIDADE_STABILIZATION_WAVE_003_LAUNCHERS.txt`.
 
-## Wave 003 preparada
+## Wave 003 liberada
 
-Owners candidatos, todos sem migration:
+1. `FIX-STARTUP-MAIN-001` — sucessor limpo da PR `#56` sobre a latest main;
+2. `BUG-RUN-001` — completar a evidência Windows de runtime;
+3. `STR-ORQ-003` — manifests e lifecycle determinísticos;
+4. `STR-REL-001` — governança de versão e release;
+5. `STR-OWN-001` — CODEOWNERS e hotspots com identidades reais.
 
-1. `FIX-STARTUP-MAIN-001`;
-2. `BUG-RUN-001`;
-3. `STR-ORQ-003`;
-4. `STR-REL-001`;
-5. `STR-OWN-001`.
-
-A wave só pode ser liberada após:
-
-1. integração da PR `#57`;
-2. classificação/encerramento da PR `#56` como superseded ou atualização explícita do mesmo owner;
-3. refresh do HEAD e da fila de PRs;
-4. confirmação de que os cinco owners continuam sem sobreposição.
+Os cinco owners são independentes, partem do mesmo baseline e não criam migration.
 
 ## Locks ativos
 
@@ -103,7 +93,7 @@ A wave só pode ser liberada após:
 
 ## Próxima transição
 
-Integrar a fundação v2, liberar a Wave 003 com baseline atualizado e, após o merge do owner de
-startup, executar a campanha manual Windows dev usando o coletor runtime corrigido.
+Integrar os resultados da Wave 003, reconciliar os owners e executar a campanha manual Windows dev.
+On-premise + Keycloak só será validado depois do modo dev ficar verde.
 
-`CONTABILIDADE_CURRENT_STATE_STABILIZATION_WAVE_003_PREPARED`
+`CONTABILIDADE_CURRENT_STATE_WAVE_003_RELEASED`

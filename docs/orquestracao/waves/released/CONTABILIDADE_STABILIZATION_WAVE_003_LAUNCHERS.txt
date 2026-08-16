@@ -1,0 +1,59 @@
+TASK: FIX-STARTUP-MAIN-001
+BASELINE: latest main
+PREPARE: scripts
+READ:
+- root + scripts/AGENTS.md
+- docs/roadmap/estrutural/FIX_STARTUP_MAIN_001_SUPERSEDE_PR56.md
+LOCKS: LOCK-DEP-001, LOCK-ENV-001, LOCK-TEST-001, LOCK-EVID-001
+OWNER: startup, Compose, build workflow and exact paths from the shard
+MIGRATION: NONE
+VALIDATE: run Docker guard and regressions, parse touched PowerShell, attempt dev/onpremise Compose configs with environment classification, and run git diff --check
+RESULT_MD: docs/implementacao/FIX_STARTUP_MAIN_001_RESULT.md
+
+TASK: BUG-RUN-001
+BASELINE: latest main
+PREPARE: scripts
+READ:
+- root + scripts/AGENTS.md + scripts/orchestration/AGENTS.md
+- docs/roadmap/estrutural/BUG_RUN_001_WINDOWS_RUNTIME_EVIDENCE_GAP.md
+LOCKS: LOCK-EXT-001, LOCK-DATA-001, LOCK-ENV-001, LOCK-TEST-001
+OWNER: Windows evidence collector, wrapper, schema, fixtures and focused tests only
+MIGRATION: NONE
+VALIDATE: parse PowerShell, run mocked Pester runtime tests, validate schema fixtures and redaction, and run git diff --check
+RESULT_MD: docs/implementacao/BUG_RUN_001_RESULT.md
+
+TASK: STR-ORQ-003
+BASELINE: latest main
+PREPARE: orchestration
+READ:
+- root + scripts/orchestration/AGENTS.md
+- docs/roadmap/estrutural/STR_ORQ_003_WAVE_MANIFESTS.md
+LOCKS: LOCK-WAVE-001, LOCK-MIG-001
+OWNER: wave-manifest schema, validator, tests, fixtures and dedicated workflow only; canonical state excluded
+MIGRATION: NONE
+VALIDATE: run lifecycle, capacity, migration-owner, replay and supersession tests plus governance guard and git diff --check
+RESULT_MD: docs/implementacao/STR_ORQ_003_RESULT.md
+
+TASK: STR-REL-001
+BASELINE: latest main
+PREPARE: release
+READ:
+- root + scripts/orchestration/AGENTS.md
+- docs/roadmap/estrutural/STR_REL_001_VERSION_GOVERNANCE.md
+LOCKS: LOCK-DEP-001, LOCK-EVID-001
+OWNER: version guard, tests, fixtures, result and dedicated workflow only; no version bump
+MIGRATION: NONE
+VALIDATE: validate current consistency and drift fixtures for VERSION, Maven, npm, images and release metadata, then run git diff --check
+RESULT_MD: docs/implementacao/STR_REL_001_RESULT.md
+
+TASK: STR-OWN-001
+BASELINE: latest main
+PREPARE: governance
+READ:
+- root + docs/AGENTS.md
+- docs/roadmap/estrutural/STR_OWN_001_CODEOWNERS_HOTSPOTS.md
+LOCKS: LOCK-GIT-001, LOCK-WAVE-001
+OWNER: .github/CODEOWNERS and exact RESULT_MD only
+MIGRATION: NONE
+VALIDATE: validate confirmed identities, CODEOWNERS syntax and critical-path coverage with no invalid users or teams, then run git diff --check
+RESULT_MD: docs/implementacao/STR_OWN_001_RESULT.md
