@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contabilidade.local/schemas/wave-manifest.schema.json",
+  "title": "Contabilidade wave manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "waveId", "state", "baseline", "owners"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "waveId": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"},
+    "state": {
+      "enum": ["PREPARED_NOT_RELEASED", "RELEASED_FOR_EXECUTION", "CONSUMED", "SUPERSEDED"]
+    },
+    "baseline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["branch", "commit"],
+      "properties": {
+        "branch": {"type": "string", "minLength": 1},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "owners": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["item", "owner", "locks", "migration", "resultPath"],
+        "properties": {
+          "item": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1},
+          "locks": {"type": "array", "items": {"type": "string", "pattern": "^LOCK-[A-Z0-9-]+$"}, "uniqueItems": true},
+          "migration": {"type": "boolean"},
+          "resultPath": {"type": "string", "pattern": "^docs/(implementacao|testing/runs)/[^/]+\\.md$"}
+        }
+      }
+    },
+    "launcherPath": {"type": "string", "minLength": 1},
+    "previousManifest": {"type": "string", "minLength": 1},
+    "supersedes": {"type": "string", "minLength": 1}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"state": {"const": "PREPARED_NOT_RELEASED"}}},
+      "then": {"not": {"required": ["launcherPath"]}}
+    },
+    {
+      "if": {"properties": {"state": {"const": "RELEASED_FOR_EXECUTION"}}},
+      "then": {"required": ["launcherPath", "previousManifest"]}
+    },
+    {
+      "if": {"properties": {"state": {"enum": ["CONSUMED", "SUPERSEDED"]}}},
+      "then": {"required": ["previousManifest"]}
+    },
+    {
+      "if": {"properties": {"state": {"const": "SUPERSEDED"}}},
+      "then": {"required": ["supersedes"]}
+    }
+  ]
+}
