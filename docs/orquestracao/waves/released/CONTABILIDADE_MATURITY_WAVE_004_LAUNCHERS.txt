@@ -1,0 +1,59 @@
+TASK: BUG-ORQ-001
+BASELINE: latest main
+PREPARE: orchestration
+READ:
+- root + scripts/orchestration/AGENTS.md
+- docs/roadmap/estrutural/BUG_ORQ_001_DUPLICATE_DISPATCH_GUARD.md
+LOCKS: LOCK-GIT-001, LOCK-WAVE-001, LOCK-EVID-001
+OWNER: dispatch key, manifest/launcher contract, preflight registry, focused tests and dedicated workflow only
+MIGRATION: NONE
+VALIDATE: run duplicate/same-baseline/new-baseline/replay tests, prompt and manifest validators, governance guard and git diff --check
+RESULT_MD: docs/implementacao/BUG_ORQ_001_RESULT.md
+
+TASK: STR-SEC-001
+BASELINE: latest main
+PREPARE: security
+READ:
+- root + scripts/AGENTS.md
+- docs/roadmap/estrutural/STR_SEC_001_SECRET_PII_GUARD.md
+LOCKS: LOCK-DATA-001, LOCK-EXT-001, LOCK-TEST-001
+OWNER: local secret/PII scanner, policy, fingerprints, fixtures, tests and dedicated workflow only
+MIGRATION: NONE
+VALIDATE: scan the tracked baseline, run synthetic positive/negative/redaction/exception-expiry tests and git diff --check
+RESULT_MD: docs/implementacao/STR_SEC_001_RESULT.md
+
+TASK: STR-DEP-001
+BASELINE: latest main
+PREPARE: dependencies
+READ:
+- root + scripts/AGENTS.md
+- docs/roadmap/estrutural/STR_DEP_001_SBOM_LICENSE_VULNERABILITY.md
+LOCKS: LOCK-DEP-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: read-only dependency inventory, SBOM/license/advisory policy, fixtures, tests and dedicated workflow only
+MIGRATION: NONE
+VALIDATE: generate and validate three CycloneDX SBOMs, exercise license/advisory exception fixtures and run git diff --check
+RESULT_MD: docs/implementacao/STR_DEP_001_RESULT.md
+
+TASK: STR-DB-001
+BASELINE: latest main
+PREPARE: backend-postgresql
+READ:
+- root + backend/AGENTS.md
+- docs/roadmap/estrutural/STR_DB_001_TESTCONTAINERS_POSTGRESQL.md
+LOCKS: LOCK-DB-001, LOCK-MIG-001, LOCK-EXT-001, LOCK-TEST-001
+OWNER: backend test dependencies, PostgreSQL Testcontainers integration test and dedicated workflow only; migration SQL read-only
+MIGRATION: NONE
+VALIDATE: run test-compile, execute mvn clean verify with PostgreSQL 17 container, prove Flyway/idempotency/JPA and run git diff --check
+RESULT_MD: docs/implementacao/STR_DB_001_RESULT.md
+
+TASK: STR-WRK-001
+BASELINE: latest main
+PREPARE: worker
+READ:
+- root + automation-worker/AGENTS.md
+- docs/roadmap/estrutural/STR_WRK_001_RELIABILITY_REGRESSIONS.md
+LOCKS: LOCK-EXT-001, LOCK-COST-001, LOCK-AUT-001, LOCK-TEST-001
+OWNER: worker lease/retry/idempotency/shutdown seams and focused tests only; provider implementations excluded
+MIGRATION: NONE
+VALIDATE: use Node 24, block external network, run focused reliability tests plus typecheck, full worker tests, build and git diff --check
+RESULT_MD: docs/implementacao/STR_WRK_001_RESULT.md

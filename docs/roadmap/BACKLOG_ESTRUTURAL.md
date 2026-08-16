@@ -1,72 +1,76 @@
 # Backlog estrutural do Contabilidade
 
-**Classificação:** `CANONICAL_ACTIVE_STRUCTURAL_REGISTRY`  
+**Classificação:** `CANONICAL_ACTIVE_STRUCTURAL_REGISTRY`
 **Atualizado em:** `2026-08-16`
 
-Registro não significa seleção. Somente itens em wave `RELEASED_FOR_EXECUTION` estão executáveis.
+Registro não significa seleção. Somente item presente em wave `RELEASED_FOR_EXECUTION` possui
+launcher executável.
 
 ## Status
 
-- `RELEASED_FOR_EXECUTION`: launcher exato publicado;
-- `READY_FOR_SELECTION`: contrato definido e owner disponível;
-- `PARTIAL_CORRECTION_REQUIRED`: parte integrada, aceite ainda incompleto;
-- `WAITING_FOR_DECISION`: depende de decisão humana/ambiente;
-- `BLOCKED_BY_OWNER`: owner aberto/reservado;
-- `DONE`: resultado integrado e reconciliado.
+- `RELEASED_FOR_EXECUTION`;
+- `READY_FOR_SELECTION`;
+- `NEEDS_ANALYSIS`;
+- `WAITING_FOR_RUNTIME`;
+- `WAITING_FOR_DECISION`;
+- `DONE`;
+- `SUPERSEDED`.
 
-## Itens P0
+## P0 — governança e estabilização
 
-| ID | Área | Status | Resultado esperado |
+| ID | Área | Status | Resultado |
 |---|---|---|---|
-| `STR-ORQ-000` | Orquestração | `DONE` | checkpoint, locks, ledger, launchers, guards e AGENTS hierárquicos |
-| `FIX-STARTUP-MAIN-001` | Startup/infra | `RELEASED_FOR_EXECUTION` | reaplicar a direção da PR superseded sobre a latest main preservando CI/guards |
-| `BUG-RUN-001` | Runtime Windows | `RELEASED_FOR_EXECUTION` | completar coletor com Compose, health, Flyway, endpoints e segundo startup |
-| `STR-ORQ-001` | Git | `WAITING_FOR_DECISION` | branch protection e required checks após estabilizar nomes dos jobs |
-| `STR-ORQ-002` | Flyway | `DONE` | registry V1–V12, checksum, duplicata, retrocesso e lane única |
-| `STR-TEST-001` | Evidência | `DONE` | gate legado decomposto em owners, ambientes, reuse e reruns focados |
-| `STR-ORQ-003` | Ondas | `RELEASED_FOR_EXECUTION` | manifests prepared/released/consumed/superseded e validação determinística |
-| `STR-OWN-001` | Ownership | `RELEASED_FOR_EXECUTION` | CODEOWNERS/hotspots com identidade real e fallback de maintainer único |
-| `STR-SEC-001` | Segurança | `NEEDS_ANALYSIS` | guard local/CI de segredo/PII, redaction e allowlist governada |
-| `STR-RUN-001` | Runtime | `PARTIAL_CORRECTION_REQUIRED` | inventário/redaction integrado; sucedido por `BUG-RUN-001` |
+| `STR-ORQ-000` | Fundação | `DONE` | checkpoint, locks, ledger, AGENTS, guards e launchers |
+| `STR-ORQ-001` | Git | `WAITING_FOR_DECISION` | ruleset/branch protection após required gate estável |
+| `STR-ORQ-002` | Flyway | `DONE` | registry V1–V12 e lane única |
+| `STR-TEST-001` | Evidência | `DONE` | gate legado decomposto |
+| `STR-ORQ-003` | Waves | `DONE` | manifests/lifecycle determinísticos |
+| `STR-OWN-001` | Ownership | `DONE` | CODEOWNERS com maintainer confirmado |
+| `STR-RUN-001` | Windows | `DONE` | sucedido e completado por `BUG-RUN-001` |
+| `FIX-STARTUP-MAIN-001` | Startup | `DONE` | startup oficial reaplicado; runtime Windows pendente |
+| `BUG-RUN-001` | Evidência Windows | `DONE` | coletor v2 implementado; prova local pendente |
+| `BUG-ORQ-001` | Dispatch | `RELEASED_FOR_EXECUTION` | chave idempotente e bloqueio de duplicata |
+| `STR-SEC-001` | Segredos/PII | `RELEASED_FOR_EXECUTION` | scanner local, redaction e exceções expiráveis |
 
-## Itens P1
+## P1 — engenharia confiável
 
-| ID | Área | Status | Resultado esperado |
+| ID | Área | Status | Resultado |
 |---|---|---|---|
-| `STR-REL-001` | Release | `RELEASED_FOR_EXECUTION` | fonte de versão única e guard entre VERSION, Maven, npm, imagens e docs |
-| `STR-CTX-001` | Tokens | `NEEDS_ANALYSIS` | telemetria real do provedor e custo por outcome |
-| `STR-DEP-001` | Dependências | `NEEDS_ANALYSIS` | licença, SBOM, vulnerabilidade e política de exceção |
-| `STR-API-001` | Contratos | `NEEDS_ANALYSIS` | OpenAPI e compatibility guard backend/frontend |
-| `STR-DB-001` | Banco | `NEEDS_ANALYSIS` | Testcontainers/PostgreSQL lane reproduzível |
-| `STR-DATA-001` | Dados | `NEEDS_ANALYSIS` | fixtures sintéticas e guard contra credencial/dado real |
-| `STR-OBS-001` | Observabilidade | `NEEDS_ANALYSIS` | correlação, métricas, SLO e runbook sem PII |
-| `STR-WRK-001` | Worker | `NEEDS_ANALYSIS` | regressões de lease/retry/idempotência/shutdown |
-| `STR-FE-001` | Frontend | `NEEDS_ANALYSIS` | acessibilidade, browser e contrato visual |
-| `STR-SEC-002` | Supply chain | `NEEDS_ANALYSIS` | secret/SAST/container scanning |
-| `STR-OPS-001` | Continuidade | `WAITING_FOR_DECISION` | rehearsal de restore e RPO/RTO |
+| `STR-REL-001` | Release | `DONE` | VERSION canônica, guard e metadados |
+| `STR-CI-001` | Required gate | `READY_FOR_SELECTION` | gate estável após DB/worker/security/dependency lanes |
+| `STR-DEP-001` | Dependências | `RELEASED_FOR_EXECUTION` | SBOM, licenças, advisory e exceções |
+| `STR-DB-001` | Banco | `RELEASED_FOR_EXECUTION` | PostgreSQL 17 Testcontainers reproduzível |
+| `STR-WRK-001` | Worker | `RELEASED_FOR_EXECUTION` | lease/retry/idempotência/shutdown |
+| `STR-CTX-001` | Tokens | `NEEDS_ANALYSIS` | telemetria real e custo por outcome |
+| `STR-API-001` | Contratos | `NEEDS_ANALYSIS` | OpenAPI e compatibility guard |
+| `STR-DATA-001` | Dados | `NEEDS_ANALYSIS` | fixtures sintéticas e guard contra dado real |
+| `STR-OBS-001` | Observabilidade | `NEEDS_ANALYSIS` | correlação, métricas, SLO e runbook |
+| `STR-FE-001` | Frontend | `NEEDS_ANALYSIS` | acessibilidade/browser/contrato visual |
+| `STR-SEC-002` | Supply chain | `NEEDS_ANALYSIS` | SAST/container/provenance |
+| `STR-OPS-001` | Continuidade | `WAITING_FOR_DECISION` | restore rehearsal e RPO/RTO |
 
-## Itens P2
+## P2 — qualidade e evolução
 
-| ID | Área | Status | Resultado esperado |
+| ID | Área | Status | Resultado |
 |---|---|---|---|
-| `STR-PERF-001` | Performance | `NEEDS_ANALYSIS` | budgets backend/frontend/worker |
-| `STR-ARCH-001` | Arquitetura | `NEEDS_ANALYSIS` | ADRs, boundaries e dependência indevida |
-| `STR-DOC-001` | Documentos | `NEEDS_ANALYSIS` | retenção/integridade/storage auditável |
-| `STR-REL-002` | Deploy | `BLOCKED_BY_OWNER` | promoção de imagens, provenance e rollback após startup estabilizado |
-| `STR-QA-001` | Qualidade | `NEEDS_ANALYSIS` | coverage agregado e ratchet baseado em medição |
+| `STR-PERF-001` | Performance | `NEEDS_ANALYSIS` | budgets reproduzíveis |
+| `STR-ARCH-001` | Arquitetura | `NEEDS_ANALYSIS` | boundaries, ADRs e dependência indevida |
+| `STR-DOC-001` | Documentos | `NEEDS_ANALYSIS` | retenção/integridade/storage |
+| `STR-REL-002` | Deploy | `WAITING_FOR_RUNTIME` | promoção/provenance/rollback após Windows dev |
+| `STR-QA-001` | Coverage | `NEEDS_ANALYSIS` | baseline e ratchet medidos |
 
-## Evidência consumida
+## Campanha humana fora dos slots
 
-Full-stack, backend com PostgreSQL, frontend Node 24, worker Node 24 + Chromium, guard Docker e
-migration registry estão verdes. Não gerar tarefas para repeti-los sem delta material.
+Windows dev e segundo startup devem ser executados com o coletor v2. On-premise + Keycloak depende
+desse resultado.
 
 ## Ordem recomendada
 
-1. executar e integrar a Wave 003;
-2. executar a campanha Windows dev;
-3. corrigir somente falhas classificadas;
-4. validar on-premise + Keycloak;
-5. habilitar branch protection/required checks;
-6. avançar para segurança, contratos, observabilidade e coverage.
+1. consumir Wave 004;
+2. criar `STR-CI-001` e estabilizar nomes de required checks;
+3. habilitar `STR-ORQ-001`;
+4. medir coverage e contratos;
+5. validar Windows/on-premise conforme disponibilidade humana;
+6. avançar observabilidade, supply chain, performance e continuidade.
 
-`BACKLOG_ESTRUTURAL_WAVE_003_RELEASED`
+`BACKLOG_ESTRUTURAL_WAVE_004_RELEASED`
