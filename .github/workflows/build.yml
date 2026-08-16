@@ -6,6 +6,18 @@ on:
     branches: [main]
 
 jobs:
+  migration-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Validar registro de migrações
+        run: node scripts/orchestration/validate-migration-registry.mjs
+      - name: Testar guard de migrações
+        run: node --test scripts/orchestration/tests/validate-migration-registry.test.mjs
+
   backend:
     runs-on: ubuntu-latest
     steps:
