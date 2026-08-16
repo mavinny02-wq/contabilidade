@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1.0",
+  "waveId": "CONTABILIDADE_STABILIZATION_WAVE_003",
+  "state": "CONSUMED",
+  "baseline": {
+    "branch": "main",
+    "commit": "1e0122d2cfc5f7108c94fef0e965b2720661daec"
+  },
+  "owners": [
+    {
+      "item": "FIX-STARTUP-MAIN-001",
+      "owner": "STARTUP_DEPLOY",
+      "locks": [
+        "LOCK-DEP-001",
+        "LOCK-ENV-001",
+        "LOCK-TEST-001",
+        "LOCK-EVID-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/FIX_STARTUP_MAIN_001_RESULT.md"
+    },
+    {
+      "item": "BUG-RUN-001",
+      "owner": "WINDOWS_EVIDENCE",
+      "locks": [
+        "LOCK-EXT-001",
+        "LOCK-DATA-001",
+        "LOCK-ENV-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/BUG_RUN_001_RESULT.md"
+    },
+    {
+      "item": "STR-ORQ-003",
+      "owner": "WAVE_MANIFESTS",
+      "locks": [
+        "LOCK-WAVE-001",
+        "LOCK-MIG-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_ORQ_003_RESULT.md"
+    },
+    {
+      "item": "STR-REL-001",
+      "owner": "VERSION_RELEASE",
+      "locks": [
+        "LOCK-DEP-001",
+        "LOCK-EVID-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_REL_001_RESULT.md"
+    },
+    {
+      "item": "STR-OWN-001",
+      "owner": "CODEOWNERS_HOTSPOTS",
+      "locks": [
+        "LOCK-GIT-001",
+        "LOCK-WAVE-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_OWN_001_RESULT.md"
+    }
+  ],
+  "previousManifest": "docs/orquestracao/waves/released/CONTABILIDADE_STABILIZATION_WAVE_003.md"
+}

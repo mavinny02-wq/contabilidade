@@ -1,0 +1,5 @@
+HISTORICAL_CONSUMED_LAUNCHER_PACK
+
+Este pack pertence à Wave 003 consumida. Não executar novamente. O conteúdo executável original
+permanece preservado no histórico Git do caminho:
+docs/orquestracao/waves/released/CONTABILIDADE_STABILIZATION_WAVE_003_LAUNCHERS.txt

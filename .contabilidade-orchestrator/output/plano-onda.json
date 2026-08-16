@@ -1,39 +1,23 @@
 {
   "schemaVersion": "2.0",
-  "classification": "LEGACY_OUTPUT_ROUTER",
+  "classification": "ACTIVE_WAVE_ROUTER",
   "status": "RELEASED_FOR_EXECUTION",
+  "waveId": "CONTABILIDADE_MATURITY_WAVE_004",
   "canonical": {
     "currentState": "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md",
-    "waveContract": "docs/orquestracao/CONTABILIDADE_WAVE_ORCHESTRATION_V2.md",
+    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_MATURITY_WAVE_004.json",
+    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_MATURITY_WAVE_004.md",
+    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_MATURITY_WAVE_004_LAUNCHERS.txt",
     "testLedger": "docs/testing/MASTER_TEST_ORCHESTRATION.md",
-    "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md",
-    "releasedWave": "docs/orquestracao/waves/released/CONTABILIDADE_STABILIZATION_WAVE_003.md",
-    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_STABILIZATION_WAVE_003_LAUNCHERS.txt",
-    "lastConsumedWave": "docs/orquestracao/waves/consumed/CONTABILIDADE_STABILIZATION_WAVE_002.md"
-  },
-  "release": {
-    "branch": "main",
-    "baseline": "659ff87e4344cab235d87a443ea9ddb310fe03d5",
-    "openPullRequestsBeforeRelease": [],
-    "migrationFrontier": 12,
-    "owners": [
-      "FIX-STARTUP-MAIN-001",
-      "BUG-RUN-001",
-      "STR-ORQ-003",
-      "STR-REL-001",
-      "STR-OWN-001"
-    ],
-    "migrationOwner": null
+    "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md"
   },
   "execution": {
-    "preparedWavesAreExecutable": false,
-    "releasedWaveDirectory": "docs/orquestracao/waves/released",
-    "maxOwners": 5,
-    "migrationOwnerLimit": 1
+    "owners": 5,
+    "migrationOwners": 0,
+    "sameWaveDependencies": false
   },
-  "legacy": {
-    "previousSchema": "1.0",
-    "historyPreservedInGit": true,
-    "previewPromptsExecutable": false
+  "manualGate": {
+    "windowsDev": "PENDING_PARALLEL",
+    "onPremiseKeycloak": "BLOCKED_UNTIL_WINDOWS_DEV_GREEN"
   }
 }
