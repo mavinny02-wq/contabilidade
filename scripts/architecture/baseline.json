@@ -1,0 +1,2437 @@
+{
+  "findings": [
+    {
+      "fingerprint": "5a8e1c2f5540496d5f4b",
+      "rule": "backend.common_to_feature",
+      "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+    },
+    {
+      "fingerprint": "26d20c712efacf4a7e0e",
+      "rule": "backend.common_to_feature",
+      "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java"
+    },
+    {
+      "fingerprint": "eaf0dc00e83995f0b59b",
+      "rule": "backend.common_to_feature",
+      "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
+    },
+    {
+      "fingerprint": "cbe6a5f97141f02f6f89",
+      "rule": "backend.cross_feature_internal",
+      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+    },
+    {
+      "fingerprint": "9662d43e4d58af957fb3",
+      "rule": "backend.cross_feature_internal",
+      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+    },
+    {
+      "fingerprint": "bb210fafbed5777db04a",
+      "rule": "backend.cross_feature_internal",
+      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
+    },
+    {
+      "fingerprint": "4fd31913ee49f6987cea",
+      "rule": "worker.core_to_provider",
+      "source": "automation-worker/src/index.ts",
+      "target": "automation-worker/src/FederalCertificateFlow.ts"
+    },
+    {
+      "fingerprint": "c59e7499656e226f6317",
+      "rule": "worker.core_to_provider",
+      "source": "automation-worker/src/index.ts",
+      "target": "automation-worker/src/PgeSpCertificateFlow.ts"
+    },
+    {
+      "fingerprint": "63b53d43d08167d2bea6",
+      "rule": "worker.core_to_provider",
+      "source": "automation-worker/src/index.ts",
+      "target": "automation-worker/src/SefazSpCertificateFlow.ts"
+    },
+    {
+      "fingerprint": "81f6a545274b85165f8a",
+      "rule": "worker.core_to_provider",
+      "source": "automation-worker/src/index.ts",
+      "target": "automation-worker/src/SerproCndFlow.ts"
+    }
+  ],
+  "graph": {
+    "backend": [
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoAgendaResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoAgendaResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAgendaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExportacaoCsvService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSolicitacaoLoteService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoDashboardGerencialController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoDashboardGerencialService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/SituacaoConsultaCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoSolicitacaoLoteResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/SituacaoConsultaCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/SituacaoConsultaCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAgendaLinha.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoExportacaoLinha.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/repository/HistoricoCertidaoRepository.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAgendaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoAgendaResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAgendaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAgendaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAgendaLinha.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAgendaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAlertaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAlertaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAlertaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoAlertaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoDashboardGerencialService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoDashboardGerencialService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoDashboardGerencialService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoDashboardGerencialService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoEstabelecimentoLifecycleService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoEstabelecimentoLifecycleService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoEstabelecimentoLifecycleService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoEstabelecimentoLifecycleService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/HistoricoCertidaoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ComandoCriarExecucao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoLifecycleHandler.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoRegistroService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/TipoIntervencao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExecucaoHandler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/StatusCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoExportacaoLinha.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoExportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/api/HistoricoCertidaoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/CertidaoAcompanhamento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/HistoricoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/ResultadoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/SituacaoConsultaCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/domain/TipoCertidao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/CertidaoAcompanhamentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/repository/HistoricoCertidaoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/document/OrigemDocumento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ComandoCriarExecucao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/TipoIntervencao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSolicitacaoLoteService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSolicitacaoLoteService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoSolicitacaoLoteRequest.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSolicitacaoLoteService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoSolicitacaoLoteResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSolicitacaoLoteService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSolicitacaoLoteService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaConsultaExportacaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/web/CorrelationIdFilter.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoria.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/backup/BackupInventarioService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/backup/BackupInventarioService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/ArmazenamentoLocalDocumento.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/Documento.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoDownloadService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoIntegridadeService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoIntegridadeService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoMetadadosService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoMetadadosService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoMetadadosService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoPreviewService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoPreviewService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoRetencaoPreviewService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/document/StorageReconciliacaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/error/TratadorGlobalExcecoes.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/web/CorrelationIdFilter.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoMaintenanceScheduler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/FaturaProvedor.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/FaturaProvedorService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/FaturaProvedorService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/FaturaProvedorService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicao.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/ProvedorHistoricoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/integration/RoteadorProvedor.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoRegistroService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoRegistroService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoRegistroService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/SessaoInterativaTicketConsumoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerTokenService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/SessaoInterativaTicketConsumoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/SessaoInterativaTicketService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencao.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/notification/Notificacao.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/security/SecurityConfig.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/AutomationSessionProperties.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConfiguracaoSeguraResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConfiguracaoSeguraService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConfiguracaoSeguraService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConfiguracaoSeguraService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/integration/TipoProvedor.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracaoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencaoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/StatusIntervencao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatStatusService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/StorageReconciliacaoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/document/StorageReconciliacaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/WorkerHeartbeatHistoricoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatHistoricoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/technical/WorkerHeartbeatHistoricoController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatHistoricoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/update/AtualizacaoPreflightService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/update/AtualizacaoPreflightService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerDocumentController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerDocumentController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/document/OrigemDocumento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerDocumentController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoFilaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerExecutionController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/TipoIntervencao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeat.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatHistorico.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/common/worker/WorkerHeartbeatHistoricoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoIntegracaoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/execution/StatusExecucao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/SolicitacaoIntervencaoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/intervention/StatusIntervencao.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/dashboard/DashboardController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaHistoricoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoria.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaRequest.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaRequest.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EstabelecimentoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/EstabelecimentoResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/FilialAtualizacaoRequest.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/FilialAtualizacaoRequest.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/FilialRequest.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/FilialRequest.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/ResponsavelModuloEmpresaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/ModuloEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/ResponsavelModuloEmpresaController.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/api/ResponsavelModuloResponse.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/ModuloEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/domain/Cnpj.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/domain/InscricaoTributaria.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/domain/ResponsavelModuloEmpresa.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaRequest.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Cnpj.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/RegimeTributario.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/StatusEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/repository/ResponsavelModuloEmpresaRepository.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/ModuloEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/repository/ResponsavelModuloEmpresaRepository.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/ResponsavelModuloEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoria.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/EventoAuditoriaRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaHistoricoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaDetalheResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EstabelecimentoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaMapper.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/TipoInscricaoTributaria.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoEstabelecimentoLifecycleService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaClassificacaoRequest.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaDetalheResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaRequest.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EstabelecimentoResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/FilialAtualizacaoRequest.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/FilialRequest.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Cnpj.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/TipoInscricaoTributaria.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/ResponsavelModuloRequest.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/ResponsavelModuloResponse.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/ModuloEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/ResponsavelModuloEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/ResponsavelModuloEmpresaService.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/ResponsavelModuloEmpresaRepository.java"
+      }
+    ],
+    "frontend": [
+      {
+        "source": "frontend/src/App.tsx",
+        "target": "frontend/src/app/router.tsx"
+      },
+      {
+        "source": "frontend/src/api/http.ts",
+        "target": "frontend/src/config/runtime.ts"
+      },
+      {
+        "source": "frontend/src/app/AppShell.tsx",
+        "target": "frontend/src/app/GlobalSearch.tsx"
+      },
+      {
+        "source": "frontend/src/app/AppShell.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/app/AppShell.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/app/GlobalSearch.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/app/GlobalSearch.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/app/AppShell.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/auth/PermissionRoute.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/auth/ProtectedRoute.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/AgendaCertidoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/AtualizacaoPreflightPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/AuditoriaPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/BackupsPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/CertidoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/ConfiguracaoSeguraPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/ConsoleTecnicaPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/DashboardPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/DocumentosPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/EmpresaDetalhePage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/EmpresasPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/ErrorPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/ExecucoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/FaturasProvedoresPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/HistoricoProvedoresPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/HistoricoWorkersPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/IntegracoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/IntervencoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/NotificacoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/router.tsx",
+        "target": "frontend/src/pages/ResponsaveisModuloPage.tsx"
+      },
+      {
+        "source": "frontend/src/auth/AuthProvider.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/auth/AuthProvider.tsx",
+        "target": "frontend/src/auth/types.ts"
+      },
+      {
+        "source": "frontend/src/auth/AuthProvider.tsx",
+        "target": "frontend/src/config/runtime.ts"
+      },
+      {
+        "source": "frontend/src/auth/PermissionRoute.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/auth/ProtectedRoute.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/auth/ProtectedRoute.tsx",
+        "target": "frontend/src/components/LoadingScreen.tsx"
+      },
+      {
+        "source": "frontend/src/components/ModulePending.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/components/Pagination.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoManualModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoManualModal.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoManualModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoManualModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/certidoes/CertidaoManualModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoMetadadosModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoMetadadosModal.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoMetadadosModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoMetadadosModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoMetadadosModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoPreviewModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoPreviewModal.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoPreviewModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoPreviewModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoPreviewModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoRetencaoPreview.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoRetencaoPreview.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoRetencaoPreview.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/features/documentos/DocumentoRetencaoPreview.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaClassificacaoModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaClassificacaoModal.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaClassificacaoModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaClassificacaoModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaClassificacaoModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaFormModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaFormModal.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaFormModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaFormModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaFormModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaImportacaoCsvModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaImportacaoCsvModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaImportacaoCsvModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/EmpresaImportacaoCsvModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/FilialFormModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/empresas/FilialFormModal.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/features/empresas/FilialFormModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/FilialFormModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/empresas/FilialFormModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/intervencoes/InteractiveSessionModal.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/features/intervencoes/InteractiveSessionModal.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/features/intervencoes/InteractiveSessionModal.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/features/intervencoes/InteractiveSessionModal.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/features/intervencoes/InteractiveSessionModal.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/features/intervencoes/InteractiveSessionModal.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/main.tsx",
+        "target": "frontend/src/App.tsx"
+      },
+      {
+        "source": "frontend/src/main.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/main.tsx",
+        "target": "frontend/src/i18n/index.ts"
+      },
+      {
+        "source": "frontend/src/pages/AgendaCertidoesPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/AgendaCertidoesPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/AgendaCertidoesPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AgendaCertidoesPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AgendaCertidoesPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AgendaCertidoesPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AgendaCertidoesPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AgendaCertidoesPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AuditoriaPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/AuditoriaPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/AuditoriaPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AuditoriaPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AuditoriaPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AuditoriaPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/AuditoriaPage.tsx",
+        "target": "frontend/src/components/Pagination.tsx"
+      },
+      {
+        "source": "frontend/src/pages/BackupsPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/BackupsPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/BackupsPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/BackupsPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/BackupsPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/BackupsPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/BackupsPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/CertidoesPage.tsx",
+        "target": "frontend/src/features/certidoes/CertidaoManualModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConfiguracaoSeguraPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/ConfiguracaoSeguraPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConfiguracaoSeguraPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConfiguracaoSeguraPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConfiguracaoSeguraPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConfiguracaoSeguraPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConfiguracaoSeguraPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+        "target": "frontend/src/api/technical.ts"
+      },
+      {
+        "source": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DashboardPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/DashboardPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/DashboardPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DashboardPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/DashboardPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DashboardPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DashboardPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DashboardPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/features/documentos/DocumentoMetadadosModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/features/documentos/DocumentoPreviewModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/DocumentosPage.tsx",
+        "target": "frontend/src/features/documentos/DocumentoRetencaoPreview.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/components/ModulePending.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/features/empresas/EmpresaClassificacaoModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/features/empresas/EmpresaFormModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresaDetalhePage.tsx",
+        "target": "frontend/src/features/empresas/FilialFormModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/components/Pagination.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/features/empresas/EmpresaFormModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/EmpresasPage.tsx",
+        "target": "frontend/src/features/empresas/EmpresaImportacaoCsvModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ExecucoesPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/FaturasProvedoresPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoProvedoresPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoProvedoresPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoProvedoresPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoProvedoresPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoProvedoresPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoProvedoresPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoProvedoresPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoWorkersPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoWorkersPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoWorkersPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoWorkersPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoWorkersPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoWorkersPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/HistoricoWorkersPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntegracoesPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/components/Modal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/IntervencoesPage.tsx",
+        "target": "frontend/src/features/intervencoes/InteractiveSessionModal.tsx"
+      },
+      {
+        "source": "frontend/src/pages/NotificacoesPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/NotificacoesPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/NotificacoesPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/NotificacoesPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/NotificacoesPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/NotificacoesPage.tsx",
+        "target": "frontend/src/components/EmptyState.tsx"
+      },
+      {
+        "source": "frontend/src/pages/NotificacoesPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/NotificacoesPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/api/http.ts"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/api/types.ts"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/auth/AuthProvider.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/auth/permissoes.ts"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/components/Alert.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/components/Button.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/components/Card.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/components/PageHeader.tsx"
+      },
+      {
+        "source": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+        "target": "frontend/src/components/StatusBadge.tsx"
+      },
+      {
+        "source": "frontend/src/test/setup.ts",
+        "target": "frontend/src/i18n/index.ts"
+      }
+    ],
+    "worker": [
+      {
+        "source": "automation-worker/src/BackendClient.ts",
+        "target": "automation-worker/src/SessionTicket.ts"
+      },
+      {
+        "source": "automation-worker/src/BackendClient.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/BackendClient.ts",
+        "target": "automation-worker/src/contracts.ts"
+      },
+      {
+        "source": "automation-worker/src/BrowserRuntime.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/FederalCertificateFlow.ts",
+        "target": "automation-worker/src/PdfCertificateParser.ts"
+      },
+      {
+        "source": "automation-worker/src/FederalCertificateFlow.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/FederalCertificateFlow.ts",
+        "target": "automation-worker/src/contracts.ts"
+      },
+      {
+        "source": "automation-worker/src/FluxoRegistry.ts",
+        "target": "automation-worker/src/contracts.ts"
+      },
+      {
+        "source": "automation-worker/src/PdfCertificateParser.ts",
+        "target": "automation-worker/src/PdfTextExtractor.ts"
+      },
+      {
+        "source": "automation-worker/src/PgeSpCertificateFlow.ts",
+        "target": "automation-worker/src/StateCertificatePdfParser.ts"
+      },
+      {
+        "source": "automation-worker/src/PgeSpCertificateFlow.ts",
+        "target": "automation-worker/src/StateCertificateSupport.ts"
+      },
+      {
+        "source": "automation-worker/src/PgeSpCertificateFlow.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/PgeSpCertificateFlow.ts",
+        "target": "automation-worker/src/contracts.ts"
+      },
+      {
+        "source": "automation-worker/src/SefazSpCertificateFlow.ts",
+        "target": "automation-worker/src/StateCertificatePdfParser.ts"
+      },
+      {
+        "source": "automation-worker/src/SefazSpCertificateFlow.ts",
+        "target": "automation-worker/src/StateCertificateSupport.ts"
+      },
+      {
+        "source": "automation-worker/src/SefazSpCertificateFlow.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/SefazSpCertificateFlow.ts",
+        "target": "automation-worker/src/contracts.ts"
+      },
+      {
+        "source": "automation-worker/src/SerproCndFlow.ts",
+        "target": "automation-worker/src/SerproTokenProvider.ts"
+      },
+      {
+        "source": "automation-worker/src/SerproCndFlow.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/SerproCndFlow.ts",
+        "target": "automation-worker/src/contracts.ts"
+      },
+      {
+        "source": "automation-worker/src/SerproTokenProvider.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/SessionTicket.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/StateCertificatePdfParser.ts",
+        "target": "automation-worker/src/PdfTextExtractor.ts"
+      },
+      {
+        "source": "automation-worker/src/StateCertificatePdfParser.ts",
+        "target": "automation-worker/src/StateCertificateSupport.ts"
+      },
+      {
+        "source": "automation-worker/src/WorkerLoop.ts",
+        "target": "automation-worker/src/BackendClient.ts"
+      },
+      {
+        "source": "automation-worker/src/WorkerLoop.ts",
+        "target": "automation-worker/src/BrowserRuntime.ts"
+      },
+      {
+        "source": "automation-worker/src/WorkerLoop.ts",
+        "target": "automation-worker/src/FluxoRegistry.ts"
+      },
+      {
+        "source": "automation-worker/src/WorkerLoop.ts",
+        "target": "automation-worker/src/InteractiveSessionManager.ts"
+      },
+      {
+        "source": "automation-worker/src/WorkerLoop.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/WorkerLoop.ts",
+        "target": "automation-worker/src/contracts.ts"
+      },
+      {
+        "source": "automation-worker/src/heartbeat.ts",
+        "target": "automation-worker/src/BackendClient.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/BackendClient.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/BrowserRuntime.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/FederalCertificateFlow.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/FluxoRegistry.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/InteractiveSessionManager.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/PgeSpCertificateFlow.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/SefazSpCertificateFlow.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/SerproCndFlow.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/SessionTicket.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/Shutdown.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/ShutdownConfig.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/WorkerLoop.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/config.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/server.ts"
+      },
+      {
+        "source": "automation-worker/src/server.ts",
+        "target": "automation-worker/src/BrowserRuntime.ts"
+      },
+      {
+        "source": "automation-worker/src/server.ts",
+        "target": "automation-worker/src/FluxoRegistry.ts"
+      },
+      {
+        "source": "automation-worker/src/server.ts",
+        "target": "automation-worker/src/InteractiveSessionManager.ts"
+      },
+      {
+        "source": "automation-worker/src/server.ts",
+        "target": "automation-worker/src/SessionTicket.ts"
+      },
+      {
+        "source": "automation-worker/src/server.ts",
+        "target": "automation-worker/src/WorkerLoop.ts"
+      },
+      {
+        "source": "automation-worker/src/server.ts",
+        "target": "automation-worker/src/config.ts"
+      }
+    ]
+  },
+  "schema_version": 1
+}
