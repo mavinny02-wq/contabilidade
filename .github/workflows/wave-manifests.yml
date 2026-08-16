@@ -1,0 +1,37 @@
+name: Wave manifests
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/orquestracao/waves/**'
+      - 'scripts/orchestration/schemas/wave-manifest.schema.json'
+      - 'scripts/orchestration/validate_wave_manifests.py'
+      - 'scripts/orchestration/test_validate_wave_manifests.py'
+      - 'scripts/orchestration/tests/fixtures/wave-manifests/**'
+      - '.github/workflows/wave-manifests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docs/orquestracao/waves/**'
+      - 'scripts/orchestration/schemas/wave-manifest.schema.json'
+      - 'scripts/orchestration/validate_wave_manifests.py'
+      - 'scripts/orchestration/test_validate_wave_manifests.py'
+      - 'scripts/orchestration/tests/fixtures/wave-manifests/**'
+      - '.github/workflows/wave-manifests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate wave manifest repository
+        run: python3 scripts/orchestration/validate_wave_manifests.py --repo-root .
+      - name: Run wave manifest lifecycle tests
+        run: python3 -m unittest scripts/orchestration/test_validate_wave_manifests.py -v
