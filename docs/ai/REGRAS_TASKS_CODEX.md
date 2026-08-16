@@ -1,5 +1,22 @@
 # Regras de tasks Codex
 
+## Elegibilidade
+
+Uma task Codex precisa de um owner executável real: implementação, correção, tooling, teste ou
+artefato inseparável dessa execução.
+
+Documentação-only que o orquestrador consegue manter diretamente no GitHub não é elegível para o
+Codex. Não crie task, launcher, slot, branch ou `RESULT_MD` apenas para atualizar índice,
+checkpoint, ledger, backlog, decisão, lock, intake, reconciliação, seleção ou análise documental.
+Aplique `LOCK-ORQ-DOC-001`.
+
+Continuam elegíveis:
+
+- o `RESULT_MD` da task executável;
+- documentação inseparável da mudança de código/configuração/tooling do mesmo owner;
+- contrato/schema/runbook que precisa ser gerado ou testado pela implementação;
+- documentação para a qual o orquestrador comprovadamente não possui capacidade de edição.
+
 ## Launcher
 
 Use o template compacto. O prompt contém ITEM, baseline, preparo, referências, locks, owner,
@@ -40,4 +57,6 @@ Task de teste executa apenas o owner liberado e não muda produção para obter 
 
 ## Resultado
 
-Todo outcome persiste Markdown, inclusive blocked, failed, environment limitation e no diff.
+Todo outcome de uma task executável persiste Markdown, inclusive blocked, failed, environment
+limitation e no diff. Uma atualização documentation-only feita diretamente pelo orquestrador não
+cria `RESULT_MD` artificial.

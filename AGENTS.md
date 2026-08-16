@@ -76,8 +76,14 @@ leem o índice, o checkpoint, o delta Git/GitHub e somente os resultados afetado
 - Ciclo de vida: `CANDIDATE -> PREPARED_NOT_RELEASED -> RELEASED_FOR_EXECUTION ->
   RESULTS_INTEGRATED -> CONSUMED`, com saídas `BLOCKED`, `SUPERSEDED` e `NO_SUCCESSOR`.
 - Uma onda preparada não contém launchers executáveis.
-- Documentação-only de análise, decisão, intake, reconciliação e seleção é trabalho do orquestrador
-  e não consome slot.
+- Documentação-only de análise, decisão, intake, reconciliação, seleção, índice, checkpoint, ledger
+  e backlog é trabalho do orquestrador e não consome slot.
+- Quando o orquestrador possui acesso de escrita ao GitHub e consegue atualizar essa documentação
+  diretamente, deve fazê-lo no próprio fluxo; não crie task, launcher, slot, branch do Codex ou
+  `RESULT_MD` apenas para documentação.
+- O Codex só recebe documentação quando ela é inseparável de um owner executável, como o
+  `RESULT_MD` da própria task ou um runbook que acompanha mudança de código/tooling, ou quando o
+  orquestrador realmente não possui a capacidade necessária.
 - Não selecione sucessor condicional para o executor redescobrir um gate já conhecido.
 
 ## Validação
