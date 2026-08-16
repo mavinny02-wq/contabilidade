@@ -1,0 +1,30 @@
+name: Duplicate dispatch guard
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/orchestration/dispatch_guard.py'
+      - 'scripts/orchestration/test_dispatch_guard.py'
+      - 'scripts/orchestration/validate_wave_manifests.py'
+      - 'scripts/orchestration/test_validate_wave_manifests.py'
+      - 'scripts/orchestration/validate_prompt.py'
+      - 'scripts/orchestration/test_validate_prompt.py'
+      - 'scripts/orchestration/schemas/wave-manifest.schema.json'
+      - '.contabilidade-orchestrator/templates/launcher-compacto.md'
+      - '.github/workflows/duplicate-dispatch-guard.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  duplicate-dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 -m unittest scripts/orchestration/test_dispatch_guard.py scripts/orchestration/test_validate_wave_manifests.py scripts/orchestration/test_validate_prompt.py -v
+      - run: python3 scripts/orchestration/validate_wave_manifests.py --repo-root .
+      - run: python3 scripts/orchestration/validate_prompt.py .contabilidade-orchestrator/templates/launcher-compacto.md --mode launcher

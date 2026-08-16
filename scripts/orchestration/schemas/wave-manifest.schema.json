@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["schemaVersion", "waveId", "state", "baseline", "owners"],
   "properties": {
-    "schemaVersion": {"const": "1.0"},
+    "schemaVersion": {"enum": ["1.0", "2.0"]},
     "waveId": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"},
     "state": {
       "enum": ["PREPARED_NOT_RELEASED", "RELEASED_FOR_EXECUTION", "CONSUMED", "SUPERSEDED"]
@@ -33,7 +33,8 @@
           "owner": {"type": "string", "minLength": 1},
           "locks": {"type": "array", "items": {"type": "string", "pattern": "^LOCK-[A-Z0-9-]+$"}, "uniqueItems": true},
           "migration": {"type": "boolean"},
-          "resultPath": {"type": "string", "pattern": "^docs/(implementacao|testing/runs)/[^/]+\\.md$"}
+          "resultPath": {"type": "string", "pattern": "^docs/(implementacao|testing/runs)/[^/]+\\.md$"},
+          "dispatchKey": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
         }
       }
     },
@@ -42,6 +43,10 @@
     "supersedes": {"type": "string", "minLength": 1}
   },
   "allOf": [
+    {
+      "if": {"properties": {"schemaVersion": {"const": "2.0"}}},
+      "then": {"properties": {"owners": {"items": {"required": ["dispatchKey"]}}}}
+    },
     {
       "if": {"properties": {"state": {"const": "PREPARED_NOT_RELEASED"}}},
       "then": {"not": {"required": ["launcherPath"]}}

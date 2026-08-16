@@ -26,6 +26,13 @@ def codes(findings: list) -> set[str]:
 
 
 class WaveManifestLifecycleTest(unittest.TestCase):
+    def test_v2_requires_deterministic_dispatch_key(self) -> None:
+        manifest = fixture("released.valid.json")
+        manifest["schemaVersion"] = "2.0"
+        self.assertIn("OWNER_INVALID", codes(MODULE.validate_document(manifest, Path("released/wave.json"))))
+        manifest["owners"][0]["dispatchKey"] = MODULE.dispatch_key(manifest["waveId"], manifest["owners"][0]["item"], manifest["baseline"]["commit"])
+        self.assertEqual([], MODULE.validate_document(manifest, Path("released/wave.json")))
+
     def test_each_lifecycle_fixture_is_structurally_valid(self) -> None:
         for state in ("prepared", "released", "consumed", "superseded"):
             with self.subTest(state=state):

@@ -11,6 +11,7 @@ from pathlib import Path
 SHA_RE = re.compile(r"(?<![A-Za-z0-9])[0-9a-f]{12,40}(?![A-Za-z0-9])", re.I)
 PR_RE = re.compile(r"(?<![A-Za-z0-9])#\d{2,}(?!\d)")
 DATE_RE = re.compile(r"\b20\d{2}-\d{2}-\d{2}\b")
+DISPATCH_KEY_RE = re.compile(r"^[0-9a-f]{64}$")
 
 
 @dataclass(frozen=True)
@@ -108,6 +109,16 @@ def validate_launcher(text: str) -> list[Finding]:
     for obsolete in ("TYPE:", "STATE:", "REQUIRED:", "EXECUTION MODE:"):
         if any(line.upper().startswith(obsolete) for line in nonempty):
             add(findings, "ERROR", "SECOND_SPECIFICATION", f"{obsolete} is not allowed in compact launcher.")
+    contract = next((line.split(":", 1)[1].strip() for line in nonempty if line.startswith("CONTRACT:")), "1.0")
+    if contract not in {"1.0", "2.0"}:
+        add(findings, "ERROR", "LAUNCHER_CONTRACT", "CONTRACT must be 1.0 (historical) or 2.0.")
+    if contract == "2.0":
+        for field in ("WAVE_ID:", "DISPATCH_KEY:"):
+            if field_count(nonempty, field) != 1:
+                add(findings, "ERROR", "LAUNCHER_FIELD", f"{field} must occur exactly once in contract 2.0.")
+        key = next((line.split(":", 1)[1].strip() for line in nonempty if line.startswith("DISPATCH_KEY:")), "")
+        if key != "<64_HEX_DISPATCH_KEY>" and not DISPATCH_KEY_RE.fullmatch(key):
+            add(findings, "ERROR", "DISPATCH_KEY_FORMAT", "DISPATCH_KEY must be a 64-character lowercase digest copied from the manifest.")
     if SHA_RE.search(text) or PR_RE.search(text) or DATE_RE.search(text):
         add(findings, "ERROR", "LAUNCHER_DYNAMIC_HISTORY", "Launcher must not copy historical PR/SHA/date state.")
     if "PREPARED_NOT_RELEASED" in text:

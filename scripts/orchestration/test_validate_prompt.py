@@ -31,6 +31,12 @@ RESULT_MD: docs/implementacao/{task}_RESULT.md
     def test_valid_launcher(self) -> None:
         self.assertFalse([f for f in MODULE.validate_launcher(self.launcher()) if f.severity == "ERROR"])
 
+    def test_v2_launcher_requires_auditable_dispatch_fields(self) -> None:
+        launcher = self.launcher() + "CONTRACT: 2.0\n"
+        self.assertTrue(any(f.code == "LAUNCHER_FIELD" for f in MODULE.validate_launcher(launcher)))
+        launcher += "WAVE_ID: WAVE_001\nDISPATCH_KEY: " + "a" * 64 + "\n"
+        self.assertFalse([f for f in MODULE.validate_launcher(launcher) if f.severity == "ERROR"])
+
     def test_launcher_rejects_missing_field(self) -> None:
         findings = MODULE.validate_launcher(self.launcher().replace("OWNER: governance\n", ""))
         self.assertTrue(any(f.code == "LAUNCHER_FIELD" for f in findings))

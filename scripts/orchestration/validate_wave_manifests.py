@@ -18,6 +18,7 @@ SHA = re.compile(r"^[0-9a-f]{40}$")
 LOCK = re.compile(r"^LOCK-[A-Z0-9-]+$")
 WAVE_ID = re.compile(r"^[A-Z][A-Z0-9_]*$")
 RESULT_PATH = re.compile(r"^docs/(implementacao|testing/runs)/[^/]+\.md$")
+DISPATCH_KEY = re.compile(r"^[0-9a-f]{64}$")
 
 
 @dataclass(frozen=True)
@@ -39,8 +40,9 @@ def validate_document(data: object, path: Path) -> list[Finding]:
     unknown = sorted(set(data) - allowed)
     if unknown:
         _add(findings, "UNKNOWN_FIELD", path, f"remove unsupported fields: {', '.join(unknown)}")
-    if data.get("schemaVersion") != "1.0":
-        _add(findings, "SCHEMA_VERSION", path, "schemaVersion must be 1.0")
+    version = data.get("schemaVersion")
+    if version not in {"1.0", "2.0"}:
+        _add(findings, "SCHEMA_VERSION", path, "schemaVersion must be 1.0 (historical) or 2.0")
     wave_id = data.get("waveId")
     if not isinstance(wave_id, str) or not WAVE_ID.fullmatch(wave_id):
         _add(findings, "WAVE_ID", path, "waveId must match ^[A-Z][A-Z0-9_]*$")
@@ -65,11 +67,19 @@ def validate_document(data: object, path: Path) -> list[Finding]:
     owner_names: set[str] = set()
     migrations = 0
     owner_fields = {"item", "owner", "locks", "migration", "resultPath"}
+    if version == "2.0":
+        owner_fields.add("dispatchKey")
     for index, owner in enumerate(owners):
         location = f"{path}#owners/{index}"
         if not isinstance(owner, dict) or set(owner) != owner_fields:
-            _add(findings, "OWNER_INVALID", location, "owner must contain only item, owner, locks, migration and resultPath")
+            _add(findings, "OWNER_INVALID", location, f"owner fields must be exactly: {', '.join(sorted(owner_fields))}")
             continue
+        if version == "2.0":
+            expected_key = dispatch_key(str(wave_id), str(owner.get("item")), str(baseline.get("commit", "")) if isinstance(baseline, dict) else "")
+            if not isinstance(owner["dispatchKey"], str) or not DISPATCH_KEY.fullmatch(owner["dispatchKey"]):
+                _add(findings, "DISPATCH_KEY_FORMAT", location, "dispatchKey must be a 64-character lowercase SHA-256 digest")
+            elif owner["dispatchKey"] != expected_key:
+                _add(findings, "DISPATCH_KEY_MISMATCH", location, "regenerate dispatchKey from waveId + item + baseline.commit")
         if not all(isinstance(owner[key], str) and owner[key] for key in ("item", "owner", "resultPath")):
             _add(findings, "OWNER_INVALID", location, "item, owner and resultPath must be non-empty strings")
         elif not RESULT_PATH.fullmatch(owner["resultPath"]):
@@ -99,6 +109,14 @@ def validate_document(data: object, path: Path) -> list[Finding]:
     if state == "SUPERSEDED" and not data.get("supersedes"):
         _add(findings, "SUPERSESSION_MISSING", path, "superseded manifests must identify the successor in supersedes")
     return findings
+
+
+def dispatch_key(wave_id: str, item: str, baseline_commit: str) -> str:
+    """Return the canonical, unambiguous dispatch identity."""
+    import hashlib
+
+    material = json.dumps([wave_id, item, baseline_commit], separators=(",", ":"), ensure_ascii=True)
+    return hashlib.sha256(material.encode("utf-8")).hexdigest()
 
 
 def validate_repository(root: Path) -> list[Finding]:
