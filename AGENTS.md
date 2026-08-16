@@ -1,78 +1,117 @@
-# AGENTS.md
+# Contrato de agentes do repositório Contabilidade
 
-## Projeto
+## Escopo e autoridade
 
-`Contabilidade` é uma plataforma interna de operações fiscais e contábeis. Mantenha alterações
-focadas, rastreáveis e compatíveis com implantação local.
+- Este arquivo governa todo o repositório. Um `AGENTS.md` mais próximo especializa seu próprio
+  subtree sem repetir todas estas regras.
+- Leia o `AGENTS.md` da raiz e o mais próximo do owner antes de editar.
+- GitHub define o que foi integrado. Código/configuração executável atual define o comportamento
+  existente, salvo quando uma decisão bloqueada aplicável define o comportamento aceito.
+- Decisões bloqueadas ficam em `docs/decisoes/CONTABILIDADE_LOCKS_OPERACIONAIS.md` e devem ser
+  lidas apenas quando mapeadas ao owner tocado.
+- Estado transitório, SHA, PR, frontier de migration, falhas atuais e próxima onda pertencem a
+  `docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md`, nunca a este arquivo.
 
-## Idioma e i18n
+## Roteamento de contexto
 
-- Documentação, interface e mensagens operacionais: português do Brasil.
-- Todo texto visível do frontend deve usar chave i18n.
-- O único bundle inicial é `pt-BR`.
-- Chaves devem ser semânticas, por exemplo `menu.empresas` e `erros.fonteIndisponivel`.
-- Não hardcode textos visíveis em JSX/TSX.
-- Identificadores internos podem ser em português, mas não misture idiomas no mesmo domínio.
+Siga `docs/ai/CONTEXTO_E_ORCAMENTO.md`.
 
-## Arquitetura
+Para um executor comum, o contexto HOT é somente:
 
-- Backend: Java 21 + Spring Boot.
-- Frontend: React + TypeScript.
-- Banco: PostgreSQL.
-- Schema: Flyway exclusivamente.
-- Autenticação: Keycloak/OAuth2/JWT.
-- Autorização: Catálogo de Permissões no backend.
-- Banco autoritativo: PostgreSQL.
-- Documentos: abstração de storage; conteúdo fora do banco.
-- Automação: worker Playwright separado do backend HTTP.
-- Integrações: providers substituíveis.
-- Implantação inicial: on-premise first, cloud-compatible.
+1. este arquivo e o `AGENTS.md` mais próximo;
+2. o launcher exato;
+3. o shard canônico da task;
+4. os locks mapeados, quando aplicáveis.
 
-## Regras de domínio
+Não pré-carregue índice global, estado atual, board, histórico, relatórios amplos, todos os backlogs
+ou todo o ledger de testes quando o launcher já informa o owner exato. Orquestração e reconciliação
+leem o índice, o checkpoint, o delta Git/GitHub e somente os resultados afetados.
 
-- Backend calcula regras, estados, permissões, prazos e disponibilidade de comandos.
-- Frontend apresenta contratos prontos e não reconstrói regra fiscal.
-- Falha de fonte externa não significa regularidade nem irregularidade fiscal.
-- Execução técnica não é o mesmo que resultado de negócio.
-- Busca e índices nunca são fonte de verdade.
-- Registros rastreáveis devem ser arquivados/inativados em vez de apagados fisicamente.
+## Baseline e limite da task
 
-## Segurança
+- Comece da `main` mais recente, salvo baseline imutável explicitamente informado.
+- Nunca faça push direto na `main`; use branch e PR.
+- Mantenha a alteração bounded e preserve comportamento fora do objetivo.
+- Não faça limpeza, refactor ou atualização de dependências não autorizada.
+- PRs abertas, owners em execução e owners reservados não podem receber uma task paralela
+  sobreposta.
+- Toda task significativa mantém um único `RESULT_MD`, inclusive quando bloqueada, sem diff ou
+  com limitação de ambiente.
 
-- Segredos, certificados, tokens, documentos fiscais e dados pessoais são sensíveis.
-- Nunca registrar segredo ou payload fiscal completo em logs.
-- Autorizar antes de resolver ou baixar documentos.
-- Não burlar CAPTCHA ou controles anti-automação.
-- Intervenção humana deve ser auditada.
-- Não executar ação fiscal autoritativa baseada apenas em IA.
+## Invariantes do produto
 
-## UI
+- Backend calcula regras fiscais, estados, permissões, prazos, custos e disponibilidade de comandos.
+- Frontend apresenta contratos prontos e não recria autoridade fiscal.
+- PostgreSQL é a fonte autoritativa persistente. Busca, cache e índices são derivados.
+- Flyway é o único mecanismo de schema. Nunca edite migration aplicada.
+- Documentos usam abstração de storage; conteúdo binário não vira uma segunda fonte de verdade no
+  banco.
+- Execução técnica é distinta do resultado de negócio.
+- Falha, ausência ou indisponibilidade de fonte externa não significa regularidade nem
+  irregularidade fiscal.
+- Registros rastreáveis são inativados/arquivados, não apagados fisicamente sem decisão explícita.
 
-- Não usar `alert`, `prompt` ou `confirm` do navegador.
-- Usar diálogos e mensagens inline.
-- Não criar dados fake em telas reais.
-- Preservar acessibilidade e responsividade.
-- Estados indisponíveis, desconhecidos e não consultados devem permanecer distintos.
+## Segurança e operações externas
 
-## Orquestração
+- Segredos, certificados, tokens, documentos fiscais, CNPJ associado a pessoas e dados pessoais são
+  sensíveis.
+- Nunca registre segredo, credencial, cookie, payload fiscal completo ou PII desnecessária em log,
+  fixture, resultado ou prompt.
+- Chamadas a provider fiscal real são negadas por padrão.
+- Chamadas pagas exigem autorização explícita, owner e limite de custo.
+- Credenciais e dados reais são proibidos em tarefas automatizadas e CI.
+- Não burle CAPTCHA, MFA, anti-bot ou intervenção humana.
+- IA não executa ação fiscal autoritativa sem contrato e confirmação humana aplicáveis.
+- O executor Cloud não pode alegar prova do Windows, Docker Desktop ou localhost do usuário.
 
-- Branch de integração inicial: `main`.
-- Ondas oficiais têm exatamente cinco slots independentes.
-- Todos os slots partem do mesmo baseline.
-- Sem dependência entre slots da mesma onda.
-- Propriedade de arquivos deve ser explícita e sem sobreposição crítica.
-- Reconciliação compartilhada é serial.
-- Análise, decisão, implementação, bug fix, teste e reconciliação são tasks separadas.
-- Testes só são criados/executados em task explicitamente de teste.
-- Em implementação, são permitidos compilação, build, validação de configuração/i18n e
-  `git diff --check`.
+## Orquestração de ondas
 
-## Dependências
+- Uma onda tem capacidade de **até cinco** owners executáveis e pode ter menos; nunca crie filler.
+- Todos os owners partem do mesmo baseline verificado.
+- Não há dependência entre slots da mesma onda.
+- Owners oficiais e extras contam juntos para o limite.
+- Existe no máximo um owner de migration por onda.
+- Shared hotspots são serializados conforme
+  `docs/orquestracao/CONTABILIDADE_EXECUTION_OWNER_MATRIX.md`.
+- Ciclo de vida: `CANDIDATE -> PREPARED_NOT_RELEASED -> RELEASED_FOR_EXECUTION ->
+  RESULTS_INTEGRATED -> CONSUMED`, com saídas `BLOCKED`, `SUPERSEDED` e `NO_SUCCESSOR`.
+- Uma onda preparada não contém launchers executáveis.
+- Documentação-only de análise, decisão, intake, reconciliação e seleção é trabalho do orquestrador
+  e não consome slot.
+- Não selecione sucessor condicional para o executor redescobrir um gate já conhecido.
 
-Não introduza GPL-3, AGPL ou dependência de licença desconhecida. Registre a licença de toda
-dependência nova ou atualizada.
+## Validação
 
-## Saída esperada
+Ondas comuns de implementação/correção usam **validação estrutural somente**:
 
-Informe arquivos lidos, resultado, comportamento preservado, validações executadas, pendências,
-arquivos alterados e estado Git final.
+- backend: compile/test-compile sem executar suíte, mais checks proporcionais;
+- frontend: locale, typecheck e build;
+- worker: typecheck e build;
+- configuração/documentação: parser/guard aplicável;
+- sempre `git diff --check` quando houver checkout Git.
+
+Testes unitários, integração, PostgreSQL real, browser, E2E, coverage, performance, segurança dinâmica
+e runtime Windows exigem campanha ou owner de validação explicitamente liberado. Compile/build não
+é prova de runtime, banco, navegador, acessibilidade ou provider.
+
+Falhas devem ser classificadas antes de qualquer correção:
+`PRODUCT_REGRESSION`, `TEST_CONTRACT_DRIFT`, `DATA_OR_FIXTURE_DEFECT`,
+`ENVIRONMENT_LIMITATION` ou `BASELINE_DRIFT`.
+
+## Dependências e licenças
+
+- Não introduza GPL-3.0, AGPL, código/assets copyleft incompatíveis ou licença desconhecida.
+- Toda dependência nova/atualizada exige justificativa, licença e owner.
+- Lockfiles e BOMs não são editados manualmente apenas para obter diff verde.
+
+## Resultado e handoff
+
+O `RESULT_MD` registra ITEM, baseline, status, owners alterados, locks preservados, comandos e
+resultados, limitações, provas pendentes e commit/PR. O console permanece curto:
+
+```text
+ITEM: <id>
+STATUS: <status>
+RESULT_MD: <path>
+COMMIT/PR: <valor ou NOT_CREATED_NO_DIFF>
+```

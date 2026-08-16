@@ -1,33 +1,50 @@
 # Governança da documentação
 
-**Classificação:** CANÔNICO_ATIVO
+**Classificação:** `CANONICAL_ACTIVE_GOVERNANCE`
 
-## Autoridade
+## Hierarquia de autoridade
 
-O estado atual é resolvido nesta ordem:
+1. decisão/lock aceito e aplicável;
+2. GitHub para integração, branch, commit, PR e diff;
+3. código/configuração executável atual para comportamento existente;
+4. shard canônico da task para objetivo e critérios aceitos;
+5. `docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md` para estado dinâmico;
+6. `docs/testing/MASTER_TEST_ORCHESTRATION.md` para evidência e disposição;
+7. registros/backlogs de produto e estrutura;
+8. histórico imutável como evidência fria.
 
-1. Registro de Itens do Roadmap;
-2. backlog do domínio;
-3. decisão ativa;
-4. Board de Orquestração;
-5. Histórico de Entregas;
-6. evidência histórica imutável.
+Uma evidência de teste que contradiz lock ou contrato atual não autoriza regressão de produção.
 
-Código e configuração executável são autoridade superior sobre o comportamento realmente
-implementado.
+## Donos canônicos
+
+- índice/roteamento: `docs/INDICE_DOCUMENTACAO_ATIVA.md`;
+- estado operacional: `docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md`;
+- orquestração de ondas: `docs/orquestracao/CONTABILIDADE_WAVE_ORCHESTRATION_V2.md`;
+- intake do usuário: `docs/orquestracao/CONTABILIDADE_USER_REPORTED_INTAKE.md`;
+- ownership/hotspots: `docs/orquestracao/CONTABILIDADE_EXECUTION_OWNER_MATRIX.md`;
+- evidência/testes: `docs/testing/MASTER_TEST_ORCHESTRATION.md`;
+- locks: `docs/decisoes/CONTABILIDADE_LOCKS_OPERACIONAIS.md`;
+- IDs estruturais: `docs/roadmap/BACKLOG_ESTRUTURAL.md`;
+- IDs de produto existentes: `docs/roadmap/REGISTRO_ITENS_ROADMAP.md`.
 
 ## Atualização
 
-Uma task comum altera apenas seu código, um backlog de domínio e, quando necessário, uma evidência
-curta. Registro, roadmap global, board e histórico são reconciliados de forma serial após os merges.
+Uma task comum altera somente owners autorizados e seu `RESULT_MD`. Estado global, seleção, intake,
+decisão, backlog e reconciliação documentation-only são responsabilidade do orquestrador e não
+consomem slot executável.
 
-## Histórico
+Não duplique fatos dinâmicos. O board antigo é compatibilidade/roteamento; o checkpoint é o único
+owner do estado operacional atual.
 
-Artefatos concluídos vão para `docs/historico/YYYY-MM/` e não são reescritos para representar
-estados futuros.
+## Histórico e supersession
 
-## Benchmark
+- Artefatos concluídos vão para `docs/historico/YYYY-MM/`.
+- Histórico não é reescrito nem usado para selecionar trabalho.
+- Documento substituído recebe referência clara ao sucessor.
+- Git history preserva versões antigas de manifests e prompts; outputs legados não permanecem
+  executáveis apenas porque ainda existem no repositório.
 
-Veri e Contabilizei são referências de capacidade. Marketing público não comprova algoritmo,
-integração, regra ou implementação interna. Observações de trial autorizado devem registrar data,
-contexto, passos, resultado e incerteza.
+## Honestidade de evidência
+
+`PASS` estrutural não é `PASS` runtime. Resultado parcial, limitação de ambiente, baseline diferente
+e prova expirada são registrados explicitamente.
