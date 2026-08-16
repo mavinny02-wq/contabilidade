@@ -1,10 +1,1 @@
-{
-  "schemaVersion": "2.0.0",
-  "collectedAtUtc": "não é uma data",
-  "collectorVersion": "local",
-  "platform": {
-    "os": "Windows",
-    "architecture": "X64",
-    "machineNameHash": "nome-exposto"
-  }
-}
+{ "schemaVersion": "1.0.0", "collectedAtUtc": "not-a-date", "collectorVersion": "local", "mode": "cloud", "platform": { "machineNameHash": "machine-name" }, "secret": "must-not-exist" }
