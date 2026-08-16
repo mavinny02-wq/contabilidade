@@ -26,6 +26,10 @@ class RequiredCiContractTest(unittest.TestCase):
     def test_rejects_changed_workflow_name(self):
         self.assertTrue(self.validate_mutation(lambda doc: doc.update(name="Renamed")))
 
+    def test_rejects_missing_required_trigger_or_path_filter(self):
+        self.assertTrue(self.validate_mutation(lambda doc: doc.get("on", doc["true"]).pop("push")))
+        self.assertTrue(self.validate_mutation(lambda doc: doc.get("on", doc["true"])["pull_request"].update(paths=["backend/**"])))
+
     def test_rejects_each_missing_lane(self):
         for lane in MANDATORY:
             with self.subTest(lane=lane):
@@ -37,6 +41,14 @@ class RequiredCiContractTest(unittest.TestCase):
     def test_rejects_continue_on_error(self):
         self.assertTrue(self.validate_mutation(lambda doc: doc["jobs"]["frontend"].update({"continue-on-error": True})))
         self.assertTrue(self.validate_mutation(lambda doc: doc["jobs"]["frontend"]["steps"][0].update({"continue-on-error": True})))
+        self.assertTrue(self.validate_mutation(lambda doc: doc["jobs"]["frontend"].update({"if": "false"})))
+
+    def test_rejects_missing_completed_control(self):
+        self.assertTrue(self.validate_mutation(lambda doc: doc["jobs"]["performance-budgets"].update(steps=[])))
+
+    def test_rejects_unsafe_environment_or_payload_logging(self):
+        self.assertTrue(self.validate_mutation(lambda doc: doc["jobs"]["governance"]["steps"].append({"run": "printenv"})))
+        self.assertTrue(self.validate_mutation(lambda doc: doc["jobs"]["governance"]["steps"].append({"run": "cat $GITHUB_EVENT_PATH"})))
 
     def test_rejects_missing_backend_testcontainers_proof(self):
         self.assertTrue(self.validate_mutation(lambda doc: doc["jobs"]["backend-postgresql"].update(steps=[])))
