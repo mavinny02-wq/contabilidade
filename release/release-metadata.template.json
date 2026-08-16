@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "version": "${VERSION}",
+  "sourceSha": "${GIT_SHA}",
+  "images": {
+    "contabilidade-backend": {
+      "reference": "contabilidade-backend:${VERSION}",
+      "digest": "${SHA256_DIGEST}"
+    },
+    "contabilidade-frontend": {
+      "reference": "contabilidade-frontend:${VERSION}",
+      "digest": "${SHA256_DIGEST}"
+    },
+    "contabilidade-automation-worker": {
+      "reference": "contabilidade-automation-worker:${VERSION}",
+      "digest": "${SHA256_DIGEST}"
+    }
+  },
+  "rollback": {
+    "procedure": "docs/operacao/BUILD_DOCKER_RESILIENTE_E_DEPLOY_PRODUCAO.md"
+  }
+}

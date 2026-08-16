@@ -1,0 +1,19 @@
+name: Version governance
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  version-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate current version consistency
+        run: python scripts/orchestration/validate-version-governance.py
+      - name: Validate drift fixtures
+        run: python -m unittest scripts/orchestration/tests/test_validate_version_governance.py
