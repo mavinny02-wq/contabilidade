@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "allowed": [
+    "0BSD", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "CC-BY-4.0", "CC0-1.0",
+    "EPL-2.0", "GPL-2.0-with-classpath-exception", "ISC", "LGPL-2.1-only", "MIT",
+    "MIT-0", "MPL-2.0", "Unlicense"
+  ],
+  "denied": ["AGPL-1.0", "AGPL-3.0", "GPL-1.0", "GPL-2.0", "GPL-3.0"],
+  "needsReview": ["UNKNOWN", "NOASSERTION"]
+}

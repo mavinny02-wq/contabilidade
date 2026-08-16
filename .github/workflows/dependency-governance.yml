@@ -1,0 +1,63 @@
+name: Dependency governance
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deterministic-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-java@7a445ee88d4e23b52c33b9b52d8d6c5d1c5f687
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - uses: actions/setup-node@1e60f620b9541dca151540a0c0b0bca158c7c1a1
+        with:
+          node-version: "22.12.0"
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            automation-worker/package-lock.json
+      - name: Exercise deterministic policy fixtures
+        run: python -m unittest scripts/dependencies/tests/test_dependency_guard.py
+      - name: Generate and validate three CycloneDX SBOMs
+        run: bash scripts/dependencies/generate-sboms.sh
+      - name: Upload non-versioned SBOM evidence
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08
+        with:
+          name: cyclonedx-sboms
+          path: dependency-artifacts/*.json
+          if-no-files-found: error
+
+  advisory-enforcement:
+    runs-on: ubuntu-latest
+    needs: deterministic-policy
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: cyclonedx-sboms
+          path: dependency-artifacts
+      - name: Network-backed HIGH/CRITICAL advisory enforcement
+        run: |
+          docker run --rm -v "$PWD:/work" aquasec/trivy:0.66.0 sbom \
+            --format json --output /work/dependency-artifacts/backend.trivy.json \
+            /work/dependency-artifacts/backend.cdx.json
+          docker run --rm -v "$PWD:/work" aquasec/trivy:0.66.0 sbom \
+            --format json --output /work/dependency-artifacts/frontend.trivy.json \
+            /work/dependency-artifacts/frontend.cdx.json
+          docker run --rm -v "$PWD:/work" aquasec/trivy:0.66.0 sbom \
+            --format json --output /work/dependency-artifacts/automation-worker.trivy.json \
+            /work/dependency-artifacts/automation-worker.cdx.json
+          python scripts/dependencies/dependency_guard.py import-trivy \
+            dependency-artifacts/advisories.json dependency-artifacts/*.trivy.json
+          python scripts/dependencies/dependency_guard.py validate \
+            --policy scripts/dependencies/policy.json \
+            --exceptions scripts/dependencies/exceptions.json \
+            --advisories dependency-artifacts/advisories.json \
+            dependency-artifacts/backend.cdx.json dependency-artifacts/frontend.cdx.json \
+            dependency-artifacts/automation-worker.cdx.json

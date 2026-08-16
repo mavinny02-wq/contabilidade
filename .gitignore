@@ -38,6 +38,7 @@ Thumbs.db
 
 # Temporary validation
 validation*/
+dependency-artifacts/
 
 # TypeScript generated artifacts
 **/*.tsbuildinfo
@@ -46,3 +47,7 @@ frontend/vite.config.d.ts
 
 # Local artifact-only Docker contexts
 .docker-local/
+
+# Python
+**/__pycache__/
+*.py[cod]
