@@ -1,0 +1,16 @@
+name: Architecture boundaries
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  architecture-boundaries:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Run focused graph and policy tests
+        run: python3 -m unittest scripts.architecture.tests.test_architecture_guard
+      - name: Enforce versioned dependency baseline and allowlist
+        run: python3 scripts/architecture/architecture_guard.py check

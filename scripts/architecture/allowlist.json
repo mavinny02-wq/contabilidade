@@ -1,0 +1,95 @@
+{
+  "entries": [
+    {
+      "fingerprint": "26d20c712efacf4a7e0e",
+      "owner": "backend-common",
+      "reason": "Existing shared backend service coordinates an Empresa feature dependency.",
+      "review_by": "2027-02-16",
+      "rule": "backend.common_to_feature",
+      "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java"
+    },
+    {
+      "fingerprint": "4fd31913ee49f6987cea",
+      "owner": "automation-worker",
+      "reason": "Current composition root wires the concrete federal flow.",
+      "review_by": "2027-02-16",
+      "rule": "worker.core_to_provider",
+      "source": "automation-worker/src/index.ts",
+      "target": "automation-worker/src/FederalCertificateFlow.ts"
+    },
+    {
+      "fingerprint": "5a8e1c2f5540496d5f4b",
+      "owner": "backend-common",
+      "reason": "Existing shared backend service coordinates an Empresa feature dependency.",
+      "review_by": "2027-02-16",
+      "rule": "backend.common_to_feature",
+      "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+    },
+    {
+      "fingerprint": "63b53d43d08167d2bea6",
+      "owner": "automation-worker",
+      "reason": "Current composition root wires the concrete SEFAZ-SP flow.",
+      "review_by": "2027-02-16",
+      "rule": "worker.core_to_provider",
+      "source": "automation-worker/src/index.ts",
+      "target": "automation-worker/src/SefazSpCertificateFlow.ts"
+    },
+    {
+      "fingerprint": "81f6a545274b85165f8a",
+      "owner": "automation-worker",
+      "reason": "Current composition root wires the concrete Serpro flow.",
+      "review_by": "2027-02-16",
+      "rule": "worker.core_to_provider",
+      "source": "automation-worker/src/index.ts",
+      "target": "automation-worker/src/SerproCndFlow.ts"
+    },
+    {
+      "fingerprint": "9662d43e4d58af957fb3",
+      "owner": "backend-certidao",
+      "reason": "Existing Certidao service reads Empresa persistence directly.",
+      "review_by": "2027-02-16",
+      "rule": "backend.cross_feature_internal",
+      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+    },
+    {
+      "fingerprint": "bb210fafbed5777db04a",
+      "owner": "backend-certidao",
+      "reason": "Existing Certidao service reads Empresa persistence directly.",
+      "review_by": "2027-02-16",
+      "rule": "backend.cross_feature_internal",
+      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
+    },
+    {
+      "fingerprint": "c59e7499656e226f6317",
+      "owner": "automation-worker",
+      "reason": "Current composition root wires the concrete PGE-SP flow.",
+      "review_by": "2027-02-16",
+      "rule": "worker.core_to_provider",
+      "source": "automation-worker/src/index.ts",
+      "target": "automation-worker/src/PgeSpCertificateFlow.ts"
+    },
+    {
+      "fingerprint": "cbe6a5f97141f02f6f89",
+      "owner": "backend-certidao",
+      "reason": "Existing Certidao service reads Empresa persistence directly.",
+      "review_by": "2027-02-16",
+      "rule": "backend.cross_feature_internal",
+      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+    },
+    {
+      "fingerprint": "eaf0dc00e83995f0b59b",
+      "owner": "backend-common",
+      "reason": "Existing shared backend service coordinates an Empresa feature dependency.",
+      "review_by": "2027-02-16",
+      "rule": "backend.common_to_feature",
+      "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
+      "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
+    }
+  ],
+  "schema_version": 1
+}
