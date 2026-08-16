@@ -1,0 +1,5867 @@
+{
+  "components": {
+    "schemas": {
+      "AdquirirRequest": {
+        "properties": {
+          "leaseSegundos": {
+            "format": "int32",
+            "maximum": 1800,
+            "minimum": 30,
+            "type": "integer"
+          },
+          "operacoes": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "provedores": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "workerId": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "operacoes",
+          "provedores",
+          "workerId"
+        ],
+        "type": "object"
+      },
+      "AguardarHumanoRequest": {
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "instrucaoKey": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "leaseToken": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "resumo": {
+            "type": "string"
+          },
+          "sessaoReferencia": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "NA_FILA",
+              "EXECUTANDO",
+              "RETRY_AGENDADO",
+              "AGUARDANDO_HUMANO",
+              "AGUARDANDO_CAPTCHA",
+              "AGUARDANDO_AUTENTICACAO",
+              "SUCESSO",
+              "PARCIAL",
+              "FALHA",
+              "FONTE_INDISPONIVEL",
+              "CANCELADO"
+            ],
+            "type": "string"
+          },
+          "timeoutMinutos": {
+            "format": "int32",
+            "maximum": 1440,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "tipo": {
+            "enum": [
+              "CAPTCHA",
+              "AUTENTICACAO",
+              "MFA",
+              "CERTIFICADO",
+              "CONFIRMACAO",
+              "PORTAL_ALTERADO",
+              "OUTRA"
+            ],
+            "type": "string"
+          },
+          "tituloKey": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "instrucaoKey",
+          "leaseToken",
+          "status",
+          "tipo",
+          "tituloKey"
+        ],
+        "type": "object"
+      },
+      "Artefato": {
+        "properties": {
+          "componente": {
+            "type": "string"
+          },
+          "nomeArquivo": {
+            "type": "string"
+          },
+          "nomeSeguro": {
+            "type": "boolean"
+          },
+          "sha256Valido": {
+            "type": "boolean"
+          },
+          "tamanhoBytes": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "AtualizacaoPreflightResponse": {
+        "properties": {
+          "artefatos": {
+            "items": {
+              "$ref": "#/components/schemas/Artefato"
+            },
+            "type": "array"
+          },
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "ocorrencias": {
+            "items": {
+              "$ref": "#/components/schemas/Ocorrencia"
+            },
+            "type": "array"
+          },
+          "quantidadeArtefatos": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "versaoAtual": {
+            "type": "string"
+          },
+          "versaoDestino": {
+            "type": "string"
+          },
+          "versaoMinimaOrigem": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Aviso": {
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "componente": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "BackupResumo": {
+        "properties": {
+          "backupId": {
+            "type": "string"
+          },
+          "componentes": {
+            "items": {
+              "$ref": "#/components/schemas/ComponenteResumo"
+            },
+            "type": "array"
+          },
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "integridadeVerificada": {
+            "type": "boolean"
+          },
+          "motivoSeguro": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "tamanhoTotalAtual": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "tamanhoTotalManifesto": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "versaoAplicacao": {
+            "type": "string"
+          },
+          "versaoSchema": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "BuscaGlobalResponse": {
+        "properties": {
+          "resultados": {
+            "items": {
+              "$ref": "#/components/schemas/ResultadoBusca"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "CertidaoAgendaResponse": {
+        "properties": {
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "fim": {
+            "format": "date",
+            "type": "string"
+          },
+          "inicio": {
+            "format": "date",
+            "type": "string"
+          },
+          "itens": {
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            },
+            "type": "array"
+          },
+          "parcial": {
+            "type": "boolean"
+          },
+          "total": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "CertidaoResponse": {
+        "properties": {
+          "antecedenciaDias": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "atualizadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "cnpj": {
+            "type": "string"
+          },
+          "documentoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "emitidaEm": {
+            "format": "date",
+            "type": "string"
+          },
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "estabelecimentoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "mensagemFonte": {
+            "type": "string"
+          },
+          "numeroCertidao": {
+            "type": "string"
+          },
+          "observadaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "proximaConsultaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "resultado": {
+            "enum": [
+              "DESCONHECIDO",
+              "REGULAR",
+              "POSITIVA_COM_EFEITO_NEGATIVA",
+              "IRREGULAR",
+              "INCOMPLETA"
+            ],
+            "type": "string"
+          },
+          "situacaoConsulta": {
+            "enum": [
+              "NAO_CONSULTADA",
+              "AGENDADA",
+              "EM_PROCESSAMENTO",
+              "CONCLUIDA",
+              "FONTE_INDISPONIVEL",
+              "ACAO_MANUAL_NECESSARIA",
+              "FALHA"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "NAO_CONSULTADA",
+              "AGENDADA",
+              "EM_PROCESSAMENTO",
+              "REGULAR",
+              "POSITIVA_COM_EFEITO_NEGATIVA",
+              "IRREGULAR",
+              "INCOMPLETA",
+              "FONTE_INDISPONIVEL",
+              "ACAO_MANUAL_NECESSARIA",
+              "FALHA",
+              "PROXIMA_DO_VENCIMENTO",
+              "VENCIDA"
+            ],
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "FEDERAL_RFB_PGFN",
+              "SP_SEFAZ_NAO_INSCRITOS",
+              "SP_PGE_DIVIDA_ATIVA"
+            ],
+            "type": "string"
+          },
+          "ultimaExecucaoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "ultimoModoAquisicao": {
+            "enum": [
+              "API_OFICIAL",
+              "API_COMERCIAL",
+              "PORTAL_AUTOMATIZADO",
+              "PORTAL_ASSISTIDO",
+              "MANUAL"
+            ],
+            "type": "string"
+          },
+          "ultimoProvedorCodigo": {
+            "type": "string"
+          },
+          "validaAte": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CertidaoSolicitacaoLoteRequest": {
+        "properties": {
+          "idempotencyKey": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "ids": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 500,
+            "minItems": 0,
+            "type": "array"
+          }
+        },
+        "required": [
+          "ids"
+        ],
+        "type": "object"
+      },
+      "CertidaoSolicitacaoLoteResponse": {
+        "properties": {
+          "aceitas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "itens": {
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            },
+            "type": "array"
+          },
+          "loteId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "recebidas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "rejeitadas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "unicas": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ComponenteResumo": {
+        "properties": {
+          "existente": {
+            "type": "boolean"
+          },
+          "formato": {
+            "type": "string"
+          },
+          "hashConfere": {
+            "type": "boolean"
+          },
+          "motivoSeguro": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "tamanhoAtual": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "tamanhoConfere": {
+            "type": "boolean"
+          },
+          "tamanhoManifesto": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ComponenteTecnico": {
+        "properties": {
+          "componente": {
+            "type": "string"
+          },
+          "detalheSeguro": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ConcluirRequest": {
+        "properties": {
+          "custo": {
+            "type": "number"
+          },
+          "leaseToken": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "moeda": {
+            "type": "string"
+          },
+          "protocoloExterno": {
+            "type": "string"
+          },
+          "resultado": {}
+        },
+        "required": [
+          "leaseToken"
+        ],
+        "type": "object"
+      },
+      "ConfiguracaoSeguraResponse": {
+        "properties": {
+          "ambiente": {
+            "type": "string"
+          },
+          "avisos": {
+            "items": {
+              "$ref": "#/components/schemas/Aviso"
+            },
+            "type": "array"
+          },
+          "observadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "provedores": {
+            "items": {
+              "$ref": "#/components/schemas/Provedor"
+            },
+            "type": "array"
+          },
+          "provedoresHabilitados": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "provedoresPagosHabilitados": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "provedoresTotal": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "segredoSessaoConfigurado": {
+            "type": "boolean"
+          },
+          "segurancaHabilitada": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "storageProvider": {
+            "type": "string"
+          },
+          "ticketTtl": {
+            "type": "string"
+          },
+          "versao": {
+            "type": "string"
+          },
+          "workerTokenConfigurado": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ConsumirTicketRequest": {
+        "properties": {
+          "execucaoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "expiraEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "intervencaoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "jti": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "sessaoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "usuario": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "workerId": {
+            "maxLength": 120,
+            "minLength": 0,
+            "type": "string"
+          }
+        },
+        "required": [
+          "execucaoId",
+          "expiraEm",
+          "intervencaoId",
+          "jti",
+          "sessaoId",
+          "usuario",
+          "workerId"
+        ],
+        "type": "object"
+      },
+      "CriteriosRetencao": {
+        "properties": {
+          "diasAposValidade": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "diasInativo": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "diasSemValidade": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "maximoLinhas": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "DashboardResumo": {
+        "properties": {
+          "certidoesAcaoManual": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "certidoesAtencao": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "certidoesRegulares": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "documentosAtivos": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "empresasAtivas": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "execucoesAbertas": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "intervencoesPendentes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "notificacoesNaoLidas": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "DocumentoMetadadosRequest": {
+        "properties": {
+          "emitidoEm": {
+            "format": "date",
+            "type": "string"
+          },
+          "tipo": {
+            "maxLength": 100,
+            "minLength": 0,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "type": "string"
+          },
+          "validoAte": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tipo"
+        ],
+        "type": "object"
+      },
+      "DocumentoResponse": {
+        "properties": {
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "emitidoEm": {
+            "format": "date",
+            "type": "string"
+          },
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "hashSha256": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "nomeOriginal": {
+            "type": "string"
+          },
+          "origem": {
+            "enum": [
+              "USUARIO",
+              "MANUAL",
+              "API_OFICIAL",
+              "API_COMERCIAL",
+              "PORTAL_AUTOMATIZADO",
+              "PORTAL_ASSISTIDO",
+              "SISTEMA"
+            ],
+            "type": "string"
+          },
+          "tamanhoBytes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "validoAte": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EmpresaClassificacaoRequest": {
+        "properties": {
+          "grupo": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "maxLength": 60,
+              "minLength": 0,
+              "type": "string"
+            },
+            "maxItems": 20,
+            "minItems": 0,
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "EmpresaDetalheResponse": {
+        "properties": {
+          "ativa": {
+            "type": "boolean"
+          },
+          "atualizadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "estabelecimentos": {
+            "items": {
+              "$ref": "#/components/schemas/EstabelecimentoResponse"
+            },
+            "type": "array"
+          },
+          "grupo": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "nomeFantasia": {
+            "type": "string"
+          },
+          "razaoSocial": {
+            "type": "string"
+          },
+          "responsavelEmail": {
+            "type": "string"
+          },
+          "responsavelNome": {
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "EmpresaHistoricoResponse": {
+        "properties": {
+          "acao": {
+            "type": "string"
+          },
+          "ator": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "recursoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "recursoTipo": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EmpresaRequest": {
+        "properties": {
+          "bairro": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cep": {
+            "maxLength": 9,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cnaePrincipal": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cnpj": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "complemento": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "inscricaoEstadual": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "inscricaoMunicipal": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "logradouro": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "municipio": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "nomeFantasia": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "numero": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string"
+          },
+          "razaoSocial": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "regimeTributario": {
+            "enum": [
+              "MEI",
+              "SIMPLES_NACIONAL",
+              "LUCRO_PRESUMIDO",
+              "LUCRO_REAL",
+              "OUTRO",
+              "NAO_INFORMADO"
+            ],
+            "type": "string"
+          },
+          "responsavelEmail": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "responsavelNome": {
+            "maxLength": 160,
+            "minLength": 0,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ATIVA",
+              "INATIVA",
+              "SUSPENSA",
+              "BAIXADA",
+              "DESCONHECIDA"
+            ],
+            "type": "string"
+          },
+          "uf": {
+            "maxLength": 2,
+            "minLength": 2,
+            "type": "string"
+          }
+        },
+        "required": [
+          "cnpj",
+          "razaoSocial"
+        ],
+        "type": "object"
+      },
+      "EmpresaResumoResponse": {
+        "properties": {
+          "ativa": {
+            "type": "boolean"
+          },
+          "atualizadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "cnpj": {
+            "type": "string"
+          },
+          "grupo": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "municipio": {
+            "type": "string"
+          },
+          "nomeFantasia": {
+            "type": "string"
+          },
+          "quantidadeEstabelecimentos": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "razaoSocial": {
+            "type": "string"
+          },
+          "regimeTributario": {
+            "enum": [
+              "MEI",
+              "SIMPLES_NACIONAL",
+              "LUCRO_PRESUMIDO",
+              "LUCRO_REAL",
+              "OUTRO",
+              "NAO_INFORMADO"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ATIVA",
+              "INATIVA",
+              "SUSPENSA",
+              "BAIXADA",
+              "DESCONHECIDA"
+            ],
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "uf": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ErroLinha": {
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "linha": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "mensagem": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EstabelecimentoResponse": {
+        "properties": {
+          "ativo": {
+            "type": "boolean"
+          },
+          "bairro": {
+            "type": "string"
+          },
+          "cep": {
+            "type": "string"
+          },
+          "cnaePrincipal": {
+            "type": "string"
+          },
+          "cnpj": {
+            "type": "string"
+          },
+          "complemento": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "inscricaoEstadual": {
+            "type": "string"
+          },
+          "inscricaoMunicipal": {
+            "type": "string"
+          },
+          "logradouro": {
+            "type": "string"
+          },
+          "matriz": {
+            "type": "boolean"
+          },
+          "municipio": {
+            "type": "string"
+          },
+          "numero": {
+            "type": "string"
+          },
+          "regimeTributario": {
+            "enum": [
+              "MEI",
+              "SIMPLES_NACIONAL",
+              "LUCRO_PRESUMIDO",
+              "LUCRO_REAL",
+              "OUTRO",
+              "NAO_INFORMADO"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ATIVA",
+              "INATIVA",
+              "SUSPENSA",
+              "BAIXADA",
+              "DESCONHECIDA"
+            ],
+            "type": "string"
+          },
+          "uf": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EventoAuditoriaResponse": {
+        "properties": {
+          "acao": {
+            "type": "string"
+          },
+          "ator": {
+            "type": "string"
+          },
+          "correlationId": {
+            "type": "string"
+          },
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "detalhesJson": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "recursoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "recursoTipo": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ExecucaoLease": {
+        "properties": {
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "leaseAte": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "leaseToken": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxTentativas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "operacao": {
+            "type": "string"
+          },
+          "payloadJson": {
+            "type": "string"
+          },
+          "provedorCodigo": {
+            "type": "string"
+          },
+          "tentativa": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ExecucaoResponse": {
+        "properties": {
+          "atualizadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "custoEstimado": {
+            "type": "number"
+          },
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "erroCodigo": {
+            "type": "string"
+          },
+          "erroResumo": {
+            "type": "string"
+          },
+          "finalizadaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "iniciadaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "leaseAte": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "maxTentativas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "moeda": {
+            "type": "string"
+          },
+          "operacao": {
+            "type": "string"
+          },
+          "payloadJson": {
+            "type": "string"
+          },
+          "prioridade": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "protocoloExterno": {
+            "type": "string"
+          },
+          "provedorCodigo": {
+            "type": "string"
+          },
+          "proximaTentativaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "resultadoJson": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "NA_FILA",
+              "EXECUTANDO",
+              "RETRY_AGENDADO",
+              "AGUARDANDO_HUMANO",
+              "AGUARDANDO_CAPTCHA",
+              "AGUARDANDO_AUTENTICACAO",
+              "SUCESSO",
+              "PARCIAL",
+              "FALHA",
+              "FONTE_INDISPONIVEL",
+              "CANCELADO"
+            ],
+            "type": "string"
+          },
+          "tentativas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "workerId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "FalharRequest": {
+        "properties": {
+          "codigo": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "custo": {
+            "type": "number"
+          },
+          "fonteIndisponivel": {
+            "type": "boolean"
+          },
+          "leaseToken": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "moeda": {
+            "type": "string"
+          },
+          "resumo": {
+            "type": "string"
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "codigo",
+          "leaseToken"
+        ],
+        "type": "object"
+      },
+      "FaturaProvedorRequest": {
+        "properties": {
+          "competenciaFim": {
+            "format": "date",
+            "type": "string"
+          },
+          "competenciaInicio": {
+            "format": "date",
+            "type": "string"
+          },
+          "moeda": {
+            "minLength": 1,
+            "pattern": "^[A-Za-z]{3}$",
+            "type": "string"
+          },
+          "observacao": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          },
+          "provedorCodigo": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "referencia": {
+            "maxLength": 120,
+            "minLength": 0,
+            "type": "string"
+          },
+          "valorFaturado": {
+            "minimum": 0.0,
+            "type": "number"
+          }
+        },
+        "required": [
+          "competenciaFim",
+          "competenciaInicio",
+          "moeda",
+          "provedorCodigo",
+          "valorFaturado"
+        ],
+        "type": "object"
+      },
+      "FaturaProvedorResponse": {
+        "properties": {
+          "atualizadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "competenciaFim": {
+            "format": "date",
+            "type": "string"
+          },
+          "competenciaInicio": {
+            "format": "date",
+            "type": "string"
+          },
+          "diferenca": {
+            "type": "number"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "moeda": {
+            "type": "string"
+          },
+          "observacao": {
+            "type": "string"
+          },
+          "provedorCodigo": {
+            "type": "string"
+          },
+          "referencia": {
+            "type": "string"
+          },
+          "situacao": {
+            "enum": [
+              "SEM_DIVERGENCIA",
+              "ACIMA_ESTIMADO",
+              "ABAIXO_ESTIMADO"
+            ],
+            "type": "string"
+          },
+          "valorEstimado": {
+            "type": "number"
+          },
+          "valorFaturado": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "FilialAtualizacaoRequest": {
+        "properties": {
+          "ativa": {
+            "type": "boolean"
+          },
+          "bairro": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cep": {
+            "maxLength": 9,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cnaePrincipal": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cnpj": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "complemento": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "inscricaoEstadual": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "inscricaoMunicipal": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "logradouro": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "municipio": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "numero": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string"
+          },
+          "regimeTributario": {
+            "enum": [
+              "MEI",
+              "SIMPLES_NACIONAL",
+              "LUCRO_PRESUMIDO",
+              "LUCRO_REAL",
+              "OUTRO",
+              "NAO_INFORMADO"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ATIVA",
+              "INATIVA",
+              "SUSPENSA",
+              "BAIXADA",
+              "DESCONHECIDA"
+            ],
+            "type": "string"
+          },
+          "uf": {
+            "pattern": "^$|^[A-Za-z]{2}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "ativa",
+          "cnpj"
+        ],
+        "type": "object"
+      },
+      "FilialRequest": {
+        "properties": {
+          "bairro": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cep": {
+            "maxLength": 9,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cnaePrincipal": {
+            "maxLength": 10,
+            "minLength": 0,
+            "type": "string"
+          },
+          "cnpj": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "complemento": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "inscricaoEstadual": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "inscricaoMunicipal": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "logradouro": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "municipio": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "numero": {
+            "maxLength": 20,
+            "minLength": 0,
+            "type": "string"
+          },
+          "regimeTributario": {
+            "enum": [
+              "MEI",
+              "SIMPLES_NACIONAL",
+              "LUCRO_PRESUMIDO",
+              "LUCRO_REAL",
+              "OUTRO",
+              "NAO_INFORMADO"
+            ],
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ATIVA",
+              "INATIVA",
+              "SUSPENSA",
+              "BAIXADA",
+              "DESCONHECIDA"
+            ],
+            "type": "string"
+          },
+          "uf": {
+            "pattern": "^$|^[A-Za-z]{2}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "cnpj"
+        ],
+        "type": "object"
+      },
+      "HeartbeatRequest": {
+        "properties": {
+          "observadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "status": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "versao": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "workerId": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "versao",
+          "workerId"
+        ],
+        "type": "object"
+      },
+      "HistoricoCertidaoResponse": {
+        "properties": {
+          "acompanhamentoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "documentoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "emitidaEm": {
+            "format": "date",
+            "type": "string"
+          },
+          "execucaoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "mensagemFonte": {
+            "type": "string"
+          },
+          "modoAquisicao": {
+            "enum": [
+              "API_OFICIAL",
+              "API_COMERCIAL",
+              "PORTAL_AUTOMATIZADO",
+              "PORTAL_ASSISTIDO",
+              "MANUAL"
+            ],
+            "type": "string"
+          },
+          "numeroCertidao": {
+            "type": "string"
+          },
+          "observadaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "provedorCodigo": {
+            "type": "string"
+          },
+          "resultado": {
+            "enum": [
+              "DESCONHECIDO",
+              "REGULAR",
+              "POSITIVA_COM_EFEITO_NEGATIVA",
+              "IRREGULAR",
+              "INCOMPLETA"
+            ],
+            "type": "string"
+          },
+          "situacaoConsulta": {
+            "enum": [
+              "NAO_CONSULTADA",
+              "AGENDADA",
+              "EM_PROCESSAMENTO",
+              "CONCLUIDA",
+              "FONTE_INDISPONIVEL",
+              "ACAO_MANUAL_NECESSARIA",
+              "FALHA"
+            ],
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "FEDERAL_RFB_PGFN",
+              "SP_SEFAZ_NAO_INSCRITOS",
+              "SP_PGE_DIVIDA_ATIVA"
+            ],
+            "type": "string"
+          },
+          "validaAte": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InfoAplicacao": {
+        "properties": {
+          "ambiente": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "versao": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "IntervencaoResponse": {
+        "properties": {
+          "atribuidaPara": {
+            "type": "string"
+          },
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "execucaoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "expiraEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "iniciadaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "instrucaoKey": {
+            "type": "string"
+          },
+          "resolvidaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "resolvidaPor": {
+            "type": "string"
+          },
+          "sessaoReferencia": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "PENDENTE",
+              "EM_ATENDIMENTO",
+              "RESOLVIDA",
+              "EXPIRADA",
+              "CANCELADA"
+            ],
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "CAPTCHA",
+              "AUTENTICACAO",
+              "MFA",
+              "CERTIFICADO",
+              "CONFIRMACAO",
+              "PORTAL_ALTERADO",
+              "OUTRA"
+            ],
+            "type": "string"
+          },
+          "tituloKey": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InventarioBackups": {
+        "properties": {
+          "backups": {
+            "items": {
+              "$ref": "#/components/schemas/BackupResumo"
+            },
+            "type": "array"
+          },
+          "diretorioDisponivel": {
+            "type": "boolean"
+          },
+          "listaLimitada": {
+            "type": "boolean"
+          },
+          "motivoSeguro": {
+            "type": "string"
+          },
+          "observadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "totalManifestos": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Item": {
+        "properties": {
+          "aceita": {
+            "type": "boolean"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "execucaoId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "situacaoConsulta": {
+            "enum": [
+              "NAO_CONSULTADA",
+              "AGENDADA",
+              "EM_PROCESSAMENTO",
+              "CONCLUIDA",
+              "FONTE_INDISPONIVEL",
+              "ACAO_MANUAL_NECESSARIA",
+              "FALHA"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ItemRetencao": {
+        "properties": {
+          "ativo": {
+            "type": "boolean"
+          },
+          "atualizadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "emitidoEm": {
+            "format": "date",
+            "type": "string"
+          },
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "motivos": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "nomeOriginal": {
+            "type": "string"
+          },
+          "origem": {
+            "type": "string"
+          },
+          "tamanhoBytes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "validoAte": {
+            "format": "date",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "NotificacaoResponse": {
+        "properties": {
+          "criadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "deepLink": {
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "lida": {
+            "type": "boolean"
+          },
+          "lidaEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "mensagemKey": {
+            "type": "string"
+          },
+          "tipo": {
+            "enum": [
+              "INFORMACAO",
+              "AVISO",
+              "ACAO_NECESSARIA",
+              "ERRO"
+            ],
+            "type": "string"
+          },
+          "tituloKey": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Ocorrencia": {
+        "properties": {
+          "codigo": {
+            "type": "string"
+          },
+          "mensagem": {
+            "type": "string"
+          },
+          "nivel": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PageDocumentoResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentoResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageEmpresaHistoricoResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/EmpresaHistoricoResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageEmpresaResumoResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/EmpresaResumoResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageEventoAuditoriaResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/EventoAuditoriaResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageExecucaoResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/ExecucaoResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageFaturaProvedorResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/FaturaProvedorResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageHistoricoCertidaoResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/HistoricoCertidaoResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageIntervencaoResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/IntervencaoResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageNotificacaoResponse": {
+        "properties": {
+          "content": {
+            "items": {
+              "$ref": "#/components/schemas/NotificacaoResponse"
+            },
+            "type": "array"
+          },
+          "empty": {
+            "type": "boolean"
+          },
+          "first": {
+            "type": "boolean"
+          },
+          "last": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "numberOfElements": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageable": {
+            "$ref": "#/components/schemas/PageableObject"
+          },
+          "size": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "totalElements": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalPages": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PageableObject": {
+        "properties": {
+          "offset": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "pageNumber": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "pageSize": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "paged": {
+            "type": "boolean"
+          },
+          "sort": {
+            "$ref": "#/components/schemas/SortObject"
+          },
+          "unpaged": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "PoliticaRequest": {
+        "properties": {
+          "custoMaximo": {
+            "minimum": 0.0,
+            "type": "number"
+          },
+          "fallbackPago": {
+            "type": "boolean"
+          },
+          "habilitada": {
+            "type": "boolean"
+          },
+          "moeda": {
+            "maxLength": 3,
+            "minLength": 3,
+            "type": "string"
+          },
+          "permitirIntervencao": {
+            "type": "boolean"
+          },
+          "provedores": {
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "timeoutHumanoMinutos": {
+            "format": "int32",
+            "maximum": 1440,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "provedores"
+        ],
+        "type": "object"
+      },
+      "PoliticaResponse": {
+        "properties": {
+          "custoMaximo": {
+            "type": "number"
+          },
+          "fallbackPago": {
+            "type": "boolean"
+          },
+          "habilitada": {
+            "type": "boolean"
+          },
+          "moeda": {
+            "type": "string"
+          },
+          "operacao": {
+            "type": "string"
+          },
+          "permitirIntervencao": {
+            "type": "boolean"
+          },
+          "provedores": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "timeoutHumanoMinutos": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PreviewRetencao": {
+        "properties": {
+          "criterios": {
+            "$ref": "#/components/schemas/CriteriosRetencao"
+          },
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "itens": {
+            "items": {
+              "$ref": "#/components/schemas/ItemRetencao"
+            },
+            "type": "array"
+          },
+          "observadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "parcial": {
+            "type": "boolean"
+          },
+          "porMotivo": {
+            "additionalProperties": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "tamanhoAnalisadoBytes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalAnalisados": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "totalCandidatos": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Provedor": {
+        "properties": {
+          "baseUrlConfigurada": {
+            "type": "boolean"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "custoConfigurado": {
+            "type": "boolean"
+          },
+          "habilitado": {
+            "type": "boolean"
+          },
+          "maxRetries": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "moedaConfigurada": {
+            "type": "boolean"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "pago": {
+            "type": "boolean"
+          },
+          "referenciaSegredoConfigurada": {
+            "type": "boolean"
+          },
+          "timeoutSegundos": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "tipo": {
+            "enum": [
+              "API_OFICIAL",
+              "API_COMERCIAL",
+              "PORTAL_AUTOMATIZADO",
+              "PORTAL_ASSISTIDO",
+              "MANUAL"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ProvedorAtualizacaoRequest": {
+        "properties": {
+          "baseUrl": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          },
+          "configuracaoCustoValida": {
+            "type": "boolean"
+          },
+          "custoEstimadoPadrao": {
+            "minimum": 0.0,
+            "type": "number"
+          },
+          "habilitado": {
+            "type": "boolean"
+          },
+          "maxRetries": {
+            "format": "int32",
+            "maximum": 10,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "moeda": {
+            "maxLength": 3,
+            "minLength": 3,
+            "type": "string"
+          },
+          "pago": {
+            "type": "boolean"
+          },
+          "prioridade": {
+            "format": "int32",
+            "maximum": 1000,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "referenciaSegredo": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "timeoutSegundos": {
+            "format": "int32",
+            "maximum": 3600,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ProvedorHistoricoResponse": {
+        "properties": {
+          "fimExclusivo": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "inicio": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "parcial": {
+            "type": "boolean"
+          },
+          "provedores": {
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            },
+            "type": "array"
+          },
+          "totalExecucoes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalProvedores": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ProvedorResponse": {
+        "properties": {
+          "baseUrl": {
+            "type": "string"
+          },
+          "codigo": {
+            "type": "string"
+          },
+          "custoEstimadoPadrao": {
+            "type": "number"
+          },
+          "habilitado": {
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxRetries": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "moeda": {
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "pago": {
+            "type": "boolean"
+          },
+          "prioridade": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "referenciaSegredo": {
+            "type": "string"
+          },
+          "timeoutSegundos": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "tipo": {
+            "enum": [
+              "API_OFICIAL",
+              "API_COMERCIAL",
+              "PORTAL_AUTOMATIZADO",
+              "PORTAL_ASSISTIDO",
+              "MANUAL"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RenovarRequest": {
+        "properties": {
+          "leaseSegundos": {
+            "format": "int32",
+            "maximum": 1800,
+            "minimum": 30,
+            "type": "integer"
+          },
+          "leaseToken": {
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "leaseToken"
+        ],
+        "type": "object"
+      },
+      "RenovarResponse": {
+        "properties": {
+          "leaseAte": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ResolverRequest": {
+        "properties": {
+          "observacao": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          },
+          "retomarExecucao": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ResponsavelModuloRequest": {
+        "properties": {
+          "ativo": {
+            "type": "boolean"
+          },
+          "email": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "nome": {
+            "maxLength": 160,
+            "minLength": 0,
+            "type": "string"
+          },
+          "telefone": {
+            "maxLength": 40,
+            "minLength": 0,
+            "type": "string"
+          }
+        },
+        "required": [
+          "nome"
+        ],
+        "type": "object"
+      },
+      "ResponsavelModuloResponse": {
+        "properties": {
+          "ativo": {
+            "type": "boolean"
+          },
+          "atualizadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "empresaId": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "modulo": {
+            "enum": [
+              "FISCAL",
+              "CONTABIL",
+              "FINANCEIRO",
+              "DOCUMENTOS",
+              "AUTOMACAO",
+              "ADMINISTRACAO"
+            ],
+            "type": "string"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "telefone": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ResultadoBusca": {
+        "properties": {
+          "destino": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "subtitulo": {
+            "type": "string"
+          },
+          "tipo": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ResultadoImportacao": {
+        "properties": {
+          "empresasImportadas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "erros": {
+            "items": {
+              "$ref": "#/components/schemas/ErroLinha"
+            },
+            "type": "array"
+          },
+          "errosTruncados": {
+            "type": "boolean"
+          },
+          "linhasRejeitadas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "linhasValidas": {
+            "format": "int32",
+            "type": "integer"
+          },
+          "somenteValidacao": {
+            "type": "boolean"
+          },
+          "totalLinhas": {
+            "format": "int32",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ResultadoReconciliacao": {
+        "properties": {
+          "amostrasArquivosSemRegistro": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "amostrasReferenciasSemArquivo": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "arquivosAnalisados": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "arquivosCompletos": {
+            "type": "boolean"
+          },
+          "arquivosSemRegistroCompleta": {
+            "type": "boolean"
+          },
+          "arquivosSemRegistroDetectados": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "documentosAtivos": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "documentosRegistrados": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "linksSimbolicosIgnorados": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "motivoSeguro": {
+            "type": "string"
+          },
+          "observadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "referenciasAnalisadas": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "referenciasCompletas": {
+            "type": "boolean"
+          },
+          "referenciasSemArquivoCompleta": {
+            "type": "boolean"
+          },
+          "referenciasSemArquivoDetectadas": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ResumoGerencial": {
+        "properties": {
+          "atencao": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "emAndamento": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "observadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "parcial": {
+            "type": "boolean"
+          },
+          "porStatus": {
+            "additionalProperties": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "porTipo": {
+            "additionalProperties": {
+              "format": "int64",
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "regulares": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "semValidade": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalAnalisadas": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "totalRegistradas": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "ultimaAtualizacao": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "vencemEmTrintaDias": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ResumoTecnico": {
+        "properties": {
+          "banco": {
+            "$ref": "#/components/schemas/ComponenteTecnico"
+          },
+          "execucoesAbertas": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "execucoesComFalha": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "intervencoesPendentes": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "observadoEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/ComponenteTecnico"
+          },
+          "worker": {
+            "$ref": "#/components/schemas/ComponenteTecnico"
+          },
+          "workerDegradadoAposSegundos": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "workerIndisponivelAposSegundos": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "workers": {
+            "items": {
+              "$ref": "#/components/schemas/WorkerResumo"
+            },
+            "type": "array"
+          },
+          "workersListaLimitada": {
+            "type": "boolean"
+          },
+          "workersRegistrados": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "RetomarSessaoRequest": {
+        "properties": {
+          "leaseSegundos": {
+            "format": "int32",
+            "maximum": 1800,
+            "minimum": 30,
+            "type": "integer"
+          },
+          "observacao": {
+            "type": "string"
+          },
+          "operador": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "sessionId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "workerId": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "operador",
+          "sessionId",
+          "workerId"
+        ],
+        "type": "object"
+      },
+      "SortObject": {
+        "properties": {
+          "empty": {
+            "type": "boolean"
+          },
+          "sorted": {
+            "type": "boolean"
+          },
+          "unsorted": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "TicketSessaoInterativa": {
+        "properties": {
+          "eventsUrl": {
+            "type": "string"
+          },
+          "expiraEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "infoUrl": {
+            "type": "string"
+          },
+          "inputUrl": {
+            "type": "string"
+          },
+          "sessionId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UsuarioAtualResponse": {
+        "properties": {
+          "autenticacaoAtiva": {
+            "type": "boolean"
+          },
+          "nome": {
+            "type": "string"
+          },
+          "papeis": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "permissoes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "uniqueItems": true
+          },
+          "usuario": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "WorkerHeartbeatHistoricoResponse": {
+        "properties": {
+          "degradado": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "desconhecido": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "fim": {
+            "format": "date",
+            "type": "string"
+          },
+          "indisponivel": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "inicializando": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "inicio": {
+            "format": "date",
+            "type": "string"
+          },
+          "itens": {
+            "items": {
+              "$ref": "#/components/schemas/Item"
+            },
+            "type": "array"
+          },
+          "parcial": {
+            "type": "boolean"
+          },
+          "saudavel": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "total": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "workerId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "WorkerResumo": {
+        "properties": {
+          "idadeSegundos": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "motivoSeguro": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusReportado": {
+            "type": "string"
+          },
+          "ultimoHeartbeatEm": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "versao": {
+            "type": "string"
+          },
+          "workerId": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/auditoria": {
+      "get": {
+        "operationId": "listar_10",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "acao",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "recursoTipo",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ator",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "inicio",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fim",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageEventoAuditoriaResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "auditoria-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/auditoria/exportacao.csv": {
+      "get": {
+        "operationId": "exportarCsv_1",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "acao",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "recursoTipo",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "ator",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "inicio",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fim",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/csv;charset=UTF-8": {
+                "schema": {
+                  "format": "byte",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "auditoria-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/busca": {
+      "get": {
+        "operationId": "buscar",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "termo",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuscaGlobalResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "busca-global-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes": {
+      "get": {
+        "operationId": "listar_9",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CertidaoResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes/agenda-vencimentos": {
+      "get": {
+        "operationId": "agendaVencimentos",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "inicio",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fim",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertidaoAgendaResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes/dashboard-gerencial": {
+      "get": {
+        "operationId": "resumir",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumoGerencial"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-dashboard-gerencial-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes/exportacao.csv": {
+      "get": {
+        "operationId": "exportarCsv",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tipo",
+            "required": false,
+            "schema": {
+              "enum": [
+                "FEDERAL_RFB_PGFN",
+                "SP_SEFAZ_NAO_INSCRITOS",
+                "SP_PGE_DIVIDA_ATIVA"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "enum": [
+                "NAO_CONSULTADA",
+                "AGENDADA",
+                "EM_PROCESSAMENTO",
+                "REGULAR",
+                "POSITIVA_COM_EFEITO_NEGATIVA",
+                "IRREGULAR",
+                "INCOMPLETA",
+                "FONTE_INDISPONIVEL",
+                "ACAO_MANUAL_NECESSARIA",
+                "FALHA",
+                "PROXIMA_DO_VENCIMENTO",
+                "VENCIDA"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/csv;charset=UTF-8": {
+                "schema": {
+                  "format": "byte",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes/solicitar-lote": {
+      "post": {
+        "operationId": "solicitarLote",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CertidaoSolicitacaoLoteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertidaoSolicitacaoLoteResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes/solicitar-todas": {
+      "post": {
+        "operationId": "solicitarTodas",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/CertidaoResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes/{id}/historico": {
+      "get": {
+        "operationId": "historico_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageHistoricoCertidaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes/{id}/resultado-manual": {
+      "post": {
+        "operationId": "registrarManual",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "resultado",
+            "required": true,
+            "schema": {
+              "enum": [
+                "DESCONHECIDO",
+                "REGULAR",
+                "POSITIVA_COM_EFEITO_NEGATIVA",
+                "IRREGULAR",
+                "INCOMPLETA"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "numero",
+            "required": false,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "emitidaEm",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "validaAte",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "mensagem",
+            "required": false,
+            "schema": {
+              "maxLength": 1000,
+              "minLength": 0,
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "arquivo": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertidaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/certidoes/{id}/solicitar": {
+      "post": {
+        "operationId": "solicitar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "idempotencyKey",
+            "required": false,
+            "schema": {
+              "maxLength": 200,
+              "minLength": 0,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertidaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "certidao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/console-tecnica/atualizacoes/modelo": {
+      "get": {
+        "operationId": "modelo_1",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "format": "byte",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "atualizacao-preflight-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/console-tecnica/atualizacoes/preflight": {
+      "post": {
+        "operationId": "validar",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "manifesto": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "manifesto"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtualizacaoPreflightResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "atualizacao-preflight-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/console-tecnica/backups": {
+      "get": {
+        "operationId": "listar_8",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventarioBackups"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "backup-inventario-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/console-tecnica/backups/{backupId}/verificar": {
+      "get": {
+        "operationId": "verificar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "backupId",
+            "required": true,
+            "schema": {
+              "pattern": "\\d{8}-\\d{6}",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackupResumo"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "backup-inventario-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/console-tecnica/configuracao": {
+      "get": {
+        "operationId": "consultar_2",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfiguracaoSeguraResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "configuracao-segura-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/console-tecnica/resumo": {
+      "get": {
+        "operationId": "resumo_1",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResumoTecnico"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "console-tecnica-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/console-tecnica/storage/reconciliacao": {
+      "get": {
+        "operationId": "reconciliar",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultadoReconciliacao"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "storage-reconciliacao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/console-tecnica/workers/historico": {
+      "get": {
+        "operationId": "consultar_1",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "inicio",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fim",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "workerId",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkerHeartbeatHistoricoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "worker-heartbeat-historico-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/dashboard/resumo": {
+      "get": {
+        "operationId": "resumo",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResumo"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "dashboard-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/documentos": {
+      "get": {
+        "operationId": "listar_2",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageDocumentoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "documento-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      },
+      "post": {
+        "operationId": "enviar_1",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tipo",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "emitidoEm",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "validoAte",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "arquivo": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "arquivo"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "documento-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/documentos/retencao-preview": {
+      "get": {
+        "operationId": "analisar",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewRetencao"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "documento-retencao-preview-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/documentos/{id}/conteudo": {
+      "get": {
+        "operationId": "baixar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "documento-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/documentos/{id}/metadados": {
+      "put": {
+        "operationId": "atualizarMetadados",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentoMetadadosRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "documento-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/documentos/{id}/preview": {
+      "get": {
+        "operationId": "preview",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "documento-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas": {
+      "get": {
+        "operationId": "listar_1",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "termo",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageEmpresaResumoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      },
+      "post": {
+        "operationId": "criar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmpresaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmpresaDetalheResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/importacao-csv": {
+      "post": {
+        "operationId": "importar",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "somenteValidar",
+            "required": false,
+            "schema": {
+              "default": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "arquivo": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "arquivo"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultadoImportacao"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-importacao-csv-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/importacao-csv/modelo": {
+      "get": {
+        "operationId": "modelo",
+        "responses": {
+          "200": {
+            "content": {
+              "text/csv;charset=UTF-8": {
+                "schema": {
+                  "format": "byte",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-importacao-csv-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/{empresaId}/responsaveis-modulo": {
+      "get": {
+        "operationId": "listar_7",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "empresaId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ResponsavelModuloResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "responsavel-modulo-empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/{empresaId}/responsaveis-modulo/{modulo}": {
+      "put": {
+        "operationId": "atualizar_3",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "empresaId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "modulo",
+            "required": true,
+            "schema": {
+              "enum": [
+                "FISCAL",
+                "CONTABIL",
+                "FINANCEIRO",
+                "DOCUMENTOS",
+                "AUTOMACAO",
+                "ADMINISTRACAO"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponsavelModuloRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponsavelModuloResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "responsavel-modulo-empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/{id}": {
+      "get": {
+        "operationId": "obter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmpresaDetalheResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      },
+      "put": {
+        "operationId": "atualizar_2",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmpresaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmpresaDetalheResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/{id}/ativa": {
+      "patch": {
+        "operationId": "alterarAtiva",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "valor",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/{id}/classificacao": {
+      "put": {
+        "operationId": "atualizarClassificacao",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmpresaClassificacaoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmpresaDetalheResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/{id}/filiais": {
+      "post": {
+        "operationId": "adicionarFilial",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilialRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstabelecimentoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/{id}/filiais/{filialId}": {
+      "put": {
+        "operationId": "atualizarFilial",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "filialId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilialAtualizacaoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstabelecimentoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/empresas/{id}/historico": {
+      "get": {
+        "operationId": "historico",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageEmpresaHistoricoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "empresa-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/execucoes": {
+      "get": {
+        "operationId": "listar_6",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": false,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageExecucaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "execucao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/execucoes/{id}/cancelar": {
+      "patch": {
+        "operationId": "cancelar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "motivo",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "execucao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/info": {
+      "get": {
+        "operationId": "info",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/InfoAplicacao"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "info-aplicacao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/integracoes/faturas": {
+      "get": {
+        "operationId": "listar",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "provedorCodigo",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageFaturaProvedorResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "fatura-provedor-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      },
+      "post": {
+        "operationId": "salvar",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FaturaProvedorRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FaturaProvedorResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "fatura-provedor-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/integracoes/politicas": {
+      "get": {
+        "operationId": "listar_5",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PoliticaResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "politica-aquisicao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/integracoes/politicas/{operacao}": {
+      "put": {
+        "operationId": "atualizar_1",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "operacao",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PoliticaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PoliticaResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "politica-aquisicao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/integracoes/provedores": {
+      "get": {
+        "operationId": "listar_4",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/ProvedorResponse"
+                  },
+                  "type": "array"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "definicao-provedor-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/integracoes/provedores/historico": {
+      "get": {
+        "operationId": "consultar",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "inicio",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "fim",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvedorHistoricoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "provedor-historico-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/integracoes/provedores/{codigo}": {
+      "put": {
+        "operationId": "atualizar",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "codigo",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvedorAtualizacaoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvedorResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "definicao-provedor-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/interno/automation/session-tickets/consume": {
+      "post": {
+        "operationId": "consumir",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsumirTicketRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "sessao-interativa-ticket-consumo-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/interno/workers/documentos": {
+      "post": {
+        "operationId": "enviar",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "empresaId",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tipo",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "origem",
+            "required": true,
+            "schema": {
+              "enum": [
+                "USUARIO",
+                "MANUAL",
+                "API_OFICIAL",
+                "API_COMERCIAL",
+                "PORTAL_AUTOMATIZADO",
+                "PORTAL_ASSISTIDO",
+                "SISTEMA"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "emitidoEm",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "validoAte",
+            "required": false,
+            "schema": {
+              "format": "date",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "arquivo": {
+                    "format": "binary",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "arquivo"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "worker-document-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/interno/workers/execucoes/adquirir": {
+      "post": {
+        "operationId": "adquirir",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdquirirRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecucaoLease"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "worker-execution-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/interno/workers/execucoes/{id}/aguardar-humano": {
+      "post": {
+        "operationId": "aguardarHumano",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AguardarHumanoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecucaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "worker-execution-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/interno/workers/execucoes/{id}/concluir": {
+      "post": {
+        "operationId": "concluir",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConcluirRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecucaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "worker-execution-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/interno/workers/execucoes/{id}/falhar": {
+      "post": {
+        "operationId": "falhar",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FalharRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecucaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "worker-execution-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/interno/workers/execucoes/{id}/renovar": {
+      "patch": {
+        "operationId": "renovar",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenovarRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenovarResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "worker-execution-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/interno/workers/execucoes/{id}/retomar-sessao": {
+      "post": {
+        "operationId": "retomarSessao",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RetomarSessaoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExecucaoLease"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "worker-execution-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/interno/workers/heartbeat": {
+      "post": {
+        "operationId": "heartbeat",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Worker-Token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HeartbeatRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "tags": [
+          "worker-internal-controller"
+        ],
+        "x-contabilidade-visibility": "internal"
+      }
+    },
+    "/api/intervencoes": {
+      "get": {
+        "operationId": "listarPendentes",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageIntervencaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "intervencao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/intervencoes/{id}/assumir": {
+      "patch": {
+        "operationId": "assumir",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervencaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "intervencao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/intervencoes/{id}/resolver": {
+      "patch": {
+        "operationId": "resolver",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolverRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntervencaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "intervencao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/intervencoes/{id}/sessao": {
+      "get": {
+        "operationId": "sessao",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketSessaoInterativa"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "intervencao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/notificacoes": {
+      "get": {
+        "operationId": "listar_3",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "pagina",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "format": "int32",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tamanho",
+            "required": false,
+            "schema": {
+              "default": 30,
+              "format": "int32",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageNotificacaoResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "notificacao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/notificacoes/{id}/lida": {
+      "patch": {
+        "operationId": "marcarLida",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "notificacao-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    },
+    "/api/usuario-atual": {
+      "get": {
+        "operationId": "obter_1",
+        "responses": {
+          "200": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioAtualResponse"
+                }
+              }
+            },
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "usuario-atual-controller"
+        ],
+        "x-contabilidade-visibility": "public"
+      }
+    }
+  }
+}

@@ -1,0 +1,260 @@
+{
+  "description": "Operações do snapshot consumidas diretamente pelo frontend atual.",
+  "operations": [
+    {
+      "operationId": "agendaVencimentos",
+      "method": "GET",
+      "path": "/api/certidoes/agenda-vencimentos"
+    },
+    {
+      "operationId": "analisar",
+      "method": "GET",
+      "path": "/api/documentos/retencao-preview"
+    },
+    {
+      "operationId": "assumir",
+      "method": "PATCH",
+      "path": "/api/intervencoes/{id}/assumir"
+    },
+    {
+      "operationId": "atualizar",
+      "method": "PUT",
+      "path": "/api/integracoes/provedores/{codigo}"
+    },
+    {
+      "operationId": "atualizarClassificacao",
+      "method": "PUT",
+      "path": "/api/empresas/{id}/classificacao"
+    },
+    {
+      "operationId": "atualizarMetadados",
+      "method": "PUT",
+      "path": "/api/documentos/{id}/metadados"
+    },
+    {
+      "operationId": "atualizar_1",
+      "method": "PUT",
+      "path": "/api/integracoes/politicas/{operacao}"
+    },
+    {
+      "operationId": "atualizar_3",
+      "method": "PUT",
+      "path": "/api/empresas/{empresaId}/responsaveis-modulo/{modulo}"
+    },
+    {
+      "operationId": "baixar",
+      "method": "GET",
+      "path": "/api/documentos/{id}/conteudo"
+    },
+    {
+      "operationId": "buscar",
+      "method": "GET",
+      "path": "/api/busca"
+    },
+    {
+      "operationId": "cancelar",
+      "method": "PATCH",
+      "path": "/api/execucoes/{id}/cancelar"
+    },
+    {
+      "operationId": "consultar",
+      "method": "GET",
+      "path": "/api/integracoes/provedores/historico"
+    },
+    {
+      "operationId": "consultar_1",
+      "method": "GET",
+      "path": "/api/console-tecnica/workers/historico"
+    },
+    {
+      "operationId": "consultar_2",
+      "method": "GET",
+      "path": "/api/console-tecnica/configuracao"
+    },
+    {
+      "operationId": "enviar_1",
+      "method": "POST",
+      "path": "/api/documentos"
+    },
+    {
+      "operationId": "exportarCsv",
+      "method": "GET",
+      "path": "/api/certidoes/exportacao.csv"
+    },
+    {
+      "operationId": "exportarCsv_1",
+      "method": "GET",
+      "path": "/api/auditoria/exportacao.csv"
+    },
+    {
+      "operationId": "historico",
+      "method": "GET",
+      "path": "/api/empresas/{id}/historico"
+    },
+    {
+      "operationId": "historico_1",
+      "method": "GET",
+      "path": "/api/certidoes/{id}/historico"
+    },
+    {
+      "operationId": "importar",
+      "method": "POST",
+      "path": "/api/empresas/importacao-csv"
+    },
+    {
+      "operationId": "listar",
+      "method": "GET",
+      "path": "/api/integracoes/faturas"
+    },
+    {
+      "operationId": "listarPendentes",
+      "method": "GET",
+      "path": "/api/intervencoes"
+    },
+    {
+      "operationId": "listar_1",
+      "method": "GET",
+      "path": "/api/empresas"
+    },
+    {
+      "operationId": "listar_10",
+      "method": "GET",
+      "path": "/api/auditoria"
+    },
+    {
+      "operationId": "listar_2",
+      "method": "GET",
+      "path": "/api/documentos"
+    },
+    {
+      "operationId": "listar_3",
+      "method": "GET",
+      "path": "/api/notificacoes"
+    },
+    {
+      "operationId": "listar_4",
+      "method": "GET",
+      "path": "/api/integracoes/provedores"
+    },
+    {
+      "operationId": "listar_5",
+      "method": "GET",
+      "path": "/api/integracoes/politicas"
+    },
+    {
+      "operationId": "listar_6",
+      "method": "GET",
+      "path": "/api/execucoes"
+    },
+    {
+      "operationId": "listar_7",
+      "method": "GET",
+      "path": "/api/empresas/{empresaId}/responsaveis-modulo"
+    },
+    {
+      "operationId": "listar_8",
+      "method": "GET",
+      "path": "/api/console-tecnica/backups"
+    },
+    {
+      "operationId": "listar_9",
+      "method": "GET",
+      "path": "/api/certidoes"
+    },
+    {
+      "operationId": "marcarLida",
+      "method": "PATCH",
+      "path": "/api/notificacoes/{id}/lida"
+    },
+    {
+      "operationId": "modelo",
+      "method": "GET",
+      "path": "/api/empresas/importacao-csv/modelo"
+    },
+    {
+      "operationId": "modelo_1",
+      "method": "GET",
+      "path": "/api/console-tecnica/atualizacoes/modelo"
+    },
+    {
+      "operationId": "obter",
+      "method": "GET",
+      "path": "/api/empresas/{id}"
+    },
+    {
+      "operationId": "obter_1",
+      "method": "GET",
+      "path": "/api/usuario-atual"
+    },
+    {
+      "operationId": "preview",
+      "method": "GET",
+      "path": "/api/documentos/{id}/preview"
+    },
+    {
+      "operationId": "reconciliar",
+      "method": "GET",
+      "path": "/api/console-tecnica/storage/reconciliacao"
+    },
+    {
+      "operationId": "registrarManual",
+      "method": "POST",
+      "path": "/api/certidoes/{id}/resultado-manual"
+    },
+    {
+      "operationId": "resolver",
+      "method": "PATCH",
+      "path": "/api/intervencoes/{id}/resolver"
+    },
+    {
+      "operationId": "resumir",
+      "method": "GET",
+      "path": "/api/certidoes/dashboard-gerencial"
+    },
+    {
+      "operationId": "resumo",
+      "method": "GET",
+      "path": "/api/dashboard/resumo"
+    },
+    {
+      "operationId": "resumo_1",
+      "method": "GET",
+      "path": "/api/console-tecnica/resumo"
+    },
+    {
+      "operationId": "salvar",
+      "method": "POST",
+      "path": "/api/integracoes/faturas"
+    },
+    {
+      "operationId": "sessao",
+      "method": "GET",
+      "path": "/api/intervencoes/{id}/sessao"
+    },
+    {
+      "operationId": "solicitar",
+      "method": "POST",
+      "path": "/api/certidoes/{id}/solicitar"
+    },
+    {
+      "operationId": "solicitarLote",
+      "method": "POST",
+      "path": "/api/certidoes/solicitar-lote"
+    },
+    {
+      "operationId": "solicitarTodas",
+      "method": "POST",
+      "path": "/api/certidoes/solicitar-todas"
+    },
+    {
+      "operationId": "validar",
+      "method": "POST",
+      "path": "/api/console-tecnica/atualizacoes/preflight"
+    },
+    {
+      "operationId": "verificar",
+      "method": "GET",
+      "path": "/api/console-tecnica/backups/{backupId}/verificar"
+    }
+  ]
+}
