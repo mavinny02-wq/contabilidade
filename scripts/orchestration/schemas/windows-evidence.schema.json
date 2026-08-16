@@ -1,75 +1,37 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://contabilidade.local/schemas/windows-evidence.schema.json",
-  "title": "Evidências do ambiente Windows",
+  "title": "Evidência do runtime Windows",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "collectedAtUtc", "collectorVersion", "platform", "powershell", "git", "docker", "wsl", "environment"],
+  "required": ["schemaVersion", "collectedAtUtc", "collectorVersion", "mode", "platform", "tools", "repository", "compose", "services", "devIsolation", "endpoints", "database", "comparison", "outcome"],
   "properties": {
-    "schemaVersion": { "const": "1.0.0" },
+    "schemaVersion": { "const": "2.0.0" },
     "collectedAtUtc": { "type": "string", "format": "date-time" },
-    "collectorVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "collectorVersion": { "const": "2.0.0" },
+    "mode": { "enum": ["dev", "onpremise"] },
     "platform": {
-      "type": "object",
-      "additionalProperties": false,
+      "type": "object", "additionalProperties": false,
       "required": ["os", "architecture", "machineNameHash"],
-      "properties": {
-        "os": { "type": "string", "minLength": 1 },
-        "architecture": { "type": "string", "minLength": 1 },
-        "machineNameHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
-      }
+      "properties": { "os": { "type": "string", "minLength": 1 }, "architecture": { "type": "string", "minLength": 1 }, "machineNameHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" } }
     },
-    "powershell": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["edition", "version"],
-      "properties": {
-        "edition": { "type": "string", "minLength": 1 },
-        "version": { "type": "string", "minLength": 1 }
-      }
+    "tools": {
+      "type": "object", "additionalProperties": false,
+      "required": ["powershell", "git", "java", "maven", "node", "npm", "docker", "compose"],
+      "properties": { "powershell": { "$ref": "#/$defs/commandEvidence" }, "git": { "$ref": "#/$defs/commandEvidence" }, "java": { "$ref": "#/$defs/commandEvidence" }, "maven": { "$ref": "#/$defs/commandEvidence" }, "node": { "$ref": "#/$defs/commandEvidence" }, "npm": { "$ref": "#/$defs/commandEvidence" }, "docker": { "$ref": "#/$defs/commandEvidence" }, "compose": { "$ref": "#/$defs/commandEvidence" } }
     },
-    "git": { "$ref": "#/$defs/gitEvidence" },
-    "docker": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["version", "compose"],
-      "properties": {
-        "version": { "$ref": "#/$defs/commandEvidence" },
-        "compose": { "$ref": "#/$defs/commandEvidence" }
-      }
-    },
-    "wsl": { "$ref": "#/$defs/commandEvidence" },
-    "environment": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["CI", "WSL_DISTRO_NAME", "DOCKER_HOST"],
-      "properties": {
-        "CI": { "type": "boolean" },
-        "WSL_DISTRO_NAME": { "type": "boolean" },
-        "DOCKER_HOST": { "type": "boolean" }
-      }
-    }
+    "repository": { "type": "object", "additionalProperties": false, "required": ["revision", "dirty"], "properties": { "revision": { "$ref": "#/$defs/commandEvidence" }, "dirty": { "type": ["boolean", "null"] } } },
+    "compose": { "type": "object", "additionalProperties": false, "required": ["status", "effectiveConfigSha256"], "properties": { "status": { "enum": ["disponivel", "indisponivel", "erro"] }, "effectiveConfigSha256": { "type": ["string", "null"], "pattern": "^[a-f0-9]{64}$" } } },
+    "services": { "type": "array", "minItems": 5, "items": { "$ref": "#/$defs/serviceEvidence" } },
+    "devIsolation": { "type": "object", "additionalProperties": false, "required": ["keycloakAbsent", "bootstrapNotRunning"], "properties": { "keycloakAbsent": { "type": ["boolean", "null"] }, "bootstrapNotRunning": { "type": ["boolean", "null"] } } },
+    "endpoints": { "type": "object", "additionalProperties": false, "required": ["backendLiveness", "backendReadiness", "workerHealth", "frontendHealth", "frontendProxyInfo"], "properties": { "backendLiveness": { "$ref": "#/$defs/httpEvidence" }, "backendReadiness": { "$ref": "#/$defs/httpEvidence" }, "workerHealth": { "$ref": "#/$defs/httpEvidence" }, "frontendHealth": { "$ref": "#/$defs/httpEvidence" }, "frontendProxyInfo": { "$ref": "#/$defs/httpEvidence" } } },
+    "database": { "type": "object", "additionalProperties": false, "required": ["flywayLatest", "keycloakLiquibase"], "properties": { "flywayLatest": { "$ref": "#/$defs/commandEvidence" }, "keycloakLiquibase": { "oneOf": [{ "$ref": "#/$defs/commandEvidence" }, { "type": "null" }] } } },
+    "comparison": { "type": "object", "additionalProperties": false, "required": ["postgresContainerReused"], "properties": { "postgresContainerReused": { "type": ["boolean", "null"] } } },
+    "outcome": { "enum": ["completo", "parcial", "erro"] }
   },
   "$defs": {
-    "commandEvidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["status", "exitCode", "output"],
-      "properties": {
-        "status": { "enum": ["disponivel", "indisponivel", "erro"] },
-        "exitCode": { "type": ["integer", "null"] },
-        "output": { "type": ["string", "null"] }
-      }
-    },
-    "gitEvidence": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["version", "revision", "status"],
-      "properties": {
-        "version": { "$ref": "#/$defs/commandEvidence" },
-        "revision": { "$ref": "#/$defs/commandEvidence" },
-        "status": { "$ref": "#/$defs/commandEvidence" }
-      }
-    }
+    "commandEvidence": { "type": "object", "additionalProperties": false, "required": ["status", "exitCode", "output"], "properties": { "status": { "enum": ["disponivel", "indisponivel", "erro"] }, "exitCode": { "type": ["integer", "null"] }, "output": { "type": ["string", "null"] } } },
+    "httpEvidence": { "type": "object", "additionalProperties": false, "required": ["status", "statusCode"], "properties": { "status": { "enum": ["disponivel", "erro"] }, "statusCode": { "type": ["integer", "null"] } } },
+    "serviceEvidence": { "type": "object", "additionalProperties": false, "required": ["name", "containerId", "status", "health", "exitCode"], "properties": { "name": { "type": "string", "minLength": 1 }, "containerId": { "type": ["string", "null"] }, "status": { "type": "string" }, "health": { "type": "string" }, "exitCode": { "type": ["integer", "null"] } } }
   }
 }

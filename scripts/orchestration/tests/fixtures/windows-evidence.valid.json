@@ -1,22 +1,23 @@
 {
-  "schemaVersion": "1.0.0",
-  "collectedAtUtc": "2026-08-16T12:00:00.0000000Z",
-  "collectorVersion": "1.0.0",
-  "platform": {
-    "os": "Microsoft Windows NT 10.0.22631.0",
-    "architecture": "X64",
-    "machineNameHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  "schemaVersion": "2.0.0", "collectedAtUtc": "2026-08-16T12:00:00Z", "collectorVersion": "2.0.0", "mode": "dev",
+  "platform": { "os": "Microsoft Windows", "architecture": "X64", "machineNameHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+  "tools": {
+    "powershell": { "status": "disponivel", "exitCode": 0, "output": "Desktop 5.1" }, "git": { "status": "disponivel", "exitCode": 0, "output": "2.46" },
+    "java": { "status": "disponivel", "exitCode": 0, "output": "21" }, "maven": { "status": "disponivel", "exitCode": 0, "output": "3.9" },
+    "node": { "status": "disponivel", "exitCode": 0, "output": "22" }, "npm": { "status": "disponivel", "exitCode": 0, "output": "10" },
+    "docker": { "status": "disponivel", "exitCode": 0, "output": "27" }, "compose": { "status": "disponivel", "exitCode": 0, "output": "2.29" }
   },
-  "powershell": { "edition": "Desktop", "version": "5.1.22621.4391" },
-  "git": {
-    "version": { "status": "disponivel", "exitCode": 0, "output": "git version 2.46.0.windows.1" },
-    "revision": { "status": "disponivel", "exitCode": 0, "output": "0123456789abcdef0123456789abcdef01234567" },
-    "status": { "status": "disponivel", "exitCode": 0, "output": "## main" }
-  },
-  "docker": {
-    "version": { "status": "indisponivel", "exitCode": null, "output": null },
-    "compose": { "status": "indisponivel", "exitCode": null, "output": null }
-  },
-  "wsl": { "status": "indisponivel", "exitCode": null, "output": null },
-  "environment": { "CI": false, "WSL_DISTRO_NAME": false, "DOCKER_HOST": false }
+  "repository": { "revision": { "status": "disponivel", "exitCode": 0, "output": "0123456789abcdef0123456789abcdef01234567" }, "dirty": false },
+  "compose": { "status": "disponivel", "effectiveConfigSha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" },
+  "services": [
+    { "name": "postgres", "containerId": "pg1", "status": "running", "health": "healthy", "exitCode": 0 },
+    { "name": "postgres-bootstrap", "containerId": "boot1", "status": "exited", "health": "nao_configurado", "exitCode": 0 },
+    { "name": "backend", "containerId": "be1", "status": "running", "health": "healthy", "exitCode": 0 },
+    { "name": "automation-worker", "containerId": "wo1", "status": "running", "health": "healthy", "exitCode": 0 },
+    { "name": "frontend", "containerId": "fe1", "status": "running", "health": "healthy", "exitCode": 0 }
+  ],
+  "devIsolation": { "keycloakAbsent": true, "bootstrapNotRunning": true },
+  "endpoints": { "backendLiveness": { "status": "disponivel", "statusCode": 200 }, "backendReadiness": { "status": "disponivel", "statusCode": 200 }, "workerHealth": { "status": "disponivel", "statusCode": 200 }, "frontendHealth": { "status": "disponivel", "statusCode": 200 }, "frontendProxyInfo": { "status": "disponivel", "statusCode": 200 } },
+  "database": { "flywayLatest": { "status": "disponivel", "exitCode": 0, "output": "12|t" }, "keycloakLiquibase": null },
+  "comparison": { "postgresContainerReused": true }, "outcome": "completo"
 }
