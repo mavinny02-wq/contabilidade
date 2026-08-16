@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "migrations": [
+    { "version": 1, "arquivo": "V1__baseline_common.sql", "sha256": "05a0d774373915ba39fa1900e949071cc7df437166e7ec316dc3820445a3c359" },
+    { "version": 2, "arquivo": "V2__seed_provedores.sql", "sha256": "192dcd198d9384433341d160582623bc27dba43baaae0993512e6b9c0a09b10e" },
+    { "version": 3, "arquivo": "V3__common_operacional.sql", "sha256": "2b6436cf7b85ee374870890aa09083a88a479192ed0cd4e5e65a8238b819db2e" },
+    { "version": 4, "arquivo": "V4__centro_certidoes.sql", "sha256": "09248c2b932cca0a479b5ebf6e3a7331525c8fa40d6a0cf62401cd4ef910a743" },
+    { "version": 5, "arquivo": "V5__portal_federal_assistido.sql", "sha256": "f84ef292bef0a9a0fa298d1c26d735097752ac310c839d5f511421ea4a16eda8" },
+    { "version": 6, "arquivo": "V6__portais_estaduais_sp.sql", "sha256": "4f44eac92d2eed495cc270ff9fab623efc3e0c401e6c949496fb79afe5d1e5cc" },
+    { "version": 7, "arquivo": "V7__serpro_consulta_cnd.sql", "sha256": "5e6f900c4b4a824c6df946cde36eb53ba05a5f4bd6ddebb19ac7938061d9998f" },
+    { "version": 8, "arquivo": "V8__interactive_session_ticket_replay.sql", "sha256": "d1fe0b93546f028cfa7ed343af11dae6a0d1aec1e6be517025edb61d4e1a186a" },
+    { "version": 9, "arquivo": "V9__empresa_grupos_tags.sql", "sha256": "19e9b66968e27bf068dfac6614a87f87645fcf11beb1f76663cb444ae1e0c7d6" },
+    { "version": 10, "arquivo": "V10__empresa_responsaveis_modulo.sql", "sha256": "9421923238ebf2ef2e7a3578775e3ea5874b7e2666edc02698febb88eead9769" },
+    { "version": 11, "arquivo": "V11__faturas_provedor.sql", "sha256": "e50b4b7d149ac7a91e0f482e53d19d6525b1e77eaad36690cd7b6e6210e6185b" },
+    { "version": 12, "arquivo": "V12__worker_heartbeat_historico.sql", "sha256": "c47eeb7dce311e388c032fe6f4dceb80eabbb41158ccb9575b3ebaa8b55f466a" }
+  ]
+}
