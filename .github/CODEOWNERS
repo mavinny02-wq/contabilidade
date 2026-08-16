@@ -1,0 +1,23 @@
+# Ownership global: o repositório possui um único maintainer confirmado.
+# O fallback para qualquer caminho sem regra mais específica permanece com esse maintainer.
+* @mavinny02-wq
+
+# Governança, integração e automação de entrega
+/.github/ @mavinny02-wq
+/AGENTS.md @mavinny02-wq
+/docs/decisoes/ @mavinny02-wq
+/docs/orquestracao/ @mavinny02-wq
+/.contabilidade-orchestrator/ @mavinny02-wq
+/scripts/orchestration/ @mavinny02-wq
+
+# Schema, execução e configuração operacional
+/backend/src/main/resources/db/migration/ @mavinny02-wq
+/compose*.yaml @mavinny02-wq
+/infra/ @mavinny02-wq
+
+# Manifestos que controlam dependências e builds
+/backend/pom.xml @mavinny02-wq
+/frontend/package.json @mavinny02-wq
+/frontend/package-lock.json @mavinny02-wq
+/automation-worker/package.json @mavinny02-wq
+/automation-worker/package-lock.json @mavinny02-wq
