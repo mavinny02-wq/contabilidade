@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0",
   "waveId": "CONTABILIDADE_MATURITY_WAVE_004",
-  "state": "RELEASED_FOR_EXECUTION",
+  "state": "CONSUMED",
   "baseline": {
     "branch": "main",
     "commit": "76258506f63777a228980b030857db1cefd89a43"
@@ -10,61 +10,38 @@
     {
       "item": "BUG-ORQ-001",
       "owner": "DISPATCH_GOVERNANCE",
-      "locks": [
-        "LOCK-GIT-001",
-        "LOCK-WAVE-001",
-        "LOCK-EVID-001"
-      ],
+      "locks": ["LOCK-GIT-001", "LOCK-WAVE-001", "LOCK-EVID-001"],
       "migration": false,
       "resultPath": "docs/implementacao/BUG_ORQ_001_RESULT.md"
     },
     {
       "item": "STR-SEC-001",
       "owner": "SECURITY_POLICY",
-      "locks": [
-        "LOCK-DATA-001",
-        "LOCK-EXT-001",
-        "LOCK-TEST-001"
-      ],
+      "locks": ["LOCK-DATA-001", "LOCK-EXT-001", "LOCK-TEST-001"],
       "migration": false,
       "resultPath": "docs/implementacao/STR_SEC_001_RESULT.md"
     },
     {
       "item": "STR-DEP-001",
       "owner": "DEPENDENCY_INVENTORY",
-      "locks": [
-        "LOCK-DEP-001",
-        "LOCK-EVID-001",
-        "LOCK-TEST-001"
-      ],
+      "locks": ["LOCK-DEP-001", "LOCK-EVID-001", "LOCK-TEST-001"],
       "migration": false,
       "resultPath": "docs/implementacao/STR_DEP_001_RESULT.md"
     },
     {
       "item": "STR-DB-001",
       "owner": "BACKEND_TEST_DATABASE",
-      "locks": [
-        "LOCK-DB-001",
-        "LOCK-MIG-001",
-        "LOCK-EXT-001",
-        "LOCK-TEST-001"
-      ],
+      "locks": ["LOCK-DB-001", "LOCK-MIG-001", "LOCK-EXT-001", "LOCK-TEST-001"],
       "migration": false,
       "resultPath": "docs/implementacao/STR_DB_001_RESULT.md"
     },
     {
       "item": "STR-WRK-001",
       "owner": "WORKER_RUNTIME",
-      "locks": [
-        "LOCK-EXT-001",
-        "LOCK-COST-001",
-        "LOCK-AUT-001",
-        "LOCK-TEST-001"
-      ],
+      "locks": ["LOCK-EXT-001", "LOCK-COST-001", "LOCK-AUT-001", "LOCK-TEST-001"],
       "migration": false,
       "resultPath": "docs/implementacao/STR_WRK_001_RESULT.md"
     }
   ],
-  "launcherPath": "docs/orquestracao/waves/released/CONTABILIDADE_MATURITY_WAVE_004_LAUNCHERS.txt",
-  "previousManifest": "docs/orquestracao/waves/prepared/CONTABILIDADE_MATURITY_WAVE_004.json"
+  "previousManifest": "docs/orquestracao/waves/released/CONTABILIDADE_MATURITY_WAVE_004.json"
 }

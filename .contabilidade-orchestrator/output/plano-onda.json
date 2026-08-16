@@ -2,22 +2,26 @@
   "schemaVersion": "2.0",
   "classification": "ACTIVE_WAVE_ROUTER",
   "status": "RELEASED_FOR_EXECUTION",
-  "waveId": "CONTABILIDADE_MATURITY_WAVE_004",
+  "waveId": "CONTABILIDADE_QUALITY_GATE_WAVE_005",
   "canonical": {
     "currentState": "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md",
-    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_MATURITY_WAVE_004.json",
-    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_MATURITY_WAVE_004.md",
-    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_MATURITY_WAVE_004_LAUNCHERS.txt",
+    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_QUALITY_GATE_WAVE_005.json",
+    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_QUALITY_GATE_WAVE_005.md",
+    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_QUALITY_GATE_WAVE_005_LAUNCHERS.txt",
     "testLedger": "docs/testing/MASTER_TEST_ORCHESTRATION.md",
     "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md"
   },
   "execution": {
     "owners": 5,
+    "primaryOwners": 3,
+    "extraOwners": 2,
     "migrationOwners": 0,
-    "sameWaveDependencies": false
+    "sameWaveDependencies": false,
+    "contractVersion": "2.0"
   },
   "manualGate": {
     "windowsDev": "PENDING_PARALLEL",
-    "onPremiseKeycloak": "BLOCKED_UNTIL_WINDOWS_DEV_GREEN"
+    "onPremiseKeycloak": "BLOCKED_UNTIL_WINDOWS_DEV_GREEN",
+    "branchProtection": "BLOCKED_UNTIL_REQUIRED_CI_OBSERVED"
   }
 }
