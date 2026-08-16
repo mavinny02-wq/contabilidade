@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0",
+  "waveId": "CONTABILIDADE_WAVE_004",
+  "state": "RELEASED_FOR_EXECUTION",
+  "baseline": {"branch": "main", "commit": "2222222222222222222222222222222222222222"},
+  "owners": [
+    {
+      "item": "STR-EXAMPLE-001",
+      "owner": "EXAMPLE_OWNER",
+      "locks": ["LOCK-WAVE-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_EXAMPLE_001_RESULT.md"
+    }
+  ],
+  "launcherPath": "docs/orquestracao/waves/released/CONTABILIDADE_WAVE_004_LAUNCHERS.txt",
+  "previousManifest": "docs/orquestracao/waves/prepared/CONTABILIDADE_WAVE_004.json"
+}

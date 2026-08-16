@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "waveId": "CONTABILIDADE_WAVE_004",
+  "state": "CONSUMED",
+  "baseline": {"branch": "main", "commit": "2222222222222222222222222222222222222222"},
+  "owners": [
+    {
+      "item": "STR-EXAMPLE-001",
+      "owner": "EXAMPLE_OWNER",
+      "locks": ["LOCK-WAVE-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_EXAMPLE_001_RESULT.md"
+    }
+  ],
+  "previousManifest": "docs/orquestracao/waves/released/CONTABILIDADE_WAVE_004.json"
+}

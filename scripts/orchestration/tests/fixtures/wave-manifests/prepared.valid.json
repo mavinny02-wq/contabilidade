@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "waveId": "CONTABILIDADE_WAVE_004",
+  "state": "PREPARED_NOT_RELEASED",
+  "baseline": {"branch": "main", "commit": "1111111111111111111111111111111111111111"},
+  "owners": [
+    {
+      "item": "STR-EXAMPLE-001",
+      "owner": "EXAMPLE_OWNER",
+      "locks": ["LOCK-WAVE-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_EXAMPLE_001_RESULT.md"
+    }
+  ]
+}
