@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "baselineSha": "c3c06e8cb5921f96ecdb9b1e397594d01dd4430f",
+  "dispatchKey": "88f897e1dc468bd04488dba240ba6b6d67c6c535f01843f2f074a3a341180226",
+  "measuredAt": "2026-08-16",
+  "tolerance": {
+    "percentagePoints": 0.01,
+    "basis": "two consecutive measurements produced identical covered and total counters"
+  },
+  "exceptions": [],
+  "dependencies": [
+    {"name": "org.jacoco:jacoco-maven-plugin", "version": "0.8.13", "license": "EPL-2.0"},
+    {"name": "@vitest/coverage-v8", "version": "3.2.4", "license": "MIT"}
+  ],
+  "components": [
+    {
+      "component": "backend",
+      "command": "cd backend && mvn -B clean test -Dtest='!BancoPostgresqlIntegracaoTest' jacoco:report",
+      "toolchain": "Java 21.0.2; Maven 3.9.10; JaCoCo 0.8.13",
+      "completeness": "PARTIAL",
+      "limitations": ["BancoPostgresqlIntegracaoTest requires Docker, which was unavailable"],
+      "metrics": {
+        "lines": {"covered": 4, "total": 4433, "percent": 0.0902},
+        "branches": {"covered": 3, "total": 1790, "percent": 0.1676}
+      }
+    },
+    {
+      "component": "frontend",
+      "command": "cd frontend && npm run test:coverage",
+      "toolchain": "Node 20.20.2 (environment fallback); Vitest 3.2.4; @vitest/coverage-v8 3.2.4",
+      "completeness": "COMPLETE",
+      "limitations": [],
+      "metrics": {
+        "lines": {"covered": 602, "total": 6093, "percent": 9.8802},
+        "branches": {"covered": 56, "total": 117, "percent": 47.8632},
+        "functions": {"covered": 24, "total": 73, "percent": 32.8767},
+        "statements": {"covered": 602, "total": 6093, "percent": 9.8802}
+      }
+    },
+    {
+      "component": "automation-worker",
+      "command": "cd automation-worker && npm run build && node --test --experimental-test-coverage --test-coverage-include=dist/**/*.js --test-coverage-exclude=dist/**/*.test.js --test-concurrency=1 dist/worker.test.js dist/reliability.test.js",
+      "toolchain": "Node 24.19.0 built-in test coverage",
+      "completeness": "PARTIAL",
+      "limitations": ["10/11 tests passed; the Playwright smoke test requires an unprovisioned Chromium binary"],
+      "metrics": {
+        "lines": {"covered": 798, "total": 1465, "percent": 54.471},
+        "branches": {"covered": 146, "total": 211, "percent": 69.1943},
+        "functions": {"covered": 88, "total": 146, "percent": 60.274}
+      }
+    }
+  ]
+}
