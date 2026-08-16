@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "baseline_report": "artifact-baseline.json",
+  "policy": "Reductions always pass. Zero observed size/count variance in two clean builds; byte tolerances are small operational margins, while counts cannot grow.",
+  "components": {
+    "backend": {
+      "metrics": {
+        "jar_bytes": {"baseline": 70423857, "tolerance": 65536, "max_growth_ratio": 0},
+        "entry_count": {"baseline": 454, "tolerance": 0, "max_growth_ratio": 0},
+        "largest_entry_bytes": {"baseline": 12093295, "tolerance": 65536, "max_growth_ratio": 0}
+      }
+    },
+    "frontend": {
+      "metrics": {
+        "total_bytes": {"baseline": 567372, "tolerance": 8192, "max_growth_ratio": 0},
+        "file_count": {"baseline": 4, "tolerance": 0, "max_growth_ratio": 0},
+        "asset_count": {"baseline": 2, "tolerance": 0, "max_growth_ratio": 0},
+        "js_chunk_count": {"baseline": 2, "tolerance": 0, "max_growth_ratio": 0},
+        "largest_js_bytes": {"baseline": 543274, "tolerance": 8192, "max_growth_ratio": 0},
+        "largest_js_gzip_bytes": {"baseline": 157660, "tolerance": 4096, "max_growth_ratio": 0},
+        "css_bytes": {"baseline": 23435, "tolerance": 4096, "max_growth_ratio": 0},
+        "css_gzip_bytes": {"baseline": 5239, "tolerance": 1024, "max_growth_ratio": 0}
+      }
+    },
+    "worker": {
+      "metrics": {
+        "total_bytes": {"baseline": 375245, "tolerance": 4096, "max_growth_ratio": 0},
+        "own_code_bytes": {"baseline": 375245, "tolerance": 4096, "max_growth_ratio": 0},
+        "file_count": {"baseline": 72, "tolerance": 0, "max_growth_ratio": 0},
+        "largest_file_bytes": {"baseline": 22169, "tolerance": 2048, "max_growth_ratio": 0}
+      }
+    }
+  },
+  "exceptions": []
+}
