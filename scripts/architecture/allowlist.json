@@ -1,15 +1,6 @@
 {
   "entries": [
     {
-      "fingerprint": "26d20c712efacf4a7e0e",
-      "owner": "backend-common",
-      "reason": "Existing shared backend service coordinates an Empresa feature dependency.",
-      "review_by": "2027-02-16",
-      "rule": "backend.common_to_feature",
-      "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java"
-    },
-    {
       "fingerprint": "5a8e1c2f5540496d5f4b",
       "owner": "backend-common",
       "reason": "Existing shared backend service coordinates an Empresa feature dependency.",
@@ -44,15 +35,6 @@
       "rule": "backend.cross_feature_internal",
       "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
       "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-    },
-    {
-      "fingerprint": "eaf0dc00e83995f0b59b",
-      "owner": "backend-common",
-      "reason": "Existing shared backend service coordinates an Empresa feature dependency.",
-      "review_by": "2027-02-16",
-      "rule": "backend.common_to_feature",
-      "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
     }
   ],
   "schema_version": 1
