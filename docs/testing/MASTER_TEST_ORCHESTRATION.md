@@ -2,12 +2,14 @@
 
 **Classificação:** `CANONICAL_ACTIVE_TEST_LEDGER`  
 **Reconciliado em:** `2026-08-17`  
-**HEAD observado:** `47fffd99b959b5da41d82d0b4f4e5511f6e7456b`
+**HEAD observado:** `a34afbe0c7a7876ea231c3a9a1c913dbe39928ae`
 
 ## Hold P0
 
-A seleção de novas waves está bloqueada por `CONTABILIDADE_STARTUP_RELIABILITY_GATE_P0_001`.
-A stack oficial Windows/Compose ainda não completou nem o primeiro startup.
+A seleção de waves funcionais/estruturais comuns está bloqueada por
+`CONTABILIDADE_STARTUP_RELIABILITY_GATE_P0_001`. Somente a wave serial de recuperação
+`CONTABILIDADE_STARTUP_RECOVERY_WAVE_013` está liberada. A stack oficial Windows/Compose ainda não
+completou nem o primeiro startup.
 
 ## Evidência válida preservada
 
@@ -33,6 +35,10 @@ ou Compose Windows. Ele não pode ser usado como prova do startup oficial.
 | cleanup de probe ausente | `NativeCommandError` |
 | serviços Compose iniciados | `NO` |
 | `docker compose ps` | vazio após a falha |
+
+Nesta sessão Windows, PowerShell 5.1 está disponível e Docker CLI está ausente do `PATH`. Essa
+observação é `ENVIRONMENT_LIMITATION` desta sessão e exige preflight `DOCKER_CLI_UNAVAILABLE`; a
+regressão de produto reportada no host do usuário permanece a classificação primária.
 
 ### Classificação
 
@@ -65,6 +71,7 @@ Por isso, os guards anteriores puderam ficar verdes enquanto o fluxo oficial per
 | parser | Windows PowerShell 5.1 | todos `.ps1`/`.psm1` sem erro |
 | native process | Windows PowerShell 5.1 | stderr não aborta antes do exit code |
 | Pester probe | mocks estruturados | 14 cenários incluindo race/falha real |
+| preflight Docker | antes de builds | CLI ausente distinta de daemon indisponível |
 | Docker lifecycle | Docker Desktop | absent/stopped/running/concurrent/ownership |
 | Compose E2E 1 | projeto efêmero | stack dev ready e probe ausente |
 | Compose E2E 2 | mesmo projeto | PostgreSQL/marker preservados |
@@ -95,7 +102,8 @@ Ausência de Docker ou PowerShell não autoriza `PASS` estrutural como encerrame
 - nenhum segredo ou `.env` em logs;
 - nenhum cleanup global;
 - nenhuma alteração de Compose/banco para mascarar o problema;
-- nenhuma nova wave até a prova final.
+- nenhuma wave funcional/estrutural comum até a prova final;
+- a Wave 013 contém somente o owner de correção + harness; a validação final é posterior ao merge.
 
 ## Provas externas ainda pendentes
 
@@ -105,4 +113,4 @@ Ausência de Docker ou PowerShell não autoriza `PASS` estrutural como encerrame
 - restore e promoção reais;
 - providers reais/pagos.
 
-`MASTER_TEST_ORCHESTRATION_P0_STARTUP_RELIABILITY_HOLD`
+`MASTER_TEST_ORCHESTRATION_STARTUP_RECOVERY_WAVE_013_RELEASED`

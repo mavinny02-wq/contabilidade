@@ -7,7 +7,7 @@ Registro não significa seleção. O gate P0 de startup tem precedência sobre w
 
 ## Status
 
-`IN_PROGRESS_USER_AUTHORIZED`, `P0_BLOCKING`, `WAITING_FOR_FIX`, `READY_FOR_SELECTION`,
+`RELEASED_FOR_EXECUTION`, `INCLUDED_IN_EXECUTABLE_OWNER`, `P0_BLOCKING`, `WAITING_FOR_FIX`, `READY_FOR_SELECTION`,
 `RETURNED_TO_BACKLOG`, `WAITING_FOR_RUNTIME`, `WAITING_FOR_EXTERNAL_SETTING`, `DONE`,
 `SUPERSEDED`.
 
@@ -16,8 +16,8 @@ Registro não significa seleção. O gate P0 de startup tem precedência sobre w
 | ID | Estado | Resultado exigido |
 |---|---|---|
 | `CONTABILIDADE_STARTUP_RELIABILITY_GATE_P0_001` | `P0_BLOCKING` | primeiro e segundo startup Windows verdes |
-| `FIX-STARTUP-PROBE-001` | `IN_PROGRESS_USER_AUTHORIZED` | probe cleanup idempotente, race-safe e exit-code-driven |
-| `STR-STARTUP-TEST-001` | `P0_BLOCKING` | Pester + Docker lifecycle + Compose E2E integrados |
+| `FIX-STARTUP-PROBE-001` | `RELEASED_FOR_EXECUTION` | probe cleanup idempotente, race-safe e exit-code-driven |
+| `STR-STARTUP-TEST-001` | `INCLUDED_IN_EXECUTABLE_OWNER` | harness inseparável de `FIX-STARTUP-PROBE-001` |
 | `VAL-WINDOWS-COMPOSE-STARTUP-001` | `WAITING_FOR_FIX` | prova oficial em PowerShell 5.1/Docker Desktop |
 | `BUG-RUN-001` | `DONE_RUNTIME_PENDING` | coletor Windows v2 para evidência final |
 
@@ -87,9 +87,10 @@ Esses quatro itens não podem ser executados até a remoção do hold.
 
 ```text
 WINDOWS_COMPOSE_STARTUP_GATE != PASS
-  -> nenhuma nova wave
+  -> nenhuma wave funcional/estrutural comum
   -> nenhuma funcionalidade nova
-  -> somente FIX-STARTUP-PROBE-001 e testes/evidência inseparáveis
+  -> somente CONTABILIDADE_STARTUP_RECOVERY_WAVE_013
+  -> um owner serial: FIX-STARTUP-PROBE-001 + harness/testes inseparáveis
 ```
 
-`BACKLOG_ESTRUTURAL_P0_STARTUP_RELIABILITY_HOLD`
+`BACKLOG_ESTRUTURAL_STARTUP_RECOVERY_WAVE_013_RELEASED`

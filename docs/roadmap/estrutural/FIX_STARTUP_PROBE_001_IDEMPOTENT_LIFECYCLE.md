@@ -1,7 +1,8 @@
 # FIX-STARTUP-PROBE-001 — lifecycle idempotente do startup probe
 
 **Prioridade:** `P0_BLOCKER`  
-**Estado:** `IN_PROGRESS_USER_AUTHORIZED`  
+**Estado:** `RELEASED_FOR_EXECUTION`
+**Wave:** `CONTABILIDADE_STARTUP_RECOVERY_WAVE_013`
 **Ambiente autoritativo:** Windows PowerShell 5.1 + Docker Desktop  
 **Migration:** `NONE`
 
@@ -64,6 +65,7 @@ CONTAINER_REMOVED
 CONCURRENT_REMOVAL_EXPECTED
 IMAGE_AVAILABLE
 IMAGE_MISSING
+DOCKER_CLI_UNAVAILABLE
 DOCKER_DAEMON_UNAVAILABLE
 DOCKER_PERMISSION_OR_API_FAILURE
 PROBE_NAME_OWNERSHIP_CONFLICT
@@ -94,6 +96,10 @@ Se a operação principal e o cleanup falharem, preservar a causa principal e an
 ### Imagens e transição de etapas
 
 A verificação deve distinguir imagem válida, imagem ausente, daemon indisponível e falha real do container efêmero. A saída deve anunciar separadamente o fim da verificação das imagens e o início do startup sequencial.
+
+O preflight deve distinguir Docker CLI ausente de daemon indisponível e executar antes de Maven,
+npm ou build de imagem. A mensagem deve indicar a instalação/configuração esperada sem alterar o
+`PATH`, o contexto Docker ou o host do usuário automaticamente.
 
 ### Logs
 
@@ -131,6 +137,9 @@ Exercitar containers efêmeros identificados por label, inclusive remoção conc
 ### Compose real
 
 Incluir o harness de `STR_STARTUP_TEST_001_INTEGRATED_COMPOSE_HARNESS.md`. Execução Cloud/Linux não substitui a prova Windows.
+
+O harness e seus fixtures são inseparáveis deste owner na Wave 013; não formam um segundo slot em
+paralelo.
 
 ## Aceite
 

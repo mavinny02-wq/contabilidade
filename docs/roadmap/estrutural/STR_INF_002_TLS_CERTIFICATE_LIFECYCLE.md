@@ -1,7 +1,7 @@
 # STR-INF-002 — lifecycle TLS e certificados
 
-**Status:** `RELEASED_FOR_EXECUTION`
-**Wave:** `CONTABILIDADE_FAST_LANE_WAVE_012`
+**Status:** `RETURNED_TO_BACKLOG_P0_HOLD`
+**Wave anterior:** `CONTABILIDADE_FAST_LANE_WAVE_012` (`SUPERSEDED`)
 **Baseline:** `main@3850443701279e2002c527b6eb376de8abd664cf`
 **Migration:** `NONE`
 

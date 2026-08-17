@@ -35,7 +35,11 @@ Estes locks impedem regressões silenciosas. Leia somente os IDs mapeados ao own
 - `2>$null`, `*>$null`, swallow genérico ou mudança global para `SilentlyContinue` não constituem correção;
 - Pester mockado, integração Docker real e Compose E2E são obrigatórios;
 - primeira execução e execução repetida devem ser comprovadas no mesmo SHA;
-- nenhuma nova wave pode ser liberada durante `P0_STARTUP_RELIABILITY_HOLD`.
+- nenhuma wave funcional ou estrutural comum pode ser liberada durante
+  `P0_STARTUP_RELIABILITY_HOLD`;
+- a única exceção é uma wave de recuperação P0 com um único owner serial que reúna a correção do
+  startup e seus testes/harness inseparáveis; a validação Windows final permanece uma campanha
+  posterior, pinada ao SHA integrado.
 
 ## Aplicação geral
 

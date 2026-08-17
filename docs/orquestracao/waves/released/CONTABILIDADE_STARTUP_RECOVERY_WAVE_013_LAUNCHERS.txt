@@ -1,0 +1,16 @@
+TASK: FIX-STARTUP-PROBE-001
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_STARTUP_RECOVERY_WAVE_013
+DISPATCH_KEY: 8fdb5495fdc929d5e973da48f6594d7fe411b7094f08865744ed1571fb99a00c
+BASELINE: latest main
+PREPARE: windows-powershell51 + docker-desktop + dispatch-preflight
+READ:
+- root + scripts/AGENTS.md
+- docs/roadmap/estrutural/FIX_STARTUP_PROBE_001_IDEMPOTENT_LIFECYCLE.md
+- docs/orquestracao/STARTUP_RELIABILITY_GATE.md
+- docs/roadmap/estrutural/STR_STARTUP_TEST_001_INTEGRATED_COMPOSE_HARNESS.md
+LOCKS: LOCK-STARTUP-001, LOCK-ENV-001, LOCK-DATA-001, LOCK-EXT-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: startup/executor Docker/probe/harness/tests and exact RESULT_MD; Compose/product read-only
+MIGRATION: NONE
+VALIDATE: parse-first; Pester; native stderr; Docker lifecycle; Compose E2E twice; failure cleanup
+RESULT_MD: docs/implementacao/FIX_STARTUP_PROBE_001_RESULT.md
