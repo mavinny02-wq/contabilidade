@@ -42,6 +42,9 @@ export function validateDockerOrchestration({
   }
 
   assert.match(coreBat, /docker build --pull=false --network=none --progress=plain/i);
+  assert.match(coreBat, /echo FROM eclipse-temurin:21-jre/i);
+  assert.match(coreBat, /echo FROM nginx:1\.27-alpine/i);
+  assert.match(coreBat, /echo FROM mcr\.microsoft\.com\/playwright:v1\.60\.0-noble/i);
   assert.doesNotMatch(coreBat, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
   assert.match(resilient, /contabilidade-docker\.psm1/i);
@@ -49,6 +52,13 @@ export function validateDockerOrchestration({
   assert.match(resilient, /failed to prepare extraction snapshot/i);
   assert.match(resilient, /CoreSourceBat/i);
   assert.match(resilient, /TemporaryCoreBat/i);
+  assert.match(resilient, /Invoke-BaseImagePreflight/i);
+  assert.match(resilient, /type=cacheonly/i);
+  assert.match(resilient, /Test-ContabilidadeBuildKitDnsFailure/i);
+  assert.match(resilient, /Repair-BuildKitDns/i);
+  assert.match(resilient, /CONTABILIDADE_BUILDKIT_DNS/i);
+  assert.match(resilient, /buildkitd\.contabilidade\.toml/i);
+  assert.match(resilient, /configuracao global do Docker Desktop nao sera modificada/i);
   assert.doesNotMatch(resilient, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
   assert.match(dockerModule, /Invoke-ContabilidadeNativeCommand/i);
@@ -58,6 +68,11 @@ export function validateDockerOrchestration({
   assert.match(dockerModule, /buildx', 'use'/i);
   assert.match(dockerModule, /--bootstrap/i);
   assert.match(dockerModule, /quebrado ou inacessivel/i);
+  assert.match(dockerModule, /Get-ContabilidadeBuildKitDnsServers/i);
+  assert.match(dockerModule, /New-ContabilidadeBuildKitConfig/i);
+  assert.match(dockerModule, /\[dns\]/i);
+  assert.match(dockerModule, /--buildkitd-config/i);
+  assert.match(dockerModule, /GetAllNetworkInterfaces/i);
   assert.doesNotMatch(dockerModule, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
   assert.match(sequentialBat, /start-compose-sequential\.ps1/i);
@@ -98,6 +113,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       'modo dev sem Keycloak ou bootstrap',
       'startup incremental sem docker compose down',
       'builder isolado docker-container',
+      'preflight cache-only das imagens-base',
+      'recuperacao DNS project-scoped do BuildKit',
       'recuperacao restrita ao builder da aplicacao',
       'deploy on-premise sem build',
     ],
