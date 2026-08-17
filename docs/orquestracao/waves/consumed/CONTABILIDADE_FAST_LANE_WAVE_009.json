@@ -1,7 +1,7 @@
 {
   "schemaVersion": "2.0",
   "waveId": "CONTABILIDADE_FAST_LANE_WAVE_009",
-  "state": "RELEASED_FOR_EXECUTION",
+  "state": "CONSUMED",
   "baseline": {
     "branch": "main",
     "commit": "357dd4b8827c0c9620d0dd7e8398bc3468418ff9"
@@ -10,7 +10,13 @@
     {
       "item": "VAL-W008-FULLSTACK-009",
       "owner": "FULLSTACK_POST_W008_VALIDATION",
-      "locks": ["LOCK-EXT-001", "LOCK-DATA-001", "LOCK-ENV-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "locks": [
+        "LOCK-EXT-001",
+        "LOCK-DATA-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
       "migration": false,
       "resultPath": "docs/testing/runs/VAL_W008_FULLSTACK_009.md",
       "dispatchKey": "bcdc73d37e0142413803761e8d2d02289d9f2ce57b2b3102a4c0bb38fc7658f0"
@@ -18,7 +24,11 @@
     {
       "item": "STR-QA-FE-002",
       "owner": "FRONTEND_COVERAGE_REFRESH",
-      "locks": ["LOCK-DATA-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "locks": [
+        "LOCK-DATA-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
       "migration": false,
       "resultPath": "docs/implementacao/STR_QA_FE_002_RESULT.md",
       "dispatchKey": "3920c8e51fb1074265fe89c5f6262544fd16e7796b0085f0ef92fbcf649e768f"
@@ -26,7 +36,11 @@
     {
       "item": "STR-SEC-IAM-001",
       "owner": "IAM_CONTRACT_GUARD",
-      "locks": ["LOCK-DATA-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "locks": [
+        "LOCK-DATA-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
       "migration": false,
       "resultPath": "docs/implementacao/STR_SEC_IAM_001_RESULT.md",
       "dispatchKey": "b532d464f635ea91c985dff051bb16250a49c2f2dd05d026cf4160bc82f9fee3"
@@ -34,7 +48,10 @@
     {
       "item": "STR-ARCH-BE-003",
       "owner": "BACKEND_GLOBAL_SEARCH_BOUNDARY",
-      "locks": ["LOCK-EVID-001", "LOCK-TEST-001"],
+      "locks": [
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
       "migration": false,
       "resultPath": "docs/implementacao/STR_ARCH_BE_003_RESULT.md",
       "dispatchKey": "151f6711bceb996527e847ad830a2169a710657cd195e08d3e140ca266c4ce55"
@@ -42,12 +59,16 @@
     {
       "item": "STR-DOC-002",
       "owner": "DOCUMENT_LOCAL_STORAGE_CONTRACTS",
-      "locks": ["LOCK-DOC-001", "LOCK-DATA-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "locks": [
+        "LOCK-DOC-001",
+        "LOCK-DATA-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
       "migration": false,
       "resultPath": "docs/implementacao/STR_DOC_002_RESULT.md",
       "dispatchKey": "61c30d061bde5c59779d5f2ef68bc1adf77e14116165f52effce47bfff349fd1"
     }
   ],
-  "launcherPath": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_009_LAUNCHERS.txt",
-  "previousManifest": "docs/orquestracao/waves/prepared/CONTABILIDADE_FAST_LANE_WAVE_009.json"
+  "previousManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_009.json"
 }

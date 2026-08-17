@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "2.0",
+  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_010",
+  "state": "PREPARED_NOT_RELEASED",
+  "baseline": {
+    "branch": "main",
+    "commit": "d14e8624cafb23462abc3cc693a798459fcd870e"
+  },
+  "owners": [
+    {
+      "item": "FIX-SEC-IAM-001",
+      "owner": "BACKEND_IAM_FAIL_CLOSED",
+      "locks": [
+        "LOCK-DATA-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/FIX_SEC_IAM_001_RESULT.md",
+      "dispatchKey": "f3b77d50701cde679abacd85011e18c37e383b75b87f78c561c6c135d4c893ae"
+    },
+    {
+      "item": "FIX-STARTUP-PREFLIGHT-001",
+      "owner": "WINDOWS_STARTUP_PARSE_PREFLIGHT",
+      "locks": [
+        "LOCK-DEP-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/FIX_STARTUP_PREFLIGHT_001_RESULT.md",
+      "dispatchKey": "de4b84436b331c1cbc4c6fd4c393f32c5987c99c442b029e6039538c0bc4a4d5"
+    },
+    {
+      "item": "VAL-TECH-CONSOLE-CURRENT-001",
+      "owner": "TECHNICAL_CONSOLE_CURRENT_CONTRACT_VALIDATION",
+      "locks": [
+        "LOCK-DATA-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/testing/runs/VAL_TECH_CONSOLE_CURRENT_001.md",
+      "dispatchKey": "79d1de1e00ff7224dbccba207995d97c25a4e1f3d1353a3c5daea4e647e8f45d"
+    },
+    {
+      "item": "STR-ARCH-BE-004",
+      "owner": "CERTIDAO_EMPRESA_QUERY_BOUNDARY",
+      "locks": [
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_ARCH_BE_004_RESULT.md",
+      "dispatchKey": "35bd42558531a2c89ae3fe42e88ed85d5ed8f4ccc3de3d539b7cab3d0a896041"
+    },
+    {
+      "item": "STR-INF-001",
+      "owner": "ENVIRONMENT_CONTRACT_GUARD",
+      "locks": [
+        "LOCK-DEP-001",
+        "LOCK-DATA-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_INF_001_RESULT.md",
+      "dispatchKey": "ba73043442bdbecdaca0166eeb5a93098905b0092342e94d32bbd82f9e308c25"
+    }
+  ]
+}

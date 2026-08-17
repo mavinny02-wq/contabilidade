@@ -12,34 +12,35 @@
 | `REQUIRED_CI_GATE` | `.github/workflows/required-ci.yml`, `scripts/ci/**` | bloqueado por setting externo |
 | `DEPENDENCY_LOCKS` | POM/package/lockfiles | owner explícito |
 | `STARTUP_DEPLOY` | Compose/startup/deploy | serial |
+| `ARCHITECTURE_BASELINE` | `scripts/architecture/baseline.json`, allowlist | um owner por onda |
 
-## Fast Lane Wave 009
+## Fast Lane Wave 010
 
 | ITEM | Owner exclusivo | Escrita permitida |
 |---|---|---|
-| `VAL-W008-FULLSTACK-009` | `FULLSTACK_POST_W008_VALIDATION` | somente resultado; produto read-only |
-| `STR-QA-FE-002` | `FRONTEND_COVERAGE_REFRESH` | testes frontend e seção frontend do baseline; produção read-only |
-| `STR-SEC-IAM-001` | `IAM_CONTRACT_GUARD` | `scripts/security/iam/**`, inventário, fixtures, testes e resultado; produto/realm read-only |
-| `STR-ARCH-BE-003` | `BACKEND_GLOBAL_SEARCH_BOUNDARY` | `common/search`, adapter/projeção `empresa`, testes e architecture baseline/allowlist |
-| `STR-DOC-002` | `DOCUMENT_LOCAL_STORAGE_CONTRACTS` | storage local de documentos, testes focados e resultado; POM/migrations read-only |
+| `FIX-SEC-IAM-001` | `BACKEND_IAM_FAIL_CLOSED` | converter JWT, testes focados, inventário/guard IAM e resultado |
+| `FIX-STARTUP-PREFLIGHT-001` | `WINDOWS_STARTUP_PARSE_PREFLIGHT` | preflight parser, testes/guard de startup e resultado |
+| `VAL-TECH-CONSOLE-CURRENT-001` | `TECHNICAL_CONSOLE_CURRENT_CONTRACT_VALIDATION` | testes backend/frontend atuais e resultado; produto read-only |
+| `STR-ARCH-BE-004` | `CERTIDAO_EMPRESA_QUERY_BOUNDARY` | porta Certidão, adapter Empresa, testes e baseline/allowlist |
+| `STR-INF-001` | `ENVIRONMENT_CONTRACT_GUARD` | tooling/policy/fixtures/workflow de ambiente; configs read-only |
 
 ## Independência
 
-- o smoke escreve somente seu relatório;
-- coverage é o único owner de testes/configuração de qualidade do frontend;
-- IAM apenas lê segurança, controllers e realm do produto;
-- busca global não toca segurança, documentos ou frontend;
-- storage local não toca busca, IAM, frontend ou banco;
-- a tranche arquitetural parte de 6 findings e deve remover exatamente 2;
+- segurança JWT não toca startup, Certidão, Console Técnica ou configuração de ambientes;
+- startup não altera Compose, produto ou segurança;
+- validação da Console Técnica escreve apenas testes e resultado;
+- architecture é o único owner de baseline/allowlist;
+- environment guard cria tooling próprio e apenas lê configurações;
 - nenhum owner cria migration;
-- nenhum owner depende de outro slot;
-- nenhum owner usa provider real, credencial ou dado real;
+- nenhum owner modifica POM/lockfile;
+- nenhum owner usa provider, credencial ou dado real;
 - overlap descoberto torna o owner posterior `SUPERSEDED` ou serializado.
 
-## Campanha reservada fora da wave
+## Campanhas reservadas fora da wave
 
-`VAL-QA-BE-DOCKER-001` possui owner somente de execução da suíte
-`ExecucaoFilaPostgresqlTest` em ambiente Docker. Não altera código e não ocupa slot enquanto o
-ambiente necessário não estiver disponível.
+- `VAL-QA-BE-DOCKER-001`: execução da suíte `ExecucaoFilaPostgresqlTest`;
+- Windows dev/segundo startup;
+- on-premise/Keycloak;
+- settings do GitHub Actions e branch protection.
 
-`OWNER_MATRIX_FAST_LANE_WAVE_009`
+`OWNER_MATRIX_FAST_LANE_WAVE_010`
