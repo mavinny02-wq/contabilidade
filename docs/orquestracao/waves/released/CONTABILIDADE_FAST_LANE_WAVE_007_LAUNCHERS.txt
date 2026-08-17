@@ -1,0 +1,74 @@
+TASK: VAL-W006-FULLSTACK-007
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_007
+DISPATCH_KEY: e82ffab2bfaac2412a1d9d885845bdd6b4489ce14e86e9e0630418ae7cf36563
+BASELINE: latest main
+PREPARE: fullstack-node24 + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/testing/plans/VAL_W006_FULLSTACK_007.md
+LOCKS: LOCK-EXT-001, LOCK-DATA-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: product read-only; only exact RESULT_MD may change
+MIGRATION: NONE
+VALIDATE: Node 24; build all components; run controlled PostgreSQL/Flyway/health/heartbeat/Playwright smoke with external network blocked
+RESULT_MD: docs/testing/runs/VAL_W006_FULLSTACK_007.md
+
+TASK: STR-FE-001
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_007
+DISPATCH_KEY: 8879bbc739dfa5cc339b4150f6650bcdd854190bc864bdd00db987941bd85d29
+BASELINE: latest main
+PREPARE: frontend-a11y + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_FE_001_ACCESSIBILITY_BROWSER.md
+LOCKS: LOCK-DATA-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: frontend accessibility/browser tests and minimal fixes; no API/business changes
+MIGRATION: NONE
+VALIDATE: Node 24; locale, typecheck, unit tests, build, keyboard/focus tests and local-only browser a11y smoke
+RESULT_MD: docs/implementacao/STR_FE_001_RESULT.md
+
+TASK: STR-API-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_007
+DISPATCH_KEY: e6a099540075a3f9d8998575595ee6d7b61dbb5e6d7af9acc982ed58e1b05743
+BASELINE: latest main
+PREPARE: api-contracts + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_API_002_CONSUMER_CONTRACTS.md
+LOCKS: LOCK-DATA-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: scripts/contracts and consumer contract artifacts only; frontend/backend source read-only
+MIGRATION: NONE
+VALIDATE: generate deterministic call-site inventory, validate usage-map/OpenAPI alignment, breaking fixtures and git diff --check
+RESULT_MD: docs/implementacao/STR_API_002_RESULT.md
+
+TASK: STR-QA-WRK-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_007
+DISPATCH_KEY: a0c5e2fe0ce3a26cefec64e0d92bf540e5dc2397f593de2752771b2d51a707c9
+BASELINE: latest main
+PREPARE: worker-node24-playwright-coverage + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_QA_WRK_002_COMPLETE_COVERAGE.md
+LOCKS: LOCK-EXT-001, LOCK-AUT-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: worker tests and worker coverage baseline only; production source read-only
+MIGRATION: NONE
+VALIDATE: Node 24; provision Chromium; block external network; run typecheck, full tests, build, coverage and ratchet
+RESULT_MD: docs/implementacao/STR_QA_WRK_002_RESULT.md
+
+TASK: STR-CTX-001
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_007
+DISPATCH_KEY: 1e0c682805c8f0407d0594c5a51ef5698726c40b944deee5222f8260f2b97bc2
+BASELINE: latest main
+PREPARE: orchestration-telemetry + dispatch-preflight
+READ:
+- root + scripts/orchestration/AGENTS.md
+- docs/roadmap/estrutural/STR_CTX_001_TOKEN_OUTCOME_TELEMETRY.md
+LOCKS: LOCK-DATA-001, LOCK-EVID-001, LOCK-WAVE-001
+OWNER: token telemetry schema/parser/aggregator/fixtures/tests and result only
+MIGRATION: NONE
+VALIDATE: run reported-vs-estimated, redaction, duplicate, budget and cost-per-outcome tests plus git diff --check
+RESULT_MD: docs/implementacao/STR_CTX_001_RESULT.md

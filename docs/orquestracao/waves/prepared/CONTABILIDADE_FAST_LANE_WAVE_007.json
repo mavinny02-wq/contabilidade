@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "2.0",
+  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_007",
+  "state": "PREPARED_NOT_RELEASED",
+  "baseline": {
+    "branch": "main",
+    "commit": "d4c5391ebcf44b9fc7d3a7db7a488a5e7564889b"
+  },
+  "owners": [
+    {
+      "item": "VAL-W006-FULLSTACK-007",
+      "owner": "FULLSTACK_POST_W006_VALIDATION",
+      "locks": ["LOCK-EXT-001", "LOCK-DATA-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/testing/runs/VAL_W006_FULLSTACK_007.md",
+      "dispatchKey": "e82ffab2bfaac2412a1d9d885845bdd6b4489ce14e86e9e0630418ae7cf36563"
+    },
+    {
+      "item": "STR-FE-001",
+      "owner": "FRONTEND_ACCESSIBILITY",
+      "locks": ["LOCK-DATA-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_FE_001_RESULT.md",
+      "dispatchKey": "8879bbc739dfa5cc339b4150f6650bcdd854190bc864bdd00db987941bd85d29"
+    },
+    {
+      "item": "STR-API-002",
+      "owner": "API_CONSUMER_CONTRACT",
+      "locks": ["LOCK-DATA-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_API_002_RESULT.md",
+      "dispatchKey": "e6a099540075a3f9d8998575595ee6d7b61dbb5e6d7af9acc982ed58e1b05743"
+    },
+    {
+      "item": "STR-QA-WRK-002",
+      "owner": "WORKER_COVERAGE_COMPLETE",
+      "locks": ["LOCK-EXT-001", "LOCK-AUT-001", "LOCK-EVID-001", "LOCK-TEST-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_QA_WRK_002_RESULT.md",
+      "dispatchKey": "a0c5e2fe0ce3a26cefec64e0d92bf540e5dc2397f593de2752771b2d51a707c9"
+    },
+    {
+      "item": "STR-CTX-001",
+      "owner": "ORCHESTRATION_TOKEN_TELEMETRY",
+      "locks": ["LOCK-DATA-001", "LOCK-EVID-001", "LOCK-WAVE-001"],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_CTX_001_RESULT.md",
+      "dispatchKey": "1e0c682805c8f0407d0594c5a51ef5698726c40b944deee5222f8260f2b97bc2"
+    }
+  ]
+}

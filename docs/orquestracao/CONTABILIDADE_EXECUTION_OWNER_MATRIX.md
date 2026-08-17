@@ -9,35 +9,35 @@
 | `ROOT_GOVERNANCE` | AGENTS, índices, locks | orquestrador/documentação direta |
 | `ORCHESTRATION_STATE` | checkpoint, ledger, backlog, manifests | orquestrador somente |
 | `MIGRATION_LANE` | `backend/src/main/resources/db/migration/**` | máximo um owner |
-| `REQUIRED_CI_GATE` | `.github/workflows/required-ci.yml`, `scripts/ci/**` | owner único |
-| `SUPPLY_CHAIN_SECURITY` | workflow/scripts/policy de supply chain | owner único |
-| `FRONTEND_BUNDLE` | router, lazy boundaries, Vite chunk config | serial |
-| `OBSERVABILITY` | correlação/logs/métricas backend-worker | serial |
-| `ARCHITECTURE_GUARD` | scripts/baseline/workflow de boundaries | source read-only |
+| `REQUIRED_CI_GATE` | `.github/workflows/required-ci.yml`, `scripts/ci/**` | bloqueado por setting externo |
+| `FULLSTACK_POST_W006_VALIDATION` | produto read-only + resultado de smoke | validação consolidada |
+| `FRONTEND_ACCESSIBILITY` | frontend, testes a11y/browser e lockfile se necessário | único owner frontend |
+| `API_CONSUMER_CONTRACT` | `scripts/contracts/**`, contrato consumer | frontend read-only |
+| `WORKER_COVERAGE_COMPLETE` | testes worker e seção worker do baseline de coverage | produção worker read-only |
+| `ORCHESTRATION_TOKEN_TELEMETRY` | profiler/telemetria em `scripts/orchestration/**` | sem prompt bruto |
 | `DEPENDENCY_LOCKS` | POM/package/lockfiles | owner explícito |
-| `WORKER_RUNTIME` | lease/retry/browser/shutdown | serial |
 | `STARTUP_DEPLOY` | Compose/startup/deploy | serial |
 
-## Wave 006
+## Fast Lane Wave 007
 
 | ITEM | Owner exclusivo | Escrita permitida |
 |---|---|---|
-| `STR-CI-002` | `REQUIRED_CI_GATE` | required-ci, canary opcional, `scripts/ci/**`, testes/result |
-| `STR-SEC-002` | `SUPPLY_CHAIN_SECURITY` | novo workflow e `scripts/security/supply-chain/**` |
-| `STR-FE-BUNDLE-001` | `FRONTEND_BUNDLE` | router/lazy/fallback/Vite/tests focados |
-| `STR-OBS-001` | `OBSERVABILITY` | observability backend/worker e `BackendClient.ts` |
-| `STR-ARCH-001` | `ARCHITECTURE_GUARD` | `scripts/architecture/**`, workflow próprio, baseline |
+| `VAL-W006-FULLSTACK-007` | `FULLSTACK_POST_W006_VALIDATION` | somente `RESULT_MD`; produto read-only |
+| `STR-FE-001` | `FRONTEND_ACCESSIBILITY` | frontend a11y/browser, testes e dependência dev justificada |
+| `STR-API-002` | `API_CONSUMER_CONTRACT` | contracts/scripts focados; frontend read-only |
+| `STR-QA-WRK-002` | `WORKER_COVERAGE_COMPLETE` | testes worker e worker coverage baseline; produção read-only |
+| `STR-CTX-001` | `ORCHESTRATION_TOKEN_TELEMETRY` | scripts/schema/fixtures de telemetria e resultado |
 
 ## Independência
 
-- todos usam a baseline observada `a3344a15a0581fd7f76f78766c6432b46f9a361e`;
+- todos usam a baseline `d4c5391ebcf44b9fc7d3a7db7a488a5e7564889b`;
 - nenhum owner cria migration;
 - documentação canônica fica fora dos executores;
-- `STR-CI-002` não altera workflows dedicados;
-- `STR-SEC-002` não altera required-ci nem produto;
-- `STR-FE-BUNDLE-001` é o único owner do frontend nesta wave;
-- `STR-OBS-001` é o único owner de código backend/worker compartilhado;
-- `STR-ARCH-001` lê produto, mas só escreve tooling;
+- o smoke não altera produto;
+- acessibilidade é o único owner de escrita no frontend;
+- API consumer apenas lê call sites do frontend;
+- worker coverage não altera runtime;
+- token telemetry não lê ou persiste prompts;
 - overlap descoberto torna o owner posterior `SUPERSEDED` ou serializado.
 
-`OWNER_MATRIX_WAVE_006`
+`OWNER_MATRIX_FAST_LANE_WAVE_007`

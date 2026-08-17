@@ -2,12 +2,12 @@
   "schemaVersion": "2.0",
   "classification": "ACTIVE_WAVE_ROUTER",
   "status": "RELEASED_FOR_EXECUTION",
-  "waveId": "CONTABILIDADE_HARDENING_WAVE_006",
+  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_007",
   "canonical": {
     "currentState": "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md",
-    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_HARDENING_WAVE_006.json",
-    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_HARDENING_WAVE_006.md",
-    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_HARDENING_WAVE_006_LAUNCHERS.txt",
+    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_007.json",
+    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_007.md",
+    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_007_LAUNCHERS.txt",
     "testLedger": "docs/testing/MASTER_TEST_ORCHESTRATION.md",
     "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md"
   },
@@ -15,14 +15,15 @@
     "owners": 5,
     "migrationOwners": 0,
     "sameWaveDependencies": false,
-    "contract": "2.0"
+    "contract": "2.0",
+    "lane": "FAST"
   },
   "manualGate": {
     "windowsDev": "PENDING_PARALLEL",
     "onPremiseKeycloak": "BLOCKED_UNTIL_WINDOWS_DEV_GREEN"
   },
   "externalGate": {
-    "requiredCiRemoteRun": "NOT_PROVEN",
+    "requiredCiRemoteRun": "NOT_PROVEN_EXTERNAL_BLOCKER",
     "branchProtection": "NOT_ENABLED"
   }
 }
