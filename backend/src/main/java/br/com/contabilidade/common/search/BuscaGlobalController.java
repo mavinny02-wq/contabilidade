@@ -1,7 +1,6 @@
 package br.com.contabilidade.common.search;
 
-import br.com.contabilidade.empresa.api.EmpresaResumoResponse;
-import br.com.contabilidade.empresa.service.EmpresaService;
+import br.com.contabilidade.common.search.EmpresaBuscaGlobalConsulta.EmpresaBuscaGlobalProjecao;
 import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/busca")
 public class BuscaGlobalController {
 
-    private final EmpresaService empresaService;
+    private final EmpresaBuscaGlobalConsulta empresaConsulta;
 
-    public BuscaGlobalController(EmpresaService empresaService) {
-        this.empresaService = empresaService;
+    public BuscaGlobalController(EmpresaBuscaGlobalConsulta empresaConsulta) {
+        this.empresaConsulta = empresaConsulta;
     }
 
     @GetMapping
@@ -25,13 +24,13 @@ public class BuscaGlobalController {
         if (termo == null || termo.trim().length() < 2) {
             return new BuscaGlobalResponse(List.of());
         }
-        List<ResultadoBusca> resultados = empresaService.listar(termo, 0, 10).getContent().stream()
+        List<ResultadoBusca> resultados = empresaConsulta.buscar(termo, 10).stream()
                 .map(this::empresa)
                 .toList();
         return new BuscaGlobalResponse(resultados);
     }
 
-    private ResultadoBusca empresa(EmpresaResumoResponse empresa) {
+    private ResultadoBusca empresa(EmpresaBuscaGlobalProjecao empresa) {
         return new ResultadoBusca(
                 "EMPRESA",
                 empresa.id().toString(),

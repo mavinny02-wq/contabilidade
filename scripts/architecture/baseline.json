@@ -7,18 +7,6 @@
       "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
     },
     {
-      "fingerprint": "26d20c712efacf4a7e0e",
-      "rule": "backend.common_to_feature",
-      "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java"
-    },
-    {
-      "fingerprint": "eaf0dc00e83995f0b59b",
-      "rule": "backend.common_to_feature",
-      "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
-    },
-    {
       "fingerprint": "cbe6a5f97141f02f6f89",
       "rule": "backend.cross_feature_internal",
       "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
@@ -600,6 +588,10 @@
         "target": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoService.java"
       },
       {
+        "source": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoMaintenanceScheduler.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/observability/TechnicalSignalMetrics.java"
+      },
+      {
         "source": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedor.java",
         "target": "backend/src/main/java/br/com/contabilidade/common/persistence/EntidadeBase.java"
       },
@@ -702,14 +694,6 @@
       {
         "source": "backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoService.java",
         "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
-      },
-      {
-        "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
-        "target": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaResumoResponse.java"
-      },
-      {
-        "source": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
-        "target": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaService.java"
       },
       {
         "source": "backend/src/main/java/br/com/contabilidade/common/security/SecurityConfig.java",
@@ -982,6 +966,10 @@
       {
         "source": "backend/src/main/java/br/com/contabilidade/empresa/repository/ResponsavelModuloEmpresaRepository.java",
         "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/ResponsavelModuloEmpresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaBuscaGlobalAdapter.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/search/EmpresaBuscaGlobalConsulta.java"
       },
       {
         "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
