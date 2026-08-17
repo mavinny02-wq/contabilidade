@@ -87,52 +87,28 @@ function Assert-ContabilidadeDockerAvailable {
     }
 }
 
-function Use-ContabilidadeDefaultBuilder {
+function Get-ContabilidadeActiveDockerContext {
     [CmdletBinding()]
     param()
 
-    # PRIMA authority: ordinary local builds use Docker Desktop's default
-    # daemon-backed builder. DNS/proxy authority therefore stays in Docker
-    # Desktop/daemon configuration, never in a repository-local buildkitd file.
-    $use = Invoke-ContabilidadeDocker -Arguments @('buildx', 'use', 'default') -AllowFailure -Quiet
-    if (-not $use.Success) {
-        Write-ContabilidadeNativeOutput -Result $use
-        throw "Nao foi possivel selecionar o builder default do Docker Desktop. Exit code: $($use.ExitCode)."
+    # PRIMA authority: preserve the Docker context already selected by the user.
+    # Never call `docker context use` or `docker buildx use` from project startup.
+    $context = Invoke-ContabilidadeDocker -Arguments @('context', 'show') -AllowFailure -Quiet
+    if (-not $context.Success) {
+        Write-ContabilidadeNativeOutput -Result $context
+        throw "Nao foi possivel consultar o contexto Docker ativo. Exit code: $($context.ExitCode)."
     }
 
-    $bootstrap = Invoke-ContabilidadeDocker -Arguments @('buildx', 'inspect', 'default', '--bootstrap') -AllowFailure -Quiet
-    if (-not $bootstrap.Success) {
-        Write-ContabilidadeNativeOutput -Result $bootstrap
-        throw "O builder default do Docker Desktop nao ficou disponivel. Exit code: $($bootstrap.ExitCode)."
-    }
-
-    Write-Host '[OK] Builder default do Docker Desktop selecionado.' -ForegroundColor Green
-}
-
-function Remove-ContabilidadeLegacyIsolatedBuilder {
-    [CmdletBinding()]
-    param([string]$BuilderName = 'contabilidade-runtime-builder')
-
-    $list = Invoke-ContabilidadeDocker -Arguments @('buildx', 'ls', '--format', '{{.Name}}') -AllowFailure -Quiet
-    if (-not $list.Success) {
-        return
-    }
-
-    $known = @(
-        $list.StdOut -split "`r?`n" |
-            ForEach-Object { $_.Trim().TrimEnd('*') } |
-            Where-Object { $_ }
+    $names = @(
+        $context.StdOut -split '\r?\n' |
+            ForEach-Object { $_.Trim() } |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
     )
-    if ($known -notcontains $BuilderName) {
-        return
+    if ($names.Count -eq 0) {
+        throw 'Docker nao informou um contexto ativo.'
     }
 
-    Write-Warning "Removendo o builder legado '$BuilderName' criado pela solucao substituida."
-    Write-Host 'Somente o builder/cache isolado sera removido; volumes, containers, imagens e dados da aplicacao permanecem.'
-    $remove = Invoke-ContabilidadeDocker -Arguments @('buildx', 'rm', '--force', $BuilderName) -AllowFailure
-    if (-not $remove.Success) {
-        throw "Nao foi possivel remover o builder legado '$BuilderName'. Exit code: $($remove.ExitCode)."
-    }
+    return [string]$names[0]
 }
 
 function Test-ContabilidadeDockerDnsFailure {
@@ -172,8 +148,7 @@ Export-ModuleMember -Function @(
     'Invoke-ContabilidadeNativeCommand',
     'Invoke-ContabilidadeDocker',
     'Assert-ContabilidadeDockerAvailable',
-    'Use-ContabilidadeDefaultBuilder',
-    'Remove-ContabilidadeLegacyIsolatedBuilder',
+    'Get-ContabilidadeActiveDockerContext',
     'Test-ContabilidadeDockerDnsFailure',
     'Get-ContabilidadeFailedRegistryHost'
 )
