@@ -24,6 +24,9 @@ $TemporaryCoreBat = Join-Path $ProjectDir '.START_CONTABILIDADE_CORE.runtime.bat
 $LogDir = Join-Path $ProjectDir '.docker-local\logs'
 $LockPath = Join-Path $ProjectDir '.docker-local\artifact-build\buildkit-resilient.lock'
 $Timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
+$DockerModule = Join-Path $PSScriptRoot 'lib\contabilidade-docker.psm1'
+
+Import-Module $DockerModule -Force
 
 New-Item -ItemType Directory -Force -Path $LogDir, (Split-Path -Parent $LockPath) | Out-Null
 
@@ -43,21 +46,6 @@ function Write-Warn {
     Write-Host "[AVISO] $Message" -ForegroundColor Yellow
 }
 
-function Invoke-Docker {
-    param(
-        [Parameter(Mandatory = $true)]
-        [string[]]$Arguments,
-        [switch]$AllowFailure
-    )
-
-    & docker @Arguments
-    $exitCode = $LASTEXITCODE
-    if (-not $AllowFailure -and $exitCode -ne 0) {
-        throw "Docker falhou: docker $($Arguments -join ' '). Exit code: $exitCode."
-    }
-    return $exitCode
-}
-
 function Restore-ProcessEnvironment {
     param([string]$Name, [AllowNull()][string]$Value)
 
@@ -70,53 +58,17 @@ function Restore-ProcessEnvironment {
 }
 
 function Ensure-DockerAndBuildx {
-    if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
-        throw 'Docker CLI nao encontrado.'
-    }
-
-    Invoke-Docker -Arguments @('info') | Out-Null
-    Invoke-Docker -Arguments @('buildx', 'version') | Out-Null
+    Assert-ContabilidadeDockerAvailable
 }
 
 function Remove-IsolatedBuilder {
     Write-Warn "Removendo somente o builder isolado '$BuilderName' e o cache dele."
     Write-Host 'Volumes PostgreSQL, documentos, backups, containers e imagens da aplicacao nao serao removidos.'
-    Invoke-Docker -Arguments @('buildx', 'rm', '--force', $BuilderName) -AllowFailure | Out-Null
+    Invoke-ContabilidadeDocker -Arguments @('buildx', 'rm', '--force', $BuilderName) -AllowFailure | Out-Null
 }
 
 function Ensure-IsolatedBuilder {
-    if ($BuilderName -notmatch '^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$') {
-        throw "Nome de builder invalido: $BuilderName"
-    }
-
-    $inspection = (& docker buildx inspect $BuilderName 2>&1 | Out-String)
-    $inspectExit = $LASTEXITCODE
-
-    if ($inspectExit -eq 0) {
-        if ($inspection -notmatch '(?m)^Driver:\s+docker-container\s*$') {
-            throw "O builder '$BuilderName' existe, mas nao usa o driver docker-container."
-        }
-
-        Invoke-Docker -Arguments @('buildx', 'inspect', $BuilderName, '--bootstrap') | Out-Null
-        Write-Ok "Builder isolado reutilizado: $BuilderName"
-        return
-    }
-
-    Write-Section "Criando builder BuildKit isolado: $BuilderName"
-    Invoke-Docker -Arguments @(
-        'buildx', 'create',
-        '--name', $BuilderName,
-        '--driver', 'docker-container',
-        '--driver-opt', 'default-load=true,restart-policy=unless-stopped',
-        '--bootstrap'
-    ) | Out-Null
-
-    $created = (& docker buildx inspect $BuilderName 2>&1 | Out-String)
-    if ($LASTEXITCODE -ne 0 -or $created -notmatch '(?m)^Driver:\s+docker-container\s*$') {
-        throw "Nao foi possivel validar o builder isolado '$BuilderName'."
-    }
-
-    Write-Ok "Builder isolado criado: $BuilderName"
+    Initialize-ContabilidadeBuilder -BuilderName $BuilderName
 }
 
 function Test-BuildKitSnapshotCorruption {
