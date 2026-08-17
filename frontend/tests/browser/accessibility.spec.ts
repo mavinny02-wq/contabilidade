@@ -42,8 +42,10 @@ for (const rota of rotasRepresentativas) {
 
 test('navegacao principal e modal funcionam somente com teclado', async ({ page }) => {
   await page.goto('/empresas');
+  const skipLink = page.getByRole('link', { name: 'Pular para o conteúdo principal' });
+  await expect(skipLink).toBeVisible();
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('link', { name: 'Pular para o conteúdo principal' })).toBeFocused();
+  await expect(skipLink).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('main')).toBeFocused();
 

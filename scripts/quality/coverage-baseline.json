@@ -27,14 +27,14 @@
     {
       "component": "frontend",
       "command": "cd frontend && npm run test:coverage",
-      "toolchain": "Node 20.20.2 (environment fallback); Vitest 3.2.4; @vitest/coverage-v8 3.2.4",
+      "toolchain": "Node 24.19.0; Vitest 3.2.4; @vitest/coverage-v8 3.2.4",
       "completeness": "COMPLETE",
       "limitations": [],
       "metrics": {
-        "lines": {"covered": 602, "total": 6093, "percent": 9.8802},
-        "branches": {"covered": 56, "total": 117, "percent": 47.8632},
-        "functions": {"covered": 24, "total": 73, "percent": 32.8767},
-        "statements": {"covered": 602, "total": 6093, "percent": 9.8802}
+        "lines": {"covered": 795, "total": 6180, "percent": 12.8641},
+        "branches": {"covered": 79, "total": 142, "percent": 55.6338},
+        "functions": {"covered": 33, "total": 86, "percent": 38.3721},
+        "statements": {"covered": 795, "total": 6180, "percent": 12.8641}
       }
     },
     {
