@@ -1,12 +1,5 @@
 {
-  "findings": [
-    {
-      "fingerprint": "5a8e1c2f5540496d5f4b",
-      "rule": "backend.common_to_feature",
-      "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-    }
-  ],
+  "findings": [],
   "graph": {
     "backend": [
       {
@@ -518,10 +511,6 @@
         "target": "backend/src/main/java/br/com/contabilidade/common/error/RecursoNaoEncontradoException.java"
       },
       {
-        "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
-        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-      },
-      {
         "source": "backend/src/main/java/br/com/contabilidade/common/document/StorageReconciliacaoService.java",
         "target": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaService.java"
       },
@@ -952,6 +941,14 @@
       {
         "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaCertidaoAdapter.java",
         "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaDocumentoAdapter.java",
+        "target": "backend/src/main/java/br/com/contabilidade/common/document/EmpresaDocumentoConsulta.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaDocumentoAdapter.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
       },
       {
         "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
