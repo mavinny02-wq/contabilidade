@@ -8,33 +8,6 @@
       "rule": "backend.common_to_feature",
       "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
       "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-    },
-    {
-      "fingerprint": "9662d43e4d58af957fb3",
-      "owner": "backend-certidao",
-      "reason": "Existing Certidao service reads Empresa persistence directly.",
-      "review_by": "2027-02-16",
-      "rule": "backend.cross_feature_internal",
-      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-    },
-    {
-      "fingerprint": "bb210fafbed5777db04a",
-      "owner": "backend-certidao",
-      "reason": "Existing Certidao service reads Empresa persistence directly.",
-      "review_by": "2027-02-16",
-      "rule": "backend.cross_feature_internal",
-      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
-    },
-    {
-      "fingerprint": "cbe6a5f97141f02f6f89",
-      "owner": "backend-certidao",
-      "reason": "Existing Certidao service reads Empresa persistence directly.",
-      "review_by": "2027-02-16",
-      "rule": "backend.cross_feature_internal",
-      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
     }
   ],
   "schema_version": 1

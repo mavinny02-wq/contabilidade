@@ -2,7 +2,6 @@ package br.com.contabilidade.certidao.service;
 
 import br.com.contabilidade.certidao.repository.CertidaoAcompanhamentoRepository;
 import br.com.contabilidade.common.error.ExcecaoNegocio;
-import br.com.contabilidade.empresa.repository.EmpresaRepository;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
@@ -25,7 +24,7 @@ public class CertidaoSchedulerBatchService {
     private final CertidaoService certidaoService;
     private final CertidaoAlertaService alertaService;
     private final CertidaoAcompanhamentoRepository certidaoRepository;
-    private final EmpresaRepository empresaRepository;
+    private final EmpresaCertidaoConsulta empresaConsulta;
     private final int inicializacaoBatchSize;
     private final int agendamentoBatchSize;
     private final int alertaBatchSize;
@@ -37,7 +36,7 @@ public class CertidaoSchedulerBatchService {
             CertidaoService certidaoService,
             CertidaoAlertaService alertaService,
             CertidaoAcompanhamentoRepository certidaoRepository,
-            EmpresaRepository empresaRepository,
+            EmpresaCertidaoConsulta empresaConsulta,
             @Value("${app.certificate.initialization-batch-size:100}") int inicializacaoBatchSize,
             @Value("${app.certificate.scheduler-batch-size:200}") int agendamentoBatchSize,
             @Value("${app.certificate.alert-batch-size:300}") int alertaBatchSize
@@ -45,7 +44,7 @@ public class CertidaoSchedulerBatchService {
         this.certidaoService = certidaoService;
         this.alertaService = alertaService;
         this.certidaoRepository = certidaoRepository;
-        this.empresaRepository = empresaRepository;
+        this.empresaConsulta = empresaConsulta;
         this.inicializacaoBatchSize = limitar(inicializacaoBatchSize);
         this.agendamentoBatchSize = limitar(agendamentoBatchSize);
         this.alertaBatchSize = limitar(alertaBatchSize);
@@ -91,13 +90,12 @@ public class CertidaoSchedulerBatchService {
 
     private int inicializarLoteEmpresas() {
         UUID cursor = cursorEmpresas.get();
-        PageRequest limite = PageRequest.of(0, inicializacaoBatchSize);
         List<UUID> ids = cursor == null
-                ? empresaRepository.buscarPrimeirosIdsAtivos(limite)
-                : empresaRepository.buscarIdsAtivosApos(cursor, limite);
+                ? empresaConsulta.buscarPrimeirosIdsAtivos(inicializacaoBatchSize)
+                : empresaConsulta.buscarIdsAtivosApos(cursor, inicializacaoBatchSize);
 
         if (ids.isEmpty() && cursor != null) {
-            ids = empresaRepository.buscarPrimeirosIdsAtivos(limite);
+            ids = empresaConsulta.buscarPrimeirosIdsAtivos(inicializacaoBatchSize);
         }
 
         for (UUID empresaId : ids) {
