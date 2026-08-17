@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "policyId": "contabilidade-task-budgets-2026-08",
+  "classes": {
+    "DOCUMENTATION": {"inputTokens":{"warning":12000,"hard":16000},"outputTokens":{"warning":3000,"hard":4500},"totalTokens":{"warning":15000,"hard":20500},"cost":{"warning":"1.00","hard":"2.00","currency":"USD"}},
+    "ANALYSIS": {"inputTokens":{"warning":18000,"hard":24000},"outputTokens":{"warning":5000,"hard":7500},"totalTokens":{"warning":23000,"hard":31500},"cost":{"warning":"2.00","hard":"3.50","currency":"USD"}},
+    "IMPLEMENTATION": {"inputTokens":{"warning":24000,"hard":32000},"outputTokens":{"warning":7000,"hard":10000},"totalTokens":{"warning":31000,"hard":42000},"cost":{"warning":"3.00","hard":"5.00","currency":"USD"}},
+    "VALIDATION": {"inputTokens":{"warning":16000,"hard":22000},"outputTokens":{"warning":4000,"hard":6000},"totalTokens":{"warning":20000,"hard":28000},"cost":{"warning":"1.50","hard":"3.00","currency":"USD"}},
+    "RECONCILIATION": {"inputTokens":{"warning":20000,"hard":28000},"outputTokens":{"warning":6000,"hard":9000},"totalTokens":{"warning":26000,"hard":37000},"cost":{"warning":"2.50","hard":"4.50","currency":"USD"}}
+  }
+}
