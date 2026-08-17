@@ -18,6 +18,7 @@ export function validateDockerOrchestration({
   coreBat,
   resilient,
   dockerModule,
+  networkDiagnostics,
   sequentialBat,
   sequential,
   databaseValidation,
@@ -47,33 +48,37 @@ export function validateDockerOrchestration({
   assert.match(coreBat, /echo FROM mcr\.microsoft\.com\/playwright:v1\.60\.0-noble/i);
   assert.doesNotMatch(coreBat, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
-  assert.match(resilient, /contabilidade-docker\.psm1/i);
-  assert.match(resilient, /BUILDX_BUILDER/i);
+  assert.match(resilient, /Use-ContabilidadeDefaultBuilder/i);
+  assert.match(resilient, /BUILDX_BUILDER\s*=\s*'default'/i);
+  assert.match(resilient, /Invoke-DaemonBaseImagePreflight/i);
+  assert.match(resilient, /Invoke-ContabilidadeDocker -Arguments @\('pull', \$image\)/i);
+  assert.match(resilient, /capture-docker-network-diagnostics\.ps1/i);
+  assert.match(resilient, /Docker Desktop > Settings > Docker Engine/i);
+  assert.match(resilient, /DNS_DA_REDE_OU_VPN/i);
+  assert.match(resilient, /builder', 'prune', '--force'/i);
   assert.match(resilient, /failed to prepare extraction snapshot/i);
-  assert.match(resilient, /CoreSourceBat/i);
-  assert.match(resilient, /TemporaryCoreBat/i);
-  assert.match(resilient, /Invoke-BaseImagePreflight/i);
-  assert.match(resilient, /type=cacheonly/i);
-  assert.match(resilient, /Test-ContabilidadeBuildKitDnsFailure/i);
-  assert.match(resilient, /Repair-BuildKitDns/i);
-  assert.match(resilient, /CONTABILIDADE_BUILDKIT_DNS/i);
-  assert.match(resilient, /buildkitd\.contabilidade\.toml/i);
-  assert.match(resilient, /configuracao global do Docker Desktop nao sera modificada/i);
+  assert.doesNotMatch(resilient, /CONTABILIDADE_BUILDKIT_DNS/i);
+  assert.doesNotMatch(resilient, /New-ContabilidadeBuildKitConfig|Repair-BuildKitDns|--buildkitd-config/i);
   assert.doesNotMatch(resilient, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
   assert.match(dockerModule, /Invoke-ContabilidadeNativeCommand/i);
   assert.match(dockerModule, /\$LASTEXITCODE/i);
-  assert.match(dockerModule, /docker-container/i);
-  assert.match(dockerModule, /default-load=true/i);
-  assert.match(dockerModule, /buildx', 'use'/i);
-  assert.match(dockerModule, /--bootstrap/i);
-  assert.match(dockerModule, /quebrado ou inacessivel/i);
-  assert.match(dockerModule, /Get-ContabilidadeBuildKitDnsServers/i);
-  assert.match(dockerModule, /New-ContabilidadeBuildKitConfig/i);
-  assert.match(dockerModule, /\[dns\]/i);
-  assert.match(dockerModule, /--buildkitd-config/i);
-  assert.match(dockerModule, /GetAllNetworkInterfaces/i);
+  assert.match(dockerModule, /Use-ContabilidadeDefaultBuilder/i);
+  assert.match(dockerModule, /buildx', 'use', 'default'/i);
+  assert.match(dockerModule, /Remove-ContabilidadeLegacyIsolatedBuilder/i);
+  assert.match(dockerModule, /Test-ContabilidadeDockerDnsFailure/i);
+  assert.doesNotMatch(dockerModule, /GetAllNetworkInterfaces|New-ContabilidadeBuildKitConfig|CONTABILIDADE_BUILDKIT_DNS/i);
+  assert.doesNotMatch(dockerModule, /--buildkitd-config|\[dns\]/i);
   assert.doesNotMatch(dockerModule, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
+
+  assert.match(networkDiagnostics, /host resolver/i);
+  assert.match(networkDiagnostics, /Docker container resolver/i);
+  assert.match(networkDiagnostics, /BuildKit resolver/i);
+  assert.match(networkDiagnostics, /registry-1\.docker\.io/i);
+  assert.match(networkDiagnostics, /mcr\.microsoft\.com/i);
+  assert.match(networkDiagnostics, /docker config|proxy values|credentials/i);
+  assert.doesNotMatch(networkDiagnostics, /Get-ChildItem\s+Env:|docker\s+info\s*$/im);
+  assert.doesNotMatch(networkDiagnostics, /8\.8\.8\.8|1\.1\.1\.1/i);
 
   assert.match(sequentialBat, /start-compose-sequential\.ps1/i);
   assert.match(sequential, /Remove-DevAuthContainers/i);
@@ -100,6 +105,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     coreBat: read('scripts/start-contabilidade-core.bat'),
     resilient: read('scripts/start-contabilidade-resilient.ps1'),
     dockerModule: read('scripts/lib/contabilidade-docker.psm1'),
+    networkDiagnostics: read('scripts/diagnostics/capture-docker-network-diagnostics.ps1'),
     sequentialBat: read('scripts/start-compose-sequential.bat'),
     sequential: read('scripts/start-compose-sequential.ps1'),
     databaseValidation: read('scripts/validate-database-state.bat'),
@@ -112,10 +118,12 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       'um unico BAT oficial na raiz',
       'modo dev sem Keycloak ou bootstrap',
       'startup incremental sem docker compose down',
-      'builder isolado docker-container',
-      'preflight cache-only das imagens-base',
-      'recuperacao DNS project-scoped do BuildKit',
-      'recuperacao restrita ao builder da aplicacao',
+      'builder default do Docker Desktop como no PRIMA',
+      'imagens-base preparadas pelo Docker daemon',
+      'diagnostico separado de host, container e BuildKit',
+      'DNS e proxy governados no Docker Desktop/daemon',
+      'nenhum DNS especifico gravado no repositorio',
+      'retry unico para corrupcao conhecida de snapshot',
       'deploy on-premise sem build',
     ],
   }, null, 2));

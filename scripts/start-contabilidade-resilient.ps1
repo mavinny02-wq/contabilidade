@@ -2,16 +2,7 @@ param(
     [ValidateSet('dev')]
     [string]$Mode = 'dev',
 
-    [string]$BuilderName = $(
-        if ([string]::IsNullOrWhiteSpace($env:CONTABILIDADE_BUILDER_NAME)) {
-            'contabilidade-runtime-builder'
-        }
-        else {
-            $env:CONTABILIDADE_BUILDER_NAME
-        }
-    ),
-
-    [switch]$NoAutoRecovery
+    [switch]$NoSnapshotRecovery
 )
 
 Set-StrictMode -Version Latest
@@ -23,12 +14,12 @@ $CoreSourceBat = Join-Path $PSScriptRoot 'start-contabilidade-core.bat'
 $TemporaryCoreBat = Join-Path $ProjectDir '.START_CONTABILIDADE_CORE.runtime.bat'
 $LogDir = Join-Path $ProjectDir '.docker-local\logs'
 $ArtifactBuildDir = Join-Path $ProjectDir '.docker-local\artifact-build'
-$LockPath = Join-Path $ArtifactBuildDir 'buildkit-resilient.lock'
-$BuildKitConfigPath = Join-Path $ArtifactBuildDir 'buildkitd.contabilidade.toml'
-$BaseImagePreflightRoot = Join-Path $ArtifactBuildDir 'base-image-preflight'
+$LockPath = Join-Path $ArtifactBuildDir 'docker-build-resilient.lock'
+$LegacyBuildKitConfigPath = Join-Path $ArtifactBuildDir 'buildkitd.contabilidade.toml'
 $Timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $DockerModule = Join-Path $PSScriptRoot 'lib\contabilidade-docker.psm1'
 $NativeProcessModule = Join-Path $PSScriptRoot 'lib\native-process.psm1'
+$NetworkDiagnosticsScript = Join-Path $PSScriptRoot 'diagnostics\capture-docker-network-diagnostics.ps1'
 
 Import-Module $DockerModule -Force
 Import-Module $NativeProcessModule -Force
@@ -62,24 +53,6 @@ function Restore-ProcessEnvironment {
     }
 }
 
-function Ensure-DockerAndBuildx {
-    Assert-ContabilidadeDockerAvailable
-}
-
-function Remove-IsolatedBuilder {
-    Write-Warn "Removendo somente o builder isolado '$BuilderName' e o cache dele."
-    Write-Host 'Volumes PostgreSQL, documentos, backups, containers e imagens da aplicacao nao serao removidos.'
-    Invoke-ContabilidadeDocker -Arguments @('buildx', 'rm', '--force', $BuilderName) -AllowFailure | Out-Null
-}
-
-function Ensure-IsolatedBuilder {
-    $configPath = $null
-    if (Test-Path -LiteralPath $BuildKitConfigPath -PathType Leaf) {
-        $configPath = $BuildKitConfigPath
-    }
-    Initialize-ContabilidadeBuilder -BuilderName $BuilderName -BuildKitConfigPath $configPath
-}
-
 function Test-BuildKitSnapshotCorruption {
     param([string]$Content)
 
@@ -104,171 +77,108 @@ function Get-RuntimeBaseImages {
     if ($images.Count -eq 0) {
         throw "Nenhuma imagem-base foi encontrada em $CoreSourceBat."
     }
-
     return $images
 }
 
-function Write-PreflightLog {
-    param(
-        [Parameter(Mandatory = $true)][string]$Path,
-        [Parameter(Mandatory = $true)][string]$Image,
-        [Parameter(Mandatory = $true)]$Result
-    )
+function Invoke-DaemonBaseImagePreflight {
+    $logPath = Join-Path $LogDir "BASE_IMAGES_DAEMON_${Timestamp}.log"
+    Remove-Item -LiteralPath $logPath -Force -ErrorAction SilentlyContinue
 
-    $entry = @(
-        "===== BASE IMAGE: $Image ====="
-        "EXIT_CODE: $($Result.ExitCode)"
-        $Result.StdOut
-        $Result.StdErr
-        ''
-    ) -join [Environment]::NewLine
+    Write-Section 'Validando imagens-base pelo Docker daemon (modelo PRIMA)'
+    Write-Host "Log: $logPath"
 
-    [IO.File]::AppendAllText(
-        $Path,
-        $entry,
-        (New-Object Text.UTF8Encoding($false))
-    )
-}
-
-function Invoke-BaseImagePreflight {
-    param([int]$Attempt)
-
-    $preflightLog = Join-Path $LogDir "BASE_IMAGES_${Timestamp}_tentativa${Attempt}.log"
-    Remove-Item -LiteralPath $preflightLog -Force -ErrorAction SilentlyContinue
-    New-Item -ItemType Directory -Force -Path $BaseImagePreflightRoot | Out-Null
-
-    Write-Section "Validando e aquecendo imagens-base do runtime - tentativa $Attempt"
-    Write-Host "Builder: $BuilderName"
-    Write-Host "Log:     $preflightLog"
-
-    $index = 0
     foreach ($image in @(Get-RuntimeBaseImages)) {
-        $index += 1
-        $contextDir = Join-Path $BaseImagePreflightRoot ("image-" + $index)
-        if (Test-Path -LiteralPath $contextDir) {
-            Remove-Item -LiteralPath $contextDir -Recurse -Force
-        }
-        New-Item -ItemType Directory -Force -Path $contextDir | Out-Null
-
-        $dockerfilePath = Join-Path $contextDir 'Dockerfile'
-        [IO.File]::WriteAllText(
-            $dockerfilePath,
-            "FROM $image" + [Environment]::NewLine,
-            (New-Object Text.UTF8Encoding($false))
-        )
-
         Write-Host "[INFO] Imagem-base: $image"
-        $result = Invoke-ContabilidadeDocker -Arguments @(
-            'buildx', 'build',
-            '--builder', $BuilderName,
-            '--pull=false',
-            '--network=none',
-            '--progress=plain',
-            '--output', 'type=cacheonly',
-            '--file', $dockerfilePath,
-            $contextDir
-        ) -AllowFailure
+        $inspect = Invoke-ContabilidadeDocker -Arguments @('image', 'inspect', $image) -AllowFailure -Quiet
+        if ($inspect.Success) {
+            [IO.File]::AppendAllText(
+                $logPath,
+                "CACHED $image" + [Environment]::NewLine,
+                (New-Object Text.UTF8Encoding($false))
+            )
+            continue
+        }
 
-        Write-PreflightLog -Path $preflightLog -Image $image -Result $result
-        if (-not $result.Success) {
-            Write-Host "[FALHA] Nao foi possivel preparar a imagem-base '$image'." -ForegroundColor Red
+        # PRIMA authority: registry access is performed by the Docker daemon/default
+        # builder. The project never writes a buildkitd DNS file or guesses resolvers.
+        $pull = Invoke-ContabilidadeDocker -Arguments @('pull', $image) -AllowFailure
+        $entry = @(
+            "===== BASE IMAGE: $image ====="
+            "EXIT_CODE: $($pull.ExitCode)"
+            $pull.StdOut
+            $pull.StdErr
+            ''
+        ) -join [Environment]::NewLine
+        [IO.File]::AppendAllText($logPath, $entry, (New-Object Text.UTF8Encoding($false)))
+
+        if (-not $pull.Success) {
             return [pscustomobject]@{
                 Succeeded = $false
-                ExitCode = $result.ExitCode
-                LogPath = $preflightLog
-                Output = $result.Output
+                ExitCode = $pull.ExitCode
+                LogPath = $logPath
+                Output = $pull.Output
                 Image = $image
             }
         }
     }
 
-    Write-Ok 'Imagens-base disponiveis no cache do builder.'
+    Write-Ok 'Imagens-base disponiveis no image store do Docker daemon.'
     return [pscustomobject]@{
         Succeeded = $true
         ExitCode = 0
-        LogPath = $preflightLog
+        LogPath = $logPath
         Output = ''
         Image = $null
     }
 }
 
-function Test-WindowsHostDns {
-    param([AllowNull()][string]$HostName)
-
-    if ([string]::IsNullOrWhiteSpace($HostName)) {
-        return $true
+function Invoke-PrimaNetworkDiagnostics {
+    $diagnosticLog = Join-Path $LogDir "DOCKER_NETWORK_${Timestamp}.log"
+    if (-not (Test-Path -LiteralPath $NetworkDiagnosticsScript -PathType Leaf)) {
+        Write-Warn "Script de diagnostico ausente: $NetworkDiagnosticsScript"
+        return $null
     }
 
     try {
-        return @([Net.Dns]::GetHostAddresses($HostName)).Count -gt 0
+        & powershell -NoProfile -ExecutionPolicy Bypass -File $NetworkDiagnosticsScript -OutputPath $diagnosticLog
     }
     catch {
-        return $false
+        Write-Warn "Diagnostico Docker nao concluiu: $($_.Exception.Message)"
     }
+    return $diagnosticLog
 }
 
-function Repair-BuildKitDns {
-    param([Parameter(Mandatory = $true)][string]$FailureContent)
-
-    $failedServers = @(Get-ContabilidadeFailedDnsServers -Content $FailureContent)
-    $registryHost = Get-ContabilidadeFailedRegistryHost -Content $FailureContent
-    $explicitDns = [Environment]::GetEnvironmentVariable('CONTABILIDADE_BUILDKIT_DNS', 'Process')
-
-    if ([string]::IsNullOrWhiteSpace($explicitDns) -and -not (Test-WindowsHostDns -HostName $registryHost)) {
-        Write-Host ''
-        Write-Host "O Windows tambem nao conseguiu resolver '$registryHost'." -ForegroundColor Red
-        Write-Host 'Verifique conexao, VPN, proxy ou DNS do Windows e reinicie o Docker Desktop.' -ForegroundColor Yellow
-        Write-Host 'Nenhuma configuracao do Docker Desktop foi alterada automaticamente.'
-        return $false
-    }
-
-    try {
-        $dnsServers = @(Get-ContabilidadeBuildKitDnsServers -RejectedServers $failedServers)
-    }
-    catch {
-        Write-Host $_.Exception.Message -ForegroundColor Red
-        return $false
-    }
-
-    if ($dnsServers.Count -eq 0) {
-        Write-Host ''
-        Write-Host 'Nao foi encontrado um DNS IPv4 alternativo seguro para o builder.' -ForegroundColor Red
-        Write-Host 'Defina servidores aprovados antes de repetir, por exemplo:' -ForegroundColor Yellow
-        Write-Host '  set CONTABILIDADE_BUILDKIT_DNS=<dns1>,<dns2>'
-        Write-Host 'Depois execute novamente START_CONTABILIDADE.bat dev.'
-        return $false
-    }
-
-    New-ContabilidadeBuildKitConfig -Path $BuildKitConfigPath -DnsServers $dnsServers | Out-Null
-
-    Write-Warn 'Falha de DNS isolada no BuildKit detectada.'
-    if ($failedServers.Count -gt 0) {
-        Write-Host "DNS que falhou: $($failedServers -join ', ')"
-    }
-    Write-Host "DNS alternativo do builder: $($dnsServers -join ', ')"
-    Write-Host "Config project-scoped: $BuildKitConfigPath"
-    Write-Host 'A configuracao global do Docker Desktop nao sera modificada.'
-
-    Remove-IsolatedBuilder
-    Initialize-ContabilidadeBuilder -BuilderName $BuilderName -BuildKitConfigPath $BuildKitConfigPath
-    return $true
-}
-
-function Show-RegistryFailureGuidance {
+function Show-PrimaDnsGuidance {
     param(
-        [Parameter(Mandatory = $true)]$Result,
-        [string]$Prefix = 'Falha ao acessar uma imagem-base'
+        [Parameter(Mandatory = $true)][string]$FailureContent,
+        [Parameter(Mandatory = $true)][string]$FailureLog
     )
 
+    $hostName = Get-ContabilidadeFailedRegistryHost -Content $FailureContent
+    $diagnosticLog = Invoke-PrimaNetworkDiagnostics
+
     Write-Host ''
-    Write-Host "$Prefix." -ForegroundColor Red
-    if (-not [string]::IsNullOrWhiteSpace($Result.Image)) {
-        Write-Host "Imagem: $($Result.Image)"
+    Write-Host 'Falha de DNS da rede de build do Docker.' -ForegroundColor Red
+    if (-not [string]::IsNullOrWhiteSpace($hostName)) {
+        Write-Host "Host que nao resolveu: $hostName"
     }
-    Write-Host "Log: $($Result.LogPath)" -ForegroundColor Yellow
-    Write-Host 'Verifique Docker Desktop, VPN, proxy, firewall e DNS.' -ForegroundColor Yellow
-    Write-Host 'Para forcar DNS aprovados apenas no builder deste projeto:'
-    Write-Host '  set CONTABILIDADE_BUILDKIT_DNS=<dns1>,<dns2>'
+    Write-Host "Log da falha: $FailureLog" -ForegroundColor Yellow
+    if (-not [string]::IsNullOrWhiteSpace($diagnosticLog)) {
+        Write-Host "Diagnostico host/container/BuildKit: $diagnosticLog" -ForegroundColor Yellow
+    }
+
+    Write-Host ''
+    Write-Host 'Aplicando exatamente o limite operacional usado no PRIMA:' -ForegroundColor Cyan
+    Write-Host '1. O repositorio nao escolhe DNS, nao grava [dns] em buildkitd.toml e nao altera o Windows.'
+    Write-Host '2. Abra Docker Desktop > Settings > Docker Engine.'
+    Write-Host '3. Preserve o JSON existente e configure "dns" com o DNS aprovado da sua rede/VPN.'
+    Write-Host '4. Clique Apply & Restart e repita START_CONTABILIDADE.bat dev.'
+    Write-Host '5. Se a rede usa proxy, configure-o no Docker Desktop/daemon; mantenha credenciais fora do repositorio.'
+    Write-Host ''
+    Write-Host 'Exemplo apenas de formato; substitua pelo DNS autorizado da sua rede:' -ForegroundColor Yellow
+    Write-Host '  { "dns": ["DNS_DA_REDE_OU_VPN"] }'
+    Write-Host ''
+    Write-Host 'Nenhum DNS publico ou especifico de workstation e imposto pelo projeto.'
 }
 
 function Invoke-CoreAttempt {
@@ -283,12 +193,13 @@ function Invoke-CoreAttempt {
     try {
         Copy-Item -LiteralPath $CoreSourceBat -Destination $TemporaryCoreBat -Force
 
-        $env:BUILDX_BUILDER = $BuilderName
+        # Explicitly undo the project-specific builder used by the superseded fix.
+        $env:BUILDX_BUILDER = 'default'
         $env:BUILDX_NO_DEFAULT_ATTESTATIONS = '1'
         $env:DOCKER_BUILDKIT = '1'
 
         Write-Section "Executando build e startup - tentativa $Attempt"
-        Write-Host "Builder: $BuilderName"
+        Write-Host 'Builder: default (Docker Desktop/daemon)'
         Write-Host "Log:     $attemptLog"
 
         $commandLine = "(echo.)|call `"$TemporaryCoreBat`" `"$Mode`""
@@ -311,7 +222,7 @@ function Invoke-CoreAttempt {
     }
 }
 
-if (-not (Test-Path -LiteralPath $CoreSourceBat)) {
+if (-not (Test-Path -LiteralPath $CoreSourceBat -PathType Leaf)) {
     throw "Script core interno ausente: $CoreSourceBat"
 }
 
@@ -329,38 +240,31 @@ try {
         throw 'Outro build da Contabilidade ja esta em execucao. Aguarde a finalizacao.'
     }
 
-    Ensure-DockerAndBuildx
-    Ensure-IsolatedBuilder
+    Assert-ContabilidadeDockerAvailable
+    Use-ContabilidadeDefaultBuilder
+    Remove-ContabilidadeLegacyIsolatedBuilder
 
-    # Fail fast before Maven/npm work. This buildx cache-only preflight resolves the
-    # exact FROM images extracted from the canonical core script.
-    $basePreflight = Invoke-BaseImagePreflight 1
+    # Remove only the stale project-local DNS file produced by the superseded
+    # implementation. Docker Desktop/daemon remains the sole DNS authority.
+    Remove-Item -LiteralPath $LegacyBuildKitConfigPath -Force -ErrorAction SilentlyContinue
+
+    $basePreflight = Invoke-DaemonBaseImagePreflight
     if (-not $basePreflight.Succeeded) {
-        if ($NoAutoRecovery) {
-            Show-RegistryFailureGuidance -Result $basePreflight
-            exit $basePreflight.ExitCode
+        if (Test-ContabilidadeDockerDnsFailure -Content $basePreflight.Output) {
+            Show-PrimaDnsGuidance -FailureContent $basePreflight.Output -FailureLog $basePreflight.LogPath
         }
-
-        if (-not (Test-ContabilidadeBuildKitDnsFailure -Content $basePreflight.Output)) {
-            Show-RegistryFailureGuidance -Result $basePreflight
-            exit $basePreflight.ExitCode
+        else {
+            Write-Host ''
+            Write-Host "Falha ao obter a imagem-base '$($basePreflight.Image)' pelo Docker daemon." -ForegroundColor Red
+            Write-Host "Log: $($basePreflight.LogPath)" -ForegroundColor Yellow
+            Write-Host 'Verifique registry, autenticacao, proxy, firewall e disponibilidade da imagem.'
         }
-
-        if (-not (Repair-BuildKitDns -FailureContent $basePreflight.Output)) {
-            Show-RegistryFailureGuidance -Result $basePreflight -Prefix 'Falha de DNS sem recuperacao automatica disponivel'
-            exit $basePreflight.ExitCode
-        }
-
-        $basePreflight = Invoke-BaseImagePreflight 2
-        if (-not $basePreflight.Succeeded) {
-            Show-RegistryFailureGuidance -Result $basePreflight -Prefix 'A segunda tentativa de preparar as imagens-base tambem falhou'
-            exit $basePreflight.ExitCode
-        }
+        exit $basePreflight.ExitCode
     }
 
     $first = Invoke-CoreAttempt 1
     if ($first.ExitCode -eq 0) {
-        Write-Ok 'Build e startup concluidos sem recuperacao adicional.'
+        Write-Ok 'Build e startup concluidos pelo builder default.'
         exit 0
     }
 
@@ -371,53 +275,33 @@ try {
         ''
     }
 
-    if ($NoAutoRecovery) {
-        Write-Host ''
-        Write-Host 'Recuperacao automatica desabilitada por -NoAutoRecovery.' -ForegroundColor Red
-        Write-Host "Log: $($first.LogPath)" -ForegroundColor Yellow
+    if (Test-ContabilidadeDockerDnsFailure -Content $firstContent) {
+        Show-PrimaDnsGuidance -FailureContent $firstContent -FailureLog $first.LogPath
         exit $first.ExitCode
     }
 
-    $recoveryKind = $null
-    if (Test-ContabilidadeBuildKitDnsFailure -Content $firstContent) {
-        if (-not (Repair-BuildKitDns -FailureContent $firstContent)) {
-            Write-Host "Log: $($first.LogPath)" -ForegroundColor Yellow
-            exit $first.ExitCode
+    if (-not $NoSnapshotRecovery -and (Test-BuildKitSnapshotCorruption -Content $firstContent)) {
+        Write-Warn 'Foi detectada a assinatura de corrupcao de snapshot tratada pelo PRIMA.'
+        Write-Host 'Somente cache de build nao utilizado sera limpo; volumes, containers e dados nao serao removidos.'
+        $prune = Invoke-ContabilidadeDocker -Arguments @('builder', 'prune', '--force') -AllowFailure
+        if ($prune.Success) {
+            $second = Invoke-CoreAttempt 2
+            if ($second.ExitCode -eq 0) {
+                Write-Ok 'Build e startup concluidos apos a unica repeticao de snapshot.'
+                exit 0
+            }
+            Write-Host ''
+            Write-Host 'A segunda tentativa tambem falhou.' -ForegroundColor Red
+            Write-Host "Primeiro log: $($first.LogPath)" -ForegroundColor Yellow
+            Write-Host "Segundo log:  $($second.LogPath)" -ForegroundColor Yellow
+            exit $second.ExitCode
         }
-
-        $latePreflight = Invoke-BaseImagePreflight 3
-        if (-not $latePreflight.Succeeded) {
-            Show-RegistryFailureGuidance -Result $latePreflight -Prefix 'A recuperacao DNS foi aplicada, mas o registry continua indisponivel'
-            exit $latePreflight.ExitCode
-        }
-        $recoveryKind = 'DNS do BuildKit'
-    }
-    elseif (Test-BuildKitSnapshotCorruption $firstContent) {
-        Write-Warn 'Foi detectada inconsistencia interna de snapshot do BuildKit.'
-        Write-Host 'A recuperacao sera automatica e restrita ao builder isolado da Contabilidade.'
-
-        Remove-IsolatedBuilder
-        Ensure-IsolatedBuilder
-        $recoveryKind = 'snapshot do BuildKit'
-    }
-    else {
-        Write-Host ''
-        Write-Host 'A falha nao corresponde a DNS do registry nem a corrupcao conhecida de snapshot do BuildKit.' -ForegroundColor Red
-        Write-Host "Log: $($first.LogPath)" -ForegroundColor Yellow
-        exit $first.ExitCode
-    }
-
-    $second = Invoke-CoreAttempt 2
-    if ($second.ExitCode -eq 0) {
-        Write-Ok "Build e startup concluidos apos recuperacao de $recoveryKind."
-        exit 0
     }
 
     Write-Host ''
-    Write-Host 'A segunda tentativa tambem falhou.' -ForegroundColor Red
-    Write-Host "Primeiro log: $($first.LogPath)" -ForegroundColor Yellow
-    Write-Host "Segundo log:  $($second.LogPath)" -ForegroundColor Yellow
-    exit $second.ExitCode
+    Write-Host 'A falha nao corresponde a DNS nem a corrupcao conhecida de snapshot do BuildKit.' -ForegroundColor Red
+    Write-Host "Log: $($first.LogPath)" -ForegroundColor Yellow
+    exit $first.ExitCode
 }
 finally {
     Remove-Item -LiteralPath $TemporaryCoreBat -Force -ErrorAction SilentlyContinue

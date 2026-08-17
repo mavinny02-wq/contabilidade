@@ -1,212 +1,170 @@
 $modulePath = Join-Path $PSScriptRoot '..\lib\contabilidade-docker.psm1'
 Import-Module $modulePath -Force
 
-Describe 'Initialize-ContabilidadeBuilder' {
+Describe 'PRIMA default Docker builder contract' {
     InModuleScope contabilidade-docker {
         BeforeEach {
             Mock Write-Host {}
             Mock Write-Warning {}
         }
 
-        It 'reuses and bootstraps an existing builder without creating another' {
+        It 'selects and bootstraps the default Docker Desktop builder' {
             Mock Invoke-ContabilidadeDocker {
-                param($Arguments)
-                if ($Arguments -contains '--bootstrap') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = "Driver: docker-container`n"; StdOut = ''; StdErr = '' }
+                [pscustomobject]@{
+                    Success = $true
+                    ExitCode = 0
+                    Output = ''
+                    StdOut = ''
+                    StdErr = ''
                 }
-                if ($Arguments[1] -eq 'inspect') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = "Driver: docker-container`n"; StdOut = ''; StdErr = '' }
-                }
-                return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = ''; StdErr = '' }
             }
 
-            Initialize-ContabilidadeBuilder -BuilderName 'contabilidade-runtime-builder'
-
-            Assert-MockCalled Invoke-ContabilidadeDocker -Times 0 -ParameterFilter { $Arguments[1] -eq 'create' }
-            Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter { $Arguments[1] -eq 'use' }
-            Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter { $Arguments -contains '--bootstrap' }
-        }
-
-        It 'creates, selects and bootstraps a missing builder' {
-            Mock Invoke-ContabilidadeDocker {
-                param($Arguments)
-                if ($Arguments[1] -eq 'inspect' -and -not ($Arguments -contains '--bootstrap')) {
-                    return [pscustomobject]@{ Success = $false; ExitCode = 1; Output = ''; StdOut = ''; StdErr = 'not found' }
-                }
-                if ($Arguments[1] -eq 'ls') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = "default`n"; StdErr = '' }
-                }
-                if ($Arguments -contains '--bootstrap') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = "Driver: docker-container`n"; StdOut = ''; StdErr = '' }
-                }
-                return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = ''; StdErr = '' }
-            }
-
-            Initialize-ContabilidadeBuilder -BuilderName 'contabilidade-runtime-builder'
+            Use-ContabilidadeDefaultBuilder
 
             Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter {
-                $Arguments[1] -eq 'create' -and $Arguments -contains 'default-load=true,restart-policy=unless-stopped'
+                $Arguments[0] -eq 'buildx' -and
+                $Arguments[1] -eq 'use' -and
+                $Arguments[2] -eq 'default'
             }
-            Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter { $Arguments[1] -eq 'use' }
+            Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter {
+                $Arguments[0] -eq 'buildx' -and
+                $Arguments[1] -eq 'inspect' -and
+                $Arguments[2] -eq 'default' -and
+                $Arguments -contains '--bootstrap'
+            }
         }
 
-        It 'passes a project-scoped BuildKit config when creating the builder' {
-            $configPath = Join-Path $TestDrive 'buildkitd.toml'
-            Set-Content -LiteralPath $configPath -Value "[dns]`nnameservers=[`"1.1.1.1`"]" -Encoding UTF8
-
+        It 'removes only the legacy isolated builder when it exists' {
             Mock Invoke-ContabilidadeDocker {
                 param($Arguments)
-                if ($Arguments[1] -eq 'inspect' -and -not ($Arguments -contains '--bootstrap')) {
-                    return [pscustomobject]@{ Success = $false; ExitCode = 1; Output = ''; StdOut = ''; StdErr = 'not found' }
+                if ($Arguments[0] -eq 'buildx' -and $Arguments[1] -eq 'ls') {
+                    return [pscustomobject]@{
+                        Success = $true
+                        ExitCode = 0
+                        Output = ''
+                        StdOut = "default`ncontabilidade-runtime-builder`n"
+                        StdErr = ''
+                    }
                 }
-                if ($Arguments[1] -eq 'ls') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = "default`n"; StdErr = '' }
+                return [pscustomobject]@{
+                    Success = $true
+                    ExitCode = 0
+                    Output = ''
+                    StdOut = ''
+                    StdErr = ''
                 }
-                if ($Arguments -contains '--bootstrap') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = "Driver: docker-container`n"; StdOut = ''; StdErr = '' }
-                }
-                return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = ''; StdErr = '' }
             }
 
-            $resolvedConfigPath = (Resolve-Path -LiteralPath $configPath).Path
-            Initialize-ContabilidadeBuilder -BuilderName 'contabilidade-runtime-builder' -BuildKitConfigPath $configPath
+            Remove-ContabilidadeLegacyIsolatedBuilder
 
             Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter {
-                $Arguments[1] -eq 'create' `
-                    -and $Arguments -contains '--buildkitd-config' `
-                    -and $Arguments -contains $resolvedConfigPath
+                $Arguments[0] -eq 'buildx' -and
+                $Arguments[1] -eq 'rm' -and
+                $Arguments -contains '--force' -and
+                $Arguments -contains 'contabilidade-runtime-builder'
+            }
+            Assert-MockCalled Invoke-ContabilidadeDocker -Times 0 -ParameterFilter {
+                $Arguments[0] -eq 'system' -or $Arguments[0] -eq 'volume'
             }
         }
 
-        It 'does not recreate an existing builder whose inspect fails' {
+        It 'does not remove anything when the legacy builder is absent' {
             Mock Invoke-ContabilidadeDocker {
-                param($Arguments)
-                if ($Arguments[1] -eq 'ls') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = "contabilidade-runtime-builder`n"; StdErr = '' }
+                [pscustomobject]@{
+                    Success = $true
+                    ExitCode = 0
+                    Output = ''
+                    StdOut = "default`n"
+                    StdErr = ''
                 }
-                return [pscustomobject]@{ Success = $false; ExitCode = 1; Output = ''; StdOut = ''; StdErr = 'unreachable' }
             }
 
-            { Initialize-ContabilidadeBuilder -BuilderName 'contabilidade-runtime-builder' } |
-                Should -Throw '*quebrado ou inacessivel*'
-            Assert-MockCalled Invoke-ContabilidadeDocker -Times 0 -ParameterFilter { $Arguments[1] -eq 'create' }
-        }
+            Remove-ContabilidadeLegacyIsolatedBuilder
 
-        It 'propagates a builder creation failure' {
-            Mock Invoke-ContabilidadeDocker {
-                param($Arguments)
-                if ($Arguments[1] -eq 'inspect') {
-                    return [pscustomobject]@{ Success = $false; ExitCode = 1; Output = ''; StdOut = ''; StdErr = 'not found' }
-                }
-                if ($Arguments[1] -eq 'ls') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = ''; StdErr = '' }
-                }
-                return [pscustomobject]@{ Success = $false; ExitCode = 23; Output = ''; StdOut = ''; StdErr = 'create failed' }
+            Assert-MockCalled Invoke-ContabilidadeDocker -Times 0 -ParameterFilter {
+                $Arguments[0] -eq 'buildx' -and $Arguments[1] -eq 'rm'
             }
-
-            { Initialize-ContabilidadeBuilder -BuilderName 'contabilidade-runtime-builder' } |
-                Should -Throw '*Falha ao criar*Exit code: 23*'
-        }
-
-        It 'propagates a bootstrap failure' {
-            Mock Invoke-ContabilidadeDocker {
-                param($Arguments)
-                if ($Arguments -contains '--bootstrap') {
-                    return [pscustomobject]@{ Success = $false; ExitCode = 42; Output = ''; StdOut = ''; StdErr = 'bootstrap failed' }
-                }
-                if ($Arguments[1] -eq 'inspect') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = "Driver: docker-container`n"; StdOut = ''; StdErr = '' }
-                }
-                return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = ''; StdErr = '' }
-            }
-
-            { Initialize-ContabilidadeBuilder -BuilderName 'contabilidade-runtime-builder' } |
-                Should -Throw '*Falha no bootstrap*Exit code: 42*'
         }
     }
 }
 
-Describe 'BuildKit DNS recovery helpers' {
+Describe 'Docker build-network DNS classification' {
     InModuleScope contabilidade-docker {
-        It 'classifies the Docker Desktop DNS failure shown by BuildKit' {
+        It 'classifies the reported Docker Desktop resolver failure' {
             $content = 'dial tcp: lookup registry-1.docker.io on 192.168.65.7:53: no such host'
 
-            Test-ContabilidadeBuildKitDnsFailure -Content $content | Should -BeTrue
-            @(Get-ContabilidadeFailedDnsServers -Content $content) -join ',' | Should -Be '192.168.65.7'
-            Get-ContabilidadeFailedRegistryHost -Content $content | Should -Be 'registry-1.docker.io'
+            Test-ContabilidadeDockerDnsFailure -Content $content | Should -BeTrue
+            Get-ContabilidadeFailedRegistryHost -Content $content |
+                Should -Be 'registry-1.docker.io'
         }
 
-        It 'does not classify an unrelated registry authentication failure as DNS' {
-            Test-ContabilidadeBuildKitDnsFailure -Content 'failed to authorize: 401 Unauthorized' |
+        It 'classifies Maven-style unknown-host failures used by PRIMA' {
+            Test-ContabilidadeDockerDnsFailure -Content 'Unknown host repo.maven.apache.org' |
+                Should -BeTrue
+        }
+
+        It 'does not treat registry authentication as DNS failure' {
+            Test-ContabilidadeDockerDnsFailure -Content 'failed to authorize: 401 Unauthorized' |
                 Should -BeFalse
-        }
-
-        It 'uses explicit DNS, removes duplicates and rejects the failed embedded resolver' {
-            $previous = $env:CONTABILIDADE_BUILDKIT_DNS
-            try {
-                $env:CONTABILIDADE_BUILDKIT_DNS = '192.168.65.7; 10.0.0.2,10.0.0.2 8.8.8.8'
-                $servers = @(Get-ContabilidadeBuildKitDnsServers -RejectedServers @('192.168.65.7'))
-
-                $servers -join ',' | Should -Be '10.0.0.2,8.8.8.8'
-            }
-            finally {
-                $env:CONTABILIDADE_BUILDKIT_DNS = $previous
-            }
-        }
-
-        It 'rejects an explicit configuration without a usable IPv4 server' {
-            $previous = $env:CONTABILIDADE_BUILDKIT_DNS
-            try {
-                $env:CONTABILIDADE_BUILDKIT_DNS = '127.0.0.1;invalid'
-                { Get-ContabilidadeBuildKitDnsServers } |
-                    Should -Throw '*nenhum IPv4 valido*'
-            }
-            finally {
-                $env:CONTABILIDADE_BUILDKIT_DNS = $previous
-            }
-        }
-
-        It 'writes a deterministic project-scoped BuildKit DNS configuration' {
-            $path = Join-Path $TestDrive 'buildkitd.contabilidade.toml'
-
-            New-ContabilidadeBuildKitConfig -Path $path -DnsServers @('10.0.0.2', '8.8.8.8') | Out-Null
-            $first = Get-Content -LiteralPath $path -Raw
-            New-ContabilidadeBuildKitConfig -Path $path -DnsServers @('10.0.0.2', '8.8.8.8') | Out-Null
-            $second = Get-Content -LiteralPath $path -Raw
-
-            $first | Should -Be $second
-            $first | Should -Match '\[dns\]'
-            $first | Should -Match 'nameservers = \["10\.0\.0\.2", "8\.8\.8\.8"\]'
-            $first | Should -Match 'Docker Desktop global nao e alterado'
         }
     }
 }
 
 Describe 'Assert-ContabilidadeDockerAvailable' {
     InModuleScope contabilidade-docker {
-        It 'reports a stopped daemon before checking Buildx' {
+        BeforeEach {
             Mock Get-Command { 'docker.exe' }
             Mock Write-Host {}
+        }
+
+        It 'reports a stopped daemon before compose or buildx checks' {
             Mock Invoke-ContabilidadeDocker {
-                [pscustomobject]@{ Success = $false; ExitCode = 125; Output = ''; StdOut = ''; StdErr = 'daemon unavailable' }
+                [pscustomobject]@{
+                    Success = $false
+                    ExitCode = 125
+                    Output = ''
+                    StdOut = ''
+                    StdErr = 'daemon unavailable'
+                }
             }
 
-            { Assert-ContabilidadeDockerAvailable } | Should -Throw '*daemon nao esta acessivel*'
+            { Assert-ContabilidadeDockerAvailable } |
+                Should -Throw '*daemon nao esta acessivel*'
             Assert-MockCalled Invoke-ContabilidadeDocker -Times 1
         }
 
-        It 'reports an unavailable Buildx plugin' {
-            Mock Get-Command { 'docker.exe' }
-            Mock Write-Host {}
+        It 'requires Docker Compose and Buildx supplied by Docker Desktop' {
             Mock Invoke-ContabilidadeDocker {
                 param($Arguments)
                 if ($Arguments[0] -eq 'info') {
-                    return [pscustomobject]@{ Success = $true; ExitCode = 0; Output = ''; StdOut = ''; StdErr = '' }
+                    return [pscustomobject]@{
+                        Success = $true
+                        ExitCode = 0
+                        Output = ''
+                        StdOut = ''
+                        StdErr = ''
+                    }
                 }
-                return [pscustomobject]@{ Success = $false; ExitCode = 1; Output = ''; StdOut = ''; StdErr = 'unknown command' }
+                if ($Arguments[0] -eq 'compose') {
+                    return [pscustomobject]@{
+                        Success = $false
+                        ExitCode = 1
+                        Output = ''
+                        StdOut = ''
+                        StdErr = 'missing'
+                    }
+                }
+                return [pscustomobject]@{
+                    Success = $true
+                    ExitCode = 0
+                    Output = ''
+                    StdOut = ''
+                    StdErr = ''
+                }
             }
 
-            { Assert-ContabilidadeDockerAvailable } | Should -Throw '*Buildx indisponivel*'
+            { Assert-ContabilidadeDockerAvailable } |
+                Should -Throw '*Compose v2 indisponivel*'
         }
     }
 }
