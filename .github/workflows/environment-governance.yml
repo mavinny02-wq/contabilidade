@@ -1,0 +1,24 @@
+name: Environment governance
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  environment-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate deterministic environment contracts
+        env:
+          CI_SYNTHETIC_DATA_ONLY: "true"
+          CI_EXTERNAL_NETWORK_DEFAULT: "false"
+        run: |
+          python3 scripts/environment/environment_guard.py --inventory inventory-a.json
+          python3 scripts/environment/environment_guard.py --inventory inventory-b.json
+          cmp inventory-a.json inventory-b.json
+          python3 -m unittest scripts.environment.test_environment_guard

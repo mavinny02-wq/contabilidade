@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "environments": {
+    "dev": {
+      "files": ["compose.yaml", "compose.dev.yaml"],
+      "requiredServices": ["postgres", "backend", "automation-worker", "frontend"],
+      "forbiddenServices": ["keycloak", "postgres-bootstrap"],
+      "authEnabled": false,
+      "realProviderDefault": false
+    },
+    "onpremise": {
+      "files": ["compose.yaml", "compose.onpremise.yaml", "scripts/deploy-contabilidade-onpremise.ps1"],
+      "requiredServices": ["postgres", "keycloak", "backend", "automation-worker", "frontend"],
+      "authEnabled": true,
+      "requiresPublishedImages": true,
+      "rejectExampleSecrets": true,
+      "realProviderDefault": false
+    },
+    "ci": {
+      "files": [".github/workflows/environment-governance.yml"],
+      "syntheticDataOnly": true,
+      "externalNetworkDefault": false,
+      "windowsRuntimeClaim": false
+    }
+  },
+  "exceptions": []
+}
