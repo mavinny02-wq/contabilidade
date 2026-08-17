@@ -3,82 +3,106 @@
 **Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`
 **Reconciliado em:** `2026-08-17`
 **Branch de integração:** `main`
-**HEAD funcional reconciliado:** `3850443701279e2002c527b6eb376de8abd664cf`
+**HEAD funcional observado:** `47fffd99b959b5da41d82d0b4f4e5511f6e7456b`
 **Versão declarada:** `0.5.1`
 **Frontier Flyway:** `V12`
-**Modo:** `FAST_LANE_WAVE_012_RELEASED`
+**Modo:** `P0_STARTUP_RELIABILITY_HOLD`
 
-## Verdade de integração
+## Decisão de emergência
 
-- A Fast Lane Wave 011 foi integrada pelas PRs `#128–#132`.
-- **PR aberta na reconciliação:** nenhuma.
-- Nenhum owner de migration está aberto ou liberado.
-- A `main` permanece sem branch protection/ruleset obrigatório.
-- Nenhuma execução de GitHub Actions foi observada no HEAD; `Required CI` continua
-  `GITHUB_ACTIONS_SETTINGS_OR_PERMISSION_BLOCKER`, não `PASS`.
+A execução normal da Fast Lane Wave 012 está suspensa. Nenhum owner restante da onda está autorizado
+enquanto o ambiente oficial de desenvolvimento não completar, em Windows + Docker Desktop, o primeiro
+startup e o startup repetido sem falha.
 
-## Resultado da Fast Lane Wave 011
+A Wave 012 foi superseded pelo gate `CONTABILIDADE_STARTUP_RELIABILITY_GATE_P0_001`. Os itens
+`STR-INF-002`, `STR-INF-003`, `STR-CI-003` e `STR-OBS-003` retornam ao backlog. O resultado já integrado
+`VAL-W011-FULLSTACK-012` permanece como evidência Cloud/Linux, mas não substitui a prova local.
 
-| ITEM | Resultado | Disposição |
-|---|---|---|
-| `FIX-TECH-AUTH-001` | `AccessDeniedException` retorna 403 seguro; 401/500 preservados | `PASS` |
-| `STR-ARCH-BE-005` | Documento isolado de Empresa; 601 arestas e findings 1 → 0 | `PASS_STRUCTURAL` |
-| `STR-SEC-003` | lifecycle de segredos redigido, determinístico e sem valores | `PASS_STRUCTURAL` |
-| `STR-REL-003` | promoção/rollback imutáveis validáveis offline | `PASS_STRUCTURAL` |
-| `STR-OPS-002` | recovery plan determinístico e não destrutivo | `PASS_STRUCTURAL` |
-
-A Wave 011 não deixou regressão de produto aberta. Como o boundary de Documento alterou wiring Spring e
-o handler de autorização alterou comportamento HTTP, a próxima onda inclui um único smoke consolidado
-do HEAD, sem repetir campanhas não afetadas.
-
-## Estado Windows
+## Evidência atual do usuário
 
 ```text
-RUNTIME_IMAGES_BUILD: PASS_USER_EVIDENCE
-DOCKER_ACTIVE_CONTEXT_PRESERVED: FIX_INTEGRATED
-DOCKER_DNS_BOUNDARY_PRIMA: FIX_INTEGRATED
-POWERSHELL_VARIABLE_COLON: FIX_INTEGRATED
-POWERSHELL_PARSE_FIRST: PASS_STRUCTURAL_WINDOWS_RUNTIME_PENDING
-WINDOWS_DEV_STACK_AFTER_FIX: NOT_YET_PROVEN
+BACKEND_LOCAL_BUILD: PASS_USER_EVIDENCE
+FRONTEND_LOCAL_BUILD: PASS_USER_EVIDENCE
+AUTOMATION_WORKER_LOCAL_BUILD: PASS_USER_EVIDENCE
+CONTABILIDADE_BACKEND_IMAGE_0_5_1: PASS_USER_EVIDENCE
+CONTABILIDADE_FRONTEND_IMAGE_0_5_1: PASS_USER_EVIDENCE
+CONTABILIDADE_WORKER_IMAGE_0_5_1: PASS_USER_EVIDENCE
+WINDOWS_COMPOSE_SERVICES_STARTED: FAIL
+WINDOWS_DEV_STACK_READY: NOT_PROVEN
 WINDOWS_SECOND_START_REUSE: NOT_PROVEN
 ONPREMISE_KEYCLOAK_LOGIN: BLOCKED_UNTIL_DEV_GREEN
 ```
 
-A campanha humana continua fora dos slots: atualizar `main`, executar o startup dev, repetir o
-startup e coletar a evidência Windows v2.
+O marcador `[6/6] Verifying runtime images...` pertence ao script core. A falha relatada ocorre logo
+na transferência para `scripts/start-compose-sequential.ps1`, antes de qualquer serviço ser iniciado,
+na limpeza inicial do container temporário `contabilidade-startup-probe`.
 
-## Fast Lane Wave 012
+## Defeito P0 reproduzido
 
-1. `VAL-W011-FULLSTACK-012` — smoke do HEAD pós-Wave 011, produto read-only;
-2. `STR-INF-002` — lifecycle TLS/certificados e guard de configuração segura;
-3. `STR-INF-003` — inventário/plan IaC on-premise e drift guard;
-4. `STR-CI-003` — runner local com paridade do Required CI e classificação de limitações;
-5. `STR-OBS-003` — monitoração sintética local-only, redigida e bounded.
+O script sequencial usa `$ErrorActionPreference = 'Stop'` e possui uma invocação nativa direta:
 
-Os cinco owners partem de `main@3850443701279e2002c527b6eb376de8abd664cf`, não possuem dependência
-same-wave, não criam migration e não utilizam provider, credencial, certificado privado, backup ou dado real.
+```powershell
+& docker @Arguments *> $null
+```
 
-## Campanhas fora dos slots
+`Remove-Probe` chama `docker rm -f contabilidade-startup-probe` com intenção de permitir ausência.
+Porém, no Windows PowerShell 5.1, o stderr `No such container` pode virar `NativeCommandError` antes de
+a função consultar `$LASTEXITCODE`. Portanto, `-AllowFailure` não torna a operação idempotente.
 
-- `VAL-QA-BE-DOCKER-001`: duas execuções em Java 21 + Docker;
-- PostgreSQL HTTP da Console Técnica: executor com Docker/Testcontainers;
-- Windows dev + segundo startup: humano;
-- on-premise + Keycloak: após Windows dev verde;
-- GitHub Actions/branch protection: configuração externa;
-- `STR-OPS-001`: restore real;
-- `STR-REL-002`: promoção/rollback real;
-- providers reais/pagos: não autorizados.
+O repositório já possui `Invoke-ContabilidadeNativeCommand` e `Invoke-ContabilidadeDocker`, que
+capturam stdout/stderr separadamente e usam o exit code como autoridade. O script sequencial ainda
+contorna esse contrato. Isso é um defeito estrutural, não apenas uma mensagem a silenciar.
+
+## Trabalho emergencial em andamento
+
+- **Item:** `FIX-STARTUP-PROBE-001`.
+- **Branch observada:** `codex/fix-startup-issue-in-main-workflow`.
+- **Estado na reconciliação:** execução autorizada pelo usuário; PR ainda não integrada.
+- **Owner:** startup sequencial, wrapper Docker, probe lifecycle e testes focados.
+- **Proibição:** não resolver somente com `2>$null`, `*>$null`, mudança global de
+  `$ErrorActionPreference` ou swallow genérico de exit code.
+
+A correção somente poderá ser classificada como concluída quando atender ao
+`docs/orquestracao/STARTUP_RELIABILITY_GATE.md`.
+
+## Gate obrigatório
+
+O P0 exige, nesta ordem:
+
+1. todos os comandos Docker do startup passando pelo executor nativo central;
+2. classificação explícita de `CONTAINER_ABSENT`, daemon indisponível e falha real;
+3. testes Pester dos dez estados de probe/imagem/daemon descritos no shard;
+4. teste Windows PowerShell 5.1 que prove que stderr nativo não aborta antes da classificação;
+5. integração real com Docker para probe ausente, parado, running e removido concorrentemente;
+6. primeiro startup `dev` verde;
+7. segundo startup verde, com PostgreSQL reutilizado e dados sintéticos preservados;
+8. probe ausente ao final de sucesso e falha;
+9. evidência JSON/Markdown redigida, pinada ao SHA executado.
+
+Static checks Linux, mocks ou build das imagens, isoladamente, não fecham esse gate.
 
 ## Ondas
 
 - Waves 002–011: `CONSUMED`;
-- `CONTABILIDADE_FAST_LANE_WAVE_012`: `RELEASED_FOR_EXECUTION`;
-- owners executáveis: `5`;
-- migration owner: `NONE`.
+- Wave 012: `SUPERSEDED_BY_P0_STARTUP_HOLD`;
+- wave funcional/estrutural ativa: `NONE`;
+- migration owner: `NONE`;
+- próxima seleção normal: proibida até `WINDOWS_COMPOSE_STARTUP_GATE = PASS`.
+
+## Campanhas externas preservadas
+
+- backend/Testcontainers: aguardando executor Docker;
+- on-premise + Keycloak: após dev e segundo startup verdes;
+- Required CI remoto e branch protection: configuração externa;
+- restore e promoção reais: aguardando runtime;
+- providers fiscais reais/pagos: não autorizados.
 
 ## Próxima transição
 
-Integrar e reconciliar os cinco resultados. Falha do smoke gera successor específico; tooling
-estrutural não pode alegar prova runtime ou alterar configuração real para obter verde.
+1. integrar somente a correção P0 após revisão dos testes;
+2. liberar uma campanha de validação Windows/Compose pinada ao novo SHA;
+3. executar primeiro e segundo startup;
+4. reconciliar a evidência;
+5. somente então recalcular a próxima wave.
 
-`CONTABILIDADE_CURRENT_STATE_FAST_LANE_WAVE_012_RELEASED`
+`CONTABILIDADE_CURRENT_STATE_P0_STARTUP_RELIABILITY_HOLD`

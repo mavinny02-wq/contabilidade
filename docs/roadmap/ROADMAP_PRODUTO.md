@@ -1,46 +1,49 @@
 # Roadmap do produto — roteador atual
 
-## Autoridade operacional
+## Autoridades
 
-O checkpoint de execução é:
+- checkpoint: `docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md`;
+- gate P0: `docs/orquestracao/STARTUP_RELIABILITY_GATE.md`;
+- ledger: `docs/testing/MASTER_TEST_ORCHESTRATION.md`;
+- backlog: `docs/roadmap/BACKLOG_ESTRUTURAL.md`.
 
-`docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md`
+## Hold atual
 
-O backlog estrutural é:
+A Fast Lane Wave 012 foi superseded. O único trabalho executável é a correção e validação inseparável
+do startup Windows/Compose.
 
-`docs/roadmap/BACKLOG_ESTRUTURAL.md`
+Nenhuma nova funcionalidade, guard de maturidade ou wave é selecionada até:
 
-O catálogo permanente de capacidades continua em `docs/roadmap/REGISTRO_ITENS_ROADMAP.md` e nos
-backlogs por domínio. Este arquivo não duplica SHA, PRs ou evidência detalhada.
+```text
+VAL-WINDOWS-COMPOSE-STARTUP-001 = PASS
+```
 
-## Regra de seleção
+## Sequência obrigatória
 
-- funcionalidades novas permanecem bloqueadas até a campanha Windows dev ficar verde;
-- correções comprovadas, guards, testes, tooling de produção e boundaries podem continuar em fast lanes;
-- cada wave contém de um a cinco owners reais, nunca filler;
-- no máximo um migration owner;
-- documentação que o orquestrador pode atualizar diretamente não consome slot Codex;
-- providers reais, chamadas pagas, credenciais e dados reais são negados por padrão.
+1. corrigir lifecycle do startup probe com executor nativo central;
+2. integrar Pester, Docker lifecycle e Compose E2E;
+3. executar primeiro `START_CONTABILIDADE.bat dev`;
+4. repetir o startup e comprovar reuso do PostgreSQL;
+5. coletar evidência Windows v2;
+6. somente então liberar on-premise/Keycloak;
+7. depois recalcular a próxima wave estrutural ou funcional.
 
-## Caminho para produto
+## Itens retornados ao backlog
 
-1. fechar Windows dev e segundo startup;
-2. provar on-premise/Keycloak;
-3. completar TLS, IaC, CI local e synthetic monitoring;
-4. executar restore/recovery e promoção/rollback reais;
-5. observar Required CI e habilitar proteção da `main`;
-6. selecionar o primeiro horizonte funcional conforme dependências e locks.
-
-## Estado atual
-
-A Wave 011 foi consumida sem regressão aberta. A Fast Lane Wave 012 está liberada para:
-
-- smoke consolidado do novo HEAD;
-- lifecycle TLS/certificados;
-- plano e drift guard de IaC on-premise;
+- TLS/certificados;
+- IaC on-premise;
 - paridade local do Required CI;
-- monitoração sintética local-only.
+- synthetic monitoring.
 
-Nenhuma nova funcionalidade contábil foi autorizada por essa liberação.
+Eles permanecem válidos, mas não têm launcher autorizado durante o P0.
 
-`ROADMAP_PRODUTO_ROUTER_FAST_LANE_WAVE_012`
+## Regras
+
+- até cinco owners reais, nunca filler;
+- no máximo um migration owner;
+- documentação direta não consome Codex;
+- Cloud/Linux não substitui Windows/Docker Desktop;
+- nenhuma declaração de startup verde sem primeira e segunda execução;
+- providers, chamadas pagas, credenciais e dados reais permanecem negados.
+
+`ROADMAP_PRODUTO_P0_STARTUP_RELIABILITY_HOLD`

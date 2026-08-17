@@ -1,106 +1,95 @@
 # Backlog estrutural do Contabilidade
 
-**Classificação:** `CANONICAL_ACTIVE_STRUCTURAL_REGISTRY`
+**Classificação:** `CANONICAL_ACTIVE_STRUCTURAL_REGISTRY`  
 **Atualizado em:** `2026-08-17`
 
-Registro não significa seleção. Somente item em wave `RELEASED_FOR_EXECUTION` possui launcher.
+Registro não significa seleção. O gate P0 de startup tem precedência sobre waves já liberadas.
 
 ## Status
 
-`RELEASED_FOR_EXECUTION`, `READY_FOR_SELECTION`, `NEEDS_ANALYSIS`, `WAITING_FOR_RUNTIME`,
-`WAITING_FOR_EXTERNAL_SETTING`, `WAITING_FOR_DECISION`, `DECOMPOSED`, `DONE` e `SUPERSEDED`.
+`IN_PROGRESS_USER_AUTHORIZED`, `P0_BLOCKING`, `WAITING_FOR_FIX`, `READY_FOR_SELECTION`,
+`RETURNED_TO_BACKLOG`, `WAITING_FOR_RUNTIME`, `WAITING_FOR_EXTERNAL_SETTING`, `DONE`,
+`SUPERSEDED`.
 
-## P0 — governança e estabilização
+## P0 — startup Windows/Compose
 
-| ID | Área | Status | Resultado |
-|---|---|---|---|
-| `STR-ORQ-000/003` | Fundação/waves | `DONE` | checkpoint, locks, lifecycle e dispatch v2 |
-| `STR-ORQ-001` | Git | `WAITING_FOR_EXTERNAL_SETTING` | ruleset após check remoto observado |
-| `STR-ORQ-002` | Flyway | `DONE` | registry V1–V12 e lane única |
-| `STR-OWN-001` | Ownership | `DONE` | CODEOWNERS |
-| `STR-CI-001/002` | Required CI | `DONE_REMOTE_EVIDENCE_BLOCKED` | workflow estático; nenhuma run observada |
-| `STR-CI-003` | CI local | `RELEASED_FOR_EXECUTION` | paridade local, resume e ledger sem alegar check remoto |
-| `BUG-RUN-001` | Evidência Windows | `DONE_RUNTIME_PENDING` | coletor v2 |
-| `FIX-BUILDX-STARTUP-001` | Startup | `SUPERSEDED` | builder isolado removido |
-| `FIX-BUILDKIT-DNS-001` | Startup | `SUPERSEDED` | DNS project-scoped removido |
-| `FIX-BUILDKIT-DNS-002` | Startup | `DONE_RUNTIME_PENDING` | DNS/proxy sob Docker Desktop/daemon |
-| `FIX-DOCKER-CONTEXT-001` | Startup | `DONE_RUNTIME_PENDING` | contexto ativo preservado |
-| `FIX-POWERSHELL-COLON-001` | Startup | `DONE_RUNTIME_PENDING` | parser corrigido e guard |
-| `FIX-STARTUP-PREFLIGHT-001` | Startup | `DONE_WINDOWS_PROOF_PENDING` | parse-all antes do build |
-| `FIX-TECH-AUTH-001` | Segurança HTTP | `DONE` | negação de method security retorna 403 |
-
-## P1 — engenharia confiável
-
-| ID | Área | Status | Resultado |
-|---|---|---|---|
-| `STR-SEC-001/002` | Segurança | `DONE_CI_SCAN_PENDING` | segredo/PII e supply-chain |
-| `STR-SEC-003` | Secret lifecycle | `DONE` | inventário, owner, fonte, rotação e revogação |
-| `STR-DEP-001` | Dependências | `DONE_NETWORK_SCAN_PENDING` | SBOM/licenças/advisory |
-| `STR-DB-001` | Banco de teste | `DONE_DOCKER_PROOF_PENDING` | PostgreSQL 17/Testcontainers |
-| `VAL-QA-BE-DOCKER-001` | Backend runtime | `WAITING_FOR_RUNTIME` | duas execuções em Java 21 + Docker |
-| `STR-WRK-001` | Worker | `DONE` | lease/retry/idempotência/shutdown |
-| `STR-QA-001` | Coverage | `DONE` | baselines e ratchet |
-| `STR-QA-FE-002` | Frontend quality | `DONE` | coverage atual e a11y |
-| `STR-API-001/002` | API | `DONE` | OpenAPI e consumer contracts |
-| `STR-DATA-001` | Dados | `DONE` | fixtures sintéticas |
-| `STR-PERF-001` | Performance | `DONE` | budgets |
-| `STR-FE-BUNDLE-001` | Frontend | `DONE` | chunk abaixo de 500 KiB |
-| `STR-FE-001` | Acessibilidade | `DONE` | teclado/foco/browser |
-| `STR-OBS-001/002` | Observabilidade | `DONE` | correlação, métricas, SLOs e alertas |
-| `STR-OBS-003` | Synthetic monitoring | `RELEASED_FOR_EXECUTION` | probes local-only, bounded e redigidos |
-| `STR-CTX-001/002` | Contexto | `DONE` | telemetria e budgets |
-| `STR-INF-001` | Ambientes | `DONE` | guard dev/on-premise/CI |
-| `STR-INF-002` | TLS/certificados | `RELEASED_FOR_EXECUTION` | lifecycle, expiração, SAN e source guard |
-| `STR-INF-003` | IaC on-premise | `RELEASED_FOR_EXECUTION` | inventory/plan e drift guard |
-| `STR-SEC-IAM-001` | IAM guard | `DONE` | policy fail-closed comprovada |
-| `VAL-TECH-CONSOLE-CURRENT-001` | Console Técnica | `DONE` | regressão 500/403 corrigida |
-| `VAL-W011-FULLSTACK-012` | Integração | `RELEASED_FOR_EXECUTION` | smoke único do HEAD pós-Wave 011 |
-
-## Arquitetura
-
-| ID | Status | Resultado |
+| ID | Estado | Resultado exigido |
 |---|---|---|
-| `STR-ARCH-001/002/003` | `DONE` | findings 10 → 4 |
-| `STR-ARCH-BE-004` | `DONE` | Certidão/Empresa; findings 4 → 1 |
-| `STR-ARCH-BE-005` | `DONE` | Documento/Empresa; findings 1 → 0 |
+| `CONTABILIDADE_STARTUP_RELIABILITY_GATE_P0_001` | `P0_BLOCKING` | primeiro e segundo startup Windows verdes |
+| `FIX-STARTUP-PROBE-001` | `IN_PROGRESS_USER_AUTHORIZED` | probe cleanup idempotente, race-safe e exit-code-driven |
+| `STR-STARTUP-TEST-001` | `P0_BLOCKING` | Pester + Docker lifecycle + Compose E2E integrados |
+| `VAL-WINDOWS-COMPOSE-STARTUP-001` | `WAITING_FOR_FIX` | prova oficial em PowerShell 5.1/Docker Desktop |
+| `BUG-RUN-001` | `DONE_RUNTIME_PENDING` | coletor Windows v2 para evidência final |
 
-## Documentos
+### Defeitos anteriores absorvidos
 
-| ID | Status | Resultado |
+| ID | Estado | Observação |
 |---|---|---|
-| `STR-DOC-001` | `DECOMPOSED` | épico dividido |
-| `STR-DOC-002` | `DONE` | storage local endurecido |
-| `STR-DOC-003` | `NEEDS_ANALYSIS` | antimalware, quarentena e override |
+| `FIX-BUILDKIT-DNS-001` | `SUPERSEDED` | DNS project-scoped removido |
+| `FIX-BUILDKIT-DNS-002` | `DONE_RUNTIME_PENDING` | DNS/proxy sob Docker Desktop/daemon |
+| `FIX-DOCKER-CONTEXT-001` | `DONE_RUNTIME_PENDING` | contexto ativo preservado |
+| `FIX-POWERSHELL-COLON-001` | `DONE_RUNTIME_PENDING` | interpolação corrigida |
+| `FIX-STARTUP-PREFLIGHT-001` | `DONE_WINDOWS_PROOF_PENDING` | parse-all antes de build |
+
+Nenhum desses resultados, isoladamente, prova que a stack oficial sobe.
+
+## Governança e engenharia concluídas
+
+| Grupo | Estado | Resultado |
+|---|---|---|
+| `STR-ORQ-000/002/003`, `STR-OWN-001` | `DONE` | checkpoint, waves, Flyway lane e CODEOWNERS |
+| `STR-CI-001/002` | `DONE_REMOTE_EVIDENCE_BLOCKED` | workflow estático; run remota não observada |
+| `STR-SEC-001/002/003` | `DONE` | segredo/PII, supply chain e lifecycle de segredo |
+| `STR-DB-001` | `DONE_DOCKER_PROOF_PENDING` | PostgreSQL/Testcontainers implementado |
+| `STR-QA-001`, `STR-QA-FE-002`, `STR-QA-WRK-002` | `DONE` | coverage e ratchets |
+| `STR-API-001/002` | `DONE` | OpenAPI e consumer contracts |
+| `STR-OBS-001/002` | `DONE` | correlação, métricas, SLOs e alertas |
+| `STR-ARCH-*` | `DONE` | 601 arestas e zero findings |
+| `STR-REL-003` | `DONE` | promoção/rollback offline |
+| `STR-OPS-002` | `DONE` | recovery planner offline |
+| `FIX-TECH-AUTH-001` | `DONE` | negação de acesso retorna 403 |
+
+## Wave 012 superseded pelo P0
+
+| Item | Estado após hold |
+|---|---|
+| `VAL-W011-FULLSTACK-012` | `DONE_TEST_CONTRACT_DRIFT` — Cloud verde nos gates executados; `/healthz` Nginx não provado |
+| `STR-INF-002` | `RETURNED_TO_BACKLOG` |
+| `STR-INF-003` | `RETURNED_TO_BACKLOG` |
+| `STR-CI-003` | `RETURNED_TO_BACKLOG` |
+| `STR-OBS-003` | `RETURNED_TO_BACKLOG` |
+
+Esses quatro itens não podem ser executados até a remoção do hold.
+
+## Pendências estruturais após o P0
+
+| ID | Estado | Resultado |
+|---|---|---|
+| `STR-INF-002` | `READY_FOR_SELECTION_AFTER_P0` | TLS/cert lifecycle |
+| `STR-INF-003` | `READY_FOR_SELECTION_AFTER_P0` | IaC on-premise drift guard |
+| `STR-CI-003` | `READY_FOR_SELECTION_AFTER_P0` | paridade local do Required CI |
+| `STR-OBS-003` | `READY_FOR_SELECTION_AFTER_P0` | synthetic monitoring local-only |
+| `STR-DOC-003` | `NEEDS_ANALYSIS` | antimalware e quarentena |
 | `STR-DOC-004` | `NEEDS_ANALYSIS` | storage remoto |
-| `STR-DOC-005` | `WAITING_FOR_DECISION` | retenção e descarte |
+| `STR-DOC-005` | `WAITING_FOR_DECISION` | retenção/descarte |
+| `STR-OPS-001` | `WAITING_FOR_RUNTIME` | restore real e RPO/RTO |
+| `STR-REL-002` | `WAITING_FOR_RUNTIME` | promoção/rollback reais |
+| `STR-ORQ-001`, `STR-QA-002` | `WAITING_FOR_EXTERNAL_SETTING` | branch protection/check remoto |
 
-## Produção, release e continuidade
+## Campanhas externas
 
-| ID | Área | Status | Resultado |
-|---|---|---|---|
-| `STR-REL-003` | Release tooling | `DONE` | bundle imutável e rollback/Flyway guard |
-| `STR-REL-002` | Deploy runtime | `WAITING_FOR_RUNTIME` | promoção/provenance/rollback reais |
-| `STR-OPS-002` | Recovery tooling | `DONE` | planner offline e guard não destrutivo |
-| `STR-OPS-001` | Recovery runtime | `WAITING_FOR_RUNTIME` | restore rehearsal e RPO/RTO reais |
-| `STR-QA-002` | Quality gate | `WAITING_FOR_EXTERNAL_SETTING` | thresholds após CI remota |
-
-## Fast Lane Wave 012
-
-| Slot | ID | Resultado esperado |
-|---:|---|---|
-| 1 | `VAL-W011-FULLSTACK-012` | HEAD atual verde após auth/document boundary |
-| 2 | `STR-INF-002` | TLS/cert lifecycle determinístico e seguro |
-| 3 | `STR-INF-003` | plano IaC on-premise sem mutação de host |
-| 4 | `STR-CI-003` | runner local com paridade e classificação ambiental |
-| 5 | `STR-OBS-003` | synthetic monitoring local-only e redigido |
-
-## Campanhas fora dos slots
-
-- Windows dev + segundo startup: humano;
-- on-premise + Keycloak: após Windows dev verde;
-- PostgreSQL/Testcontainers: executor Docker;
-- GitHub Actions/branch protection: configuração externa;
-- restore real e promoção real: runtime;
+- `VAL-QA-BE-DOCKER-001`: executor Java 21 + Docker;
+- on-premise + Keycloak: somente depois de dev e segundo startup verdes;
+- Required CI remoto/branch protection: configuração externa;
 - providers reais/pagos: não autorizados.
 
-`BACKLOG_ESTRUTURAL_FAST_LANE_WAVE_012_RELEASED`
+## Regra de seleção temporária
+
+```text
+WINDOWS_COMPOSE_STARTUP_GATE != PASS
+  -> nenhuma nova wave
+  -> nenhuma funcionalidade nova
+  -> somente FIX-STARTUP-PROBE-001 e testes/evidência inseparáveis
+```
+
+`BACKLOG_ESTRUTURAL_P0_STARTUP_RELIABILITY_HOLD`
