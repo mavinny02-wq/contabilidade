@@ -1,89 +1,108 @@
 # Master Test Orchestration
 
-**Classificação:** `CANONICAL_ACTIVE_TEST_LEDGER`
-**Reconciliado em:** `2026-08-17`
-**HEAD observado:** `3850443701279e2002c527b6eb376de8abd664cf`
+**Classificação:** `CANONICAL_ACTIVE_TEST_LEDGER`  
+**Reconciliado em:** `2026-08-17`  
+**HEAD observado:** `47fffd99b959b5da41d82d0b4f4e5511f6e7456b`
 
-Este ledger reutiliza prova válida, classifica falhas antes de corrigir e agenda somente owner
-explicitamente liberado.
+## Hold P0
 
-## Evidência reutilizável
+A seleção de novas waves está bloqueada por `CONTABILIDADE_STARTUP_RELIABILITY_GATE_P0_001`.
+A stack oficial Windows/Compose ainda não completou nem o primeiro startup.
+
+## Evidência válida preservada
 
 | ID | Prova | Disposição |
 |---|---|---|
-| `FIX-TECH-AUTH-001` | 403 seguro, 401/500 preservados e 5 testes focados | `REUSE_PASS` |
-| `STR-ARCH-BE-005` | 601 arestas, 0 findings e allowlist vazia | `REUSE_PASS_STRUCTURAL` |
-| `STR-SEC-003` | lifecycle de segredos, 6 testes e saída byte-idêntica | `REUSE_PASS_STRUCTURAL` |
-| `STR-REL-003` | promoção/rollback offline, 7 testes | `REUSE_PASS_STRUCTURAL` |
-| `STR-OPS-002` | recovery planner, 8 testes e forbidden-command guard | `REUSE_PASS_STRUCTURAL` |
-| `FIX-STARTUP-PREFLIGHT-001` | parse-first e guard Node; Windows pendente | `REUSE_PASS_STRUCTURAL_WITH_LIMITATION` |
-| `VAL-W008-FULLSTACK-009` | PostgreSQL/Flyway/JPA, health, 19 jornadas, a11y, zero externa/5xx | `RERUN_FOCUSED_HEAD_CHANGED` |
+| `FIX-TECH-AUTH-001` | 403 seguro; 401/500 preservados | `REUSE_PASS` |
+| `STR-ARCH-BE-005` | 601 arestas, zero findings | `REUSE_PASS_STRUCTURAL` |
+| `STR-SEC-003` | lifecycle de segredos sem valores | `REUSE_PASS_STRUCTURAL` |
+| `STR-REL-003` | promoção/rollback offline | `REUSE_PASS_STRUCTURAL` |
+| `STR-OPS-002` | recovery plan não destrutivo | `REUSE_PASS_STRUCTURAL` |
+| `VAL-W011-FULLSTACK-012` | builds, PostgreSQL/Flyway, health, upload, 19 jornadas e a11y em Linux | `REUSE_PASS_PARTIAL_TEST_CONTRACT_DRIFT` |
 
-## Motivo do smoke consolidado
+`VAL-W011-FULLSTACK-012` não provou Nginx `/healthz`, Docker Desktop, BAT/PowerShell, probe lifecycle
+ou Compose Windows. Ele não pode ser usado como prova do startup oficial.
 
-A Wave 011 alterou:
+## Falha atual do startup
 
-- mapeamento HTTP de `AccessDeniedException`;
-- composição Spring de `DocumentoService` por porta/adapter;
-- baseline arquitetural para zero findings.
+| Etapa | Resultado |
+|---|---|
+| builds locais | `PASS_USER_EVIDENCE` |
+| três imagens runtime criadas | `PASS_USER_EVIDENCE` |
+| entrada no startup sequencial | `FAIL` |
+| cleanup de probe ausente | `NativeCommandError` |
+| serviços Compose iniciados | `NO` |
+| `docker compose ps` | vazio após a falha |
 
-As provas focadas passaram. Um único smoke do HEAD valida startup, wiring documental, upload
-sintético, guard arquitetural e ausência de regressão transversal. Não há autorização para corrigir
-produto dentro da task de validação.
-
-## Fast Lane Wave 012
-
-| ITEM | Prova exigida | Disposição esperada |
-|---|---|---|
-| `VAL-W011-FULLSTACK-012` | builds, guards, PostgreSQL/Flyway, document upload, health, 19+ jornadas e a11y | `PASS` ou classificação exata |
-| `STR-INF-002` | inventário TLS, SAN/expiração/algoritmo/source/exception e determinismo | `PASS_STRUCTURAL` |
-| `STR-INF-003` | plano IaC on-premise, drift/host prerequisites e determinismo | `PASS_STRUCTURAL` |
-| `STR-CI-003` | paridade de lanes, exit codes, resume e classificação ambiental | `PASS_STRUCTURAL` |
-| `STR-OBS-003` | probes local-only, retry bounded, redaction e estados determinísticos | `PASS_STRUCTURAL` |
-
-## Provas pendentes fora dos slots
-
-### Backend/Testcontainers
-
-```bash
-cd backend
-mvn -B -Dtest=ExecucaoFilaPostgresqlTest test
-mvn -B -Dtest=ExecucaoFilaPostgresqlTest test
-mvn -B -Dtest=BancoPostgresqlIntegracaoTest test
-```
-
-### Windows
-
-```powershell
-git switch main
-git pull --ff-only
-.\START_CONTABILIDADE.bat dev
-```
-
-Repetir para comprovar reuso e executar o coletor Windows v2.
-
-## Políticas
-
-- validação read-only não corrige produto;
-- TLS tooling não lê nem grava chave privada;
-- IaC tooling não executa comando privilegiado nem altera host;
-- runner local nunca se apresenta como status remoto do GitHub;
-- synthetic monitoring não chama provider nem usa dado real;
-- falha de ambiente não vira `PASS`;
-- nenhum provider real, dado real ou migration pertence à Wave 012.
-
-## Gates externos
+### Classificação
 
 ```text
-BACKEND_TESTCONTAINERS_RUNTIME = WAITING_FOR_DOCKER
-REQUIRED_CI_REMOTE = NOT_PROVEN
-BRANCH_PROTECTION = NOT_ENABLED
-WINDOWS_DEV = NOT_PROVEN_AFTER_LATEST_FIX
-WINDOWS_SECOND_START = NOT_PROVEN
-ONPREMISE_KEYCLOAK = BLOCKED_UNTIL_WINDOWS_DEV_GREEN
-RESTORE_RUNTIME = WAITING_FOR_RUNTIME
-PROMOTION_RUNTIME = WAITING_FOR_RUNTIME
-REAL_EXTERNAL_PROVIDERS = NOT_AUTHORIZED
+PRIMARY: PRODUCT_REGRESSION_IN_STARTUP_SCRIPT
+MECHANISM: NATIVE_STDERR_ESCAPES_EXIT_CODE_CLASSIFICATION
+EXPECTED_STATE: PROBE_ABSENT_IDEMPOTENT
+DISPOSITION: FIX_PRODUCT_AND_ADD_INTEGRATED_TESTS
 ```
 
-`MASTER_TEST_ORCHESTRATION_FAST_LANE_WAVE_012_RELEASED`
+## Lacuna dos testes existentes
+
+Os testes atuais cobrem executor nativo, contexto Docker, DNS, daemon/buildx/Compose e parser. Eles
+não cobrem:
+
+- lifecycle de `contabilidade-startup-probe`;
+- ausência/stopped/running/race;
+- primeiro e segundo startup;
+- verificação real de imagens seguida de startup;
+- cleanup em sucesso e falha;
+- reuso do PostgreSQL;
+- Compose dev real no Windows.
+
+Por isso, os guards anteriores puderam ficar verdes enquanto o fluxo oficial permanecia quebrado.
+
+## Matriz P0 obrigatória
+
+| Camada | Executor | Critério |
+|---|---|---|
+| parser | Windows PowerShell 5.1 | todos `.ps1`/`.psm1` sem erro |
+| native process | Windows PowerShell 5.1 | stderr não aborta antes do exit code |
+| Pester probe | mocks estruturados | 14 cenários incluindo race/falha real |
+| Docker lifecycle | Docker Desktop | absent/stopped/running/concurrent/ownership |
+| Compose E2E 1 | projeto efêmero | stack dev ready e probe ausente |
+| Compose E2E 2 | mesmo projeto | PostgreSQL/marker preservados |
+| official startup 1 | checkout real | `START_CONTABILIDADE.bat dev` exit 0 |
+| official startup 2 | checkout real | reuso e idempotência comprovados |
+| evidence | coletor v2 | JSON/Markdown redigidos e pinados ao SHA |
+
+## Resultados permitidos
+
+```text
+PASS
+PRODUCT_REGRESSION
+TEST_CONTRACT_DRIFT
+ENVIRONMENT_LIMITATION
+BASELINE_DRIFT
+PROBE_OWNERSHIP_CONFLICT
+DOCKER_DAEMON_UNAVAILABLE
+```
+
+Ausência de Docker ou PowerShell não autoriza `PASS` estrutural como encerramento do P0.
+
+## Regras de implementação
+
+- todo Docker do startup usa o executor nativo central;
+- `No such container` só é benigno em cleanup idempotente;
+- daemon indisponível e falha real permanecem vermelhos;
+- `finally` não apaga a exception principal;
+- nenhum segredo ou `.env` em logs;
+- nenhum cleanup global;
+- nenhuma alteração de Compose/banco para mascarar o problema;
+- nenhuma nova wave até a prova final.
+
+## Provas externas ainda pendentes
+
+- backend/Testcontainers;
+- on-premise/Keycloak;
+- Required CI remoto e branch protection;
+- restore e promoção reais;
+- providers reais/pagos.
+
+`MASTER_TEST_ORCHESTRATION_P0_STARTUP_RELIABILITY_HOLD`
