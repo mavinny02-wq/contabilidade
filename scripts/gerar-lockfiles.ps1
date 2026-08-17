@@ -25,7 +25,7 @@ foreach ($diretorio in @("frontend", "automation-worker")) {
         }
         $lock = Get-Content -LiteralPath $lockPath -Raw | ConvertFrom-Json
         if ([int]$lock.lockfileVersion -lt 3) {
-            throw "Lockfile incompatível em $diretorio: lockfileVersion $($lock.lockfileVersion)."
+            throw "Lockfile incompatível em ${diretorio}: lockfileVersion $($lock.lockfileVersion)."
         }
     } finally {
         Pop-Location

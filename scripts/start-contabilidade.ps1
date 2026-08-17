@@ -17,6 +17,9 @@ $Timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $LogPath = Join-Path $LogDir "START_CONTABILIDADE_$Timestamp.log"
 $LastLogPath = Join-Path $LogDir 'START_CONTABILIDADE_ultimo.log'
 
+Import-Module (Join-Path $PSScriptRoot 'lib\startup-preflight.psm1') -Force
+Invoke-StartupPowerShellPreflight -ScriptsPath $PSScriptRoot
+
 New-Item -ItemType Directory -Force -Path $LocalRoot, $LogDir | Out-Null
 
 function Write-Step {
