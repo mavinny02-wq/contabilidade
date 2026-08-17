@@ -1,9 +1,5 @@
 import { BackendClient } from './BackendClient.js';
 import { BrowserRuntime } from './BrowserRuntime.js';
-import { FederalCertificateFlow } from './FederalCertificateFlow.js';
-import { PgeSpCertificateFlow } from './PgeSpCertificateFlow.js';
-import { SefazSpCertificateFlow } from './SefazSpCertificateFlow.js';
-import { SerproCndFlow } from './SerproCndFlow.js';
 import { FluxoRegistry } from './FluxoRegistry.js';
 import { InteractiveSessionManager } from './InteractiveSessionManager.js';
 import { SessionTicketVerifier } from './SessionTicket.js';
@@ -11,6 +7,7 @@ import { shutdownConfig } from './ShutdownConfig.js';
 import { concluirDentro } from './Shutdown.js';
 import { WorkerLoop } from './WorkerLoop.js';
 import { config } from './config.js';
+import { registerWorkerFlows } from './composition/WorkerFlowComposition.js';
 import { criarServidor } from './server.js';
 
 const VERSAO = '0.5.1';
@@ -25,10 +22,7 @@ const tickets = new SessionTicketVerifier(
   async (payload) => await backend.consumirTicketSessao(payload),
 );
 
-registry.registrar(new FederalCertificateFlow());
-registry.registrar(new SefazSpCertificateFlow());
-registry.registrar(new PgeSpCertificateFlow());
-registry.registrar(new SerproCndFlow());
+registerWorkerFlows(registry);
 
 const loop = new WorkerLoop(runtime, registry, sessions, backend);
 const servidor = criarServidor(runtime, registry, loop, sessions, tickets);

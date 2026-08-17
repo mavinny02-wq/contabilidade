@@ -35,30 +35,6 @@
       "rule": "backend.cross_feature_internal",
       "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
       "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
-    },
-    {
-      "fingerprint": "4fd31913ee49f6987cea",
-      "rule": "worker.core_to_provider",
-      "source": "automation-worker/src/index.ts",
-      "target": "automation-worker/src/FederalCertificateFlow.ts"
-    },
-    {
-      "fingerprint": "c59e7499656e226f6317",
-      "rule": "worker.core_to_provider",
-      "source": "automation-worker/src/index.ts",
-      "target": "automation-worker/src/PgeSpCertificateFlow.ts"
-    },
-    {
-      "fingerprint": "63b53d43d08167d2bea6",
-      "rule": "worker.core_to_provider",
-      "source": "automation-worker/src/index.ts",
-      "target": "automation-worker/src/SefazSpCertificateFlow.ts"
-    },
-    {
-      "fingerprint": "81f6a545274b85165f8a",
-      "rule": "worker.core_to_provider",
-      "source": "automation-worker/src/index.ts",
-      "target": "automation-worker/src/SerproCndFlow.ts"
     }
   ],
   "graph": {
@@ -1186,6 +1162,86 @@
         "target": "frontend/src/api/types.ts"
       },
       {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/AgendaCertidoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/AtualizacaoPreflightPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/AuditoriaPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/BackupsPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/CertidoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/ConfiguracaoSeguraPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/ConsoleTecnicaPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/DashboardPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/DocumentosPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/EmpresaDetalhePage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/EmpresasPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/ErrorPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/ExecucoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/FaturasProvedoresPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/HistoricoProvedoresPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/HistoricoWorkersPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/IntegracoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/IntervencoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/NotificacoesPage.tsx"
+      },
+      {
+        "source": "frontend/src/app/routePages.ts",
+        "target": "frontend/src/pages/ResponsaveisModuloPage.tsx"
+      },
+      {
         "source": "frontend/src/app/router.tsx",
         "target": "frontend/src/app/AppShell.tsx"
       },
@@ -1203,83 +1259,15 @@
       },
       {
         "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/AgendaCertidoesPage.tsx"
+        "target": "frontend/src/components/Alert.tsx"
       },
       {
         "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/AtualizacaoPreflightPage.tsx"
+        "target": "frontend/src/components/Button.tsx"
       },
       {
         "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/AuditoriaPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/BackupsPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/CertidoesPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/ConfiguracaoSeguraPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/ConsoleTecnicaPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/DashboardPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/DocumentosPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/EmpresaDetalhePage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/EmpresasPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/ErrorPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/ExecucoesPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/FaturasProvedoresPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/HistoricoProvedoresPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/HistoricoWorkersPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/IntegracoesPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/IntervencoesPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/NotificacoesPage.tsx"
-      },
-      {
-        "source": "frontend/src/app/router.tsx",
-        "target": "frontend/src/pages/ResponsaveisModuloPage.tsx"
+        "target": "frontend/src/components/LoadingScreen.tsx"
       },
       {
         "source": "frontend/src/auth/AuthProvider.tsx",
@@ -2240,6 +2228,14 @@
         "target": "automation-worker/src/contracts.ts"
       },
       {
+        "source": "automation-worker/src/BackendClient.ts",
+        "target": "automation-worker/src/observability/CorrelationContext.ts"
+      },
+      {
+        "source": "automation-worker/src/BackendClient.ts",
+        "target": "automation-worker/src/observability/WorkerMetrics.ts"
+      },
+      {
         "source": "automation-worker/src/BrowserRuntime.ts",
         "target": "automation-worker/src/config.ts"
       },
@@ -2348,6 +2344,30 @@
         "target": "automation-worker/src/contracts.ts"
       },
       {
+        "source": "automation-worker/src/composition/WorkerFlowComposition.ts",
+        "target": "automation-worker/src/FederalCertificateFlow.ts"
+      },
+      {
+        "source": "automation-worker/src/composition/WorkerFlowComposition.ts",
+        "target": "automation-worker/src/FluxoRegistry.ts"
+      },
+      {
+        "source": "automation-worker/src/composition/WorkerFlowComposition.ts",
+        "target": "automation-worker/src/PgeSpCertificateFlow.ts"
+      },
+      {
+        "source": "automation-worker/src/composition/WorkerFlowComposition.ts",
+        "target": "automation-worker/src/SefazSpCertificateFlow.ts"
+      },
+      {
+        "source": "automation-worker/src/composition/WorkerFlowComposition.ts",
+        "target": "automation-worker/src/SerproCndFlow.ts"
+      },
+      {
+        "source": "automation-worker/src/composition/WorkerFlowComposition.ts",
+        "target": "automation-worker/src/contracts.ts"
+      },
+      {
         "source": "automation-worker/src/heartbeat.ts",
         "target": "automation-worker/src/BackendClient.ts"
       },
@@ -2361,27 +2381,11 @@
       },
       {
         "source": "automation-worker/src/index.ts",
-        "target": "automation-worker/src/FederalCertificateFlow.ts"
-      },
-      {
-        "source": "automation-worker/src/index.ts",
         "target": "automation-worker/src/FluxoRegistry.ts"
       },
       {
         "source": "automation-worker/src/index.ts",
         "target": "automation-worker/src/InteractiveSessionManager.ts"
-      },
-      {
-        "source": "automation-worker/src/index.ts",
-        "target": "automation-worker/src/PgeSpCertificateFlow.ts"
-      },
-      {
-        "source": "automation-worker/src/index.ts",
-        "target": "automation-worker/src/SefazSpCertificateFlow.ts"
-      },
-      {
-        "source": "automation-worker/src/index.ts",
-        "target": "automation-worker/src/SerproCndFlow.ts"
       },
       {
         "source": "automation-worker/src/index.ts",
@@ -2401,11 +2405,19 @@
       },
       {
         "source": "automation-worker/src/index.ts",
+        "target": "automation-worker/src/composition/WorkerFlowComposition.ts"
+      },
+      {
+        "source": "automation-worker/src/index.ts",
         "target": "automation-worker/src/config.ts"
       },
       {
         "source": "automation-worker/src/index.ts",
         "target": "automation-worker/src/server.ts"
+      },
+      {
+        "source": "automation-worker/src/observability/SafeLogger.ts",
+        "target": "automation-worker/src/observability/CorrelationContext.ts"
       },
       {
         "source": "automation-worker/src/server.ts",
