@@ -3,47 +3,45 @@
 **Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`
 **Reconciliado em:** `2026-08-16`
 **Branch de integração:** `main`
-**HEAD reconciliado:** `77141fae2f04a430bc2cb51264886c083977a3ce`
+**HEAD funcional reconciliado:** `357dd4b8827c0c9620d0dd7e8398bc3468418ff9`
 **Versão declarada:** `0.5.1`
 **Frontier Flyway:** `V12`
-**Modo:** `FAST_LANE_WAVE_008_RELEASED`
+**Modo:** `FAST_LANE_WAVE_009_RELEASED`
 
 ## Verdade de integração
 
-- A Fast Lane Wave 007 foi integrada pelas PRs `#96`, `#97`, `#98`, `#99` e `#100`.
-- O delta posterior `FIX-BUILDX-STARTUP-001` foi integrado pela PR `#101`, com correção estrutural
-  do bootstrap Buildx e runtime Windows ainda pendente.
+- A Fast Lane Wave 008 foi integrada pelas PRs `#103`, `#104`, `#105`, `#106` e `#107`.
 - **PR aberta na reconciliação:** nenhuma.
 - Nenhum owner de migration está aberto ou liberado.
 - A `main` continua sem branch protection/ruleset obrigatório.
-- O HEAD reconciliado não possui workflow run nem status check observável.
-- A ausência de execução remota continua classificada como
-  `GITHUB_ACTIONS_SETTINGS_OR_PERMISSION_BLOCKER`, não como `PASS`.
+- Nenhum required check remoto foi observado no HEAD; isso permanece
+  `GITHUB_ACTIONS_SETTINGS_OR_PERMISSION_BLOCKER`, não `PASS`.
 
-## Resultado da Fast Lane Wave 007
+## Resultado da Fast Lane Wave 008
 
 | ITEM | Resultado | Disposição |
 |---|---|---|
-| `VAL-W006-FULLSTACK-007` | Node 24, Java 21, Flyway V1–V12, health, heartbeat e 19 jornadas; zero externa/5xx | `PASS` |
-| `STR-FE-001` | 24 testes frontend e 6 smokes Chromium/axe; zero violação critical/serious | `PASS` |
-| `STR-API-002` | 13 testes e inventário determinístico call sites ↔ usage map ↔ OpenAPI | `PASS` |
-| `STR-QA-WRK-002` | 15 testes e coverage reproduzível: linhas 58,9251%, branches 69,2913%, funções 66,0494% | `PASS_COMPLETE` |
-| `STR-CTX-001` | schema, parser, redaction, deduplicação, budgets e custo/outcome com 6 testes | `PASS` |
+| `VAL-W007-FULLSTACK-008` | Node 24, Java 21, Flyway V1–V12, health, heartbeat, 19 jornadas, a11y e zero externa/5xx | `PASS` |
+| `STR-QA-BE-001` | suíte PostgreSQL/Testcontainers criada e compilada; executor sem Docker | `DONE_RUNTIME_PROOF_PENDING` |
+| `STR-OBS-002` | 7 SLOs, 15 alertas, métricas bounded, guard e runbook | `PASS_STRUCTURAL` |
+| `STR-ARCH-002` | composition root isolado; 600 arestas e findings 10 → 6 | `PASS` |
+| `STR-CTX-002` | budgets por classe, warning/breach e saídas determinísticas | `PASS` |
+
+A Wave 008 está `CONSUMED`. A ausência de Docker em `STR-QA-BE-001` não revelou regressão do
+produto e não bloqueia a próxima fast lane. A prova pendente foi separada como
+`VAL-QA-BE-DOCKER-001`, fora dos slots até existir executor Java 21 + Docker conhecido.
 
 ## Evidência e validade
 
 ```text
-POST_W006_FULLSTACK: PASS
+POST_W007_FULLSTACK: PASS
+DOCKER_ORCHESTRATION_GUARD: PASS_STRUCTURAL
 FRONTEND_ACCESSIBILITY_BROWSER: PASS
-API_CONSUMER_SOURCE_MAPPING: PASS
-WORKER_FULL_SUITE_AND_COVERAGE: PASS_COMPLETE
-TOKEN_OUTCOME_TELEMETRY: PASS
-FIX_BUILDX_STARTUP_001: PASS_STRUCTURAL_WINDOWS_RUNTIME_PENDING
-CURRENT_HEAD_POST_W007_AND_STARTUP_FULLSTACK: RERUN_FOCUSED_RELEASED
-BACKEND_CRITICAL_EXECUTION_TESTS: RELEASED
-OPERATIONAL_SLO_ALERTING: RELEASED
-ARCHITECTURE_ALLOWLIST: 10_FINDINGS; WORKER_TRANCHE_RELEASED
-TASK_CLASS_TOKEN_BUDGETS: RELEASED
+BACKEND_CRITICAL_TEST_SUITE: IMPLEMENTED_COMPILED_RUNTIME_DOCKER_PENDING
+OPERATIONAL_SLO_ALERTING: PASS_STRUCTURAL
+WORKER_COMPOSITION_BOUNDARY: PASS_600_EDGES_6_FINDINGS
+TASK_CLASS_TOKEN_BUDGETS: PASS
+
 REQUIRED_CI_REMOTE: NOT_PROVEN_EXTERNAL_BLOCKER
 BRANCH_PROTECTION: NOT_ENABLED
 WINDOWS_DEV_DOCKER_DESKTOP: NOT_PROVEN
@@ -52,55 +50,49 @@ ONPREMISE_KEYCLOAK_LOGIN: BLOCKED_UNTIL_DEV_GREEN
 REAL_EXTERNAL_PROVIDERS: NOT_AUTHORIZED_NOT_REQUIRED
 ```
 
-O smoke da PR `#98` comprovou a baseline pós-Wave 006. Depois dele, a Wave 007 alterou shell,
-modal, estilos e tooling frontend, além de contracts, coverage do worker e telemetria. A PR `#101`
-também alterou o bootstrap Docker/Buildx. Por isso a Wave 008 contém um único rerun full-stack
-focado no HEAD atual e o guard estrutural da orquestração Docker; ele não autoriza correção de
-produto nem reivindica prova Windows dentro do owner de validação.
+## Fast Lane Wave 009
 
-## Campanha humana paralela
+1. `VAL-W008-FULLSTACK-009` — smoke consolidado pós-Wave 008, produto read-only;
+2. `STR-QA-FE-002` — coverage frontend pós-lazy/a11y, completo e reproduzível;
+3. `STR-SEC-IAM-001` — inventário/guard de papéis, permissões, rotas públicas e realm;
+4. `STR-ARCH-BE-003` — remover dois findings da busca global, reduzindo 6 → 4;
+5. `STR-DOC-002` — contratos adversariais do storage local de documentos.
 
-Windows dev permanece fora dos slots Codex:
+Os cinco owners partem de `main@357dd4b8827c0c9620d0dd7e8398bc3468418ff9`, não possuem dependência
+same-wave, não criam migration e não utilizam provider ou dado real.
+
+## Campanhas fora dos slots
+
+### Backend/Testcontainers
+
+Executar somente em ambiente com Java 21 e Docker:
+
+```bash
+cd backend
+mvn -B -Dtest=ExecucaoFilaPostgresqlTest test
+mvn -B -Dtest=ExecucaoFilaPostgresqlTest test
+```
+
+### Windows
 
 1. atualizar `main`;
 2. executar `START_CONTABILIDADE.bat dev`;
-3. coletar evidência v2 em modo `dev`;
-4. repetir o startup com o estado anterior;
-5. reconciliar apenas JSON/Markdown redigidos.
+3. coletar evidência v2;
+4. repetir o startup e comprovar reutilização;
+5. reconciliar JSON/Markdown redigidos.
 
-On-premise + Keycloak permanece bloqueado até o modo dev ficar verde.
+On-premise + Keycloak permanece bloqueado até Windows dev verde.
 
 ## Ondas
 
-- `CONTABILIDADE_STABILIZATION_WAVE_002`: `CONSUMED`;
-- `CONTABILIDADE_STABILIZATION_WAVE_003`: `CONSUMED`;
-- `CONTABILIDADE_MATURITY_WAVE_004`: `CONSUMED`;
-- `CONTABILIDADE_QUALITY_GATE_WAVE_005`: `CONSUMED`;
-- `CONTABILIDADE_HARDENING_WAVE_006`: `CONSUMED`;
-- `CONTABILIDADE_FAST_LANE_WAVE_007`: `CONSUMED`;
-- `CONTABILIDADE_FAST_LANE_WAVE_008`: `RELEASED_FOR_EXECUTION`;
-- owners executáveis liberados: `5`;
+- Waves 002–008: `CONSUMED`;
+- `CONTABILIDADE_FAST_LANE_WAVE_009`: `RELEASED_FOR_EXECUTION`;
+- owners executáveis: `5`;
 - migration owner: `NONE`.
-
-## Fast Lane Wave 008
-
-1. `VAL-W007-FULLSTACK-008` — smoke consolidado do HEAD atual e guard Docker, produto read-only;
-2. `STR-QA-BE-001` — testes críticos de fila, lease, idempotência, retry e recuperação;
-3. `STR-OBS-002` — SLOs, métricas bounded, alertas Prometheus e runbooks acionáveis;
-4. `STR-ARCH-002` — remover os quatro findings `worker.core_to_provider` sem alterar fluxos;
-5. `STR-CTX-002` — budgets automáticos por classe de task sobre a telemetria já integrada.
-
-Os cinco owners partem de `main@77141fae2f04a430bc2cb51264886c083977a3ce`, não possuem dependência same-wave e não criam
-migration.
 
 ## Próxima transição
 
-Integrar e reconciliar os cinco resultados. Depois:
+Integrar e reconciliar os cinco resultados. Corrigir somente regressões comprovadas; evidência
+ambiental pendente continua em campanha própria e não deve virar filler.
 
-- corrigir somente regressões comprovadas e sempre em successor próprio;
-- avaliar um owner futuro para atualizar o baseline de coverage do frontend pós-lazy/a11y;
-- manter restore, deploy on-premise e branch protection fora dos slots enquanto seus gates externos
-  permanecerem fechados;
-- selecionar documentação/storage somente após decompor `STR-DOC-001`.
-
-`CONTABILIDADE_CURRENT_STATE_FAST_LANE_WAVE_008_RELEASED`
+`CONTABILIDADE_CURRENT_STATE_FAST_LANE_WAVE_009_RELEASED`

@@ -1,0 +1,74 @@
+TASK: VAL-W008-FULLSTACK-009
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_009
+DISPATCH_KEY: bcdc73d37e0142413803761e8d2d02289d9f2ce57b2b3102a4c0bb38fc7658f0
+BASELINE: latest main
+PREPARE: fullstack-node24 + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/testing/plans/VAL_W008_FULLSTACK_009.md
+LOCKS: LOCK-EXT-001, LOCK-DATA-001, LOCK-ENV-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: product read-only; only exact RESULT_MD may change
+MIGRATION: NONE
+VALIDATE: Node 24; build all; Docker/alert/architecture guards; PostgreSQL/Flyway/health/heartbeat; 19+ journeys and a11y
+RESULT_MD: docs/testing/runs/VAL_W008_FULLSTACK_009.md
+
+TASK: STR-QA-FE-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_009
+DISPATCH_KEY: 3920c8e51fb1074265fe89c5f6262544fd16e7796b0085f0ef92fbcf649e768f
+BASELINE: latest main
+PREPARE: frontend-node24-coverage + dispatch-preflight
+READ:
+- root + frontend/AGENTS.md
+- docs/roadmap/estrutural/STR_QA_FE_002_FRONTEND_COVERAGE_REFRESH.md
+LOCKS: LOCK-DATA-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: frontend tests and frontend coverage baseline section only; production source read-only
+MIGRATION: NONE
+VALIDATE: Node 24; locale, typecheck, tests, two coverage runs, build, a11y and ratchet
+RESULT_MD: docs/implementacao/STR_QA_FE_002_RESULT.md
+
+TASK: STR-SEC-IAM-001
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_009
+DISPATCH_KEY: b532d464f635ea91c985dff051bb16250a49c2f2dd05d026cf4160bc82f9fee3
+BASELINE: latest main
+PREPARE: iam-contracts + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_SEC_IAM_001_AUTHORIZATION_MATRIX.md
+LOCKS: LOCK-DATA-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: scripts/security/iam, inventory, fixtures, tests and exact result; product and realm read-only
+MIGRATION: NONE
+VALIDATE: generate inventory twice; run role/permission/public-route/realm drift and redaction tests
+RESULT_MD: docs/implementacao/STR_SEC_IAM_001_RESULT.md
+
+TASK: STR-ARCH-BE-003
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_009
+DISPATCH_KEY: 151f6711bceb996527e847ad830a2169a710657cd195e08d3e140ca266c4ce55
+BASELINE: latest main
+PREPARE: backend-architecture + dispatch-preflight
+READ:
+- root + backend/AGENTS.md
+- docs/roadmap/estrutural/STR_ARCH_BE_003_GLOBAL_SEARCH_BOUNDARY.md
+LOCKS: LOCK-EVID-001, LOCK-TEST-001
+OWNER: common/search, empresa adapter/projection, focused tests and architecture baseline/allowlist
+MIGRATION: NONE
+VALIDATE: Java 21; compile, focused search tests and architecture inventory/check with findings 6 to 4
+RESULT_MD: docs/implementacao/STR_ARCH_BE_003_RESULT.md
+
+TASK: STR-DOC-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_009
+DISPATCH_KEY: 61c30d061bde5c59779d5f2ef68bc1adf77e14116165f52effce47bfff349fd1
+BASELINE: latest main
+PREPARE: backend-document-storage + dispatch-preflight
+READ:
+- root + backend/AGENTS.md
+- docs/roadmap/estrutural/STR_DOC_002_LOCAL_STORAGE_CONTRACTS.md
+LOCKS: LOCK-DOC-001, LOCK-DATA-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: local document storage implementation, focused tests and exact result; POM/migrations read-only
+MIGRATION: NONE
+VALIDATE: Java 21; compile and run focused traversal/symlink/atomic-write/cleanup/concurrency tests twice
+RESULT_MD: docs/implementacao/STR_DOC_002_RESULT.md
