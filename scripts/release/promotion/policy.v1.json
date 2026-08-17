@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "requiredComponents": ["automation-worker", "backend", "frontend"],
+  "allowedTransitions": [
+    {"source": "development", "target": "staging"},
+    {"source": "staging", "target": "production"}
+  ]
+}

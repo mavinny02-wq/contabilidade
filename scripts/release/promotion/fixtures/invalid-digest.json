@@ -1,0 +1,39 @@
+{
+  "components": [
+    {
+      "imageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "imageRepository": "ghcr.io/example/contabilidade-automation-worker",
+      "name": "automation-worker",
+      "provenanceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sbomSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "imageDigest": "sha256:xyz",
+      "imageRepository": "ghcr.io/example/contabilidade-backend",
+      "name": "backend",
+      "provenanceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sbomSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "imageDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "imageRepository": "ghcr.io/example/contabilidade-frontend",
+      "name": "frontend",
+      "provenanceSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sbomSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "createdAt": "2026-08-17T00:00:00Z",
+  "evidenceIds": [
+    "EVID-STR-REL-003"
+  ],
+  "flywayFrontier": 12,
+  "gitCommit": "1111111111111111111111111111111111111111",
+  "releaseVersion": "0.5.1",
+  "rollbackTarget": {
+    "flywayFrontier": 12,
+    "gitCommit": "2222222222222222222222222222222222222222",
+    "releaseVersion": "0.5.0"
+  },
+  "sourceEnvironment": "staging",
+  "targetEnvironment": "production"
+}
