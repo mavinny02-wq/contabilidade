@@ -13,6 +13,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -86,6 +87,21 @@ public class TratadorGlobalExcecoes {
                 HttpStatus.CONFLICT,
                 "CONFLITO_DADOS",
                 "erros.conflitoDados",
+                List.of(),
+                request
+        );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> tratarAcessoNegado(
+            AccessDeniedException exception,
+            HttpServletRequest request
+    ) {
+        log.warn("Acesso negado. correlationId={}", correlationId(request));
+        return criarResposta(
+                HttpStatus.FORBIDDEN,
+                "ACESSO_NEGADO",
+                "erros.acessoNegado",
                 List.of(),
                 request
         );

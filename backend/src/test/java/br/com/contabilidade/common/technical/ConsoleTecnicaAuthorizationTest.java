@@ -5,12 +5,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import br.com.contabilidade.common.execution.ExecucaoIntegracaoRepository;
 import br.com.contabilidade.common.intervention.SolicitacaoIntervencaoRepository;
 import br.com.contabilidade.common.security.SecurityConfig;
 import br.com.contabilidade.common.security.PermissaoService;
 import br.com.contabilidade.common.worker.WorkerHeartbeatStatusService;
+import br.com.contabilidade.common.web.CorrelationIdFilter;
 import java.util.List;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -76,7 +79,20 @@ class ConsoleTecnicaAuthorizationTest {
     @Test
     void negaUsuarioSemAutoridadeDaConsoleTecnica() throws Exception {
         mockMvc.perform(get("/api/console-tecnica/resumo")
+                        .header(CorrelationIdFilter.HEADER, "auth-denied-test")
                         .with(user("leitor").authorities(() -> "EMPRESA_LER")))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andExpect(header().string(CorrelationIdFilter.HEADER, "auth-denied-test"))
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.codigo").value("ACESSO_NEGADO"))
+                .andExpect(jsonPath("$.mensagemKey").value("erros.acessoNegado"))
+                .andExpect(jsonPath("$.correlationId").value("auth-denied-test"))
+                .andExpect(jsonPath("$.caminho").value("/api/console-tecnica/resumo"));
+    }
+
+    @Test
+    void mantemAutenticacaoAusenteComoNaoAutorizada() throws Exception {
+        mockMvc.perform(get("/api/console-tecnica/resumo"))
+                .andExpect(status().isUnauthorized());
     }
 }
