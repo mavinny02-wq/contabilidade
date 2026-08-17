@@ -41,6 +41,8 @@ export function validateDockerOrchestration({
   sequential,
   databaseValidation,
   deploy,
+  startup,
+  startupPreflight,
   powerShellSources = [],
 }) {
   assert.match(rootBat, /start-contabilidade-resilient\.ps1/i);
@@ -129,6 +131,15 @@ export function validateDockerOrchestration({
   assert.match(deploy, /start-compose-sequential\.bat/i);
   assert.equal(containsDockerBuildCommand(deploy), false, 'deploy on-premise nao pode executar docker build/buildx');
   assert.doesNotMatch(deploy, /buildx|docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
+
+  const parserPreflightIndex = startup.indexOf('Invoke-StartupPowerShellPreflight');
+  assert.notEqual(parserPreflightIndex, -1, 'startup deve executar o parser preflight');
+  for (const buildMarker of ['Find-Java21Home', "@('-B', 'clean', 'package'", "@('run', 'build')"]) {
+    assert.ok(parserPreflightIndex < startup.indexOf(buildMarker), `parser preflight deve preceder ${buildMarker}`);
+  }
+  assert.match(startupPreflight, /System\.Management\.Automation\.Language\.Parser/i);
+  assert.match(startupPreflight, /Get-ChildItem[^]*-Recurse[^]*\.ps1[^]*\.psm1/i);
+  assert.match(startupPreflight, /StartLineNumber[^]*StartColumnNumber[^]*Message/i);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -149,6 +160,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     sequential: read('scripts/start-compose-sequential.ps1'),
     databaseValidation: read('scripts/validate-database-state.bat'),
     deploy: read('scripts/deploy-contabilidade-onpremise.ps1'),
+    startup: read('scripts/start-contabilidade.ps1'),
+    startupPreflight: read('scripts/lib/startup-preflight.psm1'),
     powerShellSources,
   });
 
