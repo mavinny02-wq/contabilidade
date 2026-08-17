@@ -1,6 +1,10 @@
 package br.com.contabilidade.infraestrutura;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import br.com.contabilidade.ContabilidadeApplication;
 import jakarta.persistence.EntityManagerFactory;
@@ -20,6 +24,7 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -41,6 +46,9 @@ class BancoPostgresqlIntegracaoTest {
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @DynamicPropertySource
     static void configurarBanco(DynamicPropertyRegistry propriedades) {
@@ -98,6 +106,30 @@ class BancoPostgresqlIntegracaoTest {
         if (!DATABASE.external()) {
             assertThat(versaoPostgresql).startsWith("17.");
         }
+    }
+
+    @Test
+    void deveExporSomenteRotasAtuaisDaConsoleTecnicaComPostgresqlControlado() throws Exception {
+        mockMvc.perform(get("/api/console-tecnica/resumo")
+                        .header("X-Correlation-Id", "val-tech-console-001"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("X-Correlation-Id", "val-tech-console-001"))
+                .andExpect(jsonPath("$.banco.status").value("SAUDAVEL"))
+                .andExpect(jsonPath("$.worker.status").value("INDISPONIVEL"))
+                .andExpect(jsonPath("$.worker.detalheSeguro").value("SEM_HEARTBEAT_REGISTRADO"));
+
+        mockMvc.perform(get("/api/console-tecnica/configuracao"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.workerTokenConfigurado").isBoolean())
+                .andExpect(jsonPath("$.segredoSessaoConfigurado").isBoolean())
+                .andExpect(jsonPath("$.workerToken").doesNotExist())
+                .andExpect(jsonPath("$.segredoSessao").doesNotExist());
+
+        mockMvc.perform(get("/api/console-tecnica/workers/historico")
+                        .queryParam("inicio", "2025-01-01")
+                        .queryParam("fim", "2026-08-17"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.codigo").value("PERIODO_HEARTBEAT_EXCEDIDO"));
     }
 
     private Integer quantidadeMigracoesAplicadas() {
