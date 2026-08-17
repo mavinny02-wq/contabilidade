@@ -1,86 +1,45 @@
-# FIX-BUILDKIT-DNS-002 — alinhamento exato com a fronteira DNS do PRIMA
+# FIX-BUILDKIT-DNS-002 — fronteira DNS do PRIMA
 
-**Status:** `PASS_STRUCTURAL_WINDOWS_RUNTIME_PENDING`  
-**Owner:** startup local, Docker helper, diagnóstico, testes e guard  
-**Migration:** `NONE`  
-**Supersede:** `FIX-BUILDKIT-DNS-001`
+**Status:** `SUPERSEDED_PARTIAL_BY_FIX_DOCKER_CONTEXT_001`  
+**Owner histórico:** startup local, Docker helper, diagnóstico, testes e guard  
+**Migration:** `NONE`
 
-## Verificação no PRIMA
+## Parte preservada
 
-A implementação canônica observada em `mavinny02-wq/euro_rail` não seleciona DNS no repositório e
-não cria um builder com `buildkitd.toml`. O PRIMA:
+Permanece válida a fronteira operacional verificada no PRIMA:
 
-- usa o builder/default daemon do Docker;
-- distingue resolver do host, container comum e BuildKit;
-- limita o diagnóstico a reachability e metadados seguros;
-- orienta a configurar DNS/proxy no Docker Desktop/daemon;
-- proíbe versionar DNS específico de workstation;
-- mantém a falha externa como falha, sem inventar `PASS`.
+- DNS e proxy pertencem ao Docker Desktop/daemon;
+- o repositório não escolhe DNS da workstation;
+- não existe `buildkitd.toml` com `[dns]` gerado pelo projeto;
+- o diagnóstico separa host, container comum e BuildKit;
+- falha externa permanece falha;
+- imagens-base ausentes são obtidas pelo Docker daemon;
+- builds runtime-only continuam com `--pull=false --network=none`.
 
-A solução project-scoped integrada anteriormente no Contabilidade divergia desse contrato e foi
-removida.
+## Parte superseded
 
-## Correção aplicada
+A implementação original deste item interpretou incorretamente “usar o Docker padrão” como:
 
-- seleção explícita do builder `default` do Docker Desktop;
-- `BUILDX_BUILDER=default` durante o core;
-- remoção única e restrita do builder legado `contabilidade-runtime-builder`;
-- remoção do TOML local obsoleto;
-- imagens-base verificadas pelo image store do Docker daemon;
-- `docker pull` daemon-level somente quando a imagem ainda não existe localmente;
-- preservação dos builds runtime-only com `--pull=false --network=none`;
-- diagnóstico seguro equivalente ao PRIMA em:
-  - host Windows;
-  - daemon;
-  - container;
-  - BuildKit;
-- instrução acionável para Docker Desktop → Settings → Docker Engine;
-- nenhum DNS público/corporativo codificado;
-- nenhuma descoberta automática de DNS por interface;
-- nenhum `--buildkitd-config`;
-- nenhuma alteração automática da configuração global.
-
-A recuperação independente de corrupção conhecida de snapshot permanece com uma única repetição,
-seguindo o padrão PRIMA, e executa somente `docker builder prune --force`; não remove volumes,
-containers ou dados.
-
-## Segurança
-
-Não são gravados no diagnóstico:
-
-- variáveis de ambiente;
-- configuração completa do Docker;
-- proxy;
-- usuário/senha;
-- token;
-- certificado;
-- dado fiscal ou pessoal.
-
-Não são removidos:
-
-- PostgreSQL;
-- documentos;
-- backups;
-- volumes;
-- containers;
-- imagens da aplicação.
-
-## Validação estrutural
-
-- o guard exige builder `default`, daemon pull e diagnóstico por camada;
-- o guard rejeita `CONTABILIDADE_BUILDKIT_DNS`, `[dns]`, `--buildkitd-config` e descoberta de
-  interfaces;
-- Pester cobre seleção do default, remoção restrita do builder legado e classificação DNS;
-- o validator Node continua rejeitando prune de sistema/volume e `compose down -v`;
-- a prova real permanece no Windows com Docker Desktop.
-
-## Prova pendente
-
-```bat
-git switch main
-git pull --ff-only
-START_CONTABILIDADE.bat dev
+```text
+docker buildx use default
+BUILDX_BUILDER=default
 ```
 
-Se o daemon ainda não resolver o registry, aplicar o runbook
-`docs/operacao/RUNBOOK_DOCKER_BUILD_NETWORK_DNS.md`, reiniciar o Docker Desktop e repetir.
+Isso falha quando o Docker Desktop está legitimamente no contexto `desktop-linux` ou em outro
+contexto ativo. O launcher local do PRIMA não troca contexto nem seleciona builder por nome; ele usa
+`docker build` no contexto já selecionado pelo usuário.
+
+A correção canônica está em:
+
+```text
+docs/implementacao/FIX_DOCKER_CONTEXT_001_RESULT.md
+```
+
+## Estado final
+
+- nenhuma troca automática de contexto;
+- nenhuma seleção automática de builder;
+- nenhuma alteração global do Docker Desktop;
+- nenhum DNS codificado;
+- contexto ativo preservado;
+- prova real Windows/Docker Desktop ainda necessária.

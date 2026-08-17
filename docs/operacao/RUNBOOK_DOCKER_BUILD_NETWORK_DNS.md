@@ -4,10 +4,20 @@
 
 O Contabilidade adota a mesma fronteira operacional do PRIMA:
 
-- builds locais usam o builder `default` do Docker Desktop;
+- builds locais respeitam o contexto Docker já ativo;
+- o startup não executa `docker context use` nem `docker buildx use`;
 - resolução DNS e proxy pertencem ao Docker Desktop/daemon;
-- o repositório não escolhe resolver, não grava `[dns]` em `buildkitd.toml` e não altera o DNS do Windows;
+- o repositório não escolhe resolver, não grava `[dns]` em `buildkitd.toml` e não altera o DNS do
+  Windows;
 - valores específicos de workstation, rede corporativa ou VPN não são versionados.
+
+O contexto atual pode ser consultado com:
+
+```powershell
+docker context show
+```
+
+`default`, `desktop-linux` ou outro contexto válido são aceitos. O projeto não deve substituí-lo.
 
 ## Sintomas abrangidos
 
@@ -27,7 +37,7 @@ O startup grava um log seguro em `.docker-local/logs/DOCKER_NETWORK_*.log`, equi
 diagnóstico do PRIMA:
 
 1. resolução e HTTP no host Windows;
-2. versão/metadados mínimos do Docker daemon;
+2. versão e metadados mínimos do Docker daemon;
 3. resolução dentro de container comum;
 4. resolução dentro de build BuildKit.
 
@@ -46,11 +56,12 @@ powershell -NoProfile -ExecutionPolicy Bypass `
 
 Quando o host resolve e Docker container/BuildKit não resolve:
 
-1. abra **Docker Desktop → Settings → Docker Engine**;
-2. preserve o JSON existente;
-3. configure a propriedade `dns` com os servidores aprovados da organização, rede local ou VPN;
-4. clique em **Apply & Restart**;
-5. repita `START_CONTABILIDADE.bat dev`.
+1. mantenha o contexto atual; não execute troca de contexto apenas para contornar DNS;
+2. abra **Docker Desktop → Settings → Docker Engine**;
+3. preserve o JSON existente;
+4. configure a propriedade `dns` com os servidores aprovados da organização, rede local ou VPN;
+5. clique em **Apply & Restart**;
+6. repita `START_CONTABILIDADE.bat dev`.
 
 Formato ilustrativo, sem valor imposto pelo projeto:
 
@@ -67,17 +78,21 @@ repositório. Se o próprio host não resolver, corrija primeiro Windows, VPN, f
 
 Antes de Maven/npm, o startup:
 
-- seleciona o builder `default`;
-- remove somente o builder legado `contabilidade-runtime-builder`, quando presente;
-- remove o arquivo local obsoleto `buildkitd.contabilidade.toml`;
+- valida o daemon no contexto já ativo;
+- registra o contexto retornado por `docker context show`;
 - verifica as imagens-base no image store do daemon;
 - usa `docker pull` apenas quando uma base não existe localmente;
 - interrompe com o exit code original e diagnóstico quando registry/DNS continua indisponível.
+
+Durante o build, o projeto não define `BUILDX_BUILDER`. O `docker build` segue o contexto selecionado
+pelo usuário, como no launcher do PRIMA.
 
 Nenhum volume PostgreSQL, documento, backup, container ou imagem da aplicação é removido.
 
 ## Não fazer
 
+- não executar `docker context use default` automaticamente;
+- não executar `docker buildx use default` automaticamente;
 - não versionar DNS público ou corporativo;
 - não tentar adivinhar DNS pelas interfaces do host;
 - não injetar DNS em builder project-scoped;

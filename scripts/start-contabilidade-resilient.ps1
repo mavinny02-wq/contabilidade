@@ -15,7 +15,6 @@ $TemporaryCoreBat = Join-Path $ProjectDir '.START_CONTABILIDADE_CORE.runtime.bat
 $LogDir = Join-Path $ProjectDir '.docker-local\logs'
 $ArtifactBuildDir = Join-Path $ProjectDir '.docker-local\artifact-build'
 $LockPath = Join-Path $ArtifactBuildDir 'docker-build-resilient.lock'
-$LegacyBuildKitConfigPath = Join-Path $ArtifactBuildDir 'buildkitd.contabilidade.toml'
 $Timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $DockerModule = Join-Path $PSScriptRoot 'lib\contabilidade-docker.psm1'
 $NativeProcessModule = Join-Path $PSScriptRoot 'lib\native-process.psm1'
@@ -40,17 +39,6 @@ function Write-Ok {
 function Write-Warn {
     param([string]$Message)
     Write-Host "[AVISO] $Message" -ForegroundColor Yellow
-}
-
-function Restore-ProcessEnvironment {
-    param([string]$Name, [AllowNull()][string]$Value)
-
-    if ($null -eq $Value) {
-        [Environment]::SetEnvironmentVariable($Name, $null, 'Process')
-    }
-    else {
-        [Environment]::SetEnvironmentVariable($Name, $Value, 'Process')
-    }
 }
 
 function Test-BuildKitSnapshotCorruption {
@@ -99,8 +87,8 @@ function Invoke-DaemonBaseImagePreflight {
             continue
         }
 
-        # PRIMA authority: registry access is performed by the Docker daemon/default
-        # builder. The project never writes a buildkitd DNS file or guesses resolvers.
+        # PRIMA authority: registry access follows the Docker context/daemon already
+        # selected by the user. The project never changes context or builder.
         $pull = Invoke-ContabilidadeDocker -Arguments @('pull', $image) -AllowFailure
         $entry = @(
             "===== BASE IMAGE: $image ====="
@@ -169,7 +157,7 @@ function Show-PrimaDnsGuidance {
 
     Write-Host ''
     Write-Host 'Aplicando exatamente o limite operacional usado no PRIMA:' -ForegroundColor Cyan
-    Write-Host '1. O repositorio nao escolhe DNS, nao grava [dns] em buildkitd.toml e nao altera o Windows.'
+    Write-Host '1. O repositorio nao troca contexto, nao escolhe builder e nao altera o Windows.'
     Write-Host '2. Abra Docker Desktop > Settings > Docker Engine.'
     Write-Host '3. Preserve o JSON existente e configure "dns" com o DNS aprovado da sua rede/VPN.'
     Write-Host '4. Clique Apply & Restart e repita START_CONTABILIDADE.bat dev.'
@@ -182,25 +170,22 @@ function Show-PrimaDnsGuidance {
 }
 
 function Invoke-CoreAttempt {
-    param([int]$Attempt)
+    param(
+        [int]$Attempt,
+        [Parameter(Mandatory = $true)][string]$DockerContext
+    )
 
     $attemptLog = Join-Path $LogDir "START_CONTABILIDADE_RESILIENTE_${Timestamp}_tentativa${Attempt}.log"
-    $oldBuilder = [Environment]::GetEnvironmentVariable('BUILDX_BUILDER', 'Process')
-    $oldAttestations = [Environment]::GetEnvironmentVariable('BUILDX_NO_DEFAULT_ATTESTATIONS', 'Process')
-    $oldBuildKit = [Environment]::GetEnvironmentVariable('DOCKER_BUILDKIT', 'Process')
     $exitCode = 1
 
     try {
         Copy-Item -LiteralPath $CoreSourceBat -Destination $TemporaryCoreBat -Force
 
-        # Explicitly undo the project-specific builder used by the superseded fix.
-        $env:BUILDX_BUILDER = 'default'
-        $env:BUILDX_NO_DEFAULT_ATTESTATIONS = '1'
-        $env:DOCKER_BUILDKIT = '1'
-
+        # Match PRIMA exactly: plain `docker build` follows the context already active
+        # in Docker Desktop. Do not set BUILDX_BUILDER and do not run buildx/context use.
         Write-Section "Executando build e startup - tentativa $Attempt"
-        Write-Host 'Builder: default (Docker Desktop/daemon)'
-        Write-Host "Log:     $attemptLog"
+        Write-Host "Contexto Docker: $DockerContext"
+        Write-Host "Log:             $attemptLog"
 
         $commandLine = "(echo.)|call `"$TemporaryCoreBat`" `"$Mode`""
         $nativeResult = Invoke-CmdCommand -CommandLine $commandLine -LogPath $attemptLog
@@ -211,9 +196,6 @@ function Invoke-CoreAttempt {
     }
     finally {
         Remove-Item -LiteralPath $TemporaryCoreBat -Force -ErrorAction SilentlyContinue
-        Restore-ProcessEnvironment 'BUILDX_BUILDER' $oldBuilder
-        Restore-ProcessEnvironment 'BUILDX_NO_DEFAULT_ATTESTATIONS' $oldAttestations
-        Restore-ProcessEnvironment 'DOCKER_BUILDKIT' $oldBuildKit
     }
 
     return [pscustomobject]@{
@@ -241,12 +223,8 @@ try {
     }
 
     Assert-ContabilidadeDockerAvailable
-    Use-ContabilidadeDefaultBuilder
-    Remove-ContabilidadeLegacyIsolatedBuilder
-
-    # Remove only the stale project-local DNS file produced by the superseded
-    # implementation. Docker Desktop/daemon remains the sole DNS authority.
-    Remove-Item -LiteralPath $LegacyBuildKitConfigPath -Force -ErrorAction SilentlyContinue
+    $activeDockerContext = Get-ContabilidadeActiveDockerContext
+    Write-Ok "Contexto Docker ativo preservado: $activeDockerContext."
 
     $basePreflight = Invoke-DaemonBaseImagePreflight
     if (-not $basePreflight.Succeeded) {
@@ -262,9 +240,9 @@ try {
         exit $basePreflight.ExitCode
     }
 
-    $first = Invoke-CoreAttempt 1
+    $first = Invoke-CoreAttempt -Attempt 1 -DockerContext $activeDockerContext
     if ($first.ExitCode -eq 0) {
-        Write-Ok 'Build e startup concluidos pelo builder default.'
+        Write-Ok 'Build e startup concluidos no contexto Docker ativo.'
         exit 0
     }
 
@@ -285,7 +263,7 @@ try {
         Write-Host 'Somente cache de build nao utilizado sera limpo; volumes, containers e dados nao serao removidos.'
         $prune = Invoke-ContabilidadeDocker -Arguments @('builder', 'prune', '--force') -AllowFailure
         if ($prune.Success) {
-            $second = Invoke-CoreAttempt 2
+            $second = Invoke-CoreAttempt -Attempt 2 -DockerContext $activeDockerContext
             if ($second.ExitCode -eq 0) {
                 Write-Ok 'Build e startup concluidos apos a unica repeticao de snapshot.'
                 exit 0

@@ -1,89 +1,68 @@
 $modulePath = Join-Path $PSScriptRoot '..\lib\contabilidade-docker.psm1'
 Import-Module $modulePath -Force
 
-Describe 'PRIMA default Docker builder contract' {
+Describe 'PRIMA active Docker context contract' {
     InModuleScope contabilidade-docker {
         BeforeEach {
             Mock Write-Host {}
             Mock Write-Warning {}
         }
 
-        It 'selects and bootstraps the default Docker Desktop builder' {
-            Mock Invoke-ContabilidadeDocker {
-                [pscustomobject]@{
-                    Success = $true
-                    ExitCode = 0
-                    Output = ''
-                    StdOut = ''
-                    StdErr = ''
-                }
-            }
-
-            Use-ContabilidadeDefaultBuilder
-
-            Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter {
-                $Arguments[0] -eq 'buildx' -and
-                $Arguments[1] -eq 'use' -and
-                $Arguments[2] -eq 'default'
-            }
-            Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter {
-                $Arguments[0] -eq 'buildx' -and
-                $Arguments[1] -eq 'inspect' -and
-                $Arguments[2] -eq 'default' -and
-                $Arguments -contains '--bootstrap'
-            }
-        }
-
-        It 'removes only the legacy isolated builder when it exists' {
+        It 'preserves desktop-linux and never switches Docker context or builder' {
             Mock Invoke-ContabilidadeDocker {
                 param($Arguments)
-                if ($Arguments[0] -eq 'buildx' -and $Arguments[1] -eq 'ls') {
+                if ($Arguments[0] -eq 'context' -and $Arguments[1] -eq 'show') {
                     return [pscustomobject]@{
                         Success = $true
                         ExitCode = 0
-                        Output = ''
-                        StdOut = "default`ncontabilidade-runtime-builder`n"
+                        Output = "desktop-linux`n"
+                        StdOut = "desktop-linux`n"
                         StdErr = ''
                     }
                 }
-                return [pscustomobject]@{
-                    Success = $true
-                    ExitCode = 0
-                    Output = ''
-                    StdOut = ''
-                    StdErr = ''
-                }
+                throw "Unexpected Docker call: $($Arguments -join ' ')"
             }
 
-            Remove-ContabilidadeLegacyIsolatedBuilder
+            Get-ContabilidadeActiveDockerContext | Should -Be 'desktop-linux'
 
             Assert-MockCalled Invoke-ContabilidadeDocker -Times 1 -ParameterFilter {
-                $Arguments[0] -eq 'buildx' -and
-                $Arguments[1] -eq 'rm' -and
-                $Arguments -contains '--force' -and
-                $Arguments -contains 'contabilidade-runtime-builder'
+                $Arguments[0] -eq 'context' -and $Arguments[1] -eq 'show'
             }
             Assert-MockCalled Invoke-ContabilidadeDocker -Times 0 -ParameterFilter {
-                $Arguments[0] -eq 'system' -or $Arguments[0] -eq 'volume'
+                ($Arguments[0] -eq 'context' -and $Arguments[1] -eq 'use') -or
+                ($Arguments[0] -eq 'buildx' -and $Arguments[1] -eq 'use')
             }
         }
 
-        It 'does not remove anything when the legacy builder is absent' {
+        It 'fails clearly when Docker cannot report the active context' {
+            Mock Invoke-ContabilidadeDocker {
+                [pscustomobject]@{
+                    Success = $false
+                    ExitCode = 1
+                    Output = 'context unavailable'
+                    StdOut = ''
+                    StdErr = 'context unavailable'
+                }
+            }
+            Mock Write-ContabilidadeNativeOutput {}
+
+            { Get-ContabilidadeActiveDockerContext } |
+                Should -Throw '*consultar o contexto Docker ativo*Exit code: 1*'
+        }
+
+        It 'fails clearly when Docker returns an empty context name' {
             Mock Invoke-ContabilidadeDocker {
                 [pscustomobject]@{
                     Success = $true
                     ExitCode = 0
                     Output = ''
-                    StdOut = "default`n"
+                    StdOut = "`r`n"
                     StdErr = ''
                 }
             }
 
-            Remove-ContabilidadeLegacyIsolatedBuilder
-
-            Assert-MockCalled Invoke-ContabilidadeDocker -Times 0 -ParameterFilter {
-                $Arguments[0] -eq 'buildx' -and $Arguments[1] -eq 'rm'
-            }
+            { Get-ContabilidadeActiveDockerContext } |
+                Should -Throw '*nao informou um contexto ativo*'
         }
     }
 }

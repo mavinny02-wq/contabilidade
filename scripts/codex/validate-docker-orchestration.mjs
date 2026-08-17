@@ -48,8 +48,8 @@ export function validateDockerOrchestration({
   assert.match(coreBat, /echo FROM mcr\.microsoft\.com\/playwright:v1\.60\.0-noble/i);
   assert.doesNotMatch(coreBat, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
-  assert.match(resilient, /Use-ContabilidadeDefaultBuilder/i);
-  assert.match(resilient, /BUILDX_BUILDER\s*=\s*'default'/i);
+  assert.match(resilient, /Get-ContabilidadeActiveDockerContext/i);
+  assert.match(resilient, /Contexto Docker ativo preservado/i);
   assert.match(resilient, /Invoke-DaemonBaseImagePreflight/i);
   assert.match(resilient, /Invoke-ContabilidadeDocker -Arguments @\('pull', \$image\)/i);
   assert.match(resilient, /capture-docker-network-diagnostics\.ps1/i);
@@ -57,16 +57,19 @@ export function validateDockerOrchestration({
   assert.match(resilient, /DNS_DA_REDE_OU_VPN/i);
   assert.match(resilient, /builder', 'prune', '--force'/i);
   assert.match(resilient, /failed to prepare extraction snapshot/i);
+  assert.doesNotMatch(resilient, /\$env:BUILDX_BUILDER\s*=/i);
+  assert.doesNotMatch(resilient, /@\('buildx',\s*'use'|@\('context',\s*'use'/i);
   assert.doesNotMatch(resilient, /CONTABILIDADE_BUILDKIT_DNS/i);
   assert.doesNotMatch(resilient, /New-ContabilidadeBuildKitConfig|Repair-BuildKitDns|--buildkitd-config/i);
   assert.doesNotMatch(resilient, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
   assert.match(dockerModule, /Invoke-ContabilidadeNativeCommand/i);
   assert.match(dockerModule, /\$LASTEXITCODE/i);
-  assert.match(dockerModule, /Use-ContabilidadeDefaultBuilder/i);
-  assert.match(dockerModule, /buildx', 'use', 'default'/i);
-  assert.match(dockerModule, /Remove-ContabilidadeLegacyIsolatedBuilder/i);
+  assert.match(dockerModule, /Get-ContabilidadeActiveDockerContext/i);
+  assert.match(dockerModule, /@\('context', 'show'\)/i);
   assert.match(dockerModule, /Test-ContabilidadeDockerDnsFailure/i);
+  assert.doesNotMatch(dockerModule, /@\('buildx',\s*'use'|@\('context',\s*'use'/i);
+  assert.doesNotMatch(dockerModule, /Use-ContabilidadeDefaultBuilder|Remove-ContabilidadeLegacyIsolatedBuilder/i);
   assert.doesNotMatch(dockerModule, /GetAllNetworkInterfaces|New-ContabilidadeBuildKitConfig|CONTABILIDADE_BUILDKIT_DNS/i);
   assert.doesNotMatch(dockerModule, /--buildkitd-config|\[dns\]/i);
   assert.doesNotMatch(dockerModule, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
@@ -118,7 +121,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       'um unico BAT oficial na raiz',
       'modo dev sem Keycloak ou bootstrap',
       'startup incremental sem docker compose down',
-      'builder default do Docker Desktop como no PRIMA',
+      'contexto Docker ativo preservado como no PRIMA',
+      'nenhuma troca automatica de contexto ou builder',
       'imagens-base preparadas pelo Docker daemon',
       'diagnostico separado de host, container e BuildKit',
       'DNS e proxy governados no Docker Desktop/daemon',
