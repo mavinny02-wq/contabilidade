@@ -192,7 +192,7 @@ function Wait-ServiceHealthy {
 
         if ($signature -ne $lastSignature -or (Get-Date) -ge $nextReport) {
             $remaining = [Math]::Max(0, [int][Math]::Ceiling(($deadline - (Get-Date)).TotalSeconds))
-            Write-Host "$DisplayName: status=$($state.Status) health=$($state.Health) - limite restante ${remaining}s"
+            Write-Host "${DisplayName}: status=$($state.Status) health=$($state.Health) - limite restante ${remaining}s"
             $lastSignature = $signature
             $nextReport = (Get-Date).AddSeconds($ReportEverySeconds)
         }
