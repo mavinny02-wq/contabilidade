@@ -39,14 +39,14 @@
     },
     {
       "component": "automation-worker",
-      "command": "cd automation-worker && npm run build && node --test --experimental-test-coverage --test-coverage-include=dist/**/*.js --test-coverage-exclude=dist/**/*.test.js --test-concurrency=1 dist/worker.test.js dist/reliability.test.js",
-      "toolchain": "Node 24.19.0 built-in test coverage",
-      "completeness": "PARTIAL",
-      "limitations": ["10/11 tests passed; the Playwright smoke test requires an unprovisioned Chromium binary"],
+      "command": "cd automation-worker && npm run test:coverage",
+      "toolchain": "Node 24.19.0 built-in test coverage; Playwright 1.60.0; Chromium 148.0.7778.96",
+      "completeness": "COMPLETE",
+      "limitations": [],
       "metrics": {
-        "lines": {"covered": 798, "total": 1465, "percent": 54.471},
-        "branches": {"covered": 146, "total": 211, "percent": 69.1943},
-        "functions": {"covered": 88, "total": 146, "percent": 60.274}
+        "lines": {"covered": 921, "total": 1563, "percent": 58.9251},
+        "branches": {"covered": 176, "total": 254, "percent": 69.2913},
+        "functions": {"covered": 107, "total": 162, "percent": 66.0494}
       }
     }
   ]
