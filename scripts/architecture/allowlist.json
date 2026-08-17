@@ -1,14 +1,4 @@
 {
-  "entries": [
-    {
-      "fingerprint": "5a8e1c2f5540496d5f4b",
-      "owner": "backend-common",
-      "reason": "Existing shared backend service coordinates an Empresa feature dependency.",
-      "review_by": "2027-02-16",
-      "rule": "backend.common_to_feature",
-      "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-    }
-  ],
+  "entries": [],
   "schema_version": 1
 }

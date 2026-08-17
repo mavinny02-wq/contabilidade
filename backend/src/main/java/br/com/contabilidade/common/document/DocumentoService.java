@@ -3,7 +3,6 @@ package br.com.contabilidade.common.document;
 import br.com.contabilidade.common.audit.AuditoriaService;
 import br.com.contabilidade.common.error.ExcecaoNegocio;
 import br.com.contabilidade.common.error.RecursoNaoEncontradoException;
-import br.com.contabilidade.empresa.repository.EmpresaRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -36,18 +35,18 @@ public class DocumentoService {
     );
 
     private final DocumentoRepository repository;
-    private final EmpresaRepository empresaRepository;
+    private final EmpresaDocumentoConsulta empresaConsulta;
     private final ArmazenamentoDocumento armazenamento;
     private final AuditoriaService auditoriaService;
     private final long tamanhoMaximoBytes;
 
     public DocumentoService(DocumentoRepository repository,
-                            EmpresaRepository empresaRepository,
+                            EmpresaDocumentoConsulta empresaConsulta,
                             ArmazenamentoDocumento armazenamento,
                             AuditoriaService auditoriaService,
                             @Value("${app.storage.max-file-size-bytes:26214400}") long tamanhoMaximoBytes) {
         this.repository = repository;
-        this.empresaRepository = empresaRepository;
+        this.empresaConsulta = empresaConsulta;
         this.armazenamento = armazenamento;
         this.auditoriaService = auditoriaService;
         this.tamanhoMaximoBytes = tamanhoMaximoBytes;
@@ -140,7 +139,7 @@ public class DocumentoService {
     }
 
     private void validarEmpresa(UUID empresaId) {
-        if (!empresaRepository.existsById(empresaId)) {
+        if (!empresaConsulta.existePorId(empresaId)) {
             throw new RecursoNaoEncontradoException("EMPRESA_NAO_ENCONTRADA", "erros.empresaNaoEncontrada");
         }
     }
