@@ -42,7 +42,8 @@ export function AppShell() {
 
   return (
     <div className="app-layout">
-      <aside className={`sidebar ${menuAberto ? 'sidebar--open' : ''}`}>
+      <a className="skip-link" href="#conteudo-principal">{t('acoes.pularConteudo')}</a>
+      <aside id="navegacao-principal" className={`sidebar ${menuAberto ? 'sidebar--open' : ''}`}>
         <div className="brand">
           <div className="brand__mark">C</div>
           <div>
@@ -50,7 +51,7 @@ export function AppShell() {
             <span>{t('app.subtitulo')}</span>
           </div>
         </div>
-        <nav className="sidebar__nav">
+        <nav className="sidebar__nav" aria-label={t('menu.navegacaoPrincipal')}>
           {visiveis.map((item) => {
             const mostrarGrupo = item.grupo && item.grupo !== grupoAtual;
             grupoAtual = item.grupo;
@@ -81,6 +82,8 @@ export function AppShell() {
             className="topbar__menu"
             onClick={() => setMenuAberto((value) => !value)}
             aria-label={t('menu.visaoGeral')}
+            aria-expanded={menuAberto}
+            aria-controls="navegacao-principal"
           >
             ☰
           </button>
@@ -97,7 +100,7 @@ export function AppShell() {
             ) : null}
           </div>
         </header>
-        <main className="page-container">
+        <main className="page-container" id="conteudo-principal" tabIndex={-1}>
           <Outlet />
         </main>
       </div>
