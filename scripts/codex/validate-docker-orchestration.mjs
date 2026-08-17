@@ -17,6 +17,7 @@ export function validateDockerOrchestration({
   rootBat,
   coreBat,
   resilient,
+  dockerModule,
   sequentialBat,
   sequential,
   databaseValidation,
@@ -43,13 +44,21 @@ export function validateDockerOrchestration({
   assert.match(coreBat, /docker build --pull=false --network=none --progress=plain/i);
   assert.doesNotMatch(coreBat, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
-  assert.match(resilient, /docker-container/i);
-  assert.match(resilient, /default-load=true/i);
+  assert.match(resilient, /contabilidade-docker\.psm1/i);
   assert.match(resilient, /BUILDX_BUILDER/i);
   assert.match(resilient, /failed to prepare extraction snapshot/i);
   assert.match(resilient, /CoreSourceBat/i);
   assert.match(resilient, /TemporaryCoreBat/i);
   assert.doesNotMatch(resilient, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
+
+  assert.match(dockerModule, /Invoke-ContabilidadeNativeCommand/i);
+  assert.match(dockerModule, /\$LASTEXITCODE/i);
+  assert.match(dockerModule, /docker-container/i);
+  assert.match(dockerModule, /default-load=true/i);
+  assert.match(dockerModule, /buildx', 'use'/i);
+  assert.match(dockerModule, /--bootstrap/i);
+  assert.match(dockerModule, /quebrado ou inacessivel/i);
+  assert.doesNotMatch(dockerModule, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
   assert.match(sequentialBat, /start-compose-sequential\.ps1/i);
   assert.match(sequential, /Remove-DevAuthContainers/i);
@@ -75,6 +84,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     rootBat: read('START_CONTABILIDADE.bat'),
     coreBat: read('scripts/start-contabilidade-core.bat'),
     resilient: read('scripts/start-contabilidade-resilient.ps1'),
+    dockerModule: read('scripts/lib/contabilidade-docker.psm1'),
     sequentialBat: read('scripts/start-compose-sequential.bat'),
     sequential: read('scripts/start-compose-sequential.ps1'),
     databaseValidation: read('scripts/validate-database-state.bat'),
