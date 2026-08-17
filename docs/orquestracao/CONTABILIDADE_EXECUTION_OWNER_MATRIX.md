@@ -13,34 +13,38 @@
 | `DEPENDENCY_LOCKS` | POM/package/lockfiles | owner explícito |
 | `STARTUP_DEPLOY` | Compose/startup/deploy | serial |
 | `ARCHITECTURE_BASELINE` | `scripts/architecture/baseline.json`, allowlist | um owner por onda |
+| `RELEASE_PROMOTION` | manifests/policy de promoção | um owner por onda |
+| `RECOVERY_PLANNING` | schema/plano de recovery | um owner por onda |
 
-## Fast Lane Wave 010
+## Fast Lane Wave 011
 
 | ITEM | Owner exclusivo | Escrita permitida |
 |---|---|---|
-| `FIX-SEC-IAM-001` | `BACKEND_IAM_FAIL_CLOSED` | converter JWT, testes focados, inventário/guard IAM e resultado |
-| `FIX-STARTUP-PREFLIGHT-001` | `WINDOWS_STARTUP_PARSE_PREFLIGHT` | preflight parser, testes/guard de startup e resultado |
-| `VAL-TECH-CONSOLE-CURRENT-001` | `TECHNICAL_CONSOLE_CURRENT_CONTRACT_VALIDATION` | testes backend/frontend atuais e resultado; produto read-only |
-| `STR-ARCH-BE-004` | `CERTIDAO_EMPRESA_QUERY_BOUNDARY` | porta Certidão, adapter Empresa, testes e baseline/allowlist |
-| `STR-INF-001` | `ENVIRONMENT_CONTRACT_GUARD` | tooling/policy/fixtures/workflow de ambiente; configs read-only |
+| `FIX-TECH-AUTH-001` | `TECHNICAL_AUTHORIZATION_ERROR_MAPPING` | global error mapping, mensagem, testes focados e resultado |
+| `STR-ARCH-BE-005` | `DOCUMENTO_EMPRESA_QUERY_BOUNDARY` | porta Documento, adapter Empresa, testes e baseline/allowlist |
+| `STR-SEC-003` | `SECRET_LIFECYCLE_GUARD` | `scripts/security/secret-lifecycle/**`, workflow e resultado |
+| `STR-REL-003` | `IMMUTABLE_RELEASE_PROMOTION_GUARD` | `scripts/release/promotion/**`, workflow e resultado |
+| `STR-OPS-002` | `RECOVERY_REHEARSAL_HARNESS` | `scripts/recovery/**`, workflow e resultado |
 
 ## Independência
 
-- segurança JWT não toca startup, Certidão, Console Técnica ou configuração de ambientes;
-- startup não altera Compose, produto ou segurança;
-- validação da Console Técnica escreve apenas testes e resultado;
-- architecture é o único owner de baseline/allowlist;
-- environment guard cria tooling próprio e apenas lê configurações;
-- nenhum owner cria migration;
-- nenhum owner modifica POM/lockfile;
-- nenhum owner usa provider, credencial ou dado real;
+- auth mapping não toca Documento, architecture, release, recovery ou secrets;
+- architecture é o único owner do baseline/allowlist;
+- secret lifecycle apenas lê configurações e não toca valores;
+- release não toca registry, Compose ou runtime;
+- recovery não toca scripts de backup nem dados;
+- cada tooling owner usa diretório e workflow dedicados;
+- nenhum owner cria migration ou altera dependency manifest;
+- nenhum owner usa provider, credencial, backup ou dado real;
 - overlap descoberto torna o owner posterior `SUPERSEDED` ou serializado.
 
 ## Campanhas reservadas fora da wave
 
-- `VAL-QA-BE-DOCKER-001`: execução da suíte `ExecucaoFilaPostgresqlTest`;
 - Windows dev/segundo startup;
 - on-premise/Keycloak;
+- Testcontainers;
+- restore real;
+- promoção/rollback real;
 - settings do GitHub Actions e branch protection.
 
-`OWNER_MATRIX_FAST_LANE_WAVE_010`
+`OWNER_MATRIX_FAST_LANE_WAVE_011`

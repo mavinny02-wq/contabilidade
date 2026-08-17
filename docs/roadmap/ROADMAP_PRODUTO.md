@@ -11,12 +11,12 @@ O backlog estrutural é:
 `docs/roadmap/BACKLOG_ESTRUTURAL.md`
 
 O catálogo permanente de capacidades continua em `docs/roadmap/REGISTRO_ITENS_ROADMAP.md` e nos
-backlogs por domínio. Este arquivo não duplica mais SHA, PRs, wave ou status de runtime.
+backlogs por domínio. Este arquivo não duplica SHA, PRs ou evidência detalhada.
 
 ## Regra de seleção
 
 - funcionalidades novas permanecem bloqueadas até a campanha Windows dev ficar verde;
-- correções comprovadas, guards, testes e boundaries estruturais podem continuar em fast lanes;
+- correções comprovadas, guards, testes, tooling de produção e boundaries podem continuar em fast lanes;
 - cada wave contém de um a cinco owners reais, nunca filler;
 - no máximo um migration owner;
 - documentação que o orquestrador pode atualizar diretamente não consome slot Codex;
@@ -26,13 +26,21 @@ backlogs por domínio. Este arquivo não duplica mais SHA, PRs, wave ou status d
 
 1. fechar Windows dev e segundo startup;
 2. provar on-premise/Keycloak;
-3. executar restore/recovery e promoção/rollback;
-4. observar Required CI e habilitar proteção da `main`;
-5. selecionar o primeiro horizonte funcional do backlog 360 conforme dependências e locks.
+3. completar tooling de secret lifecycle, recovery e promoção;
+4. executar restore/recovery e promoção/rollback reais;
+5. observar Required CI e habilitar proteção da `main`;
+6. selecionar o primeiro horizonte funcional conforme dependências e locks.
 
 ## Estado atual
 
-A Fast Lane Wave 010 está liberada para cinco owners estruturais/corretivos. Nenhuma nova
-funcionalidade contábil foi autorizada por essa liberação.
+A Wave 010 foi consumida. A Fast Lane Wave 011 está liberada para:
 
-`ROADMAP_PRODUTO_ROUTER_CURRENT_STATE`
+- corrigir a negação 500/403;
+- zerar os findings arquiteturais;
+- governar lifecycle de segredos;
+- validar bundles imutáveis de promoção/rollback;
+- preparar recovery rehearsal sem tocar dados reais.
+
+Nenhuma nova funcionalidade contábil foi autorizada por essa liberação.
+
+`ROADMAP_PRODUTO_ROUTER_FAST_LANE_WAVE_011`
