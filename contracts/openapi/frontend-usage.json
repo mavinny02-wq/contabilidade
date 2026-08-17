@@ -1,260 +1,621 @@
 {
-  "description": "Operações do snapshot consumidas diretamente pelo frontend atual.",
+  "description": "Contratos das operações HTTP consumidas diretamente pelos call sites do frontend.",
   "operations": [
     {
-      "operationId": "agendaVencimentos",
       "method": "GET",
-      "path": "/api/certidoes/agenda-vencimentos"
-    },
-    {
-      "operationId": "analisar",
-      "method": "GET",
-      "path": "/api/documentos/retencao-preview"
-    },
-    {
-      "operationId": "assumir",
-      "method": "PATCH",
-      "path": "/api/intervencoes/{id}/assumir"
-    },
-    {
-      "operationId": "atualizar",
-      "method": "PUT",
-      "path": "/api/integracoes/provedores/{codigo}"
-    },
-    {
-      "operationId": "atualizarClassificacao",
-      "method": "PUT",
-      "path": "/api/empresas/{id}/classificacao"
-    },
-    {
-      "operationId": "atualizarMetadados",
-      "method": "PUT",
-      "path": "/api/documentos/{id}/metadados"
-    },
-    {
-      "operationId": "atualizar_1",
-      "method": "PUT",
-      "path": "/api/integracoes/politicas/{operacao}"
-    },
-    {
-      "operationId": "atualizar_3",
-      "method": "PUT",
-      "path": "/api/empresas/{empresaId}/responsaveis-modulo/{modulo}"
-    },
-    {
-      "operationId": "baixar",
-      "method": "GET",
-      "path": "/api/documentos/{id}/conteudo"
-    },
-    {
-      "operationId": "buscar",
-      "method": "GET",
-      "path": "/api/busca"
-    },
-    {
-      "operationId": "cancelar",
-      "method": "PATCH",
-      "path": "/api/execucoes/{id}/cancelar"
-    },
-    {
-      "operationId": "consultar",
-      "method": "GET",
-      "path": "/api/integracoes/provedores/historico"
-    },
-    {
-      "operationId": "consultar_1",
-      "method": "GET",
-      "path": "/api/console-tecnica/workers/historico"
-    },
-    {
-      "operationId": "consultar_2",
-      "method": "GET",
-      "path": "/api/console-tecnica/configuracao"
-    },
-    {
-      "operationId": "enviar_1",
-      "method": "POST",
-      "path": "/api/documentos"
-    },
-    {
-      "operationId": "exportarCsv",
-      "method": "GET",
-      "path": "/api/certidoes/exportacao.csv"
-    },
-    {
-      "operationId": "exportarCsv_1",
-      "method": "GET",
-      "path": "/api/auditoria/exportacao.csv"
-    },
-    {
-      "operationId": "historico",
-      "method": "GET",
-      "path": "/api/empresas/{id}/historico"
-    },
-    {
-      "operationId": "historico_1",
-      "method": "GET",
-      "path": "/api/certidoes/{id}/historico"
-    },
-    {
-      "operationId": "importar",
-      "method": "POST",
-      "path": "/api/empresas/importacao-csv"
-    },
-    {
-      "operationId": "listar",
-      "method": "GET",
-      "path": "/api/integracoes/faturas"
-    },
-    {
-      "operationId": "listarPendentes",
-      "method": "GET",
-      "path": "/api/intervencoes"
-    },
-    {
-      "operationId": "listar_1",
-      "method": "GET",
-      "path": "/api/empresas"
-    },
-    {
       "operationId": "listar_10",
-      "method": "GET",
-      "path": "/api/auditoria"
+      "path": "/api/auditoria",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     },
     {
-      "operationId": "listar_2",
       "method": "GET",
-      "path": "/api/documentos"
+      "operationId": "exportarCsv_1",
+      "path": "/api/auditoria/exportacao.csv",
+      "responseModes": [
+        "blob"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     },
     {
-      "operationId": "listar_3",
       "method": "GET",
-      "path": "/api/notificacoes"
+      "operationId": "buscar",
+      "path": "/api/busca",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     },
     {
-      "operationId": "listar_4",
       "method": "GET",
-      "path": "/api/integracoes/provedores"
-    },
-    {
-      "operationId": "listar_5",
-      "method": "GET",
-      "path": "/api/integracoes/politicas"
-    },
-    {
-      "operationId": "listar_6",
-      "method": "GET",
-      "path": "/api/execucoes"
-    },
-    {
-      "operationId": "listar_7",
-      "method": "GET",
-      "path": "/api/empresas/{empresaId}/responsaveis-modulo"
-    },
-    {
-      "operationId": "listar_8",
-      "method": "GET",
-      "path": "/api/console-tecnica/backups"
-    },
-    {
       "operationId": "listar_9",
+      "path": "/api/certidoes",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
       "method": "GET",
-      "path": "/api/certidoes"
+      "operationId": "agendaVencimentos",
+      "path": "/api/certidoes/agenda-vencimentos",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     },
     {
-      "operationId": "marcarLida",
-      "method": "PATCH",
-      "path": "/api/notificacoes/{id}/lida"
-    },
-    {
-      "operationId": "modelo",
       "method": "GET",
-      "path": "/api/empresas/importacao-csv/modelo"
-    },
-    {
-      "operationId": "modelo_1",
-      "method": "GET",
-      "path": "/api/console-tecnica/atualizacoes/modelo"
-    },
-    {
-      "operationId": "obter",
-      "method": "GET",
-      "path": "/api/empresas/{id}"
-    },
-    {
-      "operationId": "obter_1",
-      "method": "GET",
-      "path": "/api/usuario-atual"
-    },
-    {
-      "operationId": "preview",
-      "method": "GET",
-      "path": "/api/documentos/{id}/preview"
-    },
-    {
-      "operationId": "reconciliar",
-      "method": "GET",
-      "path": "/api/console-tecnica/storage/reconciliacao"
-    },
-    {
-      "operationId": "registrarManual",
-      "method": "POST",
-      "path": "/api/certidoes/{id}/resultado-manual"
-    },
-    {
-      "operationId": "resolver",
-      "method": "PATCH",
-      "path": "/api/intervencoes/{id}/resolver"
-    },
-    {
       "operationId": "resumir",
+      "path": "/api/certidoes/dashboard-gerencial",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
       "method": "GET",
-      "path": "/api/certidoes/dashboard-gerencial"
+      "operationId": "exportarCsv",
+      "path": "/api/certidoes/exportacao.csv",
+      "responseModes": [
+        "blob"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     },
     {
-      "operationId": "resumo",
       "method": "GET",
-      "path": "/api/dashboard/resumo"
+      "operationId": "historico_1",
+      "path": "/api/certidoes/{id}/historico",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     },
     {
-      "operationId": "resumo_1",
       "method": "GET",
-      "path": "/api/console-tecnica/resumo"
+      "operationId": "modelo_1",
+      "path": "/api/console-tecnica/atualizacoes/modelo",
+      "responseModes": [
+        "blob"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     },
     {
-      "operationId": "salvar",
-      "method": "POST",
-      "path": "/api/integracoes/faturas"
-    },
-    {
-      "operationId": "sessao",
       "method": "GET",
-      "path": "/api/intervencoes/{id}/sessao"
+      "operationId": "listar_8",
+      "path": "/api/console-tecnica/backups",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     },
     {
-      "operationId": "solicitar",
-      "method": "POST",
-      "path": "/api/certidoes/{id}/solicitar"
-    },
-    {
-      "operationId": "solicitarLote",
-      "method": "POST",
-      "path": "/api/certidoes/solicitar-lote"
-    },
-    {
-      "operationId": "solicitarTodas",
-      "method": "POST",
-      "path": "/api/certidoes/solicitar-todas"
-    },
-    {
-      "operationId": "validar",
-      "method": "POST",
-      "path": "/api/console-tecnica/atualizacoes/preflight"
-    },
-    {
+      "method": "GET",
       "operationId": "verificar",
+      "path": "/api/console-tecnica/backups/{backupId}/verificar",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
       "method": "GET",
-      "path": "/api/console-tecnica/backups/{backupId}/verificar"
+      "operationId": "consultar_2",
+      "path": "/api/console-tecnica/configuracao",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "resumo_1",
+      "path": "/api/console-tecnica/resumo",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "reconciliar",
+      "path": "/api/console-tecnica/storage/reconciliacao",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "consultar_1",
+      "path": "/api/console-tecnica/workers/historico",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "resumo",
+      "path": "/api/dashboard/resumo",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listar_2",
+      "path": "/api/documentos",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "analisar",
+      "path": "/api/documentos/retencao-preview",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "baixar",
+      "path": "/api/documentos/{documentoId}/conteudo",
+      "responseModes": [
+        "blob"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "baixar",
+      "path": "/api/documentos/{id}/conteudo",
+      "responseModes": [
+        "blob"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "preview",
+      "path": "/api/documentos/{id}/preview",
+      "responseModes": [
+        "blob"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listar_1",
+      "path": "/api/empresas",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "modelo",
+      "path": "/api/empresas/importacao-csv/modelo",
+      "responseModes": [
+        "blob"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "obter",
+      "path": "/api/empresas/{id}",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "historico",
+      "path": "/api/empresas/{id}/historico",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listar_7",
+      "path": "/api/empresas/{id}/responsaveis-modulo",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listar_6",
+      "path": "/api/execucoes",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listar",
+      "path": "/api/integracoes/faturas",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listar_5",
+      "path": "/api/integracoes/politicas",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listar_4",
+      "path": "/api/integracoes/provedores",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "consultar",
+      "path": "/api/integracoes/provedores/historico",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listarPendentes",
+      "path": "/api/intervencoes",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "sessao",
+      "path": "/api/intervencoes/{id}/sessao",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "listar_3",
+      "path": "/api/notificacoes",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "GET",
+      "operationId": "obter_1",
+      "path": "/api/usuario-atual",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "operationId": "cancelar",
+      "path": "/api/execucoes/{id}/cancelar",
+      "responseModes": [
+        "none"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "operationId": "assumir",
+      "path": "/api/intervencoes/{id}/assumir",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "operationId": "resolver",
+      "path": "/api/intervencoes/{id}/resolver",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "operationId": "marcarLida",
+      "path": "/api/notificacoes/{id}/lida",
+      "responseModes": [
+        "none"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "solicitarLote",
+      "path": "/api/certidoes/solicitar-lote",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "solicitarTodas",
+      "path": "/api/certidoes/solicitar-todas",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "registrarManual",
+      "path": "/api/certidoes/{id}/resultado-manual",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "solicitar",
+      "path": "/api/certidoes/{id}/solicitar",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "validar",
+      "path": "/api/console-tecnica/atualizacoes/preflight",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "enviar_1",
+      "path": "/api/documentos",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "criar",
+      "path": "/api/empresas",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "importar",
+      "path": "/api/empresas/importacao-csv",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "adicionarFilial",
+      "path": "/api/empresas/{empresaId}/filiais",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "POST",
+      "operationId": "salvar",
+      "path": "/api/integracoes/faturas",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PUT",
+      "operationId": "atualizarMetadados",
+      "path": "/api/documentos/{id}/metadados",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PUT",
+      "operationId": "atualizarFilial",
+      "path": "/api/empresas/{empresaId}/filiais/{id}",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PUT",
+      "operationId": "atualizar_2",
+      "path": "/api/empresas/{id}",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PUT",
+      "operationId": "atualizarClassificacao",
+      "path": "/api/empresas/{id}/classificacao",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PUT",
+      "operationId": "atualizar_3",
+      "path": "/api/empresas/{id}/responsaveis-modulo/{modulo}",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PUT",
+      "operationId": "atualizar_1",
+      "path": "/api/integracoes/politicas/{operacao}",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
+    },
+    {
+      "method": "PUT",
+      "operationId": "atualizar",
+      "path": "/api/integracoes/provedores/{codigo}",
+      "responseModes": [
+        "json"
+      ],
+      "successStatuses": [
+        "200"
+      ]
     }
   ]
 }
