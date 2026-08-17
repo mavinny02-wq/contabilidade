@@ -8,6 +8,7 @@
     "ambienteLocal": "Modo local"
   },
   "menu": {
+    "navegacaoPrincipal": "Navegação principal",
     "visaoGeral": "Visão geral",
     "empresas": "Empresas",
     "documentos": "Documentos",
@@ -23,6 +24,7 @@
     "certidoes": "Certidões"
   },
   "acoes": {
+    "pularConteudo": "Pular para o conteúdo principal",
     "novo": "Novo",
     "novaEmpresa": "Nova empresa",
     "salvar": "Salvar",

@@ -12,7 +12,7 @@
   --surface-subtle: #f8fafb;
   --border: #dce3e8;
   --text: #1f2b35;
-  --muted: #647482;
+  --muted: #5f6f7d;
   --success: #237a57;
   --success-bg: #e8f5ee;
   --warning: #946514;
@@ -50,6 +50,23 @@ textarea {
 button,
 a {
   -webkit-tap-highlight-color: transparent;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--brand-strong);
+  box-shadow: var(--shadow);
+  transform: translateY(-150%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 button:focus-visible,

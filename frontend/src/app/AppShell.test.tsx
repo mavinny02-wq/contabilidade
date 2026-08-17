@@ -13,6 +13,13 @@ vi.mock('../auth/AuthProvider', () => ({
 vi.mock('./GlobalSearch', () => ({ GlobalSearch: () => null }));
 
 describe('navegacao principal', () => {
+  it('oferece landmarks nomeados e atalho para teclado', () => {
+    render(<MemoryRouter><AppShell /></MemoryRouter>);
+    expect(screen.getByRole('navigation', { name: 'Navegação principal' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Pular para o conteúdo principal' })).toHaveAttribute('href', '#conteudo-principal');
+    expect(screen.getByRole('main')).toHaveAttribute('id', 'conteudo-principal');
+  });
+
   it.each([
     ['/backups', 'Backups'],
     ['/atualizacoes', 'Atualizações'],
