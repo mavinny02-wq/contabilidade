@@ -18,7 +18,7 @@ POLICY = Path(__file__).with_name("policy.json")
 DEFAULT_INVENTORY = Path(__file__).with_name("inventory.json")
 CONST = re.compile(r'public static final String\s+(\w+)\s*=\s*"([A-Z0-9_]+)"')
 PERMISSION_USE = re.compile(r"@permissaoService\.tem\('([A-Z0-9_]+)'\)")
-MAPPING = re.compile(r'case\s+((?:"[^"]+"(?:,\s*)?)+)\s*->\s*Papeis\.(\w+)')
+MAPPING = re.compile(r'case\s+((?:"[^"]+"(?:,\s*)?)+)\s*->\s*(?:Optional\.of\()?Papeis\.(\w+)')
 PUBLIC_MATCHER = re.compile(r'\.requestMatchers\((.*?)\)\.permitAll\(\)')
 
 

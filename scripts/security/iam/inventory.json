@@ -18,7 +18,7 @@
       "operador": "ROLE_OPERADOR",
       "tecnico": "ROLE_TECNICO"
     },
-    "unknown_role_policy": "passthrough"
+    "unknown_role_policy": "reject"
   },
   "permission_uses": [
     {
