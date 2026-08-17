@@ -3,33 +3,33 @@
 **Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`
 **Reconciliado em:** `2026-08-17`
 **Branch de integração:** `main`
-**HEAD funcional reconciliado:** `3ca4bcfd60d8ddaa515bf526196833dccacf5e35`
+**HEAD funcional reconciliado:** `3850443701279e2002c527b6eb376de8abd664cf`
 **Versão declarada:** `0.5.1`
 **Frontier Flyway:** `V12`
-**Modo:** `FAST_LANE_WAVE_011_RELEASED`
+**Modo:** `FAST_LANE_WAVE_012_RELEASED`
 
 ## Verdade de integração
 
-- A Fast Lane Wave 010 foi integrada pelas PRs `#122–#126`.
+- A Fast Lane Wave 011 foi integrada pelas PRs `#128–#132`.
 - **PR aberta na reconciliação:** nenhuma.
 - Nenhum owner de migration está aberto ou liberado.
 - A `main` permanece sem branch protection/ruleset obrigatório.
 - Nenhuma execução de GitHub Actions foi observada no HEAD; `Required CI` continua
   `GITHUB_ACTIONS_SETTINGS_OR_PERMISSION_BLOCKER`, não `PASS`.
 
-## Resultado da Fast Lane Wave 010
+## Resultado da Fast Lane Wave 011
 
 | ITEM | Resultado | Disposição |
 |---|---|---|
-| `FIX-SEC-IAM-001` | unknown roles rejeitadas; guard IAM e testes verdes | `PASS` |
-| `FIX-STARTUP-PREFLIGHT-001` | parser real antes de build; PowerShell 5.1 pendente | `PASS_STRUCTURAL_WINDOWS_RUNTIME_PENDING` |
-| `VAL-TECH-CONSOLE-CURRENT-001` | contratos atuais verdes exceto negação 500 em vez de 403 | `FIX_PRODUCT` |
-| `STR-ARCH-BE-004` | Certidão isolada de Empresa; findings 4 → 1 | `PASS_STRUCTURAL` |
-| `STR-INF-001` | contratos dev/on-premise/CI determinísticos | `PASS_STRUCTURAL` |
+| `FIX-TECH-AUTH-001` | `AccessDeniedException` retorna 403 seguro; 401/500 preservados | `PASS` |
+| `STR-ARCH-BE-005` | Documento isolado de Empresa; 601 arestas e findings 1 → 0 | `PASS_STRUCTURAL` |
+| `STR-SEC-003` | lifecycle de segredos redigido, determinístico e sem valores | `PASS_STRUCTURAL` |
+| `STR-REL-003` | promoção/rollback imutáveis validáveis offline | `PASS_STRUCTURAL` |
+| `STR-OPS-002` | recovery plan determinístico e não destrutivo | `PASS_STRUCTURAL` |
 
-O finding de autorização possui stack trace e teste reproduzível: `AccessDeniedException` de method
-security cai no handler genérico e vira `ERRO_INTERNO`/500. Nenhum outro defeito de produto foi
-comprovado na onda.
+A Wave 011 não deixou regressão de produto aberta. Como o boundary de Documento alterou wiring Spring e
+o handler de autorização alterou comportamento HTTP, a próxima onda inclui um único smoke consolidado
+do HEAD, sem repetir campanhas não afetadas.
 
 ## Estado Windows
 
@@ -44,19 +44,19 @@ WINDOWS_SECOND_START_REUSE: NOT_PROVEN
 ONPREMISE_KEYCLOAK_LOGIN: BLOCKED_UNTIL_DEV_GREEN
 ```
 
-A campanha humana deve atualizar a `main`, executar o startup dev, repetir o startup e coletar a
-evidência v2. Ela não consome slot Codex.
+A campanha humana continua fora dos slots: atualizar `main`, executar o startup dev, repetir o
+startup e coletar a evidência Windows v2.
 
-## Fast Lane Wave 011
+## Fast Lane Wave 012
 
-1. `FIX-TECH-AUTH-001` — negação de autorização mapeada para 403 seguro;
-2. `STR-ARCH-BE-005` — remover o último finding Documento → Empresa;
-3. `STR-SEC-003` — lifecycle de segredos sem armazenar valores;
-4. `STR-REL-003` — manifesto imutável de promoção/rollback;
-5. `STR-OPS-002` — harness offline de recovery rehearsal.
+1. `VAL-W011-FULLSTACK-012` — smoke do HEAD pós-Wave 011, produto read-only;
+2. `STR-INF-002` — lifecycle TLS/certificados e guard de configuração segura;
+3. `STR-INF-003` — inventário/plan IaC on-premise e drift guard;
+4. `STR-CI-003` — runner local com paridade do Required CI e classificação de limitações;
+5. `STR-OBS-003` — monitoração sintética local-only, redigida e bounded.
 
-Os cinco owners partem de `main@3ca4bcfd60d8ddaa515bf526196833dccacf5e35`, não possuem dependência
-same-wave, não criam migration e não utilizam provider, credencial, backup ou dado real.
+Os cinco owners partem de `main@3850443701279e2002c527b6eb376de8abd664cf`, não possuem dependência
+same-wave, não criam migration e não utilizam provider, credencial, certificado privado, backup ou dado real.
 
 ## Campanhas fora dos slots
 
@@ -71,15 +71,14 @@ same-wave, não criam migration e não utilizam provider, credencial, backup ou 
 
 ## Ondas
 
-- Waves 002–010: `CONSUMED`;
-- `CONTABILIDADE_FAST_LANE_WAVE_011`: `RELEASED_FOR_EXECUTION`;
+- Waves 002–011: `CONSUMED`;
+- `CONTABILIDADE_FAST_LANE_WAVE_012`: `RELEASED_FOR_EXECUTION`;
 - owners executáveis: `5`;
 - migration owner: `NONE`.
 
 ## Próxima transição
 
-Integrar e reconciliar os cinco resultados. Depois, executar um smoke consolidado somente se os
-deltas de produto da Wave 011 exigirem invalidação da evidência full-stack; provas externas
-continuam em campanhas próprias.
+Integrar e reconciliar os cinco resultados. Falha do smoke gera successor específico; tooling
+estrutural não pode alegar prova runtime ou alterar configuração real para obter verde.
 
-`CONTABILIDADE_CURRENT_STATE_FAST_LANE_WAVE_011_RELEASED`
+`CONTABILIDADE_CURRENT_STATE_FAST_LANE_WAVE_012_RELEASED`
