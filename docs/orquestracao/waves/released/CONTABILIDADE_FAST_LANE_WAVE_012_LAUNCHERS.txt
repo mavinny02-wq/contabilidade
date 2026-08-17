@@ -1,0 +1,74 @@
+TASK: VAL-W011-FULLSTACK-012
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_012
+DISPATCH_KEY: ff45c84916215ff6f7b65e0dc9ef136eb1ad2267c9e3011ac3fb57475f2dcda0
+BASELINE: latest main
+PREPARE: fullstack-node24 + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/testing/plans/VAL_W011_FULLSTACK_012.md
+LOCKS: LOCK-EXT-001, LOCK-DATA-001, LOCK-ENV-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: product read-only; only exact RESULT_MD may change
+MIGRATION: NONE
+VALIDATE: Java 21/Node 24; guards/builds; PostgreSQL/Flyway/health/document upload; 19+ journeys and a11y
+RESULT_MD: docs/testing/runs/VAL_W011_FULLSTACK_012.md
+
+TASK: STR-INF-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_012
+DISPATCH_KEY: e8ae86db201c9433389817bef310b600a56da7022e2fddabc705780b353930bc
+BASELINE: latest main
+PREPARE: tls-governance + dispatch-preflight
+READ:
+- root + scripts/AGENTS.md
+- docs/roadmap/estrutural/STR_INF_002_TLS_CERTIFICATE_LIFECYCLE.md
+LOCKS: LOCK-DEP-001, LOCK-DATA-001, LOCK-ENV-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: scripts/security/tls, infra/tls, schema/policy/fixtures/tests/workflow and exact result
+MIGRATION: NONE
+VALIDATE: inventory twice; SAN/expiry/algorithm/source/exception/redaction fixtures; YAML/JSON parse
+RESULT_MD: docs/implementacao/STR_INF_002_RESULT.md
+
+TASK: STR-INF-003
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_012
+DISPATCH_KEY: 4681cf70a21d90a7950bb3bced4f67233638b2ec6e7f9e83bf8e4df5f702ee38
+BASELINE: latest main
+PREPARE: onpremise-iac + dispatch-preflight
+READ:
+- root + scripts/AGENTS.md
+- docs/roadmap/estrutural/STR_INF_003_ONPREMISE_IAC_DRIFT.md
+LOCKS: LOCK-DEP-001, LOCK-DATA-001, LOCK-ENV-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: scripts/infrastructure, infra/iac, schema/policy/fixtures/tests/workflow and exact result
+MIGRATION: NONE
+VALIDATE: plan twice; host/network/volume/port/digest/prerequisite/drift fixtures; forbidden-command guard
+RESULT_MD: docs/implementacao/STR_INF_003_RESULT.md
+
+TASK: STR-CI-003
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_012
+DISPATCH_KEY: 8b5d2c9fa241db84a40aa516aee85af479565bd794f3e7ef60b534122d78057e
+BASELINE: latest main
+PREPARE: local-required-ci + dispatch-preflight
+READ:
+- root + scripts/AGENTS.md
+- docs/roadmap/estrutural/STR_CI_003_LOCAL_REQUIRED_CI_PARITY.md
+LOCKS: LOCK-GIT-001, LOCK-ENV-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: scripts/ci local runner/ledger/tests and exact result; required-ci workflow read-only
+MIGRATION: NONE
+VALIDATE: plan/run/resume/exit-code/environment fixtures; lane parity and deterministic ledger tests
+RESULT_MD: docs/implementacao/STR_CI_003_RESULT.md
+
+TASK: STR-OBS-003
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_012
+DISPATCH_KEY: fd02d2bca2f0b07e6ceba94a8126310d21aacc6a3616fdc0088076600580f93a
+BASELINE: latest main
+PREPARE: synthetic-monitoring + dispatch-preflight
+READ:
+- root + scripts/AGENTS.md
+- docs/roadmap/estrutural/STR_OBS_003_SYNTHETIC_MONITORING.md
+LOCKS: LOCK-DATA-001, LOCK-EXT-001, LOCK-ENV-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: scripts/observability/synthetic, infra/observability/synthetic, tests/workflow and exact result
+MIGRATION: NONE
+VALIDATE: local fixture server; success/timeout/5xx/retry/redaction/external-block/determinism tests
+RESULT_MD: docs/implementacao/STR_OBS_003_RESULT.md

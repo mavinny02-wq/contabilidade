@@ -2,7 +2,7 @@
 
 **Classificação:** `CANONICAL_ACTIVE_TEST_LEDGER`
 **Reconciliado em:** `2026-08-17`
-**HEAD observado:** `3ca4bcfd60d8ddaa515bf526196833dccacf5e35`
+**HEAD observado:** `3850443701279e2002c527b6eb376de8abd664cf`
 
 Este ledger reutiliza prova válida, classifica falhas antes de corrigir e agenda somente owner
 explicitamente liberado.
@@ -11,38 +11,35 @@ explicitamente liberado.
 
 | ID | Prova | Disposição |
 |---|---|---|
-| `FIX-SEC-IAM-001` | converter fail-closed, guard IAM, 10+4 testes | `REUSE_PASS` |
+| `FIX-TECH-AUTH-001` | 403 seguro, 401/500 preservados e 5 testes focados | `REUSE_PASS` |
+| `STR-ARCH-BE-005` | 601 arestas, 0 findings e allowlist vazia | `REUSE_PASS_STRUCTURAL` |
+| `STR-SEC-003` | lifecycle de segredos, 6 testes e saída byte-idêntica | `REUSE_PASS_STRUCTURAL` |
+| `STR-REL-003` | promoção/rollback offline, 7 testes | `REUSE_PASS_STRUCTURAL` |
+| `STR-OPS-002` | recovery planner, 8 testes e forbidden-command guard | `REUSE_PASS_STRUCTURAL` |
 | `FIX-STARTUP-PREFLIGHT-001` | parse-first e guard Node; Windows pendente | `REUSE_PASS_STRUCTURAL_WITH_LIMITATION` |
-| `STR-ARCH-BE-004` | 600 arestas e 1 finding permitido | `REUSE_PASS_STRUCTURAL` |
-| `STR-INF-001` | inventário e fixtures dev/on-premise/CI | `REUSE_PASS_STRUCTURAL` |
-| `VAL-W008-FULLSTACK-009` | PostgreSQL/Flyway/JPA, health, heartbeat, 19 jornadas, a11y, zero externa/5xx | `REUSE_PASS_RUNTIME` |
-| `STR-QA-FE-002` | coverage reproduzível e a11y 6/6 | `REUSE_PASS_COMPLETE` |
-| `STR-DOC-002` | storage local adversarialmente testado duas vezes | `REUSE_PASS` |
+| `VAL-W008-FULLSTACK-009` | PostgreSQL/Flyway/JPA, health, 19 jornadas, a11y, zero externa/5xx | `RERUN_FOCUSED_HEAD_CHANGED` |
 
-## Finding comprovado da Console Técnica
+## Motivo do smoke consolidado
 
-`VAL-TECH-CONSOLE-CURRENT-001` comprovou:
+A Wave 011 alterou:
 
-```text
-autorizado -> PASS
-não autorizado -> AccessDeniedException -> handler genérico -> HTTP 500
-contrato esperado -> HTTP 403
-```
+- mapeamento HTTP de `AccessDeniedException`;
+- composição Spring de `DocumentoService` por porta/adapter;
+- baseline arquitetural para zero findings.
 
-Disposição: `FIX_PRODUCT` em `FIX-TECH-AUTH-001`.
+As provas focadas passaram. Um único smoke do HEAD valida startup, wiring documental, upload
+sintético, guard arquitetural e ausência de regressão transversal. Não há autorização para corrigir
+produto dentro da task de validação.
 
-O teste PostgreSQL da mesma task permaneceu `ENVIRONMENT_LIMITATION` por ausência de Docker e não
-autoriza alteração de produto.
-
-## Fast Lane Wave 011
+## Fast Lane Wave 012
 
 | ITEM | Prova exigida | Disposição esperada |
 |---|---|---|
-| `FIX-TECH-AUTH-001` | 403 seguro, 401 preservado, 500 inesperado preservado, correlation ID | `PASS` |
-| `STR-ARCH-BE-005` | Documento desacoplado; findings 1 → 0 | `PASS_STRUCTURAL` |
-| `STR-SEC-003` | inventário redigido, rotação/source/exceções e determinismo | `PASS_STRUCTURAL` |
-| `STR-REL-003` | promoção imutável e rollback/Flyway guardados | `PASS_STRUCTURAL` |
-| `STR-OPS-002` | recovery plan determinístico, completo e não destrutivo | `PASS_STRUCTURAL` |
+| `VAL-W011-FULLSTACK-012` | builds, guards, PostgreSQL/Flyway, document upload, health, 19+ jornadas e a11y | `PASS` ou classificação exata |
+| `STR-INF-002` | inventário TLS, SAN/expiração/algoritmo/source/exception e determinismo | `PASS_STRUCTURAL` |
+| `STR-INF-003` | plano IaC on-premise, drift/host prerequisites e determinismo | `PASS_STRUCTURAL` |
+| `STR-CI-003` | paridade de lanes, exit codes, resume e classificação ambiental | `PASS_STRUCTURAL` |
+| `STR-OBS-003` | probes local-only, retry bounded, redaction e estados determinísticos | `PASS_STRUCTURAL` |
 
 ## Provas pendentes fora dos slots
 
@@ -67,13 +64,13 @@ Repetir para comprovar reuso e executar o coletor Windows v2.
 
 ## Políticas
 
-- `AccessDeniedException` não pode virar 500 nem 200;
-- architecture remove somente o último finding mapeado;
-- secret lifecycle nunca armazena valores;
-- release tooling não publica nem puxa imagens;
-- recovery tooling não restaura, apaga ou toca backup real;
+- validação read-only não corrige produto;
+- TLS tooling não lê nem grava chave privada;
+- IaC tooling não executa comando privilegiado nem altera host;
+- runner local nunca se apresenta como status remoto do GitHub;
+- synthetic monitoring não chama provider nem usa dado real;
 - falha de ambiente não vira `PASS`;
-- nenhum provider real, dado real ou migration pertence à Wave 011.
+- nenhum provider real, dado real ou migration pertence à Wave 012.
 
 ## Gates externos
 
@@ -89,4 +86,4 @@ PROMOTION_RUNTIME = WAITING_FOR_RUNTIME
 REAL_EXTERNAL_PROVIDERS = NOT_AUTHORIZED
 ```
 
-`MASTER_TEST_ORCHESTRATION_FAST_LANE_WAVE_011_RELEASED`
+`MASTER_TEST_ORCHESTRATION_FAST_LANE_WAVE_012_RELEASED`

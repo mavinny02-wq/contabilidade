@@ -1,7 +1,7 @@
 {
   "schemaVersion": "2.0",
   "waveId": "CONTABILIDADE_FAST_LANE_WAVE_011",
-  "state": "RELEASED_FOR_EXECUTION",
+  "state": "CONSUMED",
   "baseline": {
     "branch": "main",
     "commit": "3ca4bcfd60d8ddaa515bf526196833dccacf5e35"
@@ -70,6 +70,5 @@
       "dispatchKey": "c626df955edd0b82404f2f95cbb8de8d42d124aea37d2f2fdab703c3194de3f1"
     }
   ],
-  "launcherPath": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_011_LAUNCHERS.txt",
-  "previousManifest": "docs/orquestracao/waves/prepared/CONTABILIDADE_FAST_LANE_WAVE_011.json"
+  "previousManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_011.json"
 }

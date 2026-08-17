@@ -1,0 +1,82 @@
+{
+  "schemaVersion": "2.0",
+  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_012",
+  "state": "RELEASED_FOR_EXECUTION",
+  "baseline": {
+    "branch": "main",
+    "commit": "3850443701279e2002c527b6eb376de8abd664cf"
+  },
+  "owners": [
+    {
+      "item": "VAL-W011-FULLSTACK-012",
+      "owner": "FULLSTACK_POST_W011_VALIDATION",
+      "locks": [
+        "LOCK-EXT-001",
+        "LOCK-DATA-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/testing/runs/VAL_W011_FULLSTACK_012.md",
+      "dispatchKey": "ff45c84916215ff6f7b65e0dc9ef136eb1ad2267c9e3011ac3fb57475f2dcda0"
+    },
+    {
+      "item": "STR-INF-002",
+      "owner": "TLS_CERTIFICATE_LIFECYCLE_GUARD",
+      "locks": [
+        "LOCK-DEP-001",
+        "LOCK-DATA-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_INF_002_RESULT.md",
+      "dispatchKey": "e8ae86db201c9433389817bef310b600a56da7022e2fddabc705780b353930bc"
+    },
+    {
+      "item": "STR-INF-003",
+      "owner": "ONPREMISE_IAC_DRIFT_GUARD",
+      "locks": [
+        "LOCK-DEP-001",
+        "LOCK-DATA-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_INF_003_RESULT.md",
+      "dispatchKey": "4681cf70a21d90a7950bb3bced4f67233638b2ec6e7f9e83bf8e4df5f702ee38"
+    },
+    {
+      "item": "STR-CI-003",
+      "owner": "LOCAL_REQUIRED_CI_PARITY",
+      "locks": [
+        "LOCK-GIT-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_CI_003_RESULT.md",
+      "dispatchKey": "8b5d2c9fa241db84a40aa516aee85af479565bd794f3e7ef60b534122d78057e"
+    },
+    {
+      "item": "STR-OBS-003",
+      "owner": "SYNTHETIC_READINESS_MONITORING",
+      "locks": [
+        "LOCK-DATA-001",
+        "LOCK-EXT-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_OBS_003_RESULT.md",
+      "dispatchKey": "fd02d2bca2f0b07e6ceba94a8126310d21aacc6a3616fdc0088076600580f93a"
+    }
+  ],
+  "launcherPath": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_012_LAUNCHERS.txt",
+  "previousManifest": "docs/orquestracao/waves/prepared/CONTABILIDADE_FAST_LANE_WAVE_012.json"
+}

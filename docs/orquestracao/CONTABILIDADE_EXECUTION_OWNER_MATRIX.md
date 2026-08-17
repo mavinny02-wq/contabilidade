@@ -9,33 +9,33 @@
 | `ROOT_GOVERNANCE` | AGENTS, índices, locks | orquestrador/documentação direta |
 | `ORCHESTRATION_STATE` | checkpoint, ledger, backlog, manifests | orquestrador somente |
 | `MIGRATION_LANE` | `backend/src/main/resources/db/migration/**` | máximo um owner |
-| `REQUIRED_CI_GATE` | `.github/workflows/required-ci.yml`, `scripts/ci/**` | bloqueado por setting externo |
+| `REQUIRED_CI_GATE` | `.github/workflows/required-ci.yml`, `scripts/ci/**` | um owner por onda |
 | `DEPENDENCY_LOCKS` | POM/package/lockfiles | owner explícito |
 | `STARTUP_DEPLOY` | Compose/startup/deploy | serial |
 | `ARCHITECTURE_BASELINE` | `scripts/architecture/baseline.json`, allowlist | um owner por onda |
-| `RELEASE_PROMOTION` | manifests/policy de promoção | um owner por onda |
-| `RECOVERY_PLANNING` | schema/plano de recovery | um owner por onda |
+| `TLS_POLICY` | `scripts/security/tls/**`, `infra/tls/**` | um owner por onda |
+| `ONPREMISE_IAC` | `scripts/infrastructure/**`, `infra/iac/**` | um owner por onda |
+| `SYNTHETIC_MONITORING` | `scripts/observability/synthetic/**`, `infra/observability/synthetic/**` | um owner por onda |
 
-## Fast Lane Wave 011
+## Fast Lane Wave 012
 
 | ITEM | Owner exclusivo | Escrita permitida |
 |---|---|---|
-| `FIX-TECH-AUTH-001` | `TECHNICAL_AUTHORIZATION_ERROR_MAPPING` | global error mapping, mensagem, testes focados e resultado |
-| `STR-ARCH-BE-005` | `DOCUMENTO_EMPRESA_QUERY_BOUNDARY` | porta Documento, adapter Empresa, testes e baseline/allowlist |
-| `STR-SEC-003` | `SECRET_LIFECYCLE_GUARD` | `scripts/security/secret-lifecycle/**`, workflow e resultado |
-| `STR-REL-003` | `IMMUTABLE_RELEASE_PROMOTION_GUARD` | `scripts/release/promotion/**`, workflow e resultado |
-| `STR-OPS-002` | `RECOVERY_REHEARSAL_HARNESS` | `scripts/recovery/**`, workflow e resultado |
+| `VAL-W011-FULLSTACK-012` | `FULLSTACK_POST_W011_VALIDATION` | somente resultado; produto read-only |
+| `STR-INF-002` | `TLS_CERTIFICATE_LIFECYCLE_GUARD` | TLS policy/schema/fixtures/tests/workflow e resultado |
+| `STR-INF-003` | `ONPREMISE_IAC_DRIFT_GUARD` | IaC inventory/plan/policy/fixtures/tests/workflow e resultado |
+| `STR-CI-003` | `LOCAL_REQUIRED_CI_PARITY` | runner/ledger/testes sob `scripts/ci/**` e resultado; workflow required read-only |
+| `STR-OBS-003` | `SYNTHETIC_READINESS_MONITORING` | probes/policy/fixtures/tests/workflow dedicado e resultado |
 
 ## Independência
 
-- auth mapping não toca Documento, architecture, release, recovery ou secrets;
-- architecture é o único owner do baseline/allowlist;
-- secret lifecycle apenas lê configurações e não toca valores;
-- release não toca registry, Compose ou runtime;
-- recovery não toca scripts de backup nem dados;
-- cada tooling owner usa diretório e workflow dedicados;
+- o smoke escreve somente seu relatório;
+- TLS não toca chaves privadas, Compose, startup ou IaC;
+- IaC apenas lê Compose/configurações e não provisiona host;
+- CI local é o único owner de `scripts/ci/**` e não depende dos novos owners same-wave;
+- monitoração sintética usa subtree própria e não altera métricas/alertas existentes;
 - nenhum owner cria migration ou altera dependency manifest;
-- nenhum owner usa provider, credencial, backup ou dado real;
+- nenhum owner usa provider, credencial, certificado privado, backup ou dado real;
 - overlap descoberto torna o owner posterior `SUPERSEDED` ou serializado.
 
 ## Campanhas reservadas fora da wave
@@ -47,4 +47,4 @@
 - promoção/rollback real;
 - settings do GitHub Actions e branch protection.
 
-`OWNER_MATRIX_FAST_LANE_WAVE_011`
+`OWNER_MATRIX_FAST_LANE_WAVE_012`
