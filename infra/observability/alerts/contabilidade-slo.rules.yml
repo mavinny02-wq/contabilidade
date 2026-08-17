@@ -1,0 +1,78 @@
+groups:
+  - name: contabilidade-slo
+    rules:
+      - alert: ContabilidadeHttpAvailabilityWarning
+        expr: sum(rate(contabilidade_http_requests_total{result!="success"}[5m])) / clamp_min(sum(rate(contabilidade_http_requests_total[5m])), 1) > 0.01
+        for: 10m
+        labels: {severity: warning, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#http-availability"}
+      - alert: ContabilidadeHttpAvailabilityCritical
+        expr: sum(rate(contabilidade_http_requests_total{result!="success"}[5m])) / clamp_min(sum(rate(contabilidade_http_requests_total[5m])), 1) > 0.05
+        for: 5m
+        labels: {severity: critical, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#http-availability"}
+      - alert: ContabilidadeHttpLatencyWarning
+        expr: histogram_quantile(0.99, sum by (le) (rate(contabilidade_http_latency_seconds_bucket[5m]))) > 2
+        for: 10m
+        labels: {severity: warning, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#http-latency"}
+      - alert: ContabilidadeHttpLatencyCritical
+        expr: histogram_quantile(0.99, sum by (le) (rate(contabilidade_http_latency_seconds_bucket[5m]))) > 5
+        for: 5m
+        labels: {severity: critical, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#http-latency"}
+      - alert: ContabilidadeHttp5xxWarning
+        expr: sum(rate(contabilidade_http_errors_total[5m])) / clamp_min(sum(rate(contabilidade_http_requests_total[5m])), 1) > 0.01
+        for: 10m
+        labels: {severity: warning, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#http-5xx"}
+      - alert: ContabilidadeHttp5xxCritical
+        expr: sum(rate(contabilidade_http_errors_total[5m])) / clamp_min(sum(rate(contabilidade_http_requests_total[5m])), 1) > 0.05
+        for: 5m
+        labels: {severity: critical, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#http-5xx"}
+      - alert: ContabilidadeQueueDepthWarning
+        expr: contabilidade_execution_queue_depth > 100
+        for: 10m
+        labels: {severity: warning, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#queue-depth"}
+      - alert: ContabilidadeQueueDepthCritical
+        expr: contabilidade_execution_queue_depth > 500
+        for: 10m
+        labels: {severity: critical, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#queue-depth"}
+      - alert: ContabilidadeExpiredLeasesWarning
+        expr: increase(contabilidade_execution_expired_leases_total[15m]) > 1
+        for: 5m
+        labels: {severity: warning, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#expired-leases"}
+      - alert: ContabilidadeExpiredLeasesCritical
+        expr: increase(contabilidade_execution_expired_leases_total[15m]) > 10
+        for: 5m
+        labels: {severity: critical, owner: backend}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#expired-leases"}
+      - alert: ContabilidadeWorkerHeartbeatWarning
+        expr: contabilidade_worker_heartbeat_age_seconds > 90
+        for: 5m
+        labels: {severity: warning, owner: operations}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#worker-heartbeat"}
+      - alert: ContabilidadeWorkerHeartbeatCritical
+        expr: contabilidade_worker_heartbeat_age_seconds > 300
+        for: 5m
+        labels: {severity: critical, owner: operations}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#worker-heartbeat"}
+      - alert: ContabilidadeBackupAgeWarning
+        expr: time() - contabilidade_backup_last_success_unixtime > 93600
+        for: 15m
+        labels: {severity: warning, owner: operations}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#backup-age"}
+      - alert: ContabilidadeBackupAgeCritical
+        expr: time() - contabilidade_backup_last_success_unixtime > 172800
+        for: 15m
+        labels: {severity: critical, owner: operations}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#backup-age"}
+      - alert: ContabilidadeObservabilitySignalMissing
+        expr: absent(contabilidade_http_requests_total) or absent(contabilidade_execution_queue_depth) or absent(contabilidade_worker_heartbeat_age_seconds) or absent(contabilidade_backup_last_success_unixtime)
+        for: 15m
+        labels: {severity: warning, owner: operations}
+        annotations: {runbook_url: "docs/operacao/RUNBOOK_SLO_ALERTING.md#missing-data"}

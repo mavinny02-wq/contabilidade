@@ -84,6 +84,15 @@ EOF
 mv "$manifest_tmp" "$manifest_path"
 sh "$(dirname "$0")/verify-backup.sh" "$manifest_path"
 
+# Optional Prometheus node-exporter textfile directory. The write is atomic and contains no IDs.
+if [ -n "${PROMETHEUS_TEXTFILE_DIR:-}" ]; then
+  mkdir -p "$PROMETHEUS_TEXTFILE_DIR"
+  metric_tmp="$PROMETHEUS_TEXTFILE_DIR/contabilidade_backup.prom.tmp"
+  metric_path="$PROMETHEUS_TEXTFILE_DIR/contabilidade_backup.prom"
+  printf 'contabilidade_backup_last_success_unixtime %s\n' "$(date +%s)" > "$metric_tmp"
+  mv "$metric_tmp" "$metric_path"
+fi
+
 completed=1
 trap - EXIT HUP INT TERM
 

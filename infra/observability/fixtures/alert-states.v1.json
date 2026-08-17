@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "scenarios": [
+    {"name":"normal","values":{"http-availability":0.001,"http-latency":0.5,"http-5xx":0.001,"queue-depth":2,"expired-leases":0,"worker-heartbeat":20,"backup-age":3600},"expected":"normal"},
+    {"name":"warning","values":{"http-availability":0.02,"http-latency":3,"http-5xx":0.02,"queue-depth":200,"expired-leases":2,"worker-heartbeat":120,"backup-age":100000},"expected":"warning"},
+    {"name":"critical","values":{"http-availability":0.10,"http-latency":8,"http-5xx":0.10,"queue-depth":800,"expired-leases":20,"worker-heartbeat":600,"backup-age":200000},"expected":"critical"},
+    {"name":"recovery","values":{"http-availability":0.001,"http-latency":0.5,"http-5xx":0.001,"queue-depth":2,"expired-leases":0,"worker-heartbeat":20,"backup-age":3600},"expected":"normal"}
+  ]
+}

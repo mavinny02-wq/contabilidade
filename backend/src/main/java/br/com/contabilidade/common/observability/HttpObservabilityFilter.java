@@ -49,6 +49,7 @@ public class HttpObservabilityFilter extends OncePerRequestFilter {
             Timer.builder("contabilidade.http.latency")
                     .tag("operation", operation)
                     .tag("result", result)
+                    .publishPercentileHistogram()
                     .register(registry)
                     .record(System.nanoTime() - started, TimeUnit.NANOSECONDS);
             if (!"none".equals(errorClass) || response.getStatus() >= 500) {

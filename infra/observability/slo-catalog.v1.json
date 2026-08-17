@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "catalogVersion": "2026-08-17",
+  "forbiddenLabels": ["cnpj", "company_id", "document_id", "execution_id", "user_id"],
+  "slos": [
+    {"id":"http-availability","metric":"contabilidade_http_requests_total","objective":"99.5% successful responses over 30d","window":"5m","warning":0.01,"critical":0.05,"direction":"above"},
+    {"id":"http-latency","metric":"contabilidade_http_latency_seconds_bucket","objective":"99% below 2s over 30d","window":"5m","warning":2,"critical":5,"direction":"above"},
+    {"id":"http-5xx","metric":"contabilidade_http_errors_total","objective":"less than 0.5% 5xx over 30d","window":"5m","warning":0.01,"critical":0.05,"direction":"above"},
+    {"id":"queue-depth","metric":"contabilidade_execution_queue_depth","objective":"ready work remains bounded","window":"10m","warning":100,"critical":500,"direction":"above"},
+    {"id":"expired-leases","metric":"contabilidade_execution_expired_leases_total","objective":"no sustained expired leases","window":"15m","warning":1,"critical":10,"direction":"above"},
+    {"id":"worker-heartbeat","metric":"contabilidade_worker_heartbeat_age_seconds","objective":"worker heartbeat younger than 90s","window":"5m","warning":90,"critical":300,"direction":"above"},
+    {"id":"backup-age","metric":"contabilidade_backup_last_success_unixtime","objective":"successful backup within 26h","window":"15m","warning":93600,"critical":172800,"direction":"above"}
+  ]
+}
