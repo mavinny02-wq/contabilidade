@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contabilidade.local/schemas/task-budget-policy.schema.json",
+  "title": "Task-class token budget policy",
+  "type": "object", "additionalProperties": false,
+  "required": ["schemaVersion", "policyId", "classes"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"}, "policyId": {"type": "string", "minLength": 1},
+    "classes": {"type": "object", "propertyNames": {"enum": ["DOCUMENTATION", "ANALYSIS", "IMPLEMENTATION", "VALIDATION", "RECONCILIATION"]}, "additionalProperties": {"$ref": "#/$defs/budget"}}
+  },
+  "$defs": {
+    "threshold": {"type": "object", "additionalProperties": false, "required": ["warning", "hard"], "properties": {"warning": {"type": "integer", "minimum": 0}, "hard": {"type": "integer", "minimum": 0}}},
+    "cost": {"type": "object", "additionalProperties": false, "required": ["warning", "hard", "currency"], "properties": {"warning": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$"}, "hard": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$"}, "currency": {"type": "string", "minLength": 1}}},
+    "budget": {"type": "object", "additionalProperties": false, "required": ["inputTokens", "outputTokens", "totalTokens", "cost"], "properties": {"inputTokens": {"$ref": "#/$defs/threshold"}, "outputTokens": {"$ref": "#/$defs/threshold"}, "totalTokens": {"$ref": "#/$defs/threshold"}, "cost": {"$ref": "#/$defs/cost"}}}
+  }
+}

@@ -1,5 +1,60 @@
 [
-  {"waveId":"W7","item":"ITEM-1","dispatchKey":"key-1","model":"model-a","executor":"cloud","inputTokens":100,"outputTokens":20,"cachedTokens":30,"reasoningTokens":10,"origin":"PROVIDER_REPORTED","category":"HOT","outcome":"PASS","classification":"USEFUL","timestamp":"2026-08-17T00:00:00Z","contextFingerprint":"ctx-shared","cost":{"amount":"0.12","currency":"USD","tableId":"prices-2026-08"}},
-  {"waveId":"W7","item":"ITEM-1","dispatchKey":"key-1","model":"model-a","executor":"cloud","inputTokens":80,"outputTokens":10,"origin":"LOCAL_ESTIMATE","category":"HOT","outcome":"RERUN","classification":"TEST_CONTRACT_DRIFT","timestamp":"2026-08-17T00:01:00Z","contextFingerprint":"ctx-shared","cost":{"amount":"0.00","tableId":"unknown"}},
-  {"waveId":"W7","item":"ITEM-2","dispatchKey":"key-2","model":"model-b","executor":"cloud","inputTokens":50,"outputTokens":5,"origin":"PROVIDER_REPORTED","category":"COLD","outcome":"BLOCKER","classification":"ENVIRONMENT_LIMITATION","timestamp":"2026-08-17T00:02:00Z"}
+  {
+    "waveId": "W7",
+    "item": "ITEM-1",
+    "dispatchKey": "key-1",
+    "model": "model-a",
+    "executor": "cloud",
+    "inputTokens": 100,
+    "outputTokens": 20,
+    "cachedTokens": 30,
+    "reasoningTokens": 10,
+    "origin": "PROVIDER_REPORTED",
+    "category": "HOT",
+    "outcome": "PASS",
+    "classification": "USEFUL",
+    "timestamp": "2026-08-17T00:00:00Z",
+    "contextFingerprint": "ctx-shared",
+    "cost": {
+      "amount": "0.12",
+      "currency": "USD",
+      "tableId": "prices-2026-08"
+    },
+    "taskClass": "IMPLEMENTATION"
+  },
+  {
+    "waveId": "W7",
+    "item": "ITEM-1",
+    "dispatchKey": "key-1",
+    "model": "model-a",
+    "executor": "cloud",
+    "inputTokens": 80,
+    "outputTokens": 10,
+    "origin": "LOCAL_ESTIMATE",
+    "category": "HOT",
+    "outcome": "RERUN",
+    "classification": "TEST_CONTRACT_DRIFT",
+    "timestamp": "2026-08-17T00:01:00Z",
+    "contextFingerprint": "ctx-shared",
+    "cost": {
+      "amount": "0.00",
+      "tableId": "unknown"
+    },
+    "taskClass": "IMPLEMENTATION"
+  },
+  {
+    "waveId": "W7",
+    "item": "ITEM-2",
+    "dispatchKey": "key-2",
+    "model": "model-b",
+    "executor": "cloud",
+    "inputTokens": 50,
+    "outputTokens": 5,
+    "origin": "PROVIDER_REPORTED",
+    "category": "COLD",
+    "outcome": "BLOCKER",
+    "classification": "ENVIRONMENT_LIMITATION",
+    "timestamp": "2026-08-17T00:02:00Z",
+    "taskClass": "VALIDATION"
+  }
 ]
