@@ -1,9 +1,11 @@
 package br.com.contabilidade.common.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -19,27 +21,26 @@ public class JwtAuthoritiesConverter implements Converter<Jwt, Collection<Grante
 
     @Override
     public Collection<GrantedAuthority> convert(Jwt jwt) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
+        Set<GrantedAuthority> authorities = new LinkedHashSet<>();
         adicionarRealmRoles(jwt, authorities);
         adicionarClientRoles(jwt, authorities);
         return authorities;
     }
 
-    @SuppressWarnings("unchecked")
-    private void adicionarRealmRoles(Jwt jwt, List<GrantedAuthority> authorities) {
+    private void adicionarRealmRoles(Jwt jwt, Set<GrantedAuthority> authorities) {
         Object realmAccessValue = jwt.getClaims().get("realm_access");
         if (!(realmAccessValue instanceof Map<?, ?> realmAccess)) {
             return;
         }
         Object rolesValue = realmAccess.get("roles");
         if (rolesValue instanceof Collection<?> roles) {
-            roles.stream().map(Object::toString).map(this::normalizarPapel)
+            roles.stream().filter(String.class::isInstance).map(String.class::cast)
+                    .map(this::normalizarPapel).flatMap(Optional::stream)
                     .map(SimpleGrantedAuthority::new).forEach(authorities::add);
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void adicionarClientRoles(Jwt jwt, List<GrantedAuthority> authorities) {
+    private void adicionarClientRoles(Jwt jwt, Set<GrantedAuthority> authorities) {
         Object resourceAccessValue = jwt.getClaims().get("resource_access");
         if (!(resourceAccessValue instanceof Map<?, ?> resourceAccess)) {
             return;
@@ -50,18 +51,19 @@ public class JwtAuthoritiesConverter implements Converter<Jwt, Collection<Grante
         }
         Object rolesValue = client.get("roles");
         if (rolesValue instanceof Collection<?> roles) {
-            roles.stream().map(Object::toString).map(this::normalizarPapel)
+            roles.stream().filter(String.class::isInstance).map(String.class::cast)
+                    .map(this::normalizarPapel).flatMap(Optional::stream)
                     .map(SimpleGrantedAuthority::new).forEach(authorities::add);
         }
     }
 
-    private String normalizarPapel(String role) {
-        return switch (role.toLowerCase()) {
-            case "contabilidade_admin", "admin" -> Papeis.ADMIN;
-            case "contabilidade_operador", "operador" -> Papeis.OPERADOR;
-            case "contabilidade_leitor", "leitor" -> Papeis.LEITOR;
-            case "contabilidade_tecnico", "tecnico" -> Papeis.TECNICO;
-            default -> role.startsWith("ROLE_") ? role : "ROLE_" + role.toUpperCase();
+    private Optional<String> normalizarPapel(String role) {
+        return switch (role.toLowerCase(Locale.ROOT)) {
+            case "contabilidade_admin", "admin" -> Optional.of(Papeis.ADMIN);
+            case "contabilidade_operador", "operador" -> Optional.of(Papeis.OPERADOR);
+            case "contabilidade_leitor", "leitor" -> Optional.of(Papeis.LEITOR);
+            case "contabilidade_tecnico", "tecnico" -> Optional.of(Papeis.TECNICO);
+            default -> Optional.empty();
         };
     }
 }

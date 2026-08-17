@@ -79,7 +79,9 @@ class IamGuardTest(unittest.TestCase):
         self.assertNotIn("realm_access.roles", output)
 
     def test_unknown_authority_is_reported_without_claim_value(self):
-        findings = guard.validate(self.data, self.policy)
+        data = copy.deepcopy(self.data)
+        data["jwt"]["unknown_role_policy"] = "passthrough"
+        findings = guard.validate(data, self.policy)
         unknown = [item for item in findings if item.code == "UNKNOWN_AUTHORITY_ACCEPTED"]
         self.assertEqual(1, len(unknown))
         self.assertNotIn("realm_access", unknown[0].detail)
