@@ -1,0 +1,74 @@
+TASK: VAL-W007-FULLSTACK-008
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_008
+DISPATCH_KEY: 226c9ff3c05b6024571a8b34eaaa9355c001b0d97870977502178db5aec5cd95
+BASELINE: latest main
+PREPARE: fullstack-node24 + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/testing/plans/VAL_W007_FULLSTACK_008.md
+LOCKS: LOCK-EXT-001, LOCK-DATA-001, LOCK-ENV-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: product read-only; only exact RESULT_MD may change
+MIGRATION: NONE
+VALIDATE: Node 24; Docker guard, build all, PostgreSQL/Flyway/health/heartbeat, 19+ journeys and local-only a11y smoke
+RESULT_MD: docs/testing/runs/VAL_W007_FULLSTACK_008.md
+
+TASK: STR-QA-BE-001
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_008
+DISPATCH_KEY: 620e49f09111d07764735c3161b8326c0d94639092a13fa93f6a40d4129bef85
+BASELINE: latest main
+PREPARE: backend-postgresql-tests + dispatch-preflight
+READ:
+- root + backend/AGENTS.md
+- docs/roadmap/estrutural/STR_QA_BE_001_BACKEND_EXECUTION_CRITICAL_TESTS.md
+LOCKS: LOCK-DB-001, LOCK-DATA-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: backend execution tests and exact result only; production, POM, migrations and coverage baseline read-only
+MIGRATION: NONE
+VALIDATE: Java 21; PostgreSQL/Testcontainers; run the focused concurrency/idempotency/lease suite twice
+RESULT_MD: docs/implementacao/STR_QA_BE_001_RESULT.md
+
+TASK: STR-OBS-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_008
+DISPATCH_KEY: 6cae6b84522ce540b1a2e0973d6572f5c8fadf34c1bb4a8591aafa7db2dc3be6
+BASELINE: latest main
+PREPARE: observability-alerting + dispatch-preflight
+READ:
+- root + nearest AGENTS.md
+- docs/roadmap/estrutural/STR_OBS_002_SLO_ALERTING.md
+LOCKS: LOCK-DATA-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: backend observability, infra/observability, guard/tests, runbook and exact result
+MIGRATION: NONE
+VALIDATE: compile focused backend metrics, validate alert fixtures/rules/runbook links and deterministic outputs
+RESULT_MD: docs/implementacao/STR_OBS_002_RESULT.md
+
+TASK: STR-ARCH-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_008
+DISPATCH_KEY: e5228142ef38fb8cb8af54b6a64abdeb8c9ffb01878a0ad8289a4d4055e491ac
+BASELINE: latest main
+PREPARE: worker-composition + dispatch-preflight
+READ:
+- root + automation-worker/AGENTS.md
+- docs/roadmap/estrutural/STR_ARCH_002_WORKER_COMPOSITION_BOUNDARY.md
+LOCKS: LOCK-EXT-001, LOCK-AUT-001, LOCK-EVID-001, LOCK-TEST-001
+OWNER: worker index/composition/tests plus architecture baseline/allowlist and exact result
+MIGRATION: NONE
+VALIDATE: Node 24; typecheck, focused tests, build and architecture inventory/check with 10 to 6 findings
+RESULT_MD: docs/implementacao/STR_ARCH_002_RESULT.md
+
+TASK: STR-CTX-002
+CONTRACT: 2.0
+WAVE_ID: CONTABILIDADE_FAST_LANE_WAVE_008
+DISPATCH_KEY: 8acd65e9ceb5d163e2011cc1968db320fed6a2c288a5f72bebe42e4c944fe802
+BASELINE: latest main
+PREPARE: orchestration-task-budgets + dispatch-preflight
+READ:
+- root + scripts/orchestration/AGENTS.md
+- docs/roadmap/estrutural/STR_CTX_002_AUTOMATIC_TASK_BUDGETS.md
+LOCKS: LOCK-DATA-001, LOCK-EVID-001, LOCK-WAVE-001
+OWNER: task budget schema/policy/parser/fixtures/tests and exact result only
+MIGRATION: NONE
+VALIDATE: run schema, warning/breach/policy/redaction tests and compare two byte-identical outputs
+RESULT_MD: docs/implementacao/STR_CTX_002_RESULT.md

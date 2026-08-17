@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "2.0",
+  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_008",
+  "state": "PREPARED_NOT_RELEASED",
+  "baseline": {
+    "branch": "main",
+    "commit": "77141fae2f04a430bc2cb51264886c083977a3ce"
+  },
+  "owners": [
+    {
+      "item": "VAL-W007-FULLSTACK-008",
+      "owner": "FULLSTACK_POST_W007_VALIDATION",
+      "locks": [
+        "LOCK-EXT-001",
+        "LOCK-DATA-001",
+        "LOCK-ENV-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/testing/runs/VAL_W007_FULLSTACK_008.md",
+      "dispatchKey": "226c9ff3c05b6024571a8b34eaaa9355c001b0d97870977502178db5aec5cd95"
+    },
+    {
+      "item": "STR-QA-BE-001",
+      "owner": "BACKEND_EXECUTION_CRITICAL_TESTS",
+      "locks": [
+        "LOCK-DB-001",
+        "LOCK-DATA-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_QA_BE_001_RESULT.md",
+      "dispatchKey": "620e49f09111d07764735c3161b8326c0d94639092a13fa93f6a40d4129bef85"
+    },
+    {
+      "item": "STR-OBS-002",
+      "owner": "OPERATIONAL_SLO_ALERTING",
+      "locks": [
+        "LOCK-DATA-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_OBS_002_RESULT.md",
+      "dispatchKey": "6cae6b84522ce540b1a2e0973d6572f5c8fadf34c1bb4a8591aafa7db2dc3be6"
+    },
+    {
+      "item": "STR-ARCH-002",
+      "owner": "WORKER_COMPOSITION_BOUNDARY",
+      "locks": [
+        "LOCK-EXT-001",
+        "LOCK-AUT-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_ARCH_002_RESULT.md",
+      "dispatchKey": "e5228142ef38fb8cb8af54b6a64abdeb8c9ffb01878a0ad8289a4d4055e491ac"
+    },
+    {
+      "item": "STR-CTX-002",
+      "owner": "ORCHESTRATION_TASK_BUDGETS",
+      "locks": [
+        "LOCK-DATA-001",
+        "LOCK-EVID-001",
+        "LOCK-WAVE-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/STR_CTX_002_RESULT.md",
+      "dispatchKey": "8acd65e9ceb5d163e2011cc1968db320fed6a2c288a5f72bebe42e4c944fe802"
+    }
+  ]
+}

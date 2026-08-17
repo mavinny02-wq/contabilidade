@@ -10,34 +10,34 @@
 | `ORCHESTRATION_STATE` | checkpoint, ledger, backlog, manifests | orquestrador somente |
 | `MIGRATION_LANE` | `backend/src/main/resources/db/migration/**` | máximo um owner |
 | `REQUIRED_CI_GATE` | `.github/workflows/required-ci.yml`, `scripts/ci/**` | bloqueado por setting externo |
-| `FULLSTACK_POST_W006_VALIDATION` | produto read-only + resultado de smoke | validação consolidada |
-| `FRONTEND_ACCESSIBILITY` | frontend, testes a11y/browser e lockfile se necessário | único owner frontend |
-| `API_CONSUMER_CONTRACT` | `scripts/contracts/**`, contrato consumer | frontend read-only |
-| `WORKER_COVERAGE_COMPLETE` | testes worker e seção worker do baseline de coverage | produção worker read-only |
-| `ORCHESTRATION_TOKEN_TELEMETRY` | profiler/telemetria em `scripts/orchestration/**` | sem prompt bruto |
 | `DEPENDENCY_LOCKS` | POM/package/lockfiles | owner explícito |
 | `STARTUP_DEPLOY` | Compose/startup/deploy | serial |
+| `FULLSTACK_POST_W007_VALIDATION` | produto read-only + resultado de smoke | validação consolidada |
+| `BACKEND_EXECUTION_CRITICAL_TESTS` | testes de `common/execution`; produção read-only | não altera baseline global |
+| `OPERATIONAL_SLO_ALERTING` | observabilidade backend, regras, guard e runbook | labels bounded; sem provider |
+| `WORKER_COMPOSITION_BOUNDARY` | composition root worker + inventário arquitetural | fluxos concretos preservados |
+| `ORCHESTRATION_TASK_BUDGETS` | policy/schema/parser/tests de budgets | sem prompt/resposta brutos |
 
-## Fast Lane Wave 007
+## Fast Lane Wave 008
 
 | ITEM | Owner exclusivo | Escrita permitida |
 |---|---|---|
-| `VAL-W006-FULLSTACK-007` | `FULLSTACK_POST_W006_VALIDATION` | somente `RESULT_MD`; produto read-only |
-| `STR-FE-001` | `FRONTEND_ACCESSIBILITY` | frontend a11y/browser, testes e dependência dev justificada |
-| `STR-API-002` | `API_CONSUMER_CONTRACT` | contracts/scripts focados; frontend read-only |
-| `STR-QA-WRK-002` | `WORKER_COVERAGE_COMPLETE` | testes worker e worker coverage baseline; produção read-only |
-| `STR-CTX-001` | `ORCHESTRATION_TOKEN_TELEMETRY` | scripts/schema/fixtures de telemetria e resultado |
+| `VAL-W007-FULLSTACK-008` | `FULLSTACK_POST_W007_VALIDATION` | somente `docs/testing/runs/VAL_W007_FULLSTACK_008.md`; produto read-only |
+| `STR-QA-BE-001` | `BACKEND_EXECUTION_CRITICAL_TESTS` | testes backend de execução e resultado; produção/POM/baseline read-only |
+| `STR-OBS-002` | `OPERATIONAL_SLO_ALERTING` | pacote observability, `infra/observability`, guard, testes, runbook e resultado |
+| `STR-ARCH-002` | `WORKER_COMPOSITION_BOUNDARY` | `index.ts`, nova composition, testes e inventário/allowlist arquitetural |
+| `STR-CTX-002` | `ORCHESTRATION_TASK_BUDGETS` | schema/policy/parser/fixtures/tests de budgets e resultado |
 
 ## Independência
 
-- todos usam a baseline `d4c5391ebcf44b9fc7d3a7db7a488a5e7564889b`;
+- todos usam a baseline `77141fae2f04a430bc2cb51264886c083977a3ce`;
 - nenhum owner cria migration;
 - documentação canônica fica fora dos executores;
-- o smoke não altera produto;
-- acessibilidade é o único owner de escrita no frontend;
-- API consumer apenas lê call sites do frontend;
-- worker coverage não altera runtime;
-- token telemetry não lê ou persiste prompts;
-- overlap descoberto torna o owner posterior `SUPERSEDED` ou serializado.
+- o smoke escreve somente seu relatório e não corrige produção;
+- backend quality altera somente testes de execução;
+- observabilidade não toca testes/produção de execução nem worker;
+- arquitetura altera somente a composição do worker e o inventário correspondente;
+- budgets alteram somente tooling de orquestração e nunca conteúdo de prompts;
+- overlap descoberto torna o owner posterior `SUPERSEDED` ou exige nova onda.
 
-`OWNER_MATRIX_FAST_LANE_WAVE_007`
+`OWNER_MATRIX_FAST_LANE_WAVE_008`

@@ -2,12 +2,12 @@
   "schemaVersion": "2.0",
   "classification": "ACTIVE_WAVE_ROUTER",
   "status": "RELEASED_FOR_EXECUTION",
-  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_007",
+  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_008",
   "canonical": {
     "currentState": "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md",
-    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_007.json",
-    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_007.md",
-    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_007_LAUNCHERS.txt",
+    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_008.json",
+    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_008.md",
+    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_008_LAUNCHERS.txt",
     "testLedger": "docs/testing/MASTER_TEST_ORCHESTRATION.md",
     "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md"
   },
