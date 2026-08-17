@@ -1,0 +1,27 @@
+{
+  "dev_auth_disabled_contract": {
+    "property": "app.security.enabled",
+    "required_guard": "if (!properties.enabled())"
+  },
+  "expected_claims": [
+    "realm_access.roles",
+    "resource_access.<resourceClientId>.roles"
+  ],
+  "public_routes": [
+    {"method": "*", "path": "/actuator/health/**"},
+    {"method": "*", "path": "/actuator/info"},
+    {"method": "OPTIONS", "path": "/**"},
+    {"method": "*", "path": "/api/interno/**", "audience": "worker"}
+  ],
+  "realm_role_mapping": {
+    "contabilidade_admin": "ROLE_ADMIN",
+    "contabilidade_leitor": "ROLE_LEITOR",
+    "contabilidade_operador": "ROLE_OPERADOR",
+    "contabilidade_tecnico": "ROLE_TECNICO"
+  },
+  "worker": {
+    "route_prefix": "/api/interno/**",
+    "token_header": "X-Worker-Token",
+    "user_authorities": []
+  }
+}
