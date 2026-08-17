@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -7,9 +7,27 @@ const repositoryRoot = resolve(fileURLToPath(new URL('../..', import.meta.url)))
 const absolute = (path) => resolve(repositoryRoot, path);
 const read = (path) => readFileSync(absolute(path), 'utf8');
 
+function listFilesRecursively(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = resolve(directory, entry.name);
+    return entry.isDirectory() ? listFilesRecursively(path) : [path];
+  });
+}
+
 export function containsDockerBuildCommand(source) {
   return source.split(/\r?\n/).some((line) => (
     /^\s*(?:&\s*)?docker(?:\.exe)?\s+(?:build(?:\s|$)|buildx(?:\s+build)?(?:\s|$))/i.test(line)
+  ));
+}
+
+export function findAmbiguousPowerShellVariableColon(source) {
+  const ambiguous = /(?<!`)\$(?!\{)(?!(?:global|local|script|private|env|using):)([A-Za-z_][A-Za-z0-9_]*):(?=[^A-Za-z0-9_]|$)/gi;
+  return source.split(/\r?\n/).flatMap((line, index) => (
+    [...line.matchAll(ambiguous)].map((match) => ({
+      line: index + 1,
+      variable: match[1],
+      source: line.trim(),
+    }))
   ));
 }
 
@@ -23,6 +41,7 @@ export function validateDockerOrchestration({
   sequential,
   databaseValidation,
   deploy,
+  powerShellSources = [],
 }) {
   assert.match(rootBat, /start-contabilidade-resilient\.ps1/i);
   assert.match(rootBat, /deploy-contabilidade-onpremise\.ps1/i);
@@ -90,8 +109,18 @@ export function validateDockerOrchestration({
   assert.match(sequential, /600/);
   assert.match(sequential, /--no-deps/i);
   assert.match(sequential, /--force-recreate/i);
+  assert.match(sequential, /Write-Host "\$\{DisplayName\}: status=/i);
   assert.doesNotMatch(sequential, /compose[^\r\n]*\bdown\b/i);
   assert.doesNotMatch(sequential, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
+
+  for (const { path, source } of powerShellSources) {
+    const findings = findAmbiguousPowerShellVariableColon(source);
+    assert.deepEqual(
+      findings,
+      [],
+      `${path} contem interpolacao PowerShell ambigua; use \${variavel}: antes de dois-pontos: ${JSON.stringify(findings)}`,
+    );
+  }
 
   assert.match(databaseValidation, /Modo dev: autenticacao desabilitada/i);
   assert.match(databaseValidation, /goto :validate_flyway/i);
@@ -103,6 +132,13 @@ export function validateDockerOrchestration({
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const powerShellSources = listFilesRecursively(absolute('scripts'))
+    .filter((path) => /\.(?:ps1|psm1)$/i.test(path))
+    .map((path) => ({
+      path: path.slice(repositoryRoot.length + 1),
+      source: readFileSync(path, 'utf8'),
+    }));
+
   validateDockerOrchestration({
     rootBat: read('START_CONTABILIDADE.bat'),
     coreBat: read('scripts/start-contabilidade-core.bat'),
@@ -113,6 +149,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     sequential: read('scripts/start-compose-sequential.ps1'),
     databaseValidation: read('scripts/validate-database-state.bat'),
     deploy: read('scripts/deploy-contabilidade-onpremise.ps1'),
+    powerShellSources,
   });
 
   console.log(JSON.stringify({
@@ -127,6 +164,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       'diagnostico separado de host, container e BuildKit',
       'DNS e proxy governados no Docker Desktop/daemon',
       'nenhum DNS especifico gravado no repositorio',
+      'PowerShell sem interpolacao ambigua de variavel antes de dois-pontos',
       'retry unico para corrupcao conhecida de snapshot',
       'deploy on-premise sem build',
     ],
