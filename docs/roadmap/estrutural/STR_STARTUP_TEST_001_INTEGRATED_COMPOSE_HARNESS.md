@@ -1,7 +1,8 @@
 # STR-STARTUP-TEST-001 — harness integrado de startup Compose
 
 **Prioridade:** `P0_BLOCKER`  
-**Estado:** `REQUIRED_BEFORE_STARTUP_DONE`  
+**Estado:** `INCLUDED_IN_FIX_STARTUP_PROBE_001_OWNER`
+**Wave:** `CONTABILIDADE_STARTUP_RECOVERY_WAVE_013`
 **Executor autoritativo:** Windows PowerShell 5.1 + Docker Desktop  
 **Migration:** `NONE`
 

@@ -9,10 +9,11 @@
 
 ## Hold atual
 
-A Fast Lane Wave 012 foi superseded. O único trabalho executável é a correção e validação inseparável
-do startup Windows/Compose.
+A Fast Lane Wave 012 foi superseded. A
+`CONTABILIDADE_STARTUP_RECOVERY_WAVE_013` foi liberada com um único owner serial para a correção e
+seu harness inseparável.
 
-Nenhuma nova funcionalidade, guard de maturidade ou wave é selecionada até:
+Nenhuma nova funcionalidade, guard de maturidade ou wave comum é selecionada até:
 
 ```text
 VAL-WINDOWS-COMPOSE-STARTUP-001 = PASS
@@ -46,4 +47,4 @@ Eles permanecem válidos, mas não têm launcher autorizado durante o P0.
 - nenhuma declaração de startup verde sem primeira e segunda execução;
 - providers, chamadas pagas, credenciais e dados reais permanecem negados.
 
-`ROADMAP_PRODUTO_P0_STARTUP_RELIABILITY_HOLD`
+`ROADMAP_PRODUTO_STARTUP_RECOVERY_WAVE_013_RELEASED`

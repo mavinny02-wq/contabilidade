@@ -2,24 +2,24 @@
   "schemaVersion": "2.0",
   "classification": "ACTIVE_WAVE_ROUTER",
   "status": "RELEASED_FOR_EXECUTION",
-  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_009",
+  "waveId": "CONTABILIDADE_STARTUP_RECOVERY_WAVE_013",
   "canonical": {
     "currentState": "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md",
-    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_009.json",
-    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_009.md",
-    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_009_LAUNCHERS.txt",
+    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_STARTUP_RECOVERY_WAVE_013.json",
+    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_STARTUP_RECOVERY_WAVE_013.md",
+    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_STARTUP_RECOVERY_WAVE_013_LAUNCHERS.txt",
     "testLedger": "docs/testing/MASTER_TEST_ORCHESTRATION.md",
     "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md"
   },
   "execution": {
-    "owners": 5,
+    "owners": 1,
     "migrationOwners": 0,
     "sameWaveDependencies": false,
     "contract": "2.0",
-    "lane": "FAST"
+    "lane": "P0_STARTUP_RECOVERY"
   },
   "manualGate": {
-    "windowsDev": "PENDING_PARALLEL",
+    "windowsDev": "WAITING_FOR_FIX_INTEGRATION",
     "onPremiseKeycloak": "BLOCKED_UNTIL_WINDOWS_DEV_GREEN"
   },
   "runtimeGate": {

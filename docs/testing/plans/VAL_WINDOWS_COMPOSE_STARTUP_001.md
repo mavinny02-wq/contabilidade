@@ -8,6 +8,7 @@
 ## Pré-condições
 
 - `FIX-STARTUP-PROBE-001` integrado na `main`;
+- resultado da `CONTABILIDADE_STARTUP_RECOVERY_WAVE_013` reconciliado;
 - Pester e integração Docker do PR verdes;
 - checkout limpo;
 - Docker Desktop iniciado;

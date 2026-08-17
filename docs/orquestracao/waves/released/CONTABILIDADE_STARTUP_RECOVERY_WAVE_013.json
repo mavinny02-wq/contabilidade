@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "2.0",
+  "waveId": "CONTABILIDADE_STARTUP_RECOVERY_WAVE_013",
+  "state": "RELEASED_FOR_EXECUTION",
+  "baseline": {
+    "branch": "main",
+    "commit": "a34afbe0c7a7876ea231c3a9a1c913dbe39928ae"
+  },
+  "owners": [
+    {
+      "item": "FIX-STARTUP-PROBE-001",
+      "owner": "STARTUP_RECOVERY_SERIAL",
+      "locks": [
+        "LOCK-STARTUP-001",
+        "LOCK-ENV-001",
+        "LOCK-DATA-001",
+        "LOCK-EXT-001",
+        "LOCK-EVID-001",
+        "LOCK-TEST-001"
+      ],
+      "migration": false,
+      "resultPath": "docs/implementacao/FIX_STARTUP_PROBE_001_RESULT.md",
+      "dispatchKey": "8fdb5495fdc929d5e973da48f6594d7fe411b7094f08865744ed1571fb99a00c"
+    }
+  ],
+  "launcherPath": "docs/orquestracao/waves/released/CONTABILIDADE_STARTUP_RECOVERY_WAVE_013_LAUNCHERS.txt",
+  "previousManifest": "docs/orquestracao/waves/prepared/CONTABILIDADE_STARTUP_RECOVERY_WAVE_013.json"
+}

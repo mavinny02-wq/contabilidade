@@ -66,6 +66,7 @@ CONTAINER_RUNNING_REMOVED
 CONCURRENT_REMOVAL_EXPECTED
 IMAGE_AVAILABLE
 IMAGE_MISSING
+DOCKER_CLI_UNAVAILABLE
 DOCKER_DAEMON_UNAVAILABLE
 DOCKER_PERMISSION_OR_API_FAILURE
 PROBE_NAME_OWNERSHIP_CONFLICT
@@ -111,6 +112,7 @@ No `finally`:
 ### Camada A — parser e contratos estáticos
 
 - todos os `.ps1`/`.psm1` parseados pelo Windows PowerShell 5.1;
+- preflight de Docker CLI/contexto/daemon executado antes de Maven, npm ou build de imagem;
 - guard rejeita `& docker` fora do módulo autorizado;
 - guard rejeita cleanup baseado somente em redirecionamento de stderr;
 - guard exige label do probe, cleanup no início e no `finally`;
@@ -128,6 +130,7 @@ Cobertura mínima:
 | remoção concorrente | sucesso classificado como ausência esperada |
 | imagem existente | verificação passa |
 | imagem ausente | falha `IMAGE_MISSING` |
+| Docker CLI ausente | falha antecipada `DOCKER_CLI_UNAVAILABLE` |
 | daemon indisponível | falha `DOCKER_DAEMON_UNAVAILABLE` |
 | erro real de remoção | falha `PROBE_REMOVE_FAILED` |
 | primeira execução | cleanup inicial não bloqueia criação/startup |
@@ -237,10 +240,18 @@ O gate só recebe `PASS` quando:
 - nenhuma falha é tratada apenas por esconder stderr;
 - evidência está pinada ao SHA integrado.
 
+## Execução permitida durante o hold
+
+O hold bloqueia waves funcionais e estruturais comuns. Ele permite somente uma wave de recuperação
+P0, com um único owner serial que implemente `FIX-STARTUP-PROBE-001` e o harness
+`STR-STARTUP-TEST-001` no mesmo resultado. `VAL-WINDOWS-COMPOSE-STARTUP-001` não pode ocupar a mesma
+wave porque depende do fix integrado; ela é liberada depois, como campanha focada no novo SHA.
+
 Até lá:
 
 ```text
-NEW_WAVE_SELECTION = DENIED
+NORMAL_WAVE_SELECTION = DENIED
+P0_RECOVERY_WAVE = ALLOWED_SINGLE_SERIAL_OWNER
 FUNCTIONAL_FEATURE_SELECTION = DENIED
 ONPREMISE_KEYCLOAK = BLOCKED
 STARTUP_FIX_DONE = FALSE

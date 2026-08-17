@@ -1,10 +1,11 @@
 # VAL-W011-FULLSTACK-012 — smoke do HEAD pós-Wave 011
 
-**Status:** `RELEASED_FOR_EXECUTION`
+**Status:** `COMPLETED_TEST_CONTRACT_DRIFT`
 **Wave:** `CONTABILIDADE_FAST_LANE_WAVE_012`
 **Baseline:** `main@3850443701279e2002c527b6eb376de8abd664cf`
 **Migration:** `NONE`
 **Produto:** `READ_ONLY`
+**Resultado:** `../runs/VAL_W011_FULLSTACK_012.md`
 
 ## Objetivo
 
