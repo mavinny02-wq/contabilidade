@@ -1,0 +1,7 @@
+{
+  "requiredSteps": [
+    "verify_backup_set",
+    "restore_documents",
+    "restore_database"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contabilidade.local/schemas/recovery-manifest.schema.json",
+  "title": "Synthetic recovery rehearsal manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["backupSetId", "createdAt", "applicationVersion", "gitCommit", "flywayFrontier", "databaseDump", "documentsArchive", "manifestSha256", "encryptionMetadata"],
+  "properties": {
+    "backupSetId": {"type": "string", "pattern": "^synthetic-[a-z0-9-]+$"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "applicationVersion": {"type": "string", "minLength": 1},
+    "gitCommit": {"type": "string", "pattern": "^[0-9a-f]{7,40}$"},
+    "flywayFrontier": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)*$"},
+    "databaseDump": {"$ref": "#/$defs/component"},
+    "documentsArchive": {"$ref": "#/$defs/component"},
+    "manifestSha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "encryptionMetadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["algorithm", "keyReferencePresent"],
+      "properties": {"algorithm": {"type": "string", "minLength": 1}, "keyReferencePresent": {"const": false}}
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "size", "sha256"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*\\.[a-z0-9]+$"},
+        "size": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

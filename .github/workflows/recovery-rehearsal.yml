@@ -1,0 +1,29 @@
+name: Recovery rehearsal contracts
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/recovery/**"
+      - ".github/workflows/recovery-rehearsal.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-recovery-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate schema and policy JSON
+        run: python3 -m json.tool scripts/recovery/schemas/recovery-manifest.schema.json >/dev/null && python3 -m json.tool scripts/recovery/recovery-policy.v1.json >/dev/null
+      - name: Run synthetic contract tests
+        run: python3 -m unittest scripts.recovery.tests.test_recovery_planner
+      - name: Guard forbidden commands
+        run: python3 scripts/recovery/forbidden_command_guard.py
+      - name: Prove deterministic offline plan
+        run: |
+          python3 scripts/recovery/recovery_planner.py --manifest scripts/recovery/fixtures/valid.json --target scripts/recovery/fixtures/target-safe.json --reference-at 2026-08-17T12:00:00Z --expected-frontier 42 --output plan-a.json
+          python3 scripts/recovery/recovery_planner.py --manifest scripts/recovery/fixtures/valid.json --target scripts/recovery/fixtures/target-safe.json --reference-at 2026-08-17T12:00:00Z --expected-frontier 42 --output plan-b.json
+          cmp plan-a.json plan-b.json

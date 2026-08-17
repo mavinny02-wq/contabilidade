@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "maximumRpoSeconds": 86400,
+  "allowedTargetKinds": ["ephemeral"],
+  "requiredSteps": [
+    "verify_backup_set",
+    "provision_empty_target",
+    "restore_database",
+    "validate_flyway_frontier",
+    "restore_documents",
+    "reconcile_storage",
+    "run_recovery_checks"
+  ],
+  "forbiddenCommands": ["drop database", "rm -rf", "docker volume rm", "compose down -v", "pg_restore"]
+}

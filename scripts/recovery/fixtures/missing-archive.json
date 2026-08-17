@@ -1,0 +1,17 @@
+{
+  "applicationVersion": "1.0.0-test",
+  "backupSetId": "synthetic-rehearsal-001",
+  "createdAt": "2026-08-16T12:00:00Z",
+  "databaseDump": {
+    "path": "database.dump",
+    "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "size": 128
+  },
+  "encryptionMetadata": {
+    "algorithm": "AES-256-GCM",
+    "keyReferencePresent": false
+  },
+  "flywayFrontier": "42",
+  "gitCommit": "abcdef1234567890",
+  "manifestSha256": "1be8aaa0a3a318b984008c4651c6684b042d26deaa92c88b16f5a067b274c591"
+}
