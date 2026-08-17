@@ -1,7 +1,7 @@
 {
   "schemaVersion": "2.0",
   "waveId": "CONTABILIDADE_HARDENING_WAVE_006",
-  "state": "RELEASED_FOR_EXECUTION",
+  "state": "CONSUMED",
   "baseline": {
     "branch": "main",
     "commit": "a3344a15a0581fd7f76f78766c6432b46f9a361e"
@@ -48,6 +48,5 @@
       "dispatchKey": "2a7a896f3fa04ee0feb9d60a91967b578bba52c516450af017cbd0bcc6e1a185"
     }
   ],
-  "launcherPath": "docs/orquestracao/waves/released/CONTABILIDADE_HARDENING_WAVE_006_LAUNCHERS.txt",
-  "previousManifest": "docs/orquestracao/waves/prepared/CONTABILIDADE_HARDENING_WAVE_006.json"
+  "previousManifest": "docs/orquestracao/waves/released/CONTABILIDADE_HARDENING_WAVE_006.json"
 }

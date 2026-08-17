@@ -21,15 +21,15 @@ Registro não significa seleção. Somente item em wave `RELEASED_FOR_EXECUTION`
 | `STR-OWN-001` | Ownership | `DONE` | CODEOWNERS |
 | `FIX-STARTUP-MAIN-001` | Startup | `DONE` | runtime Windows pendente |
 | `BUG-RUN-001` | Evidência Windows | `DONE` | coletor v2; prova local pendente |
-| `STR-CI-001` | Required CI | `DONE_WITH_EXTERNAL_PROOF_PENDING` | workflow/check estáveis, sem run recente observada |
-| `STR-CI-002` | CI observável | `RELEASED_FOR_EXECUTION` | triggers, diagnóstico e integração dos gates concluídos |
+| `STR-CI-001` | Required CI | `DONE_WITH_EXTERNAL_PROOF_PENDING` | workflow/check estáveis |
+| `STR-CI-002` | CI observável | `DONE_REMOTE_EVIDENCE_BLOCKED` | triggers e gates integrados |
 
 ## P1 — engenharia confiável
 
 | ID | Área | Status | Resultado |
 |---|---|---|---|
 | `STR-SEC-001` | Segredos/PII | `DONE` | scanner/redaction/exceções |
-| `STR-SEC-002` | Supply chain | `RELEASED_FOR_EXECUTION` | SAST/IaC/container/provenance |
+| `STR-SEC-002` | Supply chain | `DONE_CI_SCAN_PENDING` | SAST/IaC/container/provenance estrutural |
 | `STR-DEP-001` | Dependências | `DONE_NETWORK_SCAN_PENDING` | SBOM/licenças/advisory policy |
 | `STR-DB-001` | Banco de teste | `DONE_DOCKER_PROOF_PENDING` | PostgreSQL 17 Testcontainers |
 | `STR-WRK-001` | Worker | `DONE_BROWSER_RERUN_PENDING` | lease/retry/idempotência/shutdown |
@@ -37,11 +37,14 @@ Registro não significa seleção. Somente item em wave `RELEASED_FOR_EXECUTION`
 | `STR-API-001` | API | `DONE` | OpenAPI/compatibility |
 | `STR-DATA-001` | Dados | `DONE` | fixtures sintéticas governadas |
 | `STR-PERF-001` | Performance | `DONE` | budgets e baseline |
-| `STR-FE-BUNDLE-001` | Frontend | `RELEASED_FOR_EXECUTION` | chunk inicial abaixo de 500 KiB |
-| `STR-OBS-001` | Observabilidade | `RELEASED_FOR_EXECUTION` | correlação/logs/métricas sem PII |
-| `STR-ARCH-001` | Arquitetura | `RELEASED_FOR_EXECUTION` | grafo, ciclos e boundaries |
-| `STR-FE-001` | Acessibilidade | `READY_FOR_SELECTION` | browser/a11y após bundle |
-| `STR-CTX-001` | Tokens | `NEEDS_ANALYSIS` | telemetria real/custo por outcome |
+| `STR-FE-BUNDLE-001` | Frontend | `DONE` | maior chunk 412.562 bytes |
+| `STR-OBS-001` | Observabilidade | `DONE_FOCUSED_RUNTIME_PENDING` | correlação/logs/métricas |
+| `STR-ARCH-001` | Arquitetura | `DONE` | grafo, ciclos e boundaries |
+| `VAL-W006-FULLSTACK-007` | Integração | `RELEASED_FOR_EXECUTION` | smoke pós-hardening |
+| `STR-FE-001` | Acessibilidade | `RELEASED_FOR_EXECUTION` | teclado/foco/a11y/browser |
+| `STR-API-002` | Contract tests | `RELEASED_FOR_EXECUTION` | call sites ↔ usage map ↔ OpenAPI |
+| `STR-QA-WRK-002` | Worker quality | `RELEASED_FOR_EXECUTION` | coverage completo com Chromium |
+| `STR-CTX-001` | Tokens | `RELEASED_FOR_EXECUTION` | telemetria real/custo por outcome |
 
 ## P2 — operação e evolução
 
@@ -50,20 +53,32 @@ Registro não significa seleção. Somente item em wave `RELEASED_FOR_EXECUTION`
 | `STR-DOC-001` | Documentos | `NEEDS_ANALYSIS` | retenção/integridade/storage |
 | `STR-OPS-001` | Continuidade | `WAITING_FOR_RUNTIME` | restore rehearsal e RPO/RTO |
 | `STR-REL-002` | Deploy | `WAITING_FOR_RUNTIME` | promoção/provenance/rollback |
-| `STR-QA-002` | Quality gate | `READY_FOR_SELECTION` | thresholds/ratchet no required check após CI remota |
-| `STR-API-002` | Contract tests | `READY_FOR_SELECTION` | consumer tests após OpenAPI baseline |
+| `STR-QA-002` | Quality gate | `WAITING_FOR_EXTERNAL_SETTING` | thresholds no required check após CI remota |
+| `STR-QA-BE-001` | Backend quality | `READY_FOR_SELECTION` | testes críticos de fila/lease/idempotência |
+| `STR-OBS-002` | Operação | `READY_FOR_SELECTION` | SLO, alertas e runbook após métricas |
+| `STR-ARCH-002` | Arquitetura | `READY_FOR_SELECTION` | reduzir findings allowlisted |
+| `STR-CTX-002` | Contexto | `NEEDS_ANALYSIS` | budgets automáticos por classe de task |
 
-## Campanha humana fora dos slots
+## Fast Lane Wave 007
 
-Windows dev e segundo startup usam o coletor v2. On-premise + Keycloak depende desse resultado.
+1. `VAL-W006-FULLSTACK-007`;
+2. `STR-FE-001`;
+3. `STR-API-002`;
+4. `STR-QA-WRK-002`;
+5. `STR-CTX-001`.
 
-## Ordem recomendada
+## Campanhas fora dos slots
 
-1. consumir Wave 006;
-2. observar run real do required check;
-3. habilitar branch protection/ruleset;
-4. integrar thresholds e checks maduros sem mudar o nome do gate;
-5. executar acessibilidade e restore;
-6. validar Windows/on-premise quando disponível.
+- Windows dev + segundo startup: humano;
+- on-premise + Keycloak: bloqueado até Windows dev verde;
+- GitHub Actions/branch protection: configuração externa pendente.
 
-`BACKLOG_ESTRUTURAL_WAVE_006_RELEASED`
+## Ordem recomendada após a Fast Lane
+
+1. reconciliar o smoke e corrigir somente regressões comprovadas;
+2. promover coverage completo do worker;
+3. selecionar testes críticos de backend e SLO/alertas;
+4. reduzir findings arquiteturais;
+5. validar Windows e on-premise quando disponível.
+
+`BACKLOG_ESTRUTURAL_FAST_LANE_WAVE_007_RELEASED`
