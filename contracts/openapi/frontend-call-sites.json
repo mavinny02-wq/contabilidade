@@ -1,0 +1,501 @@
+{
+  "callSites": [
+    {
+      "file": "frontend/src/app/GlobalSearch.tsx",
+      "line": 32,
+      "method": "GET",
+      "path": "/api/busca",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/auth/AuthProvider.tsx",
+      "line": 29,
+      "method": "GET",
+      "path": "/api/usuario-atual",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+      "line": 29,
+      "method": "GET",
+      "path": "/api/certidoes/{id}/historico",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/certidoes/CertidaoHistoryModal.tsx",
+      "line": 38,
+      "method": "GET",
+      "path": "/api/documentos/{documentoId}/conteudo",
+      "requestBody": false,
+      "responseMode": "blob"
+    },
+    {
+      "file": "frontend/src/features/certidoes/CertidaoManualModal.tsx",
+      "line": 64,
+      "method": "POST",
+      "path": "/api/certidoes/{id}/resultado-manual",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/documentos/DocumentoMetadadosModal.tsx",
+      "line": 41,
+      "method": "PUT",
+      "path": "/api/documentos/{id}/metadados",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/documentos/DocumentoPreviewModal.tsx",
+      "line": 38,
+      "method": "GET",
+      "path": "/api/documentos/{id}/preview",
+      "requestBody": false,
+      "responseMode": "blob"
+    },
+    {
+      "file": "frontend/src/features/empresas/EmpresaClassificacaoModal.tsx",
+      "line": 51,
+      "method": "PUT",
+      "path": "/api/empresas/{id}/classificacao",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/empresas/EmpresaFormModal.tsx",
+      "line": 85,
+      "method": "POST",
+      "path": "/api/empresas",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/empresas/EmpresaFormModal.tsx",
+      "line": 85,
+      "method": "PUT",
+      "path": "/api/empresas/{id}",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/empresas/EmpresaImportacaoCsvModal.tsx",
+      "line": 59,
+      "method": "POST",
+      "path": "/api/empresas/importacao-csv",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/empresas/EmpresaImportacaoCsvModal.tsx",
+      "line": 78,
+      "method": "GET",
+      "path": "/api/empresas/importacao-csv/modelo",
+      "requestBody": false,
+      "responseMode": "blob"
+    },
+    {
+      "file": "frontend/src/features/empresas/FilialFormModal.tsx",
+      "line": 65,
+      "method": "POST",
+      "path": "/api/empresas/{empresaId}/filiais",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/empresas/FilialFormModal.tsx",
+      "line": 65,
+      "method": "PUT",
+      "path": "/api/empresas/{empresaId}/filiais/{id}",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/features/intervencoes/InteractiveSessionModal.tsx",
+      "line": 142,
+      "method": "GET",
+      "path": "/api/intervencoes/{id}/sessao",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/AgendaCertidoesPage.tsx",
+      "line": 48,
+      "method": "GET",
+      "path": "/api/empresas",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/AgendaCertidoesPage.tsx",
+      "line": 59,
+      "method": "GET",
+      "path": "/api/certidoes/agenda-vencimentos",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+      "line": 51,
+      "method": "POST",
+      "path": "/api/console-tecnica/atualizacoes/preflight",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/AtualizacaoPreflightPage.tsx",
+      "line": 64,
+      "method": "GET",
+      "path": "/api/console-tecnica/atualizacoes/modelo",
+      "requestBody": false,
+      "responseMode": "blob"
+    },
+    {
+      "file": "frontend/src/pages/AuditoriaPage.tsx",
+      "line": 39,
+      "method": "GET",
+      "path": "/api/auditoria",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/AuditoriaPage.tsx",
+      "line": 62,
+      "method": "GET",
+      "path": "/api/auditoria/exportacao.csv",
+      "requestBody": false,
+      "responseMode": "blob"
+    },
+    {
+      "file": "frontend/src/pages/BackupsPage.tsx",
+      "line": 60,
+      "method": "GET",
+      "path": "/api/console-tecnica/backups",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/BackupsPage.tsx",
+      "line": 77,
+      "method": "GET",
+      "path": "/api/console-tecnica/backups/{backupId}/verificar",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/CertidoesPage.tsx",
+      "line": 62,
+      "method": "GET",
+      "path": "/api/empresas",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/CertidoesPage.tsx",
+      "line": 71,
+      "method": "GET",
+      "path": "/api/certidoes",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/CertidoesPage.tsx",
+      "line": 98,
+      "method": "POST",
+      "path": "/api/certidoes/{id}/solicitar",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/CertidoesPage.tsx",
+      "line": 116,
+      "method": "POST",
+      "path": "/api/certidoes/solicitar-todas",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/CertidoesPage.tsx",
+      "line": 131,
+      "method": "POST",
+      "path": "/api/certidoes/solicitar-lote",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/CertidoesPage.tsx",
+      "line": 179,
+      "method": "GET",
+      "path": "/api/documentos/{documentoId}/conteudo",
+      "requestBody": false,
+      "responseMode": "blob"
+    },
+    {
+      "file": "frontend/src/pages/CertidoesPage.tsx",
+      "line": 200,
+      "method": "GET",
+      "path": "/api/certidoes/exportacao.csv",
+      "requestBody": false,
+      "responseMode": "blob"
+    },
+    {
+      "file": "frontend/src/pages/ConfiguracaoSeguraPage.tsx",
+      "line": 57,
+      "method": "GET",
+      "path": "/api/console-tecnica/configuracao",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+      "line": 46,
+      "method": "GET",
+      "path": "/api/console-tecnica/resumo",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/ConsoleTecnicaPage.tsx",
+      "line": 57,
+      "method": "GET",
+      "path": "/api/console-tecnica/storage/reconciliacao",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/DashboardPage.tsx",
+      "line": 71,
+      "method": "GET",
+      "path": "/api/dashboard/resumo",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/DashboardPage.tsx",
+      "line": 79,
+      "method": "GET",
+      "path": "/api/certidoes/dashboard-gerencial",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/DocumentosPage.tsx",
+      "line": 40,
+      "method": "GET",
+      "path": "/api/empresas",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/DocumentosPage.tsx",
+      "line": 50,
+      "method": "GET",
+      "path": "/api/documentos",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/DocumentosPage.tsx",
+      "line": 71,
+      "method": "GET",
+      "path": "/api/documentos/retencao-preview",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/DocumentosPage.tsx",
+      "line": 91,
+      "method": "POST",
+      "path": "/api/documentos",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/DocumentosPage.tsx",
+      "line": 109,
+      "method": "GET",
+      "path": "/api/documentos/{id}/conteudo",
+      "requestBody": false,
+      "responseMode": "blob"
+    },
+    {
+      "file": "frontend/src/pages/EmpresaDetalhePage.tsx",
+      "line": 54,
+      "method": "GET",
+      "path": "/api/empresas/{id}",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/EmpresaDetalhePage.tsx",
+      "line": 63,
+      "method": "GET",
+      "path": "/api/empresas/{id}/historico",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/EmpresasPage.tsx",
+      "line": 37,
+      "method": "GET",
+      "path": "/api/empresas",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/ExecucoesPage.tsx",
+      "line": 23,
+      "method": "GET",
+      "path": "/api/execucoes",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/ExecucoesPage.tsx",
+      "line": 32,
+      "method": "PATCH",
+      "path": "/api/execucoes/{id}/cancelar",
+      "requestBody": false,
+      "responseMode": "none"
+    },
+    {
+      "file": "frontend/src/pages/FaturasProvedoresPage.tsx",
+      "line": 57,
+      "method": "GET",
+      "path": "/api/integracoes/faturas",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/FaturasProvedoresPage.tsx",
+      "line": 63,
+      "method": "GET",
+      "path": "/api/integracoes/provedores",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/FaturasProvedoresPage.tsx",
+      "line": 79,
+      "method": "POST",
+      "path": "/api/integracoes/faturas",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/HistoricoProvedoresPage.tsx",
+      "line": 56,
+      "method": "GET",
+      "path": "/api/integracoes/provedores/historico",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/HistoricoWorkersPage.tsx",
+      "line": 52,
+      "method": "GET",
+      "path": "/api/console-tecnica/workers/historico",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/IntegracoesPage.tsx",
+      "line": 28,
+      "method": "GET",
+      "path": "/api/integracoes/provedores",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/IntegracoesPage.tsx",
+      "line": 29,
+      "method": "GET",
+      "path": "/api/integracoes/politicas",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/IntegracoesPage.tsx",
+      "line": 46,
+      "method": "PUT",
+      "path": "/api/integracoes/provedores/{codigo}",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/IntegracoesPage.tsx",
+      "line": 88,
+      "method": "PUT",
+      "path": "/api/integracoes/politicas/{operacao}",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/IntervencoesPage.tsx",
+      "line": 30,
+      "method": "GET",
+      "path": "/api/intervencoes",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/IntervencoesPage.tsx",
+      "line": 43,
+      "method": "PATCH",
+      "path": "/api/intervencoes/{id}/assumir",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/IntervencoesPage.tsx",
+      "line": 80,
+      "method": "PATCH",
+      "path": "/api/intervencoes/{id}/resolver",
+      "requestBody": true,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/NotificacoesPage.tsx",
+      "line": 19,
+      "method": "GET",
+      "path": "/api/notificacoes",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/NotificacoesPage.tsx",
+      "line": 30,
+      "method": "PATCH",
+      "path": "/api/notificacoes/{id}/lida",
+      "requestBody": false,
+      "responseMode": "none"
+    },
+    {
+      "file": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+      "line": 53,
+      "method": "GET",
+      "path": "/api/empresas/{id}",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+      "line": 54,
+      "method": "GET",
+      "path": "/api/empresas/{id}/responsaveis-modulo",
+      "requestBody": false,
+      "responseMode": "json"
+    },
+    {
+      "file": "frontend/src/pages/ResponsaveisModuloPage.tsx",
+      "line": 87,
+      "method": "PUT",
+      "path": "/api/empresas/{id}/responsaveis-modulo/{modulo}",
+      "requestBody": true,
+      "responseMode": "json"
+    }
+  ],
+  "schemaVersion": 1
+}
