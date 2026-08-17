@@ -104,12 +104,194 @@ function Assert-ContabilidadeBuilderDriver {
     }
 }
 
+function ConvertTo-ContabilidadeIPv4DnsServers {
+    [CmdletBinding()]
+    param(
+        [AllowNull()][object[]]$Values,
+        [string[]]$RejectedServers = @()
+    )
+
+    $result = @()
+    foreach ($rawValue in @($Values)) {
+        if ($null -eq $rawValue) {
+            continue
+        }
+
+        foreach ($candidate in ([string]$rawValue -split '[,;\s]+')) {
+            $trimmed = $candidate.Trim()
+            if ([string]::IsNullOrWhiteSpace($trimmed)) {
+                continue
+            }
+
+            $parsed = $null
+            if (-not [Net.IPAddress]::TryParse($trimmed, [ref]$parsed)) {
+                continue
+            }
+            if ($parsed.AddressFamily -ne [Net.Sockets.AddressFamily]::InterNetwork) {
+                continue
+            }
+
+            $normalized = $parsed.IPAddressToString
+            $bytes = $parsed.GetAddressBytes()
+            $isUnusable = $bytes[0] -eq 0 `
+                -or $bytes[0] -eq 127 `
+                -or ($bytes[0] -eq 169 -and $bytes[1] -eq 254)
+
+            if ($isUnusable -or $RejectedServers -contains $normalized -or $result -contains $normalized) {
+                continue
+            }
+
+            $result += $normalized
+        }
+    }
+
+    return @($result)
+}
+
+function Get-ContabilidadeBuildKitDnsServers {
+    [CmdletBinding()]
+    param([string[]]$RejectedServers = @())
+
+    $configured = [Environment]::GetEnvironmentVariable('CONTABILIDADE_BUILDKIT_DNS', 'Process')
+    if (-not [string]::IsNullOrWhiteSpace($configured)) {
+        $explicit = ConvertTo-ContabilidadeIPv4DnsServers -Values @($configured) -RejectedServers $RejectedServers
+        if ($explicit.Count -eq 0) {
+            throw 'CONTABILIDADE_BUILDKIT_DNS foi informado, mas nao contem nenhum IPv4 valido e utilizavel.'
+        }
+        return $explicit
+    }
+
+    $candidates = @()
+    try {
+        foreach ($adapter in [Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces()) {
+            if ($adapter.OperationalStatus -ne [Net.NetworkInformation.OperationalStatus]::Up) {
+                continue
+            }
+            if ($adapter.NetworkInterfaceType -eq [Net.NetworkInformation.NetworkInterfaceType]::Loopback) {
+                continue
+            }
+
+            $properties = $adapter.GetIPProperties()
+            $priority = 20
+            if ($properties.GatewayAddresses.Count -gt 0) {
+                $priority = 0
+            }
+            if ($adapter.Name -match '(?i)(docker|wsl|default switch)') {
+                $priority += 100
+            }
+
+            foreach ($dnsAddress in $properties.DnsAddresses) {
+                if ($dnsAddress.AddressFamily -ne [Net.Sockets.AddressFamily]::InterNetwork) {
+                    continue
+                }
+                $candidates += [pscustomobject]@{
+                    Address = $dnsAddress.IPAddressToString
+                    Priority = $priority
+                }
+            }
+        }
+    }
+    catch {
+        Write-Verbose "Nao foi possivel enumerar DNS das interfaces: $($_.Exception.Message)"
+    }
+
+    $ordered = @($candidates | Sort-Object Priority, Address | ForEach-Object { $_.Address })
+    return ConvertTo-ContabilidadeIPv4DnsServers -Values $ordered -RejectedServers $RejectedServers
+}
+
+function New-ContabilidadeBuildKitConfig {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)][string]$Path,
+        [Parameter(Mandatory = $true)][string[]]$DnsServers
+    )
+
+    $validated = ConvertTo-ContabilidadeIPv4DnsServers -Values $DnsServers
+    if ($validated.Count -eq 0) {
+        throw 'Nao ha servidores DNS IPv4 validos para gerar a configuracao do BuildKit.'
+    }
+
+    $parent = Split-Path -Parent $Path
+    if (-not [string]::IsNullOrWhiteSpace($parent)) {
+        New-Item -ItemType Directory -Force -Path $parent | Out-Null
+    }
+
+    $quotedServers = @($validated | ForEach-Object { '"' + $_ + '"' })
+    $content = @(
+        '# Gerado automaticamente pelo startup da Contabilidade.'
+        '# Escopo: somente o builder isolado do projeto; Docker Desktop global nao e alterado.'
+        '[dns]'
+        "  nameservers = [$($quotedServers -join ', ')]"
+        ''
+    ) -join [Environment]::NewLine
+
+    [IO.File]::WriteAllText(
+        $Path,
+        $content,
+        (New-Object Text.UTF8Encoding($false))
+    )
+
+    return $Path
+}
+
+function Test-ContabilidadeBuildKitDnsFailure {
+    [CmdletBinding()]
+    param([AllowNull()][string]$Content)
+
+    if ([string]::IsNullOrWhiteSpace($Content)) {
+        return $false
+    }
+
+    return $Content -match '(?is)(dial\s+tcp[^\r\n]*lookup\s+[a-z0-9._-]+[^\r\n]*:53:\s*(no such host|server misbehaving|i/o timeout)|temporary failure in name resolution|could not resolve host)'
+}
+
+function Get-ContabilidadeFailedDnsServers {
+    [CmdletBinding()]
+    param([AllowNull()][string]$Content)
+
+    if ([string]::IsNullOrWhiteSpace($Content)) {
+        return @()
+    }
+
+    $values = @()
+    foreach ($match in [regex]::Matches($Content, '(?i)\bon\s+([0-9]{1,3}(?:\.[0-9]{1,3}){3}):53\b')) {
+        $values += $match.Groups[1].Value
+    }
+    return ConvertTo-ContabilidadeIPv4DnsServers -Values $values
+}
+
+function Get-ContabilidadeFailedRegistryHost {
+    [CmdletBinding()]
+    param([AllowNull()][string]$Content)
+
+    if ([string]::IsNullOrWhiteSpace($Content)) {
+        return $null
+    }
+
+    $match = [regex]::Match($Content, '(?i)\blookup\s+([a-z0-9._-]+)\s+on\s+')
+    if ($match.Success) {
+        return $match.Groups[1].Value
+    }
+    return $null
+}
+
 function Initialize-ContabilidadeBuilder {
     [CmdletBinding()]
-    param([Parameter(Mandatory = $true)][string]$BuilderName)
+    param(
+        [Parameter(Mandatory = $true)][string]$BuilderName,
+        [AllowNull()][string]$BuildKitConfigPath
+    )
 
     if ($BuilderName -notmatch '^[A-Za-z0-9][A-Za-z0-9_.-]{0,63}$') {
         throw "Nome de builder invalido: $BuilderName"
+    }
+
+    $resolvedConfig = $null
+    if (-not [string]::IsNullOrWhiteSpace($BuildKitConfigPath)) {
+        if (-not (Test-Path -LiteralPath $BuildKitConfigPath -PathType Leaf)) {
+            throw "Configuracao BuildKit ausente: $BuildKitConfigPath"
+        }
+        $resolvedConfig = (Resolve-Path -LiteralPath $BuildKitConfigPath).Path
     }
 
     Write-Host "[INFO] Verificando builder $BuilderName..."
@@ -126,11 +308,17 @@ function Initialize-ContabilidadeBuilder {
         }
 
         Write-Host '[INFO] Builder nao encontrado. Criando automaticamente...'
-        $create = Invoke-ContabilidadeDocker -Arguments @(
+        $createArguments = @(
             'buildx', 'create', '--name', $BuilderName,
             '--driver', 'docker-container',
             '--driver-opt', 'default-load=true,restart-policy=unless-stopped'
-        ) -AllowFailure
+        )
+        if ($null -ne $resolvedConfig) {
+            $createArguments += @('--buildkitd-config', $resolvedConfig)
+            Write-Host "[INFO] Configuracao DNS project-scoped: $resolvedConfig"
+        }
+
+        $create = Invoke-ContabilidadeDocker -Arguments $createArguments -AllowFailure
         if (-not $create.Success) {
             throw "Falha ao criar o builder '$BuilderName'. Exit code: $($create.ExitCode)."
         }
@@ -165,5 +353,10 @@ Export-ModuleMember -Function @(
     'Invoke-ContabilidadeNativeCommand',
     'Invoke-ContabilidadeDocker',
     'Assert-ContabilidadeDockerAvailable',
-    'Initialize-ContabilidadeBuilder'
+    'Initialize-ContabilidadeBuilder',
+    'Get-ContabilidadeBuildKitDnsServers',
+    'New-ContabilidadeBuildKitConfig',
+    'Test-ContabilidadeBuildKitDnsFailure',
+    'Get-ContabilidadeFailedDnsServers',
+    'Get-ContabilidadeFailedRegistryHost'
 )
