@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "secrets": [
+    {
+      "secretId": "database.application-credential",
+      "environments": ["on-premise", "production"],
+      "consumer": "backend",
+      "owner": "platform-security",
+      "sourceType": "environment-variable",
+      "rotationDays": 90,
+      "emergencyRevokeProcedureId": "SEC-REVOKE-DATABASE",
+      "requirement": "required"
+    },
+    {
+      "secretId": "identity.client-credential",
+      "environments": ["on-premise", "production"],
+      "consumer": "automation-worker",
+      "owner": "identity-security",
+      "sourceType": "secret-store",
+      "rotationDays": 90,
+      "emergencyRevokeProcedureId": "SEC-REVOKE-IDENTITY",
+      "requirement": "required"
+    }
+  ]
+}
