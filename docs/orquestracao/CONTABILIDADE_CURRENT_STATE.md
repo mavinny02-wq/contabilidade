@@ -3,55 +3,60 @@
 **Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`
 **Reconciliado em:** `2026-08-16`
 **Branch de integração:** `main`
-**HEAD reconciliado:** `d4c5391ebcf44b9fc7d3a7db7a488a5e7564889b`
+**HEAD reconciliado:** `77141fae2f04a430bc2cb51264886c083977a3ce`
 **Versão declarada:** `0.5.1`
 **Frontier Flyway:** `V12`
-**Modo:** `FAST_LANE_WAVE_007_RELEASED`
+**Modo:** `FAST_LANE_WAVE_008_RELEASED`
 
 ## Verdade de integração
 
-- A Wave 006 foi integrada pelas PRs `#90`, `#91`, `#92`, `#93` e `#94`.
+- A Fast Lane Wave 007 foi integrada pelas PRs `#96`, `#97`, `#98`, `#99` e `#100`.
+- O delta posterior `FIX-BUILDX-STARTUP-001` foi integrado pela PR `#101`, com correção estrutural
+  do bootstrap Buildx e runtime Windows ainda pendente.
 - **PR aberta na reconciliação:** nenhuma.
-- Nenhum owner de migration está aberto.
+- Nenhum owner de migration está aberto ou liberado.
 - A `main` continua sem branch protection/ruleset obrigatório.
-- A API de Actions continua exibindo somente nove runs históricas, com a mais recente em
-  `2026-08-11`; nenhuma run das waves atuais foi observada.
-- A ausência de run é `GITHUB_ACTIONS_SETTINGS_OR_PERMISSION_BLOCKER`, não `PASS`.
+- O HEAD reconciliado não possui workflow run nem status check observável.
+- A ausência de execução remota continua classificada como
+  `GITHUB_ACTIONS_SETTINGS_OR_PERMISSION_BLOCKER`, não como `PASS`.
 
-## Resultado da Wave 006
+## Resultado da Fast Lane Wave 007
 
 | ITEM | Resultado | Disposição |
 |---|---|---|
-| `STR-CI-002` | triggers PR/push/manual, controles Wave 005 e fan-in estável | `DONE_REMOTE_EVIDENCE_BLOCKED` |
-| `STR-SEC-002` | SAST/IaC/container/provenance e policy tests | `DONE_CI_SCAN_PENDING` |
-| `STR-FE-BUNDLE-001` | maior chunk caiu de 543.274 para 412.562 bytes | `DONE` |
-| `STR-OBS-001` | correlação backend-worker, redaction e métricas bounded | `DONE_FOCUSED_RUNTIME_PENDING` |
-| `STR-ARCH-001` | 591 arestas e 10 findings preexistentes governados | `DONE` |
+| `VAL-W006-FULLSTACK-007` | Node 24, Java 21, Flyway V1–V12, health, heartbeat e 19 jornadas; zero externa/5xx | `PASS` |
+| `STR-FE-001` | 24 testes frontend e 6 smokes Chromium/axe; zero violação critical/serious | `PASS` |
+| `STR-API-002` | 13 testes e inventário determinístico call sites ↔ usage map ↔ OpenAPI | `PASS` |
+| `STR-QA-WRK-002` | 15 testes e coverage reproduzível: linhas 58,9251%, branches 69,2913%, funções 66,0494% | `PASS_COMPLETE` |
+| `STR-CTX-001` | schema, parser, redaction, deduplicação, budgets e custo/outcome com 6 testes | `PASS` |
 
 ## Evidência e validade
 
 ```text
-CORE_APPLICATION_PRE_W006: REUSE_PASS_HISTORICAL
-POST_W006_FULLSTACK: RERUN_FOCUSED_RELEASED
-FRONTEND_LAZY_NODE24_BUILD: GREEN
-FRONTEND_LARGEST_CHUNK: 412562_BYTES_GREEN
-FRONTEND_ACCESSIBILITY_BROWSER: NOT_MEASURED
-BACKEND_OBSERVABILITY_FOCUSED: GREEN
-WORKER_OBSERVABILITY_FOCUSED: GREEN_NODE20_LIMITATION
-WORKER_FULL_SUITE_AND_COVERAGE: RERUN_FOCUSED_RELEASED
-OPENAPI_COMPATIBILITY: GREEN
-API_CONSUMER_SOURCE_MAPPING: NOT_GOVERNED
-ARCHITECTURE_BOUNDARIES: GREEN_WITH_10_EXPIRING_ALLOWLIST_ITEMS
-SUPPLY_CHAIN_POLICY: GREEN_STRUCTURAL_REMOTE_SCAN_PENDING
+POST_W006_FULLSTACK: PASS
+FRONTEND_ACCESSIBILITY_BROWSER: PASS
+API_CONSUMER_SOURCE_MAPPING: PASS
+WORKER_FULL_SUITE_AND_COVERAGE: PASS_COMPLETE
+TOKEN_OUTCOME_TELEMETRY: PASS
+FIX_BUILDX_STARTUP_001: PASS_STRUCTURAL_WINDOWS_RUNTIME_PENDING
+CURRENT_HEAD_POST_W007_AND_STARTUP_FULLSTACK: RERUN_FOCUSED_RELEASED
+BACKEND_CRITICAL_EXECUTION_TESTS: RELEASED
+OPERATIONAL_SLO_ALERTING: RELEASED
+ARCHITECTURE_ALLOWLIST: 10_FINDINGS; WORKER_TRANCHE_RELEASED
+TASK_CLASS_TOKEN_BUDGETS: RELEASED
 REQUIRED_CI_REMOTE: NOT_PROVEN_EXTERNAL_BLOCKER
+BRANCH_PROTECTION: NOT_ENABLED
 WINDOWS_DEV_DOCKER_DESKTOP: NOT_PROVEN
 WINDOWS_SECOND_START_REUSE: NOT_PROVEN
 ONPREMISE_KEYCLOAK_LOGIN: BLOCKED_UNTIL_DEV_GREEN
 REAL_EXTERNAL_PROVIDERS: NOT_AUTHORIZED_NOT_REQUIRED
 ```
 
-A Wave 007 não repete guards já verdes. Ela executa um smoke full-stack pós-Wave 006 e fecha
-lacunas rápidas que não dependem de GitHub Actions, Windows, provider, dado real ou migration.
+O smoke da PR `#98` comprovou a baseline pós-Wave 006. Depois dele, a Wave 007 alterou shell,
+modal, estilos e tooling frontend, além de contracts, coverage do worker e telemetria. A PR `#101`
+também alterou o bootstrap Docker/Buildx. Por isso a Wave 008 contém um único rerun full-stack
+focado no HEAD atual e o guard estrutural da orquestração Docker; ele não autoriza correção de
+produto nem reivindica prova Windows dentro do owner de validação.
 
 ## Campanha humana paralela
 
@@ -72,25 +77,30 @@ On-premise + Keycloak permanece bloqueado até o modo dev ficar verde.
 - `CONTABILIDADE_MATURITY_WAVE_004`: `CONSUMED`;
 - `CONTABILIDADE_QUALITY_GATE_WAVE_005`: `CONSUMED`;
 - `CONTABILIDADE_HARDENING_WAVE_006`: `CONSUMED`;
-- `CONTABILIDADE_FAST_LANE_WAVE_007`: `RELEASED_FOR_EXECUTION`;
+- `CONTABILIDADE_FAST_LANE_WAVE_007`: `CONSUMED`;
+- `CONTABILIDADE_FAST_LANE_WAVE_008`: `RELEASED_FOR_EXECUTION`;
 - owners executáveis liberados: `5`;
 - migration owner: `NONE`.
 
-## Fast Lane Wave 007
+## Fast Lane Wave 008
 
-1. `VAL-W006-FULLSTACK-007` — smoke full-stack pós-hardening, com Node 24 e rede externa bloqueada;
-2. `STR-FE-001` — acessibilidade, teclado, foco e browser smoke das rotas lazy;
-3. `STR-API-002` — contratos consumidores entre call sites frontend, usage map e OpenAPI;
-4. `STR-QA-WRK-002` — suíte e coverage completos do worker com Node 24 + Chromium;
-5. `STR-CTX-001` — telemetria de tokens/custo por outcome sem persistir prompts.
+1. `VAL-W007-FULLSTACK-008` — smoke consolidado do HEAD atual e guard Docker, produto read-only;
+2. `STR-QA-BE-001` — testes críticos de fila, lease, idempotência, retry e recuperação;
+3. `STR-OBS-002` — SLOs, métricas bounded, alertas Prometheus e runbooks acionáveis;
+4. `STR-ARCH-002` — remover os quatro findings `worker.core_to_provider` sem alterar fluxos;
+5. `STR-CTX-002` — budgets automáticos por classe de task sobre a telemetria já integrada.
+
+Os cinco owners partem de `main@77141fae2f04a430bc2cb51264886c083977a3ce`, não possuem dependência same-wave e não criam
+migration.
 
 ## Próxima transição
 
 Integrar e reconciliar os cinco resultados. Depois:
 
-- corrigir somente regressões comprovadas pelo smoke;
-- promover o baseline completo do worker apenas se todas as provas passarem;
-- selecionar testes críticos de backend e observabilidade operacional;
-- manter branch protection bloqueada até existir uma run real do required check.
+- corrigir somente regressões comprovadas e sempre em successor próprio;
+- avaliar um owner futuro para atualizar o baseline de coverage do frontend pós-lazy/a11y;
+- manter restore, deploy on-premise e branch protection fora dos slots enquanto seus gates externos
+  permanecerem fechados;
+- selecionar documentação/storage somente após decompor `STR-DOC-001`.
 
-`CONTABILIDADE_CURRENT_STATE_FAST_LANE_WAVE_007_RELEASED`
+`CONTABILIDADE_CURRENT_STATE_FAST_LANE_WAVE_008_RELEASED`
