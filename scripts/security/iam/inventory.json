@@ -1,0 +1,302 @@
+{
+  "dev_auth_disabled_contract": {
+    "property": "app.security.enabled",
+    "required_guard": "if (!properties.enabled())"
+  },
+  "jwt": {
+    "accepted_claims": [
+      "realm_access.roles",
+      "resource_access.<resourceClientId>.roles"
+    ],
+    "role_aliases": {
+      "admin": "ROLE_ADMIN",
+      "contabilidade_admin": "ROLE_ADMIN",
+      "contabilidade_leitor": "ROLE_LEITOR",
+      "contabilidade_operador": "ROLE_OPERADOR",
+      "contabilidade_tecnico": "ROLE_TECNICO",
+      "leitor": "ROLE_LEITOR",
+      "operador": "ROLE_OPERADOR",
+      "tecnico": "ROLE_TECNICO"
+    },
+    "unknown_role_policy": "passthrough"
+  },
+  "permission_uses": [
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoController.java",
+      "permissions": [
+        "CERTIDAO_LER",
+        "CERTIDAO_REGISTRAR_MANUAL",
+        "CERTIDAO_SOLICITAR"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoDashboardGerencialController.java",
+      "permissions": [
+        "CERTIDAO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/audit/AuditoriaController.java",
+      "permissions": [
+        "AUDITORIA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/backup/BackupInventarioController.java",
+      "permissions": [
+        "CONSOLE_TECNICA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoController.java",
+      "permissions": [
+        "DOCUMENTO_BAIXAR",
+        "DOCUMENTO_ENVIAR",
+        "DOCUMENTO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoRetencaoPreviewController.java",
+      "permissions": [
+        "DOCUMENTO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/execution/ExecucaoController.java",
+      "permissions": [
+        "EXECUCAO_CANCELAR",
+        "EXECUCAO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/integration/DefinicaoProvedorController.java",
+      "permissions": [
+        "INTEGRACAO_EDITAR",
+        "INTEGRACAO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/integration/FaturaProvedorController.java",
+      "permissions": [
+        "INTEGRACAO_EDITAR",
+        "INTEGRACAO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/integration/PoliticaAquisicaoController.java",
+      "permissions": [
+        "INTEGRACAO_EDITAR",
+        "INTEGRACAO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/integration/ProvedorHistoricoController.java",
+      "permissions": [
+        "INTEGRACAO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/intervention/IntervencaoController.java",
+      "permissions": [
+        "INTERVENCAO_LER",
+        "INTERVENCAO_RESOLVER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/notification/NotificacaoController.java",
+      "permissions": [
+        "NOTIFICACAO_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/search/BuscaGlobalController.java",
+      "permissions": [
+        "EMPRESA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/technical/ConfiguracaoSeguraController.java",
+      "permissions": [
+        "CONSOLE_TECNICA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/technical/ConsoleTecnicaController.java",
+      "permissions": [
+        "CONSOLE_TECNICA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/technical/StorageReconciliacaoController.java",
+      "permissions": [
+        "CONSOLE_TECNICA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/technical/WorkerHeartbeatHistoricoController.java",
+      "permissions": [
+        "CONSOLE_TECNICA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/common/update/AtualizacaoPreflightController.java",
+      "permissions": [
+        "CONSOLE_TECNICA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/empresa/api/EmpresaController.java",
+      "permissions": [
+        "EMPRESA_EDITAR",
+        "EMPRESA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/empresa/api/ResponsavelModuloEmpresaController.java",
+      "permissions": [
+        "EMPRESA_EDITAR",
+        "EMPRESA_LER"
+      ]
+    },
+    {
+      "file": "backend/src/main/java/br/com/contabilidade/empresa/importacao/EmpresaImportacaoCsvController.java",
+      "permissions": [
+        "EMPRESA_EDITAR"
+      ]
+    }
+  ],
+  "permissions": [
+    {
+      "id": "AUDITORIA_LER",
+      "symbol": "AUDITORIA_LER"
+    },
+    {
+      "id": "CERTIDAO_LER",
+      "symbol": "CERTIDAO_LER"
+    },
+    {
+      "id": "CERTIDAO_REGISTRAR_MANUAL",
+      "symbol": "CERTIDAO_REGISTRAR_MANUAL"
+    },
+    {
+      "id": "CERTIDAO_SOLICITAR",
+      "symbol": "CERTIDAO_SOLICITAR"
+    },
+    {
+      "id": "CONSOLE_TECNICA_LER",
+      "symbol": "CONSOLE_TECNICA_LER"
+    },
+    {
+      "id": "DOCUMENTO_BAIXAR",
+      "symbol": "DOCUMENTO_BAIXAR"
+    },
+    {
+      "id": "DOCUMENTO_ENVIAR",
+      "symbol": "DOCUMENTO_ENVIAR"
+    },
+    {
+      "id": "DOCUMENTO_LER",
+      "symbol": "DOCUMENTO_LER"
+    },
+    {
+      "id": "EMPRESA_EDITAR",
+      "symbol": "EMPRESA_EDITAR"
+    },
+    {
+      "id": "EMPRESA_LER",
+      "symbol": "EMPRESA_LER"
+    },
+    {
+      "id": "EXECUCAO_CANCELAR",
+      "symbol": "EXECUCAO_CANCELAR"
+    },
+    {
+      "id": "EXECUCAO_LER",
+      "symbol": "EXECUCAO_LER"
+    },
+    {
+      "id": "INTEGRACAO_EDITAR",
+      "symbol": "INTEGRACAO_EDITAR"
+    },
+    {
+      "id": "INTEGRACAO_LER",
+      "symbol": "INTEGRACAO_LER"
+    },
+    {
+      "id": "INTERVENCAO_LER",
+      "symbol": "INTERVENCAO_LER"
+    },
+    {
+      "id": "INTERVENCAO_RESOLVER",
+      "symbol": "INTERVENCAO_RESOLVER"
+    },
+    {
+      "id": "NOTIFICACAO_LER",
+      "symbol": "NOTIFICACAO_LER"
+    }
+  ],
+  "public_routes": [
+    {
+      "method": "OPTIONS",
+      "path": "/**"
+    },
+    {
+      "method": "*",
+      "path": "/actuator/health/**"
+    },
+    {
+      "method": "*",
+      "path": "/actuator/info"
+    },
+    {
+      "method": "*",
+      "path": "/api/interno/**"
+    }
+  ],
+  "realms": [
+    {
+      "file": "infra/keycloak/realm-contabilidade.json",
+      "realm": "contabilidade",
+      "roles": [
+        "contabilidade_admin",
+        "contabilidade_leitor",
+        "contabilidade_operador",
+        "contabilidade_tecnico"
+      ]
+    },
+    {
+      "file": "infra/keycloak/realm-contabilidade-dev.json",
+      "realm": "contabilidade",
+      "roles": [
+        "contabilidade_admin",
+        "contabilidade_leitor",
+        "contabilidade_operador",
+        "contabilidade_tecnico"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "id": "ROLE_ADMIN",
+      "symbol": "ADMIN"
+    },
+    {
+      "id": "ROLE_LEITOR",
+      "symbol": "LEITOR"
+    },
+    {
+      "id": "ROLE_OPERADOR",
+      "symbol": "OPERADOR"
+    },
+    {
+      "id": "ROLE_TECNICO",
+      "symbol": "TECNICO"
+    }
+  ],
+  "schema_version": 1,
+  "worker": {
+    "route_prefix": "/api/interno/**",
+    "token_header": "X-Worker-Token",
+    "user_authorities": []
+  }
+}

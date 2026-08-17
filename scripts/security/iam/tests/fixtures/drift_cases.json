@@ -1,0 +1,9 @@
+[
+  {"case": "missing_role", "expected": "MISSING_REALM_ROLE"},
+  {"case": "orphan_permission", "expected": "UNKNOWN_PERMISSION"},
+  {"case": "new_public_route", "expected": "UNEXPECTED_PUBLIC_ROUTE"},
+  {"case": "unknown_authority", "expected": "UNKNOWN_AUTHORITY_ACCEPTED"},
+  {"case": "malformed_claim", "expected": "JWT_CLAIM_DRIFT"},
+  {"case": "duplicate", "expected": "DUPLICATE_ROLE"},
+  {"case": "realm_divergence", "expected": "UNMAPPED_REALM_ROLE"}
+]
