@@ -1,0 +1,1 @@
+{"schemaVersion":1,"secrets":[{"secretId":"fixture.invalid-source","environments":["ci"],"consumer":"fixture","owner":"security","sourceType":"unknown-provider","rotationDays":30,"emergencyRevokeProcedureId":"SEC-REVOKE-FIXTURE","requirement":"optional"}]}

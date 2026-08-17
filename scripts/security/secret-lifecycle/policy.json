@@ -1,0 +1,7 @@
+{
+  "schemaVersion": 1,
+  "allowedSourceTypes": ["environment-variable", "mounted-file", "secret-store"],
+  "environments": ["development", "ci", "on-premise", "production"],
+  "maxRotationDays": 365,
+  "placeholderProofForbiddenEnvironments": ["on-premise", "production"]
+}

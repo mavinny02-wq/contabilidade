@@ -1,0 +1,1 @@
+{"schemaVersion":1,"secrets":[{"secretId":"fixture.redaction","environments":["ci"],"consumer":"fixture","owner":"security","sourceType":"environment-variable","rotationDays":30,"emergencyRevokeProcedureId":"SEC-REVOKE-FIXTURE","requirement":"optional","value":"SYNTHETIC-MUST-NOT-LEAK"}]}

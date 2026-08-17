@@ -1,0 +1,1 @@
+{"schemaVersion":1,"secrets":[{"secretId":"fixture.missing-owner","environments":["ci"],"consumer":"fixture","owner":"","sourceType":"environment-variable","rotationDays":30,"emergencyRevokeProcedureId":"SEC-REVOKE-FIXTURE","requirement":"optional"}]}

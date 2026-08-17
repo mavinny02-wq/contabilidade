@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contabilidade.local/schemas/secret-lifecycle-v1.json",
+  "type": "object",
+  "required": ["schemaVersion", "secrets"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "secrets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["secretId", "environments", "consumer", "owner", "sourceType", "rotationDays", "emergencyRevokeProcedureId", "requirement"],
+        "properties": {
+          "secretId": {"type": "string", "pattern": "^[a-z][a-z0-9.-]+$"},
+          "environments": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+          "consumer": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1},
+          "sourceType": {"type": "string"},
+          "rotationDays": {"type": "integer", "minimum": 1},
+          "emergencyRevokeProcedureId": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]+$"},
+          "requirement": {"enum": ["required", "optional"]}
+        }
+      }
+    }
+  }
+}
