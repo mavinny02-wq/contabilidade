@@ -25,8 +25,10 @@ $LogDir = Join-Path $ProjectDir '.docker-local\logs'
 $LockPath = Join-Path $ProjectDir '.docker-local\artifact-build\buildkit-resilient.lock'
 $Timestamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $DockerModule = Join-Path $PSScriptRoot 'lib\contabilidade-docker.psm1'
+$NativeProcessModule = Join-Path $PSScriptRoot 'lib\native-process.psm1'
 
 Import-Module $DockerModule -Force
+Import-Module $NativeProcessModule -Force
 
 New-Item -ItemType Directory -Force -Path $LogDir, (Split-Path -Parent $LockPath) | Out-Null
 
@@ -101,9 +103,11 @@ function Invoke-CoreAttempt {
         Write-Host "Log:     $attemptLog"
 
         $commandLine = "(echo.)|call `"$TemporaryCoreBat`" `"$Mode`""
-        & $env:ComSpec /d /c $commandLine 2>&1 |
-            Tee-Object -FilePath $attemptLog
-        $exitCode = $LASTEXITCODE
+        $nativeResult = Invoke-CmdCommand -CommandLine $commandLine -LogPath $attemptLog
+        $exitCode = $nativeResult.ExitCode
+        if (-not $nativeResult.Succeeded) {
+            Write-Host "[FALHA] Tentativa $Attempt terminou com exit code $exitCode. Consulte: $attemptLog" -ForegroundColor Red
+        }
     }
     finally {
         Remove-Item -LiteralPath $TemporaryCoreBat -Force -ErrorAction SilentlyContinue
