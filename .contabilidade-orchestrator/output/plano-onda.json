@@ -2,12 +2,12 @@
   "schemaVersion": "2.0",
   "classification": "ACTIVE_WAVE_ROUTER",
   "status": "RELEASED_FOR_EXECUTION",
-  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_008",
+  "waveId": "CONTABILIDADE_FAST_LANE_WAVE_009",
   "canonical": {
     "currentState": "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md",
-    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_008.json",
-    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_008.md",
-    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_008_LAUNCHERS.txt",
+    "releasedManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_009.json",
+    "humanManifest": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_009.md",
+    "launcherPack": "docs/orquestracao/waves/released/CONTABILIDADE_FAST_LANE_WAVE_009_LAUNCHERS.txt",
     "testLedger": "docs/testing/MASTER_TEST_ORCHESTRATION.md",
     "structuralBacklog": "docs/roadmap/BACKLOG_ESTRUTURAL.md"
   },
@@ -21,6 +21,9 @@
   "manualGate": {
     "windowsDev": "PENDING_PARALLEL",
     "onPremiseKeycloak": "BLOCKED_UNTIL_WINDOWS_DEV_GREEN"
+  },
+  "runtimeGate": {
+    "backendTestcontainers": "WAITING_FOR_DOCKER_CAPABLE_EXECUTOR"
   },
   "externalGate": {
     "requiredCiRemoteRun": "NOT_PROVEN_EXTERNAL_BLOCKER",

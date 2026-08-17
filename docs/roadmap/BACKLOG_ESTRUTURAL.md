@@ -7,8 +7,8 @@ Registro não significa seleção. Somente item em wave `RELEASED_FOR_EXECUTION`
 
 ## Status
 
-`RELEASED_FOR_EXECUTION`, `READY_FOR_SELECTION`, `NEEDS_ANALYSIS`,
-`WAITING_FOR_RUNTIME`, `WAITING_FOR_EXTERNAL_SETTING`, `DONE`, `SUPERSEDED`.
+`RELEASED_FOR_EXECUTION`, `READY_FOR_SELECTION`, `NEEDS_ANALYSIS`, `WAITING_FOR_RUNTIME`,
+`WAITING_FOR_EXTERNAL_SETTING`, `WAITING_FOR_DECISION`, `DECOMPOSED`, `DONE` e `SUPERSEDED`.
 
 ## P0 — governança e estabilização
 
@@ -46,42 +46,48 @@ Registro não significa seleção. Somente item em wave `RELEASED_FOR_EXECUTION`
 | `STR-API-002` | Contract tests | `DONE` | call sites ↔ usage map ↔ OpenAPI |
 | `STR-QA-WRK-002` | Worker quality | `DONE` | coverage completo com Chromium |
 | `STR-CTX-001` | Tokens | `DONE` | telemetria/custo por outcome |
-| `VAL-W007-FULLSTACK-008` | Integração | `RELEASED_FOR_EXECUTION` | smoke do HEAD após Wave 007 |
+| `VAL-W007-FULLSTACK-008` | Integração | `DONE` | smoke pós-Wave 007/startup verde |
+| `STR-QA-BE-001` | Backend quality | `DONE_RUNTIME_DOCKER_PENDING` | suíte crítica criada e compilada |
+| `VAL-QA-BE-DOCKER-001` | Backend runtime | `WAITING_FOR_RUNTIME` | duas execuções em Java 21 + Docker |
+| `STR-OBS-002` | Operação | `DONE` | 7 SLOs, 15 alertas, guard e runbook |
+| `STR-ARCH-002` | Arquitetura | `DONE` | worker isolado; 600 arestas e 6 findings |
+| `STR-CTX-002` | Contexto | `DONE` | budgets por classe de task |
+
+## Fast Lane Wave 009
+
+| ID | Área | Status | Resultado esperado |
+|---|---|---|---|
+| `VAL-W008-FULLSTACK-009` | Integração | `RELEASED_FOR_EXECUTION` | smoke único depois da Wave 008 |
+| `STR-QA-FE-002` | Frontend quality | `RELEASED_FOR_EXECUTION` | coverage pós-lazy/a11y completo e reproduzível |
+| `STR-SEC-IAM-001` | IAM | `RELEASED_FOR_EXECUTION` | inventário papéis/permissões/rotas/realm e guard |
+| `STR-ARCH-BE-003` | Arquitetura backend | `RELEASED_FOR_EXECUTION` | remover dois findings da busca global |
+| `STR-DOC-002` | Documentos | `RELEASED_FOR_EXECUTION` | contratos do storage local e testes adversariais |
+
+## Decomposição de documentos
+
+| ID | Área | Status | Resultado |
+|---|---|---|---|
+| `STR-DOC-001` | Documentos | `DECOMPOSED` | épico estrutural dividido em owners seguros |
+| `STR-DOC-002` | Storage local | `RELEASED_FOR_EXECUTION` | containment, symlink, atomicidade e cleanup |
+| `STR-DOC-003` | Antimalware | `NEEDS_ANALYSIS` | scanner, quarentena, timeout e override governado |
+| `STR-DOC-004` | Storage remoto | `NEEDS_ANALYSIS` | contrato S3/MinIO sem mudar autoridade do domínio |
+| `STR-DOC-005` | Retenção | `WAITING_FOR_DECISION` | aprovação, quarentena, descarte e restauração |
 
 ## P2 — operação e evolução
 
 | ID | Área | Status | Resultado |
 |---|---|---|---|
-| `STR-DOC-001` | Documentos | `NEEDS_ANALYSIS` | decompor retenção, antivírus e storage remoto |
 | `STR-OPS-001` | Continuidade | `WAITING_FOR_RUNTIME` | restore rehearsal e RPO/RTO |
 | `STR-REL-002` | Deploy | `WAITING_FOR_RUNTIME` | promoção/provenance/rollback |
 | `STR-QA-002` | Quality gate | `WAITING_FOR_EXTERNAL_SETTING` | thresholds no required check após CI remota |
-| `STR-QA-BE-001` | Backend quality | `RELEASED_FOR_EXECUTION` | testes críticos de fila/lease/idempotência |
-| `STR-OBS-002` | Operação | `RELEASED_FOR_EXECUTION` | SLO, alertas e runbook sobre métricas bounded |
-| `STR-ARCH-002` | Arquitetura | `RELEASED_FOR_EXECUTION` | remover quatro findings do composition root worker |
-| `STR-CTX-002` | Contexto | `RELEASED_FOR_EXECUTION` | budgets automáticos por classe de task |
-
-## Fast Lane Wave 008
-
-1. `VAL-W007-FULLSTACK-008`;
-2. `STR-QA-BE-001`;
-3. `STR-OBS-002`;
-4. `STR-ARCH-002`;
-5. `STR-CTX-002`.
 
 ## Campanhas fora dos slots
 
+- `VAL-QA-BE-DOCKER-001`: executor Docker;
 - Windows dev + segundo startup: humano;
 - on-premise + Keycloak: bloqueado até Windows dev verde;
 - GitHub Actions/branch protection: configuração externa pendente;
-- providers reais/pagos: não autorizados e desnecessários para a wave.
+- restore/deploy: campanha runtime;
+- providers reais/pagos: não autorizados.
 
-## Ordem recomendada após a Fast Lane
-
-1. reconciliar o smoke e abrir successor somente para regressão comprovada;
-2. avaliar coverage frontend pós-lazy/a11y sem reduzir ratchet;
-3. decompor `STR-DOC-001` em owners seguros;
-4. validar Windows e on-premise quando o gate humano estiver disponível;
-5. executar restore/deploy somente em campanha runtime autorizada.
-
-`BACKLOG_ESTRUTURAL_FAST_LANE_WAVE_008_RELEASED`
+`BACKLOG_ESTRUTURAL_FAST_LANE_WAVE_009_RELEASED`
