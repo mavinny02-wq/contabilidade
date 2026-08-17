@@ -25,10 +25,8 @@ import br.com.contabilidade.common.intervention.IntervencaoService;
 import br.com.contabilidade.common.intervention.TipoIntervencao;
 import br.com.contabilidade.common.notification.NotificacaoService;
 import br.com.contabilidade.common.notification.TipoNotificacao;
-import br.com.contabilidade.empresa.domain.Empresa;
-import br.com.contabilidade.empresa.domain.Estabelecimento;
-import br.com.contabilidade.empresa.repository.EmpresaRepository;
-import br.com.contabilidade.empresa.repository.EstabelecimentoRepository;
+import br.com.contabilidade.certidao.service.EmpresaCertidaoConsulta.EmpresaCertidaoProjecao;
+import br.com.contabilidade.certidao.service.EmpresaCertidaoConsulta.EstabelecimentoCertidaoProjecao;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -49,8 +47,7 @@ public class CertidaoService {
 
     private final CertidaoAcompanhamentoRepository repository;
     private final HistoricoCertidaoRepository historicoRepository;
-    private final EmpresaRepository empresaRepository;
-    private final EstabelecimentoRepository estabelecimentoRepository;
+    private final EmpresaCertidaoConsulta empresaConsulta;
     private final PoliticaAquisicaoService politicaService;
     private final ExecucaoFilaService filaService;
     private final IntervencaoService intervencaoService;
@@ -60,8 +57,7 @@ public class CertidaoService {
 
     public CertidaoService(CertidaoAcompanhamentoRepository repository,
                            HistoricoCertidaoRepository historicoRepository,
-                           EmpresaRepository empresaRepository,
-                           EstabelecimentoRepository estabelecimentoRepository,
+                           EmpresaCertidaoConsulta empresaConsulta,
                            PoliticaAquisicaoService politicaService,
                            ExecucaoFilaService filaService,
                            IntervencaoService intervencaoService,
@@ -70,8 +66,7 @@ public class CertidaoService {
                            AuditoriaService auditoriaService) {
         this.repository = repository;
         this.historicoRepository = historicoRepository;
-        this.empresaRepository = empresaRepository;
-        this.estabelecimentoRepository = estabelecimentoRepository;
+        this.empresaConsulta = empresaConsulta;
         this.politicaService = politicaService;
         this.filaService = filaService;
         this.intervencaoService = intervencaoService;
@@ -82,7 +77,7 @@ public class CertidaoService {
 
     @Transactional
     public List<CertidaoResponse> listarPorEmpresa(UUID empresaId) {
-        Empresa empresa = buscarEmpresa(empresaId);
+        EmpresaCertidaoProjecao empresa = buscarEmpresa(empresaId);
         inicializarAusentes(empresa);
         Map<UUID, String> cnpjs = cnpjs(empresa);
         return repository.findByEmpresaIdAndAtivaTrueOrderByEstabelecimentoIdAscTipoAsc(empresaId)
@@ -92,9 +87,9 @@ public class CertidaoService {
 
     @Transactional
     public List<CertidaoResponse> listarTodas() {
-        empresaRepository.findByAtivaTrueOrderByRazaoSocialAsc().forEach(this::inicializarAusentes);
+        empresaConsulta.listarEmpresasAtivas().forEach(this::inicializarAusentes);
         Map<UUID, String> cnpjs = new java.util.HashMap<>();
-        estabelecimentoRepository.findAll().forEach(item -> cnpjs.put(item.getId(), item.getCnpj()));
+        empresaConsulta.listarEstabelecimentos().forEach(item -> cnpjs.put(item.id(), item.cnpj()));
         return repository.findByAtivaTrueOrderByEmpresaIdAscEstabelecimentoIdAscTipoAsc().stream()
                 .map(item -> CertidaoResponse.de(item, cnpjs.get(item.getEstabelecimentoId()),
                         LocalDate.now())).toList();
@@ -103,11 +98,11 @@ public class CertidaoService {
     @Transactional
     public CertidaoResponse solicitar(UUID acompanhamentoId, String idempotencyKey) {
         CertidaoAcompanhamento acompanhamento = buscarAtiva(acompanhamentoId);
-        Estabelecimento estabelecimento = buscarEstabelecimento(acompanhamento.getEstabelecimentoId());
+        EstabelecimentoCertidaoProjecao estabelecimento = buscarEstabelecimento(acompanhamento.getEstabelecimentoId());
         if (acompanhamento.getUltimaExecucaoId() != null) {
             ExecucaoIntegracao ultima = filaService.buscar(acompanhamento.getUltimaExecucaoId());
             if (!ultima.getStatus().terminal()) {
-                return CertidaoResponse.de(acompanhamento, estabelecimento.getCnpj(), LocalDate.now());
+                return CertidaoResponse.de(acompanhamento, estabelecimento.cnpj(), LocalDate.now());
             }
         }
         PoliticaAquisicaoService.PoliticaResolvida politica = politicaService.resolver(
@@ -117,7 +112,7 @@ public class CertidaoService {
         payload.put("acompanhamentoId", acompanhamento.getId());
         payload.put("empresaId", acompanhamento.getEmpresaId());
         payload.put("estabelecimentoId", acompanhamento.getEstabelecimentoId());
-        payload.put("cnpj", estabelecimento.getCnpj());
+        payload.put("cnpj", estabelecimento.cnpj());
         payload.put("tipo", acompanhamento.getTipo().name());
         payload.put("permitirIntervencao", politica.politica().isPermitirIntervencao());
         payload.put("timeoutHumanoMinutos", politica.politica().getTimeoutHumanoMinutos());
@@ -137,7 +132,7 @@ public class CertidaoService {
         );
         ExecucaoIntegracao execucao = criacao.execucao();
         if (!criacao.nova()) {
-            return CertidaoResponse.de(acompanhamento, estabelecimento.getCnpj(), LocalDate.now());
+            return CertidaoResponse.de(acompanhamento, estabelecimento.cnpj(), LocalDate.now());
         }
         acompanhamento.agendar(execucao.getId(), provedor.getCodigo(), provedor.getTipo());
         historicoRepository.save(new HistoricoCertidao(acompanhamento));
@@ -156,7 +151,7 @@ public class CertidaoService {
         auditoriaService.registrar("CERTIDAO_SOLICITADA", "CERTIDAO_ACOMPANHAMENTO",
                 acompanhamento.getId(), Map.of("provedor", provedor.getCodigo(),
                         "execucaoId", execucao.getId()));
-        return CertidaoResponse.de(acompanhamento, estabelecimento.getCnpj(), LocalDate.now());
+        return CertidaoResponse.de(acompanhamento, estabelecimento.cnpj(), LocalDate.now());
     }
 
     @Transactional
@@ -183,7 +178,7 @@ public class CertidaoService {
                                             String numero, LocalDate emitidaEm, LocalDate validaAte,
                                             String mensagem, MultipartFile arquivo) {
         CertidaoAcompanhamento acompanhamento = buscarAtiva(acompanhamentoId);
-        Estabelecimento estabelecimento = buscarEstabelecimento(acompanhamento.getEstabelecimentoId());
+        EstabelecimentoCertidaoProjecao estabelecimento = buscarEstabelecimento(acompanhamento.getEstabelecimentoId());
         validarResultadoManual(resultado, emitidaEm, validaAte, arquivo);
         UUID documentoId = null;
         if (arquivo != null && !arquivo.isEmpty()) {
@@ -222,7 +217,7 @@ public class CertidaoService {
         auditoriaService.registrar("CERTIDAO_REGISTRADA_MANUALMENTE", "CERTIDAO_ACOMPANHAMENTO",
                 acompanhamento.getId(), Map.of("resultado", resultado.name(),
                         "documentoId", String.valueOf(documentoId)));
-        return CertidaoResponse.de(acompanhamento, estabelecimento.getCnpj(), LocalDate.now());
+        return CertidaoResponse.de(acompanhamento, estabelecimento.cnpj(), LocalDate.now());
     }
 
     @Transactional(readOnly = true)
@@ -235,7 +230,7 @@ public class CertidaoService {
 
     @Transactional
     public int agendarVencidas() {
-        empresaRepository.findByAtivaTrueOrderByRazaoSocialAsc().forEach(this::inicializarAusentes);
+        empresaConsulta.listarEmpresasAtivas().forEach(this::inicializarAusentes);
         int total = 0;
         for (CertidaoAcompanhamento item : repository.findByAtivaTrueAndProximaConsultaEmBefore(Instant.now())) {
             try {
@@ -257,7 +252,7 @@ public class CertidaoService {
 
     @Transactional
     public int emitirAlertas() {
-        empresaRepository.findByAtivaTrueOrderByRazaoSocialAsc().forEach(this::inicializarAusentes);
+        empresaConsulta.listarEmpresasAtivas().forEach(this::inicializarAusentes);
         int total = 0;
         LocalDate hoje = LocalDate.now();
         for (CertidaoAcompanhamento item : repository.findByAtivaTrueOrderByEmpresaIdAscEstabelecimentoIdAscTipoAsc()) {
@@ -290,21 +285,21 @@ public class CertidaoService {
 
     public long contarAtivas() { return repository.countByAtivaTrue(); }
 
-    private void inicializarAusentes(Empresa empresa) {
-        for (Estabelecimento estabelecimento : empresa.getEstabelecimentos()) {
-            if (!estabelecimento.isAtivo()) continue;
+    private void inicializarAusentes(EmpresaCertidaoProjecao empresa) {
+        for (EstabelecimentoCertidaoProjecao estabelecimento : empresa.estabelecimentos()) {
+            if (!estabelecimento.ativo()) continue;
             for (TipoCertidao tipo : TipoCertidao.values()) {
-                if (!tipo.aplicavel(estabelecimento.getUf(), estabelecimento.isMatriz())) continue;
-                repository.findByEstabelecimentoIdAndTipo(estabelecimento.getId(), tipo)
+                if (!tipo.aplicavel(estabelecimento.uf(), estabelecimento.matriz())) continue;
+                repository.findByEstabelecimentoIdAndTipo(estabelecimento.id(), tipo)
                         .orElseGet(() -> repository.save(new CertidaoAcompanhamento(
-                                empresa.getId(), estabelecimento.getId(), tipo)));
+                                empresa.id(), estabelecimento.id(), tipo)));
             }
         }
     }
 
-    private Map<UUID, String> cnpjs(Empresa empresa) {
+    private Map<UUID, String> cnpjs(EmpresaCertidaoProjecao empresa) {
         Map<UUID, String> mapa = new java.util.HashMap<>();
-        empresa.getEstabelecimentos().forEach(item -> mapa.put(item.getId(), item.getCnpj()));
+        empresa.estabelecimentos().forEach(item -> mapa.put(item.id(), item.cnpj()));
         return mapa;
     }
 
@@ -372,18 +367,18 @@ public class CertidaoService {
         return acompanhamento;
     }
 
-    private Empresa buscarEmpresa(UUID id) {
-        return empresaRepository.buscarDetalhada(id).orElseThrow(() -> new RecursoNaoEncontradoException(
+    private EmpresaCertidaoProjecao buscarEmpresa(UUID id) {
+        return empresaConsulta.buscarEmpresa(id).orElseThrow(() -> new RecursoNaoEncontradoException(
                 "EMPRESA_NAO_ENCONTRADA", "erros.empresaNaoEncontrada"));
     }
 
-    private Estabelecimento buscarEstabelecimento(UUID id) {
-        return estabelecimentoRepository.findById(id).orElseThrow(() -> new RecursoNaoEncontradoException(
+    private EstabelecimentoCertidaoProjecao buscarEstabelecimento(UUID id) {
+        return empresaConsulta.buscarEstabelecimento(id).orElseThrow(() -> new RecursoNaoEncontradoException(
                 "ESTABELECIMENTO_NAO_ENCONTRADO", "erros.estabelecimentoNaoEncontrado"));
     }
     @Transactional
     public ResumoCertidoes contarResumo() {
-        empresaRepository.findByAtivaTrueOrderByRazaoSocialAsc().forEach(this::inicializarAusentes);
+        empresaConsulta.listarEmpresasAtivas().forEach(this::inicializarAusentes);
         LocalDate hoje = LocalDate.now();
         long regulares = 0;
         long atencao = 0;

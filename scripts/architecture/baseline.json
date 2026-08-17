@@ -5,24 +5,6 @@
       "rule": "backend.common_to_feature",
       "source": "backend/src/main/java/br/com/contabilidade/common/document/DocumentoService.java",
       "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-    },
-    {
-      "fingerprint": "cbe6a5f97141f02f6f89",
-      "rule": "backend.cross_feature_internal",
-      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-    },
-    {
-      "fingerprint": "9662d43e4d58af957fb3",
-      "rule": "backend.cross_feature_internal",
-      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-    },
-    {
-      "fingerprint": "bb210fafbed5777db04a",
-      "rule": "backend.cross_feature_internal",
-      "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
-      "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
     }
   ],
   "graph": {
@@ -340,10 +322,6 @@
         "target": "backend/src/main/java/br/com/contabilidade/common/error/ExcecaoNegocio.java"
       },
       {
-        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSchedulerBatchService.java",
-        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-      },
-      {
         "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
         "target": "backend/src/main/java/br/com/contabilidade/certidao/api/CertidaoResponse.java"
       },
@@ -442,22 +420,6 @@
       {
         "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
         "target": "backend/src/main/java/br/com/contabilidade/common/notification/TipoNotificacao.java"
-      },
-      {
-        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
-        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java"
-      },
-      {
-        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
-        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java"
-      },
-      {
-        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
-        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
-      },
-      {
-        "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoService.java",
-        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
       },
       {
         "source": "backend/src/main/java/br/com/contabilidade/certidao/service/CertidaoSolicitacaoLoteService.java",
@@ -970,6 +932,26 @@
       {
         "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaBuscaGlobalAdapter.java",
         "target": "backend/src/main/java/br/com/contabilidade/common/search/EmpresaBuscaGlobalConsulta.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaCertidaoAdapter.java",
+        "target": "backend/src/main/java/br/com/contabilidade/certidao/service/EmpresaCertidaoConsulta.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaCertidaoAdapter.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Empresa.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaCertidaoAdapter.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/domain/Estabelecimento.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaCertidaoAdapter.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EmpresaRepository.java"
+      },
+      {
+        "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaCertidaoAdapter.java",
+        "target": "backend/src/main/java/br/com/contabilidade/empresa/repository/EstabelecimentoRepository.java"
       },
       {
         "source": "backend/src/main/java/br/com/contabilidade/empresa/service/EmpresaHistoricoService.java",
