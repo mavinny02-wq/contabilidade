@@ -20,6 +20,16 @@ export function containsDockerBuildCommand(source) {
   ));
 }
 
+export function findDirectPowerShellDockerInvocations(source) {
+  return source.split(/\r?\n/).flatMap((line, index) => {
+    const trimmed = line.trim();
+    if (/&\s*(?:docker(?:\.exe)?|\$[A-Za-z_][A-Za-z0-9_:]*Docker(?:Command)?)\b/i.test(line)) {
+      return [{ line: index + 1, source: trimmed }];
+    }
+    return [];
+  });
+}
+
 export function findAmbiguousPowerShellVariableColon(source) {
   const ambiguous = /(?<!`)\$(?!\{)(?!(?:global|local|script|private|env|using):)([A-Za-z_][A-Za-z0-9_]*):(?=[^A-Za-z0-9_]|$)/gi;
   return source.split(/\r?\n/).flatMap((line, index) => (
@@ -33,9 +43,15 @@ export function findAmbiguousPowerShellVariableColon(source) {
 
 export function validateDockerOrchestration({
   rootBat,
+  startupRuntimePreflight,
   coreBat,
   resilient,
   dockerModule,
+  startupProbeModule,
+  runtimeImageVerifier,
+  startupGateRunner,
+  startupDockerIntegration,
+  startupComposeIntegration,
   networkDiagnostics,
   sequentialBat,
   sequential,
@@ -45,11 +61,26 @@ export function validateDockerOrchestration({
   startupPreflight,
   powerShellSources = [],
 }) {
+  assert.match(rootBat, /invoke-startup-runtime-preflight\.ps1/i);
   assert.match(rootBat, /start-contabilidade-resilient\.ps1/i);
   assert.match(rootBat, /deploy-contabilidade-onpremise\.ps1/i);
   assert.match(rootBat, /scripts\\maintenance\\liberar-memoria-docker\.bat/i);
   assert.match(rootBat, /if \/i "%ACTION%"=="dev"/i);
   assert.match(rootBat, /if \/i "%ACTION%"=="onpremise"/i);
+  const runtimePreflightIndex = rootBat.toLowerCase().indexOf('invoke-startup-runtime-preflight.ps1');
+  const resilientIndex = rootBat.toLowerCase().indexOf('start-contabilidade-resilient.ps1');
+  assert.ok(runtimePreflightIndex >= 0 && runtimePreflightIndex < resilientIndex, 'preflight runtime deve preceder o wrapper resiliente e qualquer build');
+
+  assert.match(startupRuntimePreflight, /Invoke-StartupPowerShellPreflight/i);
+  assert.match(startupRuntimePreflight, /Assert-ContabilidadeDockerAvailable/i);
+  assert.match(startupRuntimePreflight, /Get-ContabilidadeActiveDockerContext/i);
+  assert.match(startupRuntimePreflight, /Remove-ContabilidadeStartupProbe/i);
+  assert.match(startupRuntimePreflight, /antes de qualquer build/i);
+  assert.deepEqual(
+    findDirectPowerShellDockerInvocations(startupRuntimePreflight),
+    [],
+    'invoke-startup-runtime-preflight.ps1 deve usar somente wrappers canonicos',
+  );
 
   for (const obsoleteRootBat of [
     'START_CONTABILIDADE_CORE.bat',
@@ -85,7 +116,16 @@ export function validateDockerOrchestration({
   assert.doesNotMatch(resilient, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
   assert.match(dockerModule, /Invoke-ContabilidadeNativeCommand/i);
+  assert.match(dockerModule, /\$ErrorActionPreference\s*=\s*'Continue'/i);
   assert.match(dockerModule, /\$LASTEXITCODE/i);
+  assert.match(dockerModule, /Invoke-ContabilidadeCompose/i);
+  assert.match(dockerModule, /Test-ContabilidadeDockerContainerAbsent/i);
+  assert.match(dockerModule, /Get-ContabilidadeDockerFailureCategory/i);
+  assert.match(dockerModule, /Test-ContabilidadeDockerImage/i);
+  assert.match(dockerModule, /Test-ContabilidadeRuntimeImage/i);
+  assert.match(dockerModule, /RUNTIME_IMAGE_VERIFIED/i);
+  assert.match(dockerModule, /DOCKER_CLI_UNAVAILABLE/i);
+  assert.match(dockerModule, /DOCKER_DAEMON_UNAVAILABLE/i);
   assert.match(dockerModule, /Get-ContabilidadeActiveDockerContext/i);
   assert.match(dockerModule, /@\('context', 'show'\)/i);
   assert.match(dockerModule, /Test-ContabilidadeDockerDnsFailure/i);
@@ -94,6 +134,60 @@ export function validateDockerOrchestration({
   assert.doesNotMatch(dockerModule, /GetAllNetworkInterfaces|New-ContabilidadeBuildKitConfig|CONTABILIDADE_BUILDKIT_DNS/i);
   assert.doesNotMatch(dockerModule, /--buildkitd-config|\[dns\]/i);
   assert.doesNotMatch(dockerModule, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
+
+  assert.match(startupProbeModule, /contabilidade\.local\.startup-probe/i);
+  assert.match(startupProbeModule, /PROBE_NAME_OWNERSHIP_CONFLICT/i);
+  assert.match(startupProbeModule, /CONCURRENT_REMOVAL_EXPECTED/i);
+  assert.match(startupProbeModule, /PROBE_CREATE_FAILED/i);
+  assert.match(startupProbeModule, /PROBE_REMOVE_FAILED/i);
+  assert.match(startupProbeModule, /container', 'rm', '--force', \$state\.ContainerId/i);
+  assert.match(startupProbeModule, /Invoke-ContabilidadeWithProbeCleanup/i);
+  assert.deepEqual(
+    findDirectPowerShellDockerInvocations(startupProbeModule),
+    [],
+    'startup-probe.psm1 nao pode contornar o executor Docker canonico',
+  );
+
+  assert.match(runtimeImageVerifier, /Assert-ContabilidadeDockerAvailable/i);
+  assert.match(runtimeImageVerifier, /Test-ContabilidadeRuntimeImage/i);
+  assert.match(runtimeImageVerifier, /RUNTIME-IMAGE/i);
+  assert.match(runtimeImageVerifier, /backend/i);
+  assert.match(runtimeImageVerifier, /frontend/i);
+  assert.match(runtimeImageVerifier, /automation-worker/i);
+  assert.deepEqual(
+    findDirectPowerShellDockerInvocations(runtimeImageVerifier),
+    [],
+    'verify-runtime-images.ps1 deve usar somente o executor Docker canonico',
+  );
+
+  assert.match(startupGateRunner, /RunDockerIntegration/i);
+  assert.match(startupGateRunner, /RunComposeIntegration/i);
+  assert.match(startupGateRunner, /RunOfficialStartup/i);
+  assert.match(startupGateRunner, /startup-reliability-evidence\.json/i);
+  assert.match(startupGateRunner, /official-startup-attempt-\$attempt\.log/i);
+  assert.match(startupGateRunner, /for \(\$attempt = 1; \$attempt -le 2;/i);
+
+  assert.match(startupDockerIntegration, /contabilidade\.test-suite=startup-reliability/i);
+  assert.match(startupDockerIntegration, /contabilidade\.test-run/i);
+  assert.match(startupDockerIntegration, /concurrent-removal/i);
+  assert.match(startupDockerIntegration, /PROBE_NAME_OWNERSHIP_CONFLICT/i);
+  assert.deepEqual(
+    findDirectPowerShellDockerInvocations(startupDockerIntegration),
+    [],
+    'startup-docker-integration.ps1 deve usar wrappers canonicos',
+  );
+
+  assert.match(startupComposeIntegration, /contabilidade-startup-it-/i);
+  assert.match(startupComposeIntegration, /!override/i);
+  assert.match(startupComposeIntegration, /startup_reliability_marker/i);
+  assert.match(startupComposeIntegration, /postgresReused/i);
+  assert.match(startupComposeIntegration, /down', '--volumes', '--remove-orphans'/i);
+  assert.match(startupComposeIntegration, /SkipDatabaseValidation/i);
+  assert.deepEqual(
+    findDirectPowerShellDockerInvocations(startupComposeIntegration),
+    [],
+    'startup-compose-integration.ps1 deve usar wrappers canonicos',
+  );
 
   assert.match(networkDiagnostics, /host resolver/i);
   assert.match(networkDiagnostics, /Docker container resolver/i);
@@ -104,7 +198,16 @@ export function validateDockerOrchestration({
   assert.doesNotMatch(networkDiagnostics, /Get-ChildItem\s+Env:|docker\s+info\s*$/im);
   assert.doesNotMatch(networkDiagnostics, /8\.8\.8\.8|1\.1\.1\.1/i);
 
+  assert.match(sequentialBat, /verify-runtime-images\.ps1/i);
+  assert.match(sequentialBat, /\[TRANSITION\] Imagens verificadas/i);
   assert.match(sequentialBat, /start-compose-sequential\.ps1/i);
+  assert.match(sequential, /Import-Module[^\r\n]*contabilidade-docker\.psm1/i);
+  assert.match(sequential, /Import-Module[^\r\n]*startup-probe\.psm1/i);
+  assert.match(sequential, /Assert-ContabilidadeDockerAvailable/i);
+  assert.match(sequential, /Invoke-ContabilidadeCompose/i);
+  assert.match(sequential, /Remove-ContabilidadeStartupProbe/i);
+  assert.match(sequential, /Start-ContabilidadeStartupProbe/i);
+  assert.match(sequential, /Invoke-ContabilidadeWithProbeCleanup/i);
   assert.match(sequential, /Remove-DevAuthContainers/i);
   assert.match(sequential, /Keycloak e bootstrap omitidos/i);
   assert.match(sequential, /KEYCLOAK_STARTUP_TIMEOUT_SECONDS/i);
@@ -112,6 +215,14 @@ export function validateDockerOrchestration({
   assert.match(sequential, /--no-deps/i);
   assert.match(sequential, /--force-recreate/i);
   assert.match(sequential, /Write-Host "\$\{DisplayName\}: status=/i);
+  assert.match(sequential, /\[PROBE\]\[\$Phase\] category=/i);
+  assert.match(sequential, /SkipDatabaseValidation so e permitido em projeto efemero/i);
+  assert.deepEqual(
+    findDirectPowerShellDockerInvocations(sequential),
+    [],
+    'start-compose-sequential.ps1 deve usar somente o executor Docker canonico',
+  );
+  assert.doesNotMatch(sequential, /&\s*docker|2>\s*\$null|\*>\s*\$null/i);
   assert.doesNotMatch(sequential, /compose[^\r\n]*\bdown\b/i);
   assert.doesNotMatch(sequential, /docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 
@@ -152,9 +263,15 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
 
   validateDockerOrchestration({
     rootBat: read('START_CONTABILIDADE.bat'),
+    startupRuntimePreflight: read('scripts/invoke-startup-runtime-preflight.ps1'),
     coreBat: read('scripts/start-contabilidade-core.bat'),
     resilient: read('scripts/start-contabilidade-resilient.ps1'),
     dockerModule: read('scripts/lib/contabilidade-docker.psm1'),
+    startupProbeModule: read('scripts/lib/startup-probe.psm1'),
+    runtimeImageVerifier: read('scripts/verify-runtime-images.ps1'),
+    startupGateRunner: read('scripts/tests/run-startup-reliability-gate.ps1'),
+    startupDockerIntegration: read('scripts/tests/startup-docker-integration.ps1'),
+    startupComposeIntegration: read('scripts/tests/startup-compose-integration.ps1'),
     networkDiagnostics: read('scripts/diagnostics/capture-docker-network-diagnostics.ps1'),
     sequentialBat: read('scripts/start-compose-sequential.bat'),
     sequential: read('scripts/start-compose-sequential.ps1'),
@@ -169,10 +286,17 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     status: 'OK',
     contracts: [
       'um unico BAT oficial na raiz',
+      'parser, Docker e probe validados antes de Maven/npm/build',
       'modo dev sem Keycloak ou bootstrap',
       'startup incremental sem docker compose down',
       'contexto Docker ativo preservado como no PRIMA',
       'nenhuma troca automatica de contexto ou builder',
+      'um unico executor Docker com exit code como autoridade',
+      'verificacao estruturada das tres imagens runtime antes do Compose',
+      'probe com ownership por label e remocao por container ID',
+      'probe ausente e remocao concorrente classificados como estados idempotentes',
+      'cleanup final preserva a causa principal',
+      'Pester, Docker lifecycle, Compose duas vezes e BAT oficial no gate integrado',
       'imagens-base preparadas pelo Docker daemon',
       'diagnostico separado de host, container e BuildKit',
       'DNS e proxy governados no Docker Desktop/daemon',

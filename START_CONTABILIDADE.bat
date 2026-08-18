@@ -28,6 +28,10 @@ echo Um unico comando compilara e iniciara somente os servicos necessarios.
 echo Keycloak nao sera iniciado porque a autenticacao esta desabilitada no modo dev.
 echo ============================================================
 
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\invoke-startup-runtime-preflight.ps1" -Mode dev
+set "RC=%ERRORLEVEL%"
+if not "%RC%"=="0" goto :finish
+
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\start-contabilidade-resilient.ps1" -Mode dev
 set "RC=%ERRORLEVEL%"
 goto :finish
