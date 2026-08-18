@@ -125,15 +125,24 @@ services:
   postgres:
     ports: !override
       - "127.0.0.1:${postgresPort}:5432"
+    volumes: !override
+      - startup_postgres_data:/var/lib/postgresql/data
   backend:
     ports: !override
       - "127.0.0.1:${backendPort}:8080"
+    volumes: !override
+      - startup_documentos:/data/documentos
+      - startup_backups:/data/backups:ro
   automation-worker:
     ports: !override
       - "127.0.0.1:${workerPort}:3001"
   frontend:
     ports: !override
       - "127.0.0.1:${frontendPort}:8080"
+volumes:
+  startup_postgres_data:
+  startup_documentos:
+  startup_backups:
 "@
 Write-Utf8NoBom -Path $portsOverride -Content $portsOverrideContent
 
@@ -188,7 +197,13 @@ function Get-ServiceId {
     if (-not $result.Success) {
         throw "Nao foi possivel consultar service '$Service'."
     }
-    return ($result.StdOut -split '\r?\n' | Where-Object { -not [string]::IsNullOrWhiteSpace($_) } | Select-Object -First 1).Trim()
+    $value = $result.StdOut -split '\r?\n' |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+        Select-Object -First 1
+    if ($null -eq $value) {
+        return ''
+    }
+    return ([string]$value).Trim()
 }
 
 function Assert-ProbeAbsent {
@@ -380,6 +395,20 @@ finally {
             New-Item -ItemType Directory -Force -Path $directory | Out-Null
         }
         $evidence | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $EvidencePath -Encoding UTF8
+    }
+}
+
+if (-not $KeepResources -and $null -ne $evidence.cleanup -and -not $evidence.cleanup.success) {
+    throw "Cleanup do projeto efemero falhou. Project=$projectName Exit=$($evidence.cleanup.exitCode)"
+}
+
+if (-not $KeepResources) {
+    $remaining = Invoke-HarnessCompose -Arguments @('ps', '-a', '-q') -AllowFailure -Quiet
+    if (-not $remaining.Success) {
+        throw "Nao foi possivel comprovar cleanup final do projeto efemero. Exit code: $($remaining.ExitCode)."
+    }
+    if (-not [string]::IsNullOrWhiteSpace($remaining.StdOut)) {
+        throw "Containers efemeros permaneceram depois do cleanup do projeto '$projectName'."
     }
 }
 
