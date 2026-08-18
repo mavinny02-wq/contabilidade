@@ -76,6 +76,12 @@ export function validateDockerOrchestration({
   assert.match(startupRuntimePreflight, /Get-ContabilidadeActiveDockerContext/i);
   assert.match(startupRuntimePreflight, /Remove-ContabilidadeStartupProbe/i);
   assert.match(startupRuntimePreflight, /antes de qualquer build/i);
+  const parseAllIndex = startupRuntimePreflight.indexOf('Invoke-StartupPowerShellPreflight');
+  const dockerModuleImportIndex = startupRuntimePreflight.indexOf("lib\\contabilidade-docker.psm1");
+  const probeModuleImportIndex = startupRuntimePreflight.indexOf("lib\\startup-probe.psm1");
+  assert.ok(parseAllIndex >= 0, 'preflight runtime deve executar parse-all');
+  assert.ok(dockerModuleImportIndex > parseAllIndex, 'modulo Docker so pode ser importado depois do parse-all');
+  assert.ok(probeModuleImportIndex > parseAllIndex, 'modulo do probe so pode ser importado depois do parse-all');
   assert.deepEqual(
     findDirectPowerShellDockerInvocations(startupRuntimePreflight),
     [],
