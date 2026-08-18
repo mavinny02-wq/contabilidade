@@ -9,7 +9,7 @@
 - **Migration:** nenhuma
 - **Providers externos:** não utilizados
 - **Dados reais:** não utilizados
-- **PR:** `TO_BE_FILLED`
+- **PR:** `#137`
 
 ## Causa raiz corrigida
 
