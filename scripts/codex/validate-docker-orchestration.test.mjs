@@ -4,6 +4,7 @@ import test from 'node:test';
 import {
   containsDockerBuildCommand,
   findAmbiguousPowerShellVariableColon,
+  findDirectPowerShellDockerInvocations,
 } from './validate-docker-orchestration.mjs';
 
 test('aceita mensagens operacionais que apenas mencionam Docker build', () => {
@@ -48,4 +49,25 @@ $env:ComSpec
 `;
 
   assert.deepEqual(findAmbiguousPowerShellVariableColon(source), []);
+});
+
+test('detecta invocacoes Docker diretas em PowerShell operacional', () => {
+  const source = `
+& docker rm -f contabilidade-startup-probe *> $null
+& $script:DockerCommand image inspect teste
+`;
+
+  assert.deepEqual(findDirectPowerShellDockerInvocations(source), [
+    { line: 2, source: '& docker rm -f contabilidade-startup-probe *> $null' },
+    { line: 3, source: '& $script:DockerCommand image inspect teste' },
+  ]);
+});
+
+test('aceita wrappers canonicos sem ampersand Docker direto', () => {
+  const source = `
+Invoke-ContabilidadeDocker -Arguments @('container', 'rm', '--force', $id) -AllowFailure -Quiet
+Invoke-ContabilidadeCompose -ComposePrefix $prefix -Arguments @('up', '-d', 'postgres')
+`;
+
+  assert.deepEqual(findDirectPowerShellDockerInvocations(source), []);
 });
