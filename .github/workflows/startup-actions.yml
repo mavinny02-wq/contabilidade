@@ -1,0 +1,55 @@
+name: Startup Action Contracts
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "START_CONTABILIDADE.bat"
+      - "scripts/start-contabilidade-core.bat"
+      - "scripts/check-contabilidade.ps1"
+      - "scripts/doctor-contabilidade.ps1"
+      - "scripts/codex/validate-startup-actions*"
+      - ".github/workflows/startup-actions.yml"
+  push:
+    branches: [main]
+    paths:
+      - "START_CONTABILIDADE.bat"
+      - "scripts/start-contabilidade-core.bat"
+      - "scripts/check-contabilidade.ps1"
+      - "scripts/doctor-contabilidade.ps1"
+      - "scripts/codex/validate-startup-actions*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Validate action boundaries
+        run: node scripts/codex/validate-startup-actions.mjs
+      - name: Test action regressions
+        run: node --test scripts/codex/validate-startup-actions.test.mjs
+      - name: Parse operational PowerShell with Windows PowerShell 5.1
+        shell: powershell
+        run: |
+          $files = @(
+            'scripts/check-contabilidade.ps1',
+            'scripts/doctor-contabilidade.ps1'
+          )
+          foreach ($file in $files) {
+            $tokens = $null
+            $errors = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile(
+              (Resolve-Path $file), [ref]$tokens, [ref]$errors
+            )
+            if ($errors.Count -gt 0) {
+              $errors | ForEach-Object { Write-Error "${file}:$($_.Extent.StartLineNumber):$($_.Extent.StartColumnNumber) $($_.Message)" }
+              throw "PowerShell parser failed: $file"
+            }
+          }

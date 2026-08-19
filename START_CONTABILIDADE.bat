@@ -1,13 +1,20 @@
 @echo off
 setlocal EnableExtensions
 
-title Contabilidade - Inicializacao unica
+title Contabilidade - Operacao local
 
 set "ACTION=%~1"
 if not defined ACTION set "ACTION=dev"
 
 if /i "%ACTION%"=="dev" goto :run_dev
 if /i "%ACTION%"=="local" goto :run_dev
+if /i "%ACTION%"=="check" goto :run_check
+if /i "%ACTION%"=="verify" goto :run_check
+if /i "%ACTION%"=="doctor" goto :run_doctor
+if /i "%ACTION%"=="diagnose" goto :run_doctor
+if /i "%ACTION%"=="build" goto :run_build
+if /i "%ACTION%"=="start" goto :run_start
+if /i "%ACTION%"=="up" goto :run_start
 if /i "%ACTION%"=="onpremise" goto :run_onpremise
 if /i "%ACTION%"=="prod" goto :run_onpremise
 if /i "%ACTION%"=="deploy" goto :run_onpremise
@@ -22,19 +29,64 @@ set "RC=2"
 goto :usage_and_finish
 
 :run_dev
+set "CONTABILIDADE_BUILD_ONLY="
 echo ============================================================
-echo CONTABILIDADE - MODO DESENVOLVIMENTO
-echo Um unico comando compilara e iniciara somente os servicos necessarios.
-echo Keycloak nao sera iniciado porque a autenticacao esta desabilitada no modo dev.
+echo CONTABILIDADE - DESENVOLVIMENTO: BUILD + START
+echo Compila, cria/verifica imagens e inicia PostgreSQL, backend, worker e frontend.
+echo Use "start" para subir imagens existentes sem Maven/npm/compilacao.
 echo ============================================================
-
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\invoke-startup-runtime-preflight.ps1" -Mode dev
-set "RC=%ERRORLEVEL%"
+call :runtime_preflight
 if not "%RC%"=="0" goto :finish
-
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\start-contabilidade-resilient.ps1" -Mode dev
 set "RC=%ERRORLEVEL%"
 goto :finish
+
+:run_build
+set "CONTABILIDADE_BUILD_ONLY=1"
+echo ============================================================
+echo CONTABILIDADE - BUILD SOMENTE
+echo Compila e cria/verifica imagens. Nao inicia nem altera a stack Compose.
+echo ============================================================
+call :runtime_preflight
+if not "%RC%"=="0" goto :finish
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\start-contabilidade-resilient.ps1" -Mode dev
+set "RC=%ERRORLEVEL%"
+goto :finish
+
+:run_start
+set "CONTABILIDADE_BUILD_ONLY="
+echo ============================================================
+echo CONTABILIDADE - START SOMENTE
+echo Usa imagens existentes. Nao executa Maven, npm, typecheck ou docker build.
+echo ============================================================
+call :runtime_preflight
+if not "%RC%"=="0" goto :finish
+call "%~dp0scripts\start-compose-sequential.bat" dev
+set "RC=%ERRORLEVEL%"
+goto :finish
+
+:run_check
+echo ============================================================
+echo CONTABILIDADE - CHECK DE COMPILACAO
+echo Valida backend, frontend e worker sem iniciar ou alterar Docker Compose.
+echo ============================================================
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\check-contabilidade.ps1"
+set "RC=%ERRORLEVEL%"
+goto :finish
+
+:run_doctor
+echo ============================================================
+echo CONTABILIDADE - DOCTOR READ-ONLY
+echo Diagnostica toolchain, Docker, Compose e imagens sem build/start/cleanup.
+echo ============================================================
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\doctor-contabilidade.ps1" -Mode dev
+set "RC=%ERRORLEVEL%"
+goto :finish
+
+:runtime_preflight
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\invoke-startup-runtime-preflight.ps1" -Mode dev
+set "RC=%ERRORLEVEL%"
+exit /b %RC%
 
 :run_onpremise
 set "PULL_ARG="
@@ -46,9 +98,8 @@ for %%A in (%*) do (
 
 echo ============================================================
 echo CONTABILIDADE - DEPLOY ON-PREMISE
-echo Este modo usa imagens prontas e nao executa Maven, npm ou docker build.
+echo Usa imagens prontas e nao executa Maven, npm ou docker build.
 echo ============================================================
-
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\deploy-contabilidade-onpremise.ps1" %PULL_ARG% %DIGEST_ARG%
 set "RC=%ERRORLEVEL%"
 goto :finish
@@ -61,14 +112,23 @@ goto :finish
 :usage
 echo ============================================================
 echo CONTABILIDADE - UNICO BAT OFICIAL
-echo ============================================================
+ echo ============================================================
 echo.
-echo Duplo clique ou sem argumentos:
+echo Build + start de desenvolvimento ^(compatibilidade^):
 echo   START_CONTABILIDADE.bat
-echo   Compila e inicia o ambiente de desenvolvimento.
-echo.
-echo Desenvolvimento explicito:
 echo   START_CONTABILIDADE.bat dev
+echo.
+echo Diagnostico read-only, sem compilacao ou start:
+echo   START_CONTABILIDADE.bat doctor
+echo.
+echo Compilacao e builds de componentes, sem Docker Compose:
+echo   START_CONTABILIDADE.bat check
+echo.
+echo Compilar e criar/verificar imagens, sem iniciar Compose:
+echo   START_CONTABILIDADE.bat build
+echo.
+echo Iniciar imagens existentes, sem Maven/npm/compilacao:
+echo   START_CONTABILIDADE.bat start
 echo.
 echo Producao on-premise com imagens publicadas:
 echo   START_CONTABILIDADE.bat onpremise pull digest
@@ -101,5 +161,5 @@ if "%RC%"=="0" (
 )
 
 echo.
-pause
+if /i not "%CONTABILIDADE_NONINTERACTIVE%"=="1" pause
 exit /b %RC%
