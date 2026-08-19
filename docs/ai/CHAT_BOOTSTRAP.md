@@ -1,23 +1,29 @@
-# Bootstrap de chats
+# Bootstrap de conversas
 
-**Classificação:** `CANONICAL_CHAT_CONTEXT_ENTRYPOINT`
+Use somente um bootstrap estável e recupere estado dinâmico do repositório.
 
-## Novo chat
+## Nova conversa
 
-Copie exatamente `CONTABILIDADE_NEW_CHAT_BOOTSTRAP.txt`. Não acrescente SHA, PR, onda preparada,
-migration frontier ou prompts antigos. Esses fatos são recuperados do GitHub/checkpoint.
+Cole `docs/ai/CONTABILIDADE_NEW_CHAT_BOOTSTRAP.txt`. Depois o agente consulta:
 
-## Ressincronização
+1. `AGENTS.md` da raiz;
+2. `docs/INDICE_DOCUMENTACAO_ATIVA.md` para roteamento;
+3. `docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md` para estado atual;
+4. apenas o owner/shard necessário.
 
-Use `CONTABILIDADE_EXISTING_CHAT_RESYNC.txt` uma vez em chat que pode conter pressupostos antigos.
-Resync corrige semântica, mas não remove histórico já retido pelo provedor. Em chat muito longo,
-leve o resultado compacto para um novo chat.
+## Conversa existente
 
-## Validação
+Cole `docs/ai/CONTABILIDADE_EXISTING_CHAT_RESYNC.txt`. O resync relê somente checkpoint, delta
+Git/GitHub e resultados afetados; não recarrega toda a documentação.
+
+## Safeguards
+
+- bootstrap não contém SHA, PR, data ou lista de waves;
+- índice é roteador, não pacote obrigatório;
+- launcher é validado pelo guard de contexto e pelo validador de prompts existente;
+- saída de ferramenta é resumida antes de entrar no histórico;
+- uso real do provedor e estimativa local permanecem separados.
 
 ```text
-python3 scripts/orchestration/validate_prompt.py docs/ai/CONTABILIDADE_NEW_CHAT_BOOTSTRAP.txt --mode bootstrap
-python3 scripts/orchestration/validate_prompt.py docs/ai/CONTABILIDADE_EXISTING_CHAT_RESYNC.txt --mode resync
+python3 scripts/ai/context_governance_guard.py --repo-root .
 ```
-
-A resposta correta contém apenas os campos solicitados, sem repetir políticas ou ondas.
