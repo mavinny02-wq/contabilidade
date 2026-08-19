@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0",
+  "measuredAt": "2026-08-19",
+  "measurementType": "STRUCTURAL_CAPABILITY_BASELINE",
+  "reference": "PRIMA release/1.0.0",
+  "status": {
+    "hierarchicalAgents": "PRESENT",
+    "hotWarmColdPolicy": "PRESENT_CONCEPTUAL",
+    "deterministicAgentSizeGuard": "MISSING_BEFORE_THIS_CHANGE",
+    "hotDuplicateDetection": "MISSING_BEFORE_THIS_CHANGE",
+    "stableBootstrapHistoryGuard": "MISSING_BEFORE_THIS_CHANGE",
+    "launcherBudgetGuard": "PARTIAL_EXISTING_PROMPT_VALIDATOR",
+    "actualVsEstimatedTokenProfile": "MISSING_BEFORE_THIS_CHANGE",
+    "progressiveRetrievalMetrics": "MISSING_BEFORE_THIS_CHANGE"
+  },
+  "notes": [
+    "No provider token usage was available; this is not a usage measurement.",
+    "Token estimates must never be labeled as provider-reported actual usage."
+  ]
+}

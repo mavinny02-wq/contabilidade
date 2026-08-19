@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0",
+  "effectiveFrom": "2026-08-19",
+  "limits": {
+    "rootAgentCharacters": {"warning": 6000, "hard": 7000},
+    "childAgentCharacters": {"warning": 2500, "hard": 3500},
+    "agentChainCharacters": {"warning": 9000, "hard": 10000},
+    "launcher": {"nonEmptyLines": 20, "characters": 2000},
+    "growthAlertPercent": 25
+  },
+  "requiredCapabilities": [
+    "hierarchical agent-chain validation",
+    "HOT paragraph duplicate detection",
+    "stable bootstrap dynamic-history rejection",
+    "compact launcher validation",
+    "provider-reported versus local-estimate separation",
+    "category budgets and deterministic JSON/Markdown reports"
+  ]
+}
