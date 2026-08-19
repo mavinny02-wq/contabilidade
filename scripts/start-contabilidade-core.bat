@@ -4,8 +4,8 @@ setlocal EnableExtensions EnableDelayedExpansion
 title Contabilidade - Build local e startup sequencial
 
 REM ============================================================
-REM REVISAO: COMPACT-SEQUENTIAL-2026-08-10-05
 REM Maven/npm rodam no Windows. Docker recebe artefatos prontos.
+REM CONTABILIDADE_BUILD_ONLY=1 encerra depois de verificar imagens.
 REM ============================================================
 
 set "PROJECT_DIR=%~dp0"
@@ -44,6 +44,8 @@ if errorlevel 1 goto :fatal
 call :build_images
 if errorlevel 1 goto :fatal
 
+if /i "%CONTABILIDADE_BUILD_ONLY%"=="1" goto :build_only_success
+
 call "%PROJECT_DIR%\scripts\start-compose-sequential.bat" "%MODE%"
 if errorlevel 1 (
   set "FATAL_MESSAGE=Startup sequencial dos containers falhou."
@@ -56,16 +58,27 @@ echo SUCESSO - Contabilidade %VERSION%
 echo http://localhost:8088
 echo ============================================================
 start "" "http://localhost:8088"
-pause
+if /i not "%CONTABILIDADE_NONINTERACTIVE%"=="1" pause
+exit /b 0
+
+:build_only_success
+echo.
+echo ============================================================
+echo BUILD CONCLUIDO - Contabilidade %VERSION%
+echo Imagens runtime criadas e verificadas. Docker Compose nao foi iniciado.
+echo Para subir sem recompilar: START_CONTABILIDADE.bat start
+echo ============================================================
+if /i not "%CONTABILIDADE_NONINTERACTIVE%"=="1" pause
 exit /b 0
 
 :preflight
 echo ============================================================
-echo CONTABILIDADE - BUILD LOCAL E STARTUP SEQUENCIAL
-echo REVISAO: COMPACT-SEQUENTIAL-2026-08-10-05
-echo ============================================================
+echo CONTABILIDADE - BUILD LOCAL
 echo Projeto: %PROJECT_DIR%
 echo Modo:    %MODE%
+if /i "%CONTABILIDADE_BUILD_ONLY%"=="1" echo Acao:    build-only
+if /i not "%CONTABILIDADE_BUILD_ONLY%"=="1" echo Acao:    build+start
+echo ============================================================
 echo.
 
 cd /d "%PROJECT_DIR%"
@@ -361,5 +374,5 @@ echo FALHA
 if defined FATAL_MESSAGE echo %FATAL_MESSAGE%
 echo ============================================================
 echo A janela permanecera aberta.
-pause
+if /i not "%CONTABILIDADE_NONINTERACTIVE%"=="1" pause
 exit /b 1
