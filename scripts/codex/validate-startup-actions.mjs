@@ -7,10 +7,10 @@ const root = resolve(fileURLToPath(new URL('../..', import.meta.url)));
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
 
 export function batSection(source, label) {
-  const start = source.search(new RegExp(`(?im)^:${label}\\s*$`));
+  const start = source.search(new RegExp(`^:${label}\\s*$`, 'im'));
   if (start < 0) return '';
   const rest = source.slice(start + label.length + 2);
-  const next = rest.search(/(?im)^:[A-Za-z0-9_]+\s*$/);
+  const next = rest.search(/^:[A-Za-z0-9_]+\s*$/im);
   return next < 0 ? rest : rest.slice(0, next);
 }
 
@@ -23,7 +23,7 @@ export function containsBuildCommand(source) {
 
 export function validateStartupActions({ rootBat, coreBat, checkScript, doctorScript }) {
   for (const action of ['run_dev', 'run_build', 'run_start', 'run_check', 'run_doctor']) {
-    assert.match(rootBat, new RegExp(`(?im)^:${action}\\s*$`), `acao ausente: ${action}`);
+    assert.match(rootBat, new RegExp(`^:${action}\\s*$`, 'im'), `acao ausente: ${action}`);
   }
 
   const start = batSection(rootBat, 'run_start');
