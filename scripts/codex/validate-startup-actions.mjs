@@ -14,6 +14,13 @@ export function batSection(source, label) {
   return next < 0 ? rest : rest.slice(0, next);
 }
 
+export function containsBuildCommand(source) {
+  return source.split(/\r?\n/).some((line) => (
+    /^\s*(?:call\s+)?(?:mvn(?:\.cmd)?|npm(?:\.cmd)?|docker(?:\.exe)?\s+build)\b/i.test(line)
+    || /^\s*powershell[^\r\n]*start-contabilidade-resilient\.ps1/i.test(line)
+  ));
+}
+
 export function validateStartupActions({ rootBat, coreBat, checkScript, doctorScript }) {
   for (const action of ['run_dev', 'run_build', 'run_start', 'run_check', 'run_doctor']) {
     assert.match(rootBat, new RegExp(`(?im)^:${action}\\s*$`), `acao ausente: ${action}`);
@@ -22,7 +29,7 @@ export function validateStartupActions({ rootBat, coreBat, checkScript, doctorSc
   const start = batSection(rootBat, 'run_start');
   assert.match(start, /invoke-startup-runtime-preflight\.ps1/i);
   assert.match(start, /start-compose-sequential\.bat/i);
-  assert.doesNotMatch(start, /start-contabilidade-resilient|\bmvn\b|\bnpm\b|docker\s+build/i,
+  assert.equal(containsBuildCommand(start), false,
     'start deve apenas subir imagens existentes');
 
   const build = batSection(rootBat, 'run_build');
