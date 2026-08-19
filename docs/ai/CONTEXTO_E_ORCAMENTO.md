@@ -1,121 +1,140 @@
-# Roteamento de contexto e orçamento
+# Roteamento de contexto e orçamento de tokens
 
-**Classificação:** `CANONICAL_CONTEXT_ECONOMY_RULE`
+**Classificação:** `CANONICAL_CONTEXT_ROUTING_CONTRACT`  
+**Referência:** PRIMA `release/1.0.0`, adaptado ao Contabilidade  
+**Guard:** `scripts/ai/context_governance_guard.py`  
+**Profiler:** `scripts/ai/context_token_profiler.py`
 
 ## Objetivo
 
-Otimizar tokens por resultado bem-sucedido, preservando autoridade, owner, baseline, locks e causa
-raiz.
+Impedir que o crescimento de documentação aumente silenciosamente o contexto de toda task. O
+repositório pode crescer; o conjunto HOT de cada owner deve permanecer pequeno, determinístico e
+sem duplicação.
 
-## Fontes
+## Camadas
 
-- `AGENTS.md`: regras estáveis;
-- current state: estado dinâmico do orquestrador;
-- shard exato: objetivo/aceite;
-- locks: decisões aceitas mapeadas;
-- Git/GitHub: integração/diff;
-- `RESULT_MD`: evidência;
-- histórico: COLD.
+### HOT — obrigatório e pequeno
 
-Não copie o mesmo fato para várias fontes HOT.
+- `AGENTS.md` da raiz;
+- `AGENTS.md` mais próximo do owner;
+- launcher exato;
+- shard da task;
+- locks explicitamente listados.
 
-## HOT / WARM / COLD
+### WARM — recuperado quando o trabalho exige
 
-### HOT — executor comum
+- contrato de API, schema, runbook ou política diretamente afetada;
+- resultado anterior reutilizado;
+- código adjacente necessário para entender o boundary;
+- checkpoint somente em orquestração/reconciliação.
 
-1. raiz + nearest `AGENTS.md`;
-2. launcher;
-3. shard;
-4. locks mapeados.
+### COLD — histórico, nunca bootstrap universal
 
-### WARM — operação correspondente
+- waves consumidas;
+- relatórios amplos;
+- board/histórico;
+- benchmark e backlog completo;
+- evidências antigas que não são predecessor direto.
 
-- índice/current state: orquestração/reconciliação;
-- governança: documentação;
-- template/regras de tasks: geração de launcher;
-- master test: validação;
-- arquitetura: somente owner tocado.
+A progressão é `HOT -> WARM sob demanda -> COLD por investigação`. Não existe grafo de leitura
+universal.
 
-### COLD
+## Limites determinísticos
 
-- ondas antigas;
-- prompts preview;
-- histórico;
-- logs completos;
-- resultados não relacionados;
-- relatórios amplos quando basta um owner;
-- lockfiles/build artifacts sem ownership direto.
+| Artefato | Warning | Hard fail |
+|---|---:|---:|
+| `AGENTS.md` raiz | 6.000 chars | 7.000 chars |
+| `AGENTS.md` filho | 2.500 | 3.500 |
+| cadeia raiz→owner | 9.000 | 10.000 |
+| índice ativo | 4.000 | 5.500 |
+| current state | 6.500 | 8.500 |
+| bootstrap/resync | 1.200 | 1.800 |
+| launcher | 20 linhas | 2.000 chars |
 
-## Recuperação progressiva
+Hard fail bloqueia merge. Warning exige compactação, canonicalização ou justificativa no resultado.
+Duplicação de parágrafo HOT gera warning mesmo abaixo do limite.
+
+## Regras de compactação
+
+- mova explicação longa para um documento canônico e deixe link + decisão no HOT;
+- não copie checklist, lock ou histórico entre raiz e filho;
+- resultado antigo vira resumo estruturado, não transcrição integral;
+- output de ferramenta deve registrar finding, path, exit code e evidência mínima;
+- ao atingir um gate, gere handoff estruturado e descarte conversa redundante;
+- não inclua SHA, PR ou data em bootstrap estável;
+- launchers não carregam segunda especificação, histórico ou alternativas abertas.
+
+## Orçamento recomendado do input
+
+O profiler usa estas proporções como warning, nunca como falsa precisão:
+
+| Categoria | Fração do limite |
+|---|---:|
+| regras de agentes | 12% |
+| estado atual | 8% |
+| histórico da conversa | 10% |
+| documentos recuperados | 15% |
+| código recuperado | 35% |
+| resultados de ferramentas | 10% |
+| prompt do usuário | 5% |
+| reserva | 5% |
+
+Uma task pode exceder uma categoria quando o trabalho exige, mas o excesso deve ser visível.
+
+## Medição honesta
+
+`context_token_profiler.py` aceita um manifest de blocos. Para cada bloco registra categoria, fonte,
+caracteres, bytes, linhas, hash normalizado e tokens.
+
+- `PROVIDER_REPORTED`: somente contadores retornados pelo provedor; são uso real.
+- `LOCAL_ESTIMATE`: `tiktoken` quando disponível, senão `ceil(chars/4)`; nunca é uso real.
+- blocos iguais são detectados por hash normalizado;
+- custo por outcome só é calculado quando preço e uso real possuem fonte explícita;
+- prompt, resposta completa, chain-of-thought, segredo e PII não são persistidos.
+
+Exemplo:
 
 ```text
-request
--> ITEM/owner
--> AGENTS
--> shard/locks
--> busca por símbolo/path
--> menor snippet/diff
--> callers adicionais somente quando necessário
+python3 scripts/ai/context_token_profiler.py manifest.json \
+  --repo-root . --json-output profile.json --markdown-output profile.md
 ```
 
-## Orçamento sugerido
+## Safeguards automáticos
 
-Para janela `C`:
+O guard verifica:
 
-- regras: <= 12%;
-- estado: <= 8%;
-- conversa: <= 10%;
-- docs recuperados: <= 15%;
-- código/diffs: <= 35%;
-- tool results: <= 10%;
-- prompt do usuário: <= 5%;
-- buffer livre: >= 15%.
+- tamanho da raiz, filhos e cadeia de `AGENTS.md`;
+- tamanho de índice, checkpoint e bootstraps;
+- parágrafos HOT duplicados;
+- bootstrap com SHA/PR/data transitória;
+- instrução de leitura universal;
+- launcher acima de 20 linhas/2.000 chars;
+- campos ausentes ou duplicados;
+- condição opcional não resolvida;
+- SHA dinâmica fora de baseline imutável.
 
-Nunca trunque lock, contrato exato ou causa raiz silenciosamente.
-
-## Compactação
-
-Preserve decisões atuais, branch, blockers, restrições e referências. Converta história longa em
-handoff estruturado e mantenha, por padrão, no máximo as seis mensagens recentes relevantes.
-
-## Handoff
+Executar quando mudar:
 
 ```text
-TASK_RESULT
-status:
-summary:
-decisions:
-files_changed:
-checks:
-risks:
-remaining_work:
-references:
+AGENTS.md
+**/AGENTS.md
+docs/ai/**
+docs/INDICE_DOCUMENTACAO_ATIVA.md
+docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md
+docs/orquestracao/waves/**
 ```
 
-## Operações determinísticas
+## Métricas de maturidade
 
-Use código para diff/inventário, versões Flyway, JSON/YAML, contagem de tokens, duplicatas, budget e
-sumarização primitiva. Use modelo para interpretação e decisão.
+Após cada 5–10 tasks comparáveis, revisar:
 
-## Telemetria
+- tokens HOT por owner;
+- tokens recuperados por categoria;
+- duplicação normalizada;
+- tool output por finding útil;
+- reruns por falta/excesso de contexto;
+- custo por `PASS`, quando houver uso real;
+- crescimento maior que 25% no mesmo tipo de task.
 
-Uso real do provedor só pode vir de `input_tokens`, `output_tokens`, cached/reasoning/total fornecidos
-pelo provedor. Estimativa local deve ser rotulada como heurística.
-
-Métricas:
-
-- tokens/task bem-sucedida;
-- tokens/PR;
-- tokens/bug;
-- tokens/onda;
-- mediana e p95 por operação;
-- alerta de crescimento >25% em workflow equivalente.
-
-Alertas sugeridos:
-
-- contexto >60% da janela; crítico >80%;
-- conversa >10%;
-- bloco normalizado duplicado;
-- arquivo >10%;
-- tool result >10% sem drill-down;
-- launcher >20 linhas ou 2.000 caracteres.
+O objetivo não é minimizar contexto a qualquer custo; é maximizar evidência útil por token sem perder
+segurança, autoridade ou reprodutibilidade.

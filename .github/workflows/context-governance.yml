@@ -1,0 +1,56 @@
+name: Context Governance
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "AGENTS.md"
+      - "**/AGENTS.md"
+      - "docs/ai/**"
+      - "docs/INDICE_DOCUMENTACAO_ATIVA.md"
+      - "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md"
+      - "docs/orquestracao/waves/**"
+      - "scripts/ai/**"
+      - ".github/workflows/context-governance.yml"
+  push:
+    branches: [main]
+    paths:
+      - "AGENTS.md"
+      - "**/AGENTS.md"
+      - "docs/ai/**"
+      - "docs/INDICE_DOCUMENTACAO_ATIVA.md"
+      - "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md"
+      - "docs/orquestracao/waves/**"
+      - "scripts/ai/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  context-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit tests
+        run: python -m unittest discover -s scripts/ai/tests -p "test_*.py" -v
+      - name: Context, bootstrap and launcher guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=(--repo-root . --json)
+          base=""
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base="${{ github.event.pull_request.base.sha }}"
+          elif [[ "${{ github.event_name }}" == "push" ]]; then
+            base="${{ github.event.before }}"
+          fi
+          if [[ "$base" =~ ^[0-9a-f]{40}$ ]] && git cat-file -e "$base^{commit}" 2>/dev/null; then
+            args+=(--base "$base")
+          fi
+          python scripts/ai/context_governance_guard.py "${args[@]}"
