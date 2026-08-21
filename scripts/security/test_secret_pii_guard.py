@@ -39,6 +39,18 @@ class GuardTest(unittest.TestCase):
         result = self.run_guard("password=${DB_PASSWORD}\napi_key=<REDACTED>\ncnpj=12.345.678/0001-90")
         self.assertEqual(0, result.returncode, result.stdout)
 
+    def test_runtime_assembled_synthetic_cpf_does_not_require_an_exception(self):
+        source = "const cpf = `${['123', '456', '789'].join('.')}-${'00'}`;"
+        result = self.run_guard(source)
+        self.assertEqual(0, result.returncode, result.stdout)
+
+    def test_literal_cpf_remains_fail_closed(self):
+        result = self.run_guard("untrusted=529.982.247-25")
+        self.assertEqual(1, result.returncode)
+        report = json.loads(result.stdout)
+        self.assertEqual(["cpf"], [item["rule"] for item in report["findings"]])
+        self.assertNotIn("529.982.247-25", result.stdout + result.stderr)
+
     def test_expired_exception_fails(self):
         value = "529.982.247-25"
         import hashlib

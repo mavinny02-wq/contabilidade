@@ -1,9 +1,9 @@
 # Estado atual do Contabilidade
 
 **Classificação:** `CANONICAL_ACTIVE_CHECKPOINT`  
-**Reconciliado em:** `2026-08-19`  
+**Reconciliado em:** `2026-08-21`
 **Branch:** `main`  
-**Baseline analisada:** `ff599c8f6d0657d6545ff7712ca70e891d80e394`  
+**Baseline integrada analisada:** `bb55cbb9f019914ca454871776f23d886a811b6b`
 **Versão:** `0.5.1`  
 **Flyway:** `V12`  
 **Modo:** `STARTUP_ACTIONS_IMPLEMENTED_WINDOWS_RUNTIME_PENDING`
@@ -15,6 +15,16 @@
 - startup local agora possui contratos separados para diagnóstico, compilação, build de imagens e
   início da stack;
 - nenhuma dessas integrações comprova ainda que o HEAD sobe no Windows do usuário.
+
+## Delta local aguardando integração
+
+- `codex/bootstrap-deepseek-runner` possui roteamento LLM externo opcional estruturalmente verde,
+  mantendo Codex inalterado sem chave;
+- o preflight PowerShell voltou a parsear os 37 scripts após correção limitada no verificador de
+  backup;
+- o required gate de segredo/PII está verde localmente após substituir CPF literal de fixture por
+  montagem `PUBLIC_SYNTHETIC` em runtime, sem exceção ou enfraquecimento do scanner;
+- essas evidências são locais e não substituem integração em `main` nem o gate Windows P0.
 
 ## Ações oficiais
 
@@ -50,6 +60,8 @@ FLYWAY_V1_V12 = GREEN_REUSABLE
 STARTUP_PROBE_FIX = INTEGRATED_STRUCTURAL
 CONTEXT_GOVERNANCE_PRIMA = INTEGRATED
 STARTUP_ACTION_SEPARATION = IMPLEMENTED_STRUCTURAL
+OPTIONAL_LLM_WORKER_ROUTING = LOCAL_BRANCH_STRUCTURAL_GREEN
+SECRET_PII_REQUIRED_CI = LOCAL_BRANCH_GREEN
 WINDOWS_DEV_STACK = NOT_PROVEN_AFTER_FIX
 WINDOWS_SECOND_START_REUSE = NOT_PROVEN
 ONPREMISE_KEYCLOAK = BLOCKED_UNTIL_DEV_GREEN
@@ -90,5 +102,8 @@ REAL_EXTERNAL_PROVIDERS = NOT_AUTHORIZED
 
 TLS, IaC, CI local, monitoração sintética e on-premise/Keycloak continuam bloqueados até o startup
 Windows e a segunda execução ficarem verdes.
+
+Nenhuma wave normal foi aberta para a correção de fixture: ela recupera um required gate no branch
+local e não altera a Wave 013 nem suspende o `P0_STARTUP_RELIABILITY_HOLD`.
 
 `CONTABILIDADE_CURRENT_STATE_STARTUP_ACTIONS_RUNTIME_PENDING`

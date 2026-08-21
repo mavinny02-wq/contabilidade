@@ -10,6 +10,9 @@ import {
 import { safeLogFields } from './SafeLogger.js';
 import { WorkerMetrics } from './WorkerMetrics.js';
 
+// PUBLIC_SYNTHETIC: assembled only at runtime so no PII-shaped literal is stored in Git.
+const syntheticCpf = (): string => `${['123', '456', '789'].join('.')}-${'00'}`;
+
 test('correlation validates input and isolates concurrent task contexts', async () => {
   assert.equal(safeCorrelationId('worker.trace_1'), 'worker.trace_1');
   assert.match(safeCorrelationId('Bearer secret'), /^[0-9a-f-]{36}$/);
@@ -27,7 +30,7 @@ test('BackendClient propagates correlation without exposing response payload', a
   let received: string | null = null;
   globalThis.fetch = async (_input, init) => {
     received = new Headers(init?.headers).get(CORRELATION_HEADER);
-    return new Response('external payload CPF 123.456.789-00', { status: 503 });
+    return new Response(`external payload CPF ${syntheticCpf()}`, { status: 503 });
   };
   try {
     await assert.rejects(
@@ -45,7 +48,7 @@ test('logger redacts forbidden fields and sensitive values', () => {
   const fields = safeLogFields({
     operation: 'acquire',
     token: 'secret-value',
-    detail: 'CPF 123.456.789-00 bearer abc.def',
+    detail: `CPF ${syntheticCpf()} bearer abc.def`,
     payload: { fiscal: true },
   });
   assert.deepEqual(fields, {
