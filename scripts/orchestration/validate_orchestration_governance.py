@@ -40,9 +40,9 @@ HOT_LIMITS = {
 REQUIRED_MARKERS = {
     "AGENTS.md": (
         "CONTEXTO_E_ORCAMENTO.md",
-        "até cinco",
-        "no máximo um owner de migration",
-        "validação estrutural somente",
+        "cinco owners, pode ter menos",
+        "owner de migration",
+        "proporcional e estrutural",
     ),
     "docs/INDICE_DOCUMENTACAO_ATIVA.md": (
         "índice de roteamento",
@@ -51,13 +51,14 @@ REQUIRED_MARKERS = {
     ),
     "docs/orquestracao/CONTABILIDADE_CURRENT_STATE.md": (
         "CANONICAL_ACTIVE_CHECKPOINT",
-        "PR aberta",
-        "Frontier Flyway",
+        "PRs abertas",
+        "Flyway",
+        "MIGRATION_OWNER",
     ),
     "docs/ai/CHAT_BOOTSTRAP.md": (
-        "Novo chat",
-        "Ressincronização",
-        "validate_prompt.py",
+        "CONTABILIDADE_NEW_CHAT_BOOTSTRAP.txt",
+        "CONTABILIDADE_EXISTING_CHAT_RESYNC.txt",
+        "context_governance_guard.py",
     ),
 }
 
@@ -77,6 +78,22 @@ class Finding:
 
 def read(root: Path, relative: str) -> str:
     return (root / relative).read_text(encoding="utf-8")
+
+
+def validate_required_markers(
+    relative: str, text: str, findings: list[Finding]
+) -> None:
+    normalized = text.casefold()
+    for marker in REQUIRED_MARKERS.get(relative, ()):
+        if marker.casefold() not in normalized:
+            findings.append(
+                Finding(
+                    "ERROR",
+                    "ROUTING_MARKER_MISSING",
+                    relative,
+                    f"Missing current canonical marker: {marker}",
+                )
+            )
 
 
 def validate_config(root: Path, findings: list[Finding]) -> None:
@@ -130,9 +147,7 @@ def validate(root: Path) -> dict[str, object]:
             findings.append(Finding("ERROR", "HOT_CONTEXT_HARD_LIMIT", relative, f"{size} > {error} chars."))
         elif size > warning:
             findings.append(Finding("WARNING", "HOT_CONTEXT_WARNING", relative, f"{size} > {warning} chars."))
-        for marker in REQUIRED_MARKERS.get(relative, ()):
-            if marker not in text:
-                findings.append(Finding("ERROR", "ROUTING_MARKER_MISSING", relative, f"Missing marker: {marker}"))
+        validate_required_markers(relative, text, findings)
 
     rigid_paths = (
         "AGENTS.md",

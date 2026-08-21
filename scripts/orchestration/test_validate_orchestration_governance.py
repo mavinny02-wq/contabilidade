@@ -22,6 +22,19 @@ class GovernanceGuardTest(unittest.TestCase):
         errors = [item for item in report["findings"] if item["severity"] == "ERROR"]
         self.assertEqual([], errors)
 
+    def test_current_marker_matching_is_case_insensitive(self) -> None:
+        findings = []
+        text = " ".join(marker.upper() for marker in MODULE.REQUIRED_MARKERS["AGENTS.md"])
+        MODULE.validate_required_markers("AGENTS.md", text, findings)
+        self.assertEqual([], findings)
+
+    def test_legacy_chat_markers_do_not_mask_current_contract_drift(self) -> None:
+        findings = []
+        legacy = "Novo chat Ressincronização validate_prompt.py"
+        MODULE.validate_required_markers("docs/ai/CHAT_BOOTSTRAP.md", legacy, findings)
+        self.assertEqual(3, len(findings))
+        self.assertTrue(all(item.code == "ROUTING_MARKER_MISSING" for item in findings))
+
     def test_config_rejects_two_migration_owners(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
