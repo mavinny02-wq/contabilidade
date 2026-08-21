@@ -66,6 +66,14 @@ class ContextGovernanceGuardTest(unittest.TestCase):
         findings = module.duplicate_paragraphs({"a": paragraph, "b": paragraph})
         self.assertEqual(findings[0].code, "HOT_CONTEXT_DUPLICATE")
 
+    def test_negated_universal_read_instruction_is_not_a_violation(self):
+        text = "Não pré-carregue todos os backlogs ou toda a documentação."
+        self.assertFalse(module.requires_universal_read(text))
+
+    def test_positive_universal_read_instruction_remains_a_violation(self):
+        text = "Leia todos os documentos e todo o backlog antes de começar."
+        self.assertTrue(module.requires_universal_read(text))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -31,8 +31,8 @@ if ($manifest.schemaVersion -ne "1.0") {
 if ([string]::IsNullOrWhiteSpace([string]$manifest.backupId)) {
     throw "O manifesto não informa backupId."
 }
-if ([string]::IsNullOrWhiteSpace([string]$manifest.applicationVersion)
-        -or [string]$manifest.applicationVersion -notmatch '^[A-Za-z0-9._-]+$') {
+if ([string]::IsNullOrWhiteSpace([string]$manifest.applicationVersion) -or
+        [string]$manifest.applicationVersion -notmatch '^[A-Za-z0-9._-]+$') {
     throw "O manifesto não informa uma applicationVersion válida."
 }
 

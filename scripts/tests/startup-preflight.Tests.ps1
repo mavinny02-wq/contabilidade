@@ -48,4 +48,18 @@ Describe 'Startup PowerShell parser preflight' {
         $parseIndex | Should -BeLessThan $startup.IndexOf("@('run', 'build')")
         $startup | Should -Not -Match "docker\s+(?:context|buildx)\s+use"
     }
+
+    It 'keeps the production backup verifier parseable' {
+        $verifierPath = Join-Path $PSScriptRoot '..\verify-backup.ps1'
+        $tokens = $null
+        $errors = $null
+
+        [void][System.Management.Automation.Language.Parser]::ParseFile(
+            $verifierPath,
+            [ref]$tokens,
+            [ref]$errors
+        )
+
+        @($errors).Count | Should -Be 0
+    }
 }

@@ -138,3 +138,9 @@ Após cada 5–10 tasks comparáveis, revisar:
 
 O objetivo não é minimizar contexto a qualquer custo; é maximizar evidência útil por token sem perder
 segurança, autoridade ou reprodutibilidade.
+
+## Executor externo opcional
+
+Tasks limitadas podem usar o router em
+`docs/ai/CONTABILIDADE_OPTIONAL_EXTERNAL_LLM_WORKER_ROUTING.md`. O uso é opcional, mantém o Codex
+atual quando não há `DEEPSEEK_API_KEY` e não transfere autoridade de aceite ao worker externo.

@@ -56,6 +56,10 @@ UNIVERSAL_READ_RE = re.compile(
     r"(?is)(?:read|leia|carregue).{0,120}(?:all|todos).{0,120}"
     r"(?:docs|documentation|documenta(?:ção|cao)|backlog|history|histórico|historico)"
 )
+NEGATED_UNIVERSAL_READ_PREFIX_RE = re.compile(
+    r"(?is)(?:\bnot|\bnever|\bdo\s+not|\bdon['’]t|\bnão|\bnao)\s+"
+    r"(?:(?:pre|pré)[- ]?)?$"
+)
 
 
 @dataclass(frozen=True)
@@ -68,6 +72,15 @@ class Finding:
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def requires_universal_read(text: str) -> bool:
+    for match in UNIVERSAL_READ_RE.finditer(text):
+        prefix = text[max(0, match.start() - 24) : match.start()]
+        if NEGATED_UNIVERSAL_READ_PREFIX_RE.search(prefix):
+            continue
+        return True
+    return False
 
 
 def run_git(root: Path, arguments: list[str]) -> list[str]:
@@ -197,7 +210,7 @@ def validate_repository(root: Path, base: str | None = None) -> dict[str, object
                 "ERROR", "BOOTSTRAP_DYNAMIC_HISTORY", relative,
                 "Bootstrap estável contém SHA/PR/data transitória.",
             ))
-        if UNIVERSAL_READ_RE.search(text):
+        if requires_universal_read(text):
             findings.append(Finding(
                 "ERROR", "UNIVERSAL_READ_GRAPH", relative,
                 "Arquivo HOT exige leitura universal; use roteamento progressivo HOT/WARM/COLD.",
