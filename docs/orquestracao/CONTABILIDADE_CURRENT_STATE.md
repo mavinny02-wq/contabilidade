@@ -24,6 +24,8 @@
   backup;
 - o required gate de segredo/PII está verde localmente após substituir CPF literal de fixture por
   montagem `PUBLIC_SYNTHETIC` em runtime, sem exceção ou enfraquecimento do scanner;
+- o scorecard reproduzível do worker cobre as duas amostras Flash observadas; custo permanece
+  indisponível e nenhuma comparação OpenAI foi inferida sem amostra equivalente;
 - essas evidências são locais e não substituem integração em `main` nem o gate Windows P0.
 
 ## Ações oficiais
@@ -62,6 +64,7 @@ CONTEXT_GOVERNANCE_PRIMA = INTEGRATED
 STARTUP_ACTION_SEPARATION = IMPLEMENTED_STRUCTURAL
 OPTIONAL_LLM_WORKER_ROUTING = LOCAL_BRANCH_STRUCTURAL_GREEN
 SECRET_PII_REQUIRED_CI = LOCAL_BRANCH_GREEN
+WORKER_EVAL_SCORECARD = LOCAL_BRANCH_GREEN
 WINDOWS_DEV_STACK = NOT_PROVEN_AFTER_FIX
 WINDOWS_SECOND_START_REUSE = NOT_PROVEN
 ONPREMISE_KEYCLOAK = BLOCKED_UNTIL_DEV_GREEN

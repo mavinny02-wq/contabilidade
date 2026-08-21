@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0",
+  "scorecardId": "contabilidade-worker-eval-v1",
+  "samples": [
+    {
+      "id": "optional-worker-routing-review-001",
+      "observedAt": "2026-08-21",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "tier": "flash",
+      "resultPath": "docs/implementacao/BUG_OPS_CONTABILIDADE_OPTIONAL_DEEPSEEK_WORKER_ROUTING_001_RESULT.md",
+      "totalTokens": 12209,
+      "tokenOrigin": "PROVIDER_REPORTED",
+      "latencyMs": 60000,
+      "providerCost": null,
+      "acceptedCorrection": true,
+      "firstPassAccepted": false,
+      "reviewBlockers": 2,
+      "claimsWithoutEvidence": 0,
+      "filesOutsideOwner": 0,
+      "regressionTests": "PASS",
+      "structuralBuild": "PASS",
+      "unsafeRecommendationRejected": false
+    },
+    {
+      "id": "synthetic-cpf-fixture-review-001",
+      "observedAt": "2026-08-21",
+      "provider": "deepseek",
+      "model": "deepseek-v4-flash",
+      "tier": "flash",
+      "resultPath": "docs/implementacao/BUG_SEC_SECRET_PII_SYNTHETIC_WORKER_FIXTURE_001_RESULT.md",
+      "totalTokens": 13256,
+      "tokenOrigin": "PROVIDER_REPORTED",
+      "latencyMs": 67000,
+      "providerCost": null,
+      "acceptedCorrection": true,
+      "firstPassAccepted": false,
+      "reviewBlockers": 1,
+      "claimsWithoutEvidence": 0,
+      "filesOutsideOwner": 0,
+      "regressionTests": "PASS",
+      "structuralBuild": "PASS",
+      "unsafeRecommendationRejected": true
+    }
+  ]
+}
