@@ -1,10 +1,18 @@
 import copy
+import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-import synthetic_fixture_guard as guard
+
+MODULE_PATH = Path(__file__).with_name("synthetic_fixture_guard.py")
+SPEC = importlib.util.spec_from_file_location("synthetic_fixture_guard", MODULE_PATH)
+assert SPEC and SPEC.loader
+guard = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = guard
+SPEC.loader.exec_module(guard)
 
 
 class SyntheticFixtureGuardTest(unittest.TestCase):
@@ -14,6 +22,9 @@ class SyntheticFixtureGuardTest(unittest.TestCase):
 
     def validate(self, document=None, entry=None):
         guard.validate_document(document or self.document, entry or self.entry)
+
+    def test_guard_is_loaded_from_the_sibling_owner(self):
+        self.assertEqual(MODULE_PATH.resolve(), Path(guard.__file__).resolve())
 
     def test_generator_is_byte_for_byte_deterministic(self):
         first = guard.canonical_bytes(guard.generated_document(self.entry))
