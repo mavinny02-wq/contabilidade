@@ -2,9 +2,16 @@ import json
 import tempfile
 import unittest
 from datetime import date
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 
-from scripts.architecture.architecture_guard import Finding, analyze, typescript_edges, validate_allowlist
+from scripts.architecture.architecture_guard import (
+    Finding,
+    analyze,
+    canonical_path_key,
+    main,
+    typescript_edges,
+    validate_allowlist,
+)
 
 
 class ArchitectureGuardTest(unittest.TestCase):
@@ -21,6 +28,19 @@ class ArchitectureGuardTest(unittest.TestCase):
         first = typescript_edges(root)
         self.assertEqual(first, typescript_edges(root))
         self.assertEqual(first[0][1].name, "z.ts")
+
+    def test_path_order_is_posix_canonical_even_for_windows_paths(self):
+        paths = [PureWindowsPath("api/http.ts"), PureWindowsPath("App.tsx")]
+        ordered = sorted(paths, key=canonical_path_key)
+        self.assertEqual(["App.tsx", "api/http.ts"], [path.as_posix() for path in ordered])
+
+    def test_inventory_output_uses_platform_independent_line_endings(self):
+        root = self.fixture({})
+        output = root / "inventory.json"
+        self.assertEqual(0, main(["inventory", "--repo", str(root), "--output", str(output)]))
+        rendered = output.read_bytes()
+        self.assertNotIn(b"\r\n", rendered)
+        self.assertTrue(rendered.endswith(b"\n"))
 
     def test_synthetic_cycle_and_forbidden_edge(self):
         repo = self.fixture({

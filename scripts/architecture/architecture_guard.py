@@ -10,10 +10,19 @@ import re
 import sys
 from dataclasses import asdict, dataclass
 from datetime import date
-from pathlib import Path
+from pathlib import Path, PurePath
 
 IMPORT_TS = re.compile(r"(?:import|export)\s+(?:[^'\"]*?\s+from\s+)?['\"]([^'\"]+)['\"]")
 IMPORT_JAVA = re.compile(r"^\s*import\s+(?:static\s+)?([\w.]+)", re.MULTILINE)
+
+
+def canonical_path_key(path: PurePath) -> str:
+    """Order paths identically on Windows and POSIX hosts."""
+    return path.as_posix()
+
+
+def canonical_edge_key(edge: tuple[Path, Path]) -> tuple[str, str]:
+    return canonical_path_key(edge[0]), canonical_path_key(edge[1])
 
 
 @dataclass(frozen=True, order=True)
@@ -44,8 +53,9 @@ def _relative_target(source: Path, specifier: str, files: set[Path], root: Path)
 
 
 def typescript_edges(root: Path) -> list[tuple[Path, Path]]:
-    paths = sorted(p for p in (*root.rglob("*.ts"), *root.rglob("*.tsx"))
-                   if not re.search(r"\.(?:test|spec)\.tsx?$", p.name))
+    paths = sorted((p for p in (*root.rglob("*.ts"), *root.rglob("*.tsx"))
+                    if not re.search(r"\.(?:test|spec)\.tsx?$", p.name)),
+                   key=canonical_path_key)
     files = {p.resolve() for p in paths}
     edges: set[tuple[Path, Path]] = set()
     for source in paths:
@@ -53,11 +63,11 @@ def typescript_edges(root: Path) -> list[tuple[Path, Path]]:
             target = _relative_target(source.resolve(), specifier, files, root.resolve())
             if target:
                 edges.add((source.resolve(), target))
-    return sorted(edges)
+    return sorted(edges, key=canonical_edge_key)
 
 
 def java_edges(root: Path) -> list[tuple[Path, Path]]:
-    paths = sorted(root.rglob("*.java"))
+    paths = sorted(root.rglob("*.java"), key=canonical_path_key)
     classes = {}
     for path in paths:
         package = re.search(r"^\s*package\s+([\w.]+)", path.read_text(encoding="utf-8"), re.MULTILINE)
@@ -68,7 +78,7 @@ def java_edges(root: Path) -> list[tuple[Path, Path]]:
         for imported in IMPORT_JAVA.findall(source.read_text(encoding="utf-8")):
             if imported in classes:
                 edges.add((source.resolve(), classes[imported]))
-    return sorted(edges)
+    return sorted(edges, key=canonical_edge_key)
 
 
 def _cycle_findings(edges: list[tuple[Path, Path]], base: Path, scope: str) -> list[Finding]:
@@ -88,7 +98,7 @@ def _cycle_findings(edges: list[tuple[Path, Path]], base: Path, scope: str) -> l
         indexes[node] = low[node] = index
         index += 1
         stack.append(node); active.add(node)
-        for target in sorted(graph[node]):
+        for target in sorted(graph[node], key=canonical_path_key):
             if target not in indexes:
                 visit(target); low[node] = min(low[node], low[target])
             elif target in active:
@@ -99,11 +109,11 @@ def _cycle_findings(edges: list[tuple[Path, Path]], base: Path, scope: str) -> l
                 item = stack.pop(); active.remove(item); component.append(item)
                 if item == node: break
             if len(component) > 1 or node in graph[node]:
-                components.append(sorted(component))
-    for node in sorted(graph):
+                components.append(sorted(component, key=canonical_path_key))
+    for node in sorted(graph, key=canonical_path_key):
         if node not in indexes: visit(node)
     findings = []
-    for component in sorted(components):
+    for component in sorted(components, key=lambda paths: tuple(map(canonical_path_key, paths))):
         names = [p.relative_to(base).as_posix() for p in component]
         findings.append(Finding(f"{scope}.cycle", names[0], " -> ".join(names)))
     return findings
@@ -169,7 +179,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "inventory":
         payload = {"schema_version": 1, "graph": graph, "findings": [f.record() for f in findings]}
         rendered = json.dumps(payload, indent=2, sort_keys=True) + "\n"
-        args.output.write_text(rendered, encoding="utf-8") if args.output else print(rendered, end="")
+        args.output.write_bytes(rendered.encode("utf-8")) if args.output else print(rendered, end="")
         return 0
     allowlist = json.loads(args.allowlist.read_text(encoding="utf-8"))
     errors = validate_allowlist(findings, allowlist, date.today())
