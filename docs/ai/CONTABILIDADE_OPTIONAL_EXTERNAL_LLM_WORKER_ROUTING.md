@@ -24,17 +24,33 @@ O orquestrador primário retém decisões de produto, classificação de seguran
 resolução de conflitos, aceite estrutural, commit, push e deploy. A saída do worker é evidência para
 revisão, nunca aceite autônomo.
 
-- `flash`: inventário, comandos, lint, logs, fixtures, documentação limitada e bugs simples;
-- `pro`: arquitetura, implementação cross-stack, migração, concorrência, permissões e ciclo de vida;
+- `flash`: testes, triagem, trabalho mecânico, implementação comum, inventário, lint e bugs simples;
+- `pro`: somente `cross-stack`, `migration`, `concurrency`, `security` ou `architecture`;
 - Codex/OpenAI atual: orquestração, intenção ambígua, decisão autoritativa e revisão final.
+
+O roteamento por atividade é obrigatório por padrão. `test`, `triage`, `mechanical` e
+`implementation` selecionam Flash. `architecture` pode selecionar Pro, mas não concede autoridade.
+Toda rota DeepSeek Pro exige simultaneamente um `--pro-reason` fechado e
+`PRIMA_DEEPSEEK_PRO_APPROVED=1`; sem ambos, o runner termina antes de construir a rota ou chamar o
+provedor. `--pro-reason` com Flash também falha, inclusive quando não há chave.
 
 ## Uso
 
 ```text
 python scripts/ai/contabilidade_llm_worker.py --tier flash -- exec --ephemeral --sandbox workspace-write -C . "<launcher compacto>"
-python scripts/ai/contabilidade_llm_worker.py --tier pro -- exec --ephemeral --sandbox workspace-write -C . "<launcher complexo>"
 python scripts/ai/contabilidade_llm_worker.py --tier flash --route-only
 ```
+
+Pro autorizado somente para uma invocação PowerShell:
+
+```text
+$env:PRIMA_DEEPSEEK_PRO_APPROVED="1"
+python scripts/ai/contabilidade_llm_worker.py --tier pro --pro-reason architecture -- exec --ephemeral --sandbox workspace-write -C . "<launcher complexo>"
+Remove-Item Env:PRIMA_DEEPSEEK_PRO_APPROVED
+```
+
+Os valores aceitos por `--pro-reason` são `cross-stack`, `migration`, `concurrency`, `security` e
+`architecture`. O runner consome a autorização e não a encaminha ao processo filho.
 
 O router emite um registro seguro `CONTABILIDADE_LLM_ROUTE` no stderr. Overrides de
 modelo/provedor fornecidos pelo chamador são rejeitados.

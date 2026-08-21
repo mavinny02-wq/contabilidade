@@ -27,6 +27,10 @@ RESULT_MD: <path exato>
 - um ITEM, owner e resultado exatos;
 - migration `NONE` na maioria dos launchers;
 - packs possuem no máximo cinco launchers e um migration owner.
+- launchers liberados permanecem neutros de provedor; o dispatcher usa Flash para implementação
+  comum e só seleciona Pro com `--pro-reason` fechado mais `PRIMA_DEEPSEEK_PRO_APPROVED=1` temporário;
+- o prompt do worker lista owner e arquivos exatos, evita busca web/leitura ampla e nunca concede
+  autoaceite ao executor externo.
 
 Valide com:
 

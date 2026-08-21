@@ -21,6 +21,31 @@ spec.loader.exec_module(module)
 
 
 class ContabilidadeLlmWorkerTest(unittest.TestCase):
+    def test_activity_defaults_ordinary_work_to_flash(self) -> None:
+        for activity in ("test", "triage", "mechanical", "implementation"):
+            self.assertEqual("flash", module.choose_tier(None, activity))
+        self.assertEqual("pro", module.choose_tier(None, "architecture"))
+        self.assertEqual("flash", module.choose_tier("flash", "architecture"))
+
+    def test_pro_requires_closed_reason_and_temporary_authority(self) -> None:
+        with self.assertRaisesRegex(ValueError, "requires --pro-reason"):
+            module.validate_pro_authorization("pro", "secret", None, {})
+        with self.assertRaisesRegex(ValueError, "temporary"):
+            module.validate_pro_authorization("pro", "secret", "architecture", {})
+        module.validate_pro_authorization(
+            "pro",
+            "secret",
+            "architecture",
+            {"PRIMA_DEEPSEEK_PRO_APPROVED": "1"},
+        )
+
+    def test_flash_rejects_misleading_pro_reason_even_without_provider_key(self) -> None:
+        for key in (None, "secret"):
+            with self.subTest(key=key), self.assertRaisesRegex(
+                ValueError, "only when DeepSeek Pro"
+            ):
+                module.validate_pro_authorization("flash", key, "architecture", {})
+
     def test_missing_key_preserves_current_codex_command(self) -> None:
         route = module.choose_route("flash", None)
         arguments = [
@@ -84,6 +109,14 @@ class ContabilidadeLlmWorkerTest(unittest.TestCase):
         self.assertEqual(prepared["DEEPSEEK_API_KEY"], "secret")
         self.assertEqual(current["CODEX_HOME"], str(home / ".codex"))
         self.assertNotIn("DEEPSEEK_API_KEY", current)
+
+    def test_temporary_pro_authority_is_consumed_not_forwarded(self) -> None:
+        prepared = module.prepare_deepseek_environment(
+            {"PRIMA_DEEPSEEK_PRO_APPROVED": "1"},
+            "secret",
+            Path("C:/isolated"),
+        )
+        self.assertNotIn("PRIMA_DEEPSEEK_PRO_APPROVED", prepared)
 
     def test_explicit_contabilidade_home_wins(self) -> None:
         selected = module.resolve_deepseek_codex_home(
@@ -161,6 +194,56 @@ class ContabilidadeLlmWorkerTest(unittest.TestCase):
 
         self.assertEqual(exit_code, 0)
         self.assertIn('"provider": "current-codex"', stderr.getvalue())
+
+    def test_unauthorized_pro_fails_before_route_or_provider_call(self) -> None:
+        stderr = io.StringIO()
+        with patch.dict(os.environ, {"DEEPSEEK_API_KEY": "secret"}, clear=True), \
+            patch.object(module, "choose_route") as choose_route, \
+            patch.object(module, "execute") as execute, \
+            contextlib.redirect_stderr(stderr):
+            exit_code = module.main(["--tier", "pro", "--route-only"])
+
+        self.assertEqual(2, exit_code)
+        self.assertIn("requires --pro-reason", stderr.getvalue())
+        choose_route.assert_not_called()
+        execute.assert_not_called()
+
+    def test_pro_with_reason_but_without_temporary_authority_fails_closed(self) -> None:
+        stderr = io.StringIO()
+        with patch.dict(os.environ, {"DEEPSEEK_API_KEY": "secret"}, clear=True), \
+            patch.object(module, "choose_route") as choose_route, \
+            contextlib.redirect_stderr(stderr):
+            exit_code = module.main(
+                ["--tier", "pro", "--pro-reason", "architecture", "--route-only"]
+            )
+
+        self.assertEqual(2, exit_code)
+        self.assertIn("temporary PRIMA_DEEPSEEK_PRO_APPROVED=1", stderr.getvalue())
+        choose_route.assert_not_called()
+
+    def test_authorized_pro_route_is_available_without_provider_call(self) -> None:
+        stderr = io.StringIO()
+        environment = {
+            "DEEPSEEK_API_KEY": "secret",
+            "PRIMA_DEEPSEEK_PRO_APPROVED": "1",
+        }
+        with patch.dict(os.environ, environment, clear=False), \
+            contextlib.redirect_stderr(stderr):
+            exit_code = module.main(
+                ["--tier", "pro", "--pro-reason", "architecture", "--route-only"]
+            )
+
+        self.assertEqual(0, exit_code)
+        self.assertIn('"model": "deepseek-v4-pro"', stderr.getvalue())
+
+    def test_default_activity_routes_to_flash(self) -> None:
+        stderr = io.StringIO()
+        with patch.dict(os.environ, {"DEEPSEEK_API_KEY": "secret"}, clear=False), \
+            contextlib.redirect_stderr(stderr):
+            exit_code = module.main(["--route-only"])
+
+        self.assertEqual(0, exit_code)
+        self.assertIn('"model": "deepseek-v4-flash"', stderr.getvalue())
 
 
 if __name__ == "__main__":

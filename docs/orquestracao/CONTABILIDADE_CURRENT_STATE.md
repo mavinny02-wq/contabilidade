@@ -26,6 +26,8 @@
   montagem `PUBLIC_SYNTHETIC` em runtime, sem exceção ou enfraquecimento do scanner;
 - o scorecard reproduzível do worker cobre as duas amostras Flash observadas; custo permanece
   indisponível e nenhuma comparação OpenAI foi inferida sem amostra equivalente;
+- DeepSeek Pro está fail-closed no runner local: motivo fechado e autoridade temporária são
+  obrigatórios antes da rota, enquanto implementação comum permanece em Flash;
 - essas evidências são locais e não substituem integração em `main` nem o gate Windows P0.
 
 ## Ações oficiais
@@ -65,6 +67,7 @@ STARTUP_ACTION_SEPARATION = IMPLEMENTED_STRUCTURAL
 OPTIONAL_LLM_WORKER_ROUTING = LOCAL_BRANCH_STRUCTURAL_GREEN
 SECRET_PII_REQUIRED_CI = LOCAL_BRANCH_GREEN
 WORKER_EVAL_SCORECARD = LOCAL_BRANCH_GREEN
+DEEPSEEK_PRO_FAIL_CLOSED = LOCAL_BRANCH_GREEN
 WINDOWS_DEV_STACK = NOT_PROVEN_AFTER_FIX
 WINDOWS_SECOND_START_REUSE = NOT_PROVEN
 ONPREMISE_KEYCLOAK = BLOCKED_UNTIL_DEV_GREEN

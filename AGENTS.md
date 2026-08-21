@@ -13,6 +13,12 @@
 
 Siga `docs/ai/CONTEXTO_E_ORCAMENTO.md`.
 
+Workers opcionais seguem `docs/ai/CONTABILIDADE_OPTIONAL_EXTERNAL_LLM_WORKER_ROUTING.md`. Sem
+chave de provedor, o runner preserva o Codex atual. Com DeepSeek, trabalho rotineiro e implementação
+comum usam Flash. Pro é fail-closed: exige motivo aprovado e autoridade temporária
+`PRIMA_DEEPSEEK_PRO_APPROVED=1`. O worker nunca assume decisão ou aceite; mantenha prompt bounded e
+revisão final na task primária.
+
 Contexto HOT de uma task comum:
 
 1. este arquivo e o `AGENTS.md` mais próximo;

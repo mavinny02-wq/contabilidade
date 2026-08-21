@@ -22,6 +22,22 @@ DEEPSEEK_MODELS = {
     "pro": ("deepseek-v4-pro", "high"),
 }
 
+ACTIVITY_TIERS = {
+    "test": "flash",
+    "triage": "flash",
+    "mechanical": "flash",
+    "implementation": "flash",
+    "architecture": "pro",
+}
+
+PRO_REASONS = (
+    "cross-stack",
+    "migration",
+    "concurrency",
+    "security",
+    "architecture",
+)
+
 
 @dataclass(frozen=True)
 class Route:
@@ -77,6 +93,32 @@ def choose_route(tier: str, api_key: str | None) -> Route:
     )
 
 
+def choose_tier(explicit_tier: str | None, activity: str) -> str:
+    return explicit_tier or ACTIVITY_TIERS[activity]
+
+
+def validate_pro_authorization(
+    tier: str,
+    api_key: str | None,
+    pro_reason: str | None,
+    environment: Mapping[str, str],
+) -> None:
+    if tier != "pro":
+        if pro_reason:
+            raise ValueError("--pro-reason is valid only when DeepSeek Pro is selected")
+        return
+    if not api_key:
+        return
+    if not pro_reason:
+        raise ValueError(
+            "DeepSeek Pro requires --pro-reason with an approved bounded reason"
+        )
+    if environment.get("PRIMA_DEEPSEEK_PRO_APPROVED", "").strip() != "1":
+        raise ValueError(
+            "DeepSeek Pro requires temporary PRIMA_DEEPSEEK_PRO_APPROVED=1 authority"
+        )
+
+
 def resolve_codex_executable(
     codex: str,
     platform_name: str | None = None,
@@ -108,6 +150,7 @@ def prepare_deepseek_environment(
     environment: Mapping[str, str], api_key: str, codex_home: Path
 ) -> dict[str, str]:
     prepared = dict(environment)
+    prepared.pop("PRIMA_DEEPSEEK_PRO_APPROVED", None)
     prepared["DEEPSEEK_API_KEY"] = api_key
     prepared["CODEX_HOME"] = str(codex_home)
     return prepared
@@ -196,7 +239,11 @@ def parse_args(arguments: Sequence[str] | None = None) -> argparse.Namespace:
             "the caller's current Codex routing"
         )
     )
-    parser.add_argument("--tier", choices=tuple(DEEPSEEK_MODELS), default="flash")
+    parser.add_argument("--tier", choices=tuple(DEEPSEEK_MODELS))
+    parser.add_argument(
+        "--activity", choices=tuple(ACTIVITY_TIERS), default="implementation"
+    )
+    parser.add_argument("--pro-reason", choices=PRO_REASONS)
     parser.add_argument("--codex", default="codex")
     parser.add_argument("--route-only", action="store_true")
     parser.add_argument("codex_arguments", nargs=argparse.REMAINDER)
@@ -212,7 +259,15 @@ def main(arguments: Sequence[str] | None = None) -> int:
     args = parse_args(arguments)
     child_environment = dict(os.environ)
     api_key = resolve_deepseek_key(child_environment)
-    route = choose_route(args.tier, api_key)
+    tier = choose_tier(args.tier, args.activity)
+    try:
+        validate_pro_authorization(
+            tier, api_key, args.pro_reason, child_environment
+        )
+    except ValueError as error:
+        print(f"contabilidade_llm_worker: error: {error}", file=sys.stderr)
+        return 2
+    route = choose_route(tier, api_key)
     if api_key:
         codex_home = resolve_deepseek_codex_home(child_environment)
         if not args.route_only:
