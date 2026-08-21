@@ -1,6 +1,19 @@
 $modulePath = Join-Path $PSScriptRoot '..\lib\startup-probe.psm1'
 Import-Module $modulePath -Force
 
+Describe 'Startup module composition' {
+    It 'keeps the Docker command surface available after importing the probe module' {
+        $dockerModulePath = Join-Path $PSScriptRoot '..\lib\contabilidade-docker.psm1'
+        Import-Module $dockerModulePath -Force
+        Import-Module $modulePath -Force
+
+        Get-Command Invoke-ContabilidadeNativeCommand -ErrorAction SilentlyContinue |
+            Should -Not -BeNullOrEmpty
+        Get-Command Invoke-ContabilidadeDocker -ErrorAction SilentlyContinue |
+            Should -Not -BeNullOrEmpty
+    }
+}
+
 Describe 'Startup probe lifecycle' {
     InModuleScope startup-probe {
         BeforeAll {

@@ -1,7 +1,11 @@
 Set-StrictMode -Version Latest
 
 $dockerModulePath = Join-Path $PSScriptRoot 'contabilidade-docker.psm1'
-Import-Module $dockerModulePath -Force
+# Reloading this dependency from inside the probe module removes an already imported
+# contabilidade-docker command surface from the caller under Windows PowerShell 5.1.
+# A normal import still makes the dependency available to this module without invalidating it
+# for startup scripts that intentionally use both modules.
+Import-Module $dockerModulePath
 
 $script:DefaultProbeName = 'contabilidade-startup-probe'
 $script:DefaultProbeLabelKey = 'contabilidade.local.startup-probe'

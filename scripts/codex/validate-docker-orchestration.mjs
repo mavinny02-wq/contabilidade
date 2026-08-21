@@ -41,6 +41,23 @@ export function findAmbiguousPowerShellVariableColon(source) {
   ));
 }
 
+export function usesPowerShell51SafeStepMaterialization(source) {
+  return /steps\s*=\s*\$steps\.ToArray\(\)/i.test(source);
+}
+
+export function callsRuntimePreflightBeforeResilientStartup(source) {
+  const normalized = source.toLowerCase();
+  const preflightCallIndex = normalized.indexOf('call :runtime_preflight');
+  const resilientIndex = normalized.indexOf('start-contabilidade-resilient.ps1');
+  return preflightCallIndex >= 0 && resilientIndex >= 0 && preflightCallIndex < resilientIndex;
+}
+
+export function requiresPester5FailClosed(source) {
+  return /Version\.Major\s*-lt\s*5/i.test(source)
+    && /Pester 5\+/i.test(source)
+    && !/Invoke-Pester[^\r\n]*-Show\b/i.test(source);
+}
+
 export function validateDockerOrchestration({
   rootBat,
   startupRuntimePreflight,
@@ -67,9 +84,11 @@ export function validateDockerOrchestration({
   assert.match(rootBat, /scripts\\maintenance\\liberar-memoria-docker\.bat/i);
   assert.match(rootBat, /if \/i "%ACTION%"=="dev"/i);
   assert.match(rootBat, /if \/i "%ACTION%"=="onpremise"/i);
-  const runtimePreflightIndex = rootBat.toLowerCase().indexOf('invoke-startup-runtime-preflight.ps1');
-  const resilientIndex = rootBat.toLowerCase().indexOf('start-contabilidade-resilient.ps1');
-  assert.ok(runtimePreflightIndex >= 0 && runtimePreflightIndex < resilientIndex, 'preflight runtime deve preceder o wrapper resiliente e qualquer build');
+  assert.equal(
+    callsRuntimePreflightBeforeResilientStartup(rootBat),
+    true,
+    'call :runtime_preflight deve preceder o wrapper resiliente e qualquer build',
+  );
 
   assert.match(startupRuntimePreflight, /Invoke-StartupPowerShellPreflight/i);
   assert.match(startupRuntimePreflight, /Assert-ContabilidadeDockerAvailable/i);
@@ -172,6 +191,16 @@ export function validateDockerOrchestration({
   assert.match(startupGateRunner, /startup-reliability-evidence\.json/i);
   assert.match(startupGateRunner, /official-startup-attempt-\$attempt\.log/i);
   assert.match(startupGateRunner, /for \(\$attempt = 1; \$attempt -le 2;/i);
+  assert.equal(
+    usesPowerShell51SafeStepMaterialization(startupGateRunner),
+    true,
+    'runner deve materializar List[object] sem ArgumentException no Windows PowerShell 5.1',
+  );
+  assert.equal(
+    requiresPester5FailClosed(startupGateRunner),
+    true,
+    'runner deve rejeitar Pester anterior a 5 antes de executar a suite',
+  );
 
   assert.match(startupDockerIntegration, /contabilidade\.test-suite=startup-reliability/i);
   assert.match(startupDockerIntegration, /contabilidade\.test-run/i);

@@ -198,8 +198,9 @@ try {
     $null = Invoke-CheckedNative -Name 'docker-orchestration-tests' -FilePath 'node' -Arguments @('--test', (Join-Path $ProjectDir 'scripts\codex\validate-docker-orchestration.test.mjs'))
 
     $pesterModule = Get-Module -ListAvailable Pester | Sort-Object Version -Descending | Select-Object -First 1
-    if ($null -eq $pesterModule) {
-        throw '[ENVIRONMENT_LIMITATION] Pester nao esta instalado. Instale Pester 5 e repita o gate.'
+    if ($null -eq $pesterModule -or $pesterModule.Version.Major -lt 5) {
+        $detectedVersion = if ($null -eq $pesterModule) { 'NOT_INSTALLED' } else { $pesterModule.Version.ToString() }
+        throw "[ENVIRONMENT_LIMITATION] Pester 5+ e obrigatorio; encontrado $detectedVersion. Instale Pester 5 e repita o gate."
     }
     Import-Module $pesterModule.Path -Force
     $testPaths = @(
@@ -209,12 +210,7 @@ try {
         (Join-Path $ProjectDir 'scripts\tests\startup-preflight.Tests.ps1'),
         (Join-Path $ProjectDir 'scripts\tests\native-process.Tests.ps1')
     )
-    if ($pesterModule.Version.Major -ge 5) {
-        $pesterResult = Invoke-Pester -Path $testPaths -PassThru -Output Detailed
-    }
-    else {
-        $pesterResult = Invoke-Pester -Script $testPaths -PassThru -Show Summary
-    }
+    $pesterResult = Invoke-Pester -Path $testPaths -PassThru -Output Detailed
     if ($pesterResult.FailedCount -gt 0) {
         throw "Pester encontrou $($pesterResult.FailedCount) teste(s) com falha."
     }
@@ -347,7 +343,9 @@ $evidence = [ordered]@{
     startedAt = $startedAt.ToUniversalTime().ToString('o')
     finishedAt = $finishedAt.ToUniversalTime().ToString('o')
     durationSeconds = [Math]::Round(($finishedAt - $startedAt).TotalSeconds, 3)
-    steps = @($steps)
+    # Windows PowerShell 5.1 throws ArgumentException when @() materializes a generic
+    # List[object] inside an ordered hashtable. ToArray preserves an empty or populated JSON array.
+    steps = $steps.ToArray()
     failure = $failure
 }
 $evidence | ConvertTo-Json -Depth 12 | Set-Content -LiteralPath $jsonPath -Encoding UTF8
