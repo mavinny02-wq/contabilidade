@@ -37,6 +37,10 @@ class CloudComposeRuntimeLauncherTest(unittest.TestCase):
         self.assertIn("PG_VOLUME_FIRST", workflow)
         self.assertIn("/actuator/health/readiness", workflow)
         self.assertIn("flyway_schema_history", workflow)
+        self.assertIn(
+            "github.event_name != 'workflow_dispatch' || !inputs.run_linux_runtime",
+            workflow,
+        )
         self.assertNotIn("docker compose down", workflow)
         self.assertNotIn("docker system prune", workflow)
 
