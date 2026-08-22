@@ -21,13 +21,42 @@ export function containsBuildCommand(source) {
   ));
 }
 
+export function yamlServiceSection(source, service) {
+  const lines = source.split(/\r?\n/);
+  const start = lines.findIndex((line) => line === `  ${service}:`);
+  if (start < 0) return '';
+  const rest = lines.slice(start + 1);
+  const length = rest.findIndex((line) => /^  [A-Za-z0-9_-]+:\s*$/.test(line));
+  return [lines[start], ...(length < 0 ? rest : rest.slice(0, length))].join('\n');
+}
+
+export function validateOnPremiseDeployHealth({ composeBase, deployScript, backendDockerfile }) {
+  const backend = yamlServiceSection(composeBase, 'backend');
+  assert.match(backend, /healthcheck:/i, 'backend precisa declarar healthcheck no Compose base');
+  assert.match(backend, /actuator\/health\/readiness/i,
+    'healthcheck autoritativo do backend precisa provar readiness');
+  assert.match(backendDockerfile, /apt-get\s+install[\s\S]*\bcurl\b/i,
+    'imagem publicada do backend precisa conter o cliente usado pelo healthcheck');
+
+  const generated = deployScript.match(/\$override\s*=\s*@"([\s\S]*?)"@/i)?.[1] ?? '';
+  assert.notEqual(generated, '', 'deploy precisa gerar o override de imagens on-premise');
+  const overrideBackend = yamlServiceSection(generated, 'backend');
+  assert.match(overrideBackend, /image:\s*\$backendImage/i);
+  assert.match(overrideBackend, /build:\s*null/i);
+  assert.doesNotMatch(overrideBackend, /healthcheck:|test\s+-f\s+\/app\/app\.jar/i,
+    'override de imagem nao pode substituir readiness por existencia do JAR');
+}
+
 export function validateStartupActions({ rootBat, coreBat, checkScript, doctorScript }) {
   for (const action of ['run_dev', 'run_build', 'run_start', 'run_check', 'run_doctor']) {
     assert.match(rootBat, new RegExp(`^:${action}\\s*$`, 'im'), `acao ausente: ${action}`);
   }
 
   const start = batSection(rootBat, 'run_start');
-  assert.match(start, /invoke-startup-runtime-preflight\.ps1/i);
+  assert.match(start, /call\s+:runtime_preflight/i);
+  const runtimePreflight = batSection(rootBat, 'runtime_preflight');
+  assert.match(runtimePreflight, /invoke-startup-runtime-preflight\.ps1/i,
+    'subrotina de preflight precisa executar a validacao runtime autoritativa');
   assert.match(start, /start-compose-sequential\.bat/i);
   assert.equal(containsBuildCommand(start), false,
     'start deve apenas subir imagens existentes');
@@ -74,6 +103,11 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     checkScript: read('scripts/check-contabilidade.ps1'),
     doctorScript: read('scripts/doctor-contabilidade.ps1'),
   });
+  validateOnPremiseDeployHealth({
+    composeBase: read('compose.yaml'),
+    deployScript: read('scripts/deploy-contabilidade-onpremise.ps1'),
+    backendDockerfile: read('backend/Dockerfile'),
+  });
   console.log(JSON.stringify({
     status: 'OK',
     contracts: [
@@ -82,6 +116,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       'start sobe sem Maven/npm/compilacao',
       'check compila sem Docker',
       'doctor diagnostica sem mutacao',
+      'deploy on-premise preserva readiness do backend',
     ],
   }, null, 2));
 }

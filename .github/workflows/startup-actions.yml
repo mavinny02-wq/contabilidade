@@ -8,6 +8,9 @@ on:
       - "scripts/start-contabilidade-core.bat"
       - "scripts/check-contabilidade.ps1"
       - "scripts/doctor-contabilidade.ps1"
+      - "scripts/deploy-contabilidade-onpremise.ps1"
+      - "compose.yaml"
+      - "backend/Dockerfile"
       - "scripts/codex/validate-startup-actions*"
       - ".github/workflows/startup-actions.yml"
   push:
@@ -17,6 +20,9 @@ on:
       - "scripts/start-contabilidade-core.bat"
       - "scripts/check-contabilidade.ps1"
       - "scripts/doctor-contabilidade.ps1"
+      - "scripts/deploy-contabilidade-onpremise.ps1"
+      - "compose.yaml"
+      - "backend/Dockerfile"
       - "scripts/codex/validate-startup-actions*"
   workflow_dispatch:
 
@@ -41,6 +47,7 @@ jobs:
           $files = @(
             'scripts/check-contabilidade.ps1',
             'scripts/doctor-contabilidade.ps1'
+            'scripts/deploy-contabilidade-onpremise.ps1'
           )
           foreach ($file in $files) {
             $tokens = $null

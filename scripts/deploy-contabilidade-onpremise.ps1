@@ -185,11 +185,6 @@ services:
   backend:
     image: $backendImage
     build: null
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /app/app.jar"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
   frontend:
     image: $frontendImage
     build: null
