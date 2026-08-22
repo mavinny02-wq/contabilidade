@@ -46,8 +46,8 @@ ou os gates Windows do predecessor.
    `up -d --build --wait --wait-timeout 900`. Registre exit code, duração, IDs do container
    PostgreSQL e do volume nomeado, sem registrar valores do env.
 4. Comprove HTTP 200 reais em backend liveness/readiness, worker `/health`, frontend `/healthz` e
-   proxy `/api/info`; confirme containers esperados `healthy`, bootstrap PostgreSQL concluído com
-   sucesso e Flyway V12 aplicado. Não chame provider fiscal ou E2E externo.
+   proxy `/api/info`; confirme os quatro serviços dev esperados `healthy`, Keycloak/bootstrap
+   ausentes e Flyway V12 aplicado. Não chame provider fiscal ou E2E externo.
 5. Segunda inicialização, sem stop/down/cleanup: execute o mesmo prefixo com
    `up -d --wait --wait-timeout 900`, sem `--build`. Repita todos os checks e prove que o container
    PostgreSQL e o volume nomeado foram reutilizados.

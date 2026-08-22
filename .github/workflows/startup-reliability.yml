@@ -70,7 +70,8 @@ jobs:
         run: |
           set -euo pipefail
           compose=(docker compose --env-file "$ENV_FILE" -f compose.yaml -f compose.dev.yaml)
-          "${compose[@]}" up -d --build --wait --wait-timeout 900
+          services=(postgres backend automation-worker frontend)
+          "${compose[@]}" up -d --build --wait --wait-timeout 900 "${services[@]}"
           pg_container_first="$("${compose[@]}" ps -q postgres)"
           test -n "$pg_container_first"
           pg_volume_first="$(docker inspect "$pg_container_first" --format '{{range .Mounts}}{{if eq .Destination "/var/lib/postgresql/data"}}{{.Name}}{{end}}{{end}}')"
@@ -86,15 +87,16 @@ jobs:
             curl --fail --silent --show-error "$url" >/dev/null
           done
           test "$("${compose[@]}" exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc "SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank DESC LIMIT 1"')" = "12"
-          bootstrap_id="$("${compose[@]}" ps -aq postgres-bootstrap)"
-          test -n "$bootstrap_id"
-          test "$(docker inspect "$bootstrap_id" --format '{{.State.ExitCode}}')" = "0"
+          for forbidden_service in keycloak postgres-bootstrap; do
+            test -z "$("${compose[@]}" ps -aq "$forbidden_service")"
+          done
       - name: Second startup without cleanup and PostgreSQL reuse
         shell: bash
         run: |
           set -euo pipefail
           compose=(docker compose --env-file "$ENV_FILE" -f compose.yaml -f compose.dev.yaml)
-          "${compose[@]}" up -d --wait --wait-timeout 900
+          services=(postgres backend automation-worker frontend)
+          "${compose[@]}" up -d --wait --wait-timeout 900 "${services[@]}"
           pg_container_second="$("${compose[@]}" ps -q postgres)"
           pg_volume_second="$(docker inspect "$pg_container_second" --format '{{range .Mounts}}{{if eq .Destination "/var/lib/postgresql/data"}}{{.Name}}{{end}}{{end}}')"
           test "$pg_container_second" = "$PG_CONTAINER_FIRST"
@@ -108,6 +110,9 @@ jobs:
             curl --fail --silent --show-error "$url" >/dev/null
           done
           test "$("${compose[@]}" exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc "SELECT version FROM flyway_schema_history WHERE success ORDER BY installed_rank DESC LIMIT 1"')" = "12"
+          for forbidden_service in keycloak postgres-bootstrap; do
+            test -z "$("${compose[@]}" ps -aq "$forbidden_service")"
+          done
       - name: Bounded failure diagnostics
         if: failure()
         shell: bash
