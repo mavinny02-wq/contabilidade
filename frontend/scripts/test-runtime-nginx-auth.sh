@@ -40,10 +40,14 @@ if APP_AUTH_ENABLED=invalid \
   exit 1
 fi
 
+grep -F 'root /usr/share/nginx/html;' "$nginx_config" >/dev/null
+grep -F 'index index.html;' "$nginx_config" >/dev/null
+grep -F 'location = /index.html' "$nginx_config" >/dev/null
+grep -F 'try_files /index.html =404;' "$nginx_config" >/dev/null
 grep -F 'include /etc/nginx/contabilidade/auth-location.conf;' "$nginx_config" >/dev/null
 if grep -Fiq 'proxy_pass http://keycloak' "$nginx_config"; then
   echo 'Base Nginx config still has an unconditional Keycloak upstream.' >&2
   exit 1
 fi
 
-echo '[OK] Frontend runtime auth modes rendered correctly.'
+echo '[OK] Frontend runtime auth modes and SPA root contract rendered correctly.'
