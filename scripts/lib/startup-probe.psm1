@@ -1,7 +1,20 @@
 Set-StrictMode -Version Latest
 
 $dockerModulePath = Join-Path $PSScriptRoot 'contabilidade-docker.psm1'
-Import-Module $dockerModulePath -Force
+# Do not force-reload a dependency from inside another module. In Windows PowerShell 5.1,
+# a nested Import-Module -Force can remove commands that the caller imported from the same
+# module, which made Assert-ContabilidadeDockerAvailable disappear after startup-probe loaded.
+Import-Module $dockerModulePath -ErrorAction Stop
+
+foreach ($requiredCommand in @(
+    'Invoke-ContabilidadeDocker',
+    'Test-ContabilidadeDockerContainerAbsent',
+    'Get-ContabilidadeDockerFailureCategory'
+)) {
+    if ($null -eq (Get-Command -Name $requiredCommand -ErrorAction SilentlyContinue | Select-Object -First 1)) {
+        throw "[STARTUP_MODULE_CONTRACT] Dependencia Docker ausente no modulo startup-probe: $requiredCommand"
+    }
+}
 
 $script:DefaultProbeName = 'contabilidade-startup-probe'
 $script:DefaultProbeLabelKey = 'contabilidade.local.startup-probe'
