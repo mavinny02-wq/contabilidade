@@ -65,10 +65,27 @@ Assert-Contract (-not $probeSource.Contains("@('container', 'inspect', '--format
 Assert-Contract ($probeSource -match 'ConvertFrom-Json') `
     'Probe deve interpretar o JSON regular retornado pelo Docker.'
 
-$preflightSource = Get-Content -LiteralPath $PreflightPath -Raw
-Assert-Contract ($preflightSource -notmatch '\bRemove-ContabilidadeStartupProbe\b') `
+# Strings in the module export contract may legitimately name probe functions. Inspect the
+# executable AST so only real command invocations can violate the read-only preflight rule.
+$preflightTokens = $null
+$preflightErrors = $null
+$preflightAst = [System.Management.Automation.Language.Parser]::ParseFile(
+    $PreflightPath,
+    [ref]$preflightTokens,
+    [ref]$preflightErrors
+)
+Assert-Contract ($preflightErrors.Count -eq 0) 'Parser falhou no preflight oficial.'
+$preflightCommands = @(
+    $preflightAst.FindAll({
+        param($node)
+        $node -is [System.Management.Automation.Language.CommandAst]
+    }, $true) |
+        ForEach-Object { $_.GetCommandName() } |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+)
+Assert-Contract ($preflightCommands -notcontains 'Remove-ContabilidadeStartupProbe') `
     'Preflight PRIMA-style deve ser read-only e nao pode limpar probe.'
-Assert-Contract ($preflightSource -notmatch '\bGet-ContabilidadeStartupProbeState\b') `
+Assert-Contract ($preflightCommands -notcontains 'Get-ContabilidadeStartupProbeState') `
     'Preflight PRIMA-style nao deve inspecionar container da aplicacao.'
 
 # Exercise the real Windows native-command path without requiring Docker Desktop. A local
@@ -113,14 +130,21 @@ if /i "%~1"=="container" if /i "%~2"=="inspect" (
 >&2 echo unexpected Docker arguments: %*
 exit /b 93
 '@
-# CMD does not use backslash to escape quotes. Remove the JSON-only escapes from the
-# fixture payload while keeping the PowerShell source itself easy to read.
-$fakeDocker = $fakeDocker.Replace('\"', '"')
 [IO.File]::WriteAllText($fakeDockerPath, $fakeDocker, (New-Object Text.ASCIIEncoding))
 
 try {
     $env:Path = $fixtureRoot + [IO.Path]::PathSeparator + $previousPath
     $env:CONTABILIDADE_FAKE_DOCKER_CAPTURE = $formatCapturePath
+
+    $resolvedDocker = Get-Command docker -CommandType Application -ErrorAction Stop | Select-Object -First 1
+    $resolvedDockerPath = if (-not [string]::IsNullOrWhiteSpace($resolvedDocker.Source)) {
+        $resolvedDocker.Source
+    }
+    else {
+        $resolvedDocker.Path
+    }
+    Assert-Contract ((Resolve-Path -LiteralPath $resolvedDockerPath).Path -eq (Resolve-Path -LiteralPath $fakeDockerPath).Path) `
+        'Fixture docker.cmd nao recebeu precedencia no PATH do teste.'
 
     $formatCall = Invoke-ContabilidadeDocker -Arguments @(
         'container', 'inspect', '--format', $legacyLabelTemplate, 'format-probe'
