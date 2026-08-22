@@ -1,0 +1,117 @@
+name: PRIMA Full Compose Startup
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "START_CONTABILIDADE.bat"
+      - "compose.dev.yaml"
+      - "frontend/nginx.conf"
+      - "frontend/docker-entrypoint.d/40-runtime-config.sh"
+      - "frontend/scripts/test-runtime-nginx-auth.sh"
+      - "scripts/start-compose-sequential.*"
+      - "scripts/validate-database-state.bat"
+      - "scripts/verify-runtime-images.ps1"
+      - "scripts/tests/assert-prima-compose-startup-contract.ps1"
+      - ".github/workflows/prima-full-compose-startup.yml"
+  push:
+    branches: [main]
+    paths:
+      - "START_CONTABILIDADE.bat"
+      - "compose.dev.yaml"
+      - "frontend/nginx.conf"
+      - "frontend/docker-entrypoint.d/40-runtime-config.sh"
+      - "frontend/scripts/test-runtime-nginx-auth.sh"
+      - "scripts/start-compose-sequential.*"
+      - "scripts/validate-database-state.bat"
+      - "scripts/verify-runtime-images.ps1"
+      - "scripts/tests/assert-prima-compose-startup-contract.ps1"
+      - ".github/workflows/prima-full-compose-startup.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-contract:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse and validate the PRIMA-style Compose startup contract
+        shell: powershell
+        run: |
+          $tokens = $null
+          $errors = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path 'scripts/start-compose-sequential.ps1'),
+            [ref]$tokens,
+            [ref]$errors
+          )
+          if ($errors.Count -gt 0) {
+            $errors | ForEach-Object { Write-Error $_.Message }
+            throw "Parser encontrou $($errors.Count) erro(s)."
+          }
+          powershell -NoProfile -ExecutionPolicy Bypass `
+            -File scripts/tests/assert-prima-compose-startup-contract.ps1
+
+  frontend-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Build frontend artifact
+        working-directory: frontend
+        run: |
+          npm ci --no-audit --no-fund
+          npm run locale:validate
+          npm run typecheck
+          npm run build
+      - name: Validate runtime configuration contracts
+        working-directory: frontend
+        run: bash scripts/test-runtime-nginx-auth.sh
+      - name: Serve the built SPA and reject Nginx redirect cycles
+        shell: bash
+        run: |
+          set -euo pipefail
+          runtime_root="$(mktemp -d)"
+          container_name="contabilidade-nginx-smoke-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          cleanup() {
+            docker rm -f "$container_name" >/dev/null 2>&1 || true
+            rm -rf "$runtime_root"
+          }
+          trap cleanup EXIT
+
+          cp -R frontend/dist/. "$runtime_root/"
+          docker run -d \
+            --name "$container_name" \
+            --add-host backend:127.0.0.1 \
+            --add-host automation-worker:127.0.0.1 \
+            --add-host keycloak:127.0.0.1 \
+            -e APP_AUTH_ENABLED=true \
+            -p 127.0.0.1:18088:8080 \
+            -v "$GITHUB_WORKSPACE/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+            -v "$GITHUB_WORKSPACE/frontend/docker-entrypoint.d/40-runtime-config.sh:/runtime-config.sh:ro" \
+            -v "$runtime_root:/usr/share/nginx/html" \
+            --entrypoint /bin/sh \
+            nginx:1.27-alpine \
+            -c 'sh /runtime-config.sh && exec nginx -g "daemon off;"'
+
+          for attempt in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:18088/healthz >/dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              docker logs "$container_name"
+              exit 1
+            fi
+            sleep 1
+          done
+
+          status="$(curl -sS -o "$runtime_root/home.html" -w '%{http_code}' http://127.0.0.1:18088/)"
+          test "$status" = "200"
+          grep -Eqi '<!doctype html|<html' "$runtime_root/home.html"
+          ! docker logs "$container_name" 2>&1 | grep -F 'rewrite or internal redirection cycle'
