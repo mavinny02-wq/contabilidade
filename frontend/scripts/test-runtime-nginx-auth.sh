@@ -21,7 +21,7 @@ run_mode() {
 
 run_mode false
 grep -F 'authEnabled: false' "$test_root/false/config.js" >/dev/null
-if grep -F 'keycloak' "$test_root/false/auth-location.conf" >/dev/null; then
+if grep -Fiq 'keycloak' "$test_root/false/auth-location.conf"; then
   echo 'Auth-disabled mode still references Keycloak.' >&2
   exit 1
 fi
@@ -41,7 +41,7 @@ if APP_AUTH_ENABLED=invalid \
 fi
 
 grep -F 'include /etc/nginx/contabilidade/auth-location.conf;' "$nginx_config" >/dev/null
-if grep -F 'proxy_pass http://keycloak' "$nginx_config" >/dev/null; then
+if grep -Fiq 'proxy_pass http://keycloak' "$nginx_config"; then
   echo 'Base Nginx config still has an unconditional Keycloak upstream.' >&2
   exit 1
 fi
