@@ -44,13 +44,4 @@ echo [TRANSITION] Imagens verificadas. Iniciando Docker Compose sequencial...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0start-compose-sequential.ps1" -Mode "%MODE%"
 set "RC=%ERRORLEVEL%"
 
-if not "%RC%"=="0" (
-  echo.
-  echo ---- ESTADO FINAL DOS CONTAINERS ----
-  docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" ps -a
-  echo.
-  echo ---- LOGS DE STARTUP ----
-  docker compose --env-file "%ENV_FILE%" -f "%COMPOSE_BASE%" -f "%COMPOSE_MODE%" -f "%COMPOSE_OVERRIDE%" logs --no-color --tail 250 postgres postgres-bootstrap keycloak backend automation-worker frontend
-)
-
 exit /b %RC%

@@ -8,6 +8,7 @@ $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 
 $ProjectDir = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+Import-Module (Join-Path $PSScriptRoot 'lib\contabilidade-docker.psm1') -Force
 $EnvFile = Join-Path $ProjectDir '.env'
 $EnvExample = Join-Path $ProjectDir '.env.example'
 $VersionFile = Join-Path $ProjectDir 'VERSION'
@@ -84,23 +85,15 @@ function Resolve-ImageReference {
     return $value
 }
 
-function Invoke-Docker {
-    param([string[]]$Arguments)
-
-    & docker @Arguments
-    if ($LASTEXITCODE -ne 0) {
-        throw "Docker falhou: docker $($Arguments -join ' '). Exit code: $LASTEXITCODE."
-    }
-}
-
 function Assert-ImageAvailable {
     param([string]$Reference)
 
-    & docker image inspect $Reference *> $null
-    if ($LASTEXITCODE -ne 0) {
+    $state = Test-ContabilidadeDockerImage -Image $Reference
+    if (-not $state.Available) {
         throw @"
 Imagem nao encontrada localmente: $Reference
-Publique/carregue a imagem antes do deploy ou execute DEPLOY_CONTABILIDADE_ONPREMISE.bat pull.
+Publique/carregue a imagem antes do deploy ou execute START_CONTABILIDADE.bat onpremise pull.
+Categoria: $($state.Category). Exit code: $($state.ExitCode).
 Nenhum build sera executado neste servidor.
 "@
     }
@@ -119,12 +112,15 @@ foreach ($required in @(
     }
 }
 
-if (-not (Get-Command docker -ErrorAction SilentlyContinue)) {
-    throw 'Docker CLI nao encontrado.'
+$dockerInfo = Invoke-ContabilidadeDocker -Arguments @('info') -AllowFailure -Quiet
+if (-not $dockerInfo.Success) {
+    $category = Get-ContabilidadeDockerFailureCategory -Content $dockerInfo.Output
+    throw "[$category] Docker daemon indisponivel para deploy. Exit code: $($dockerInfo.ExitCode)."
 }
-
-Invoke-Docker -Arguments @('info')
-Invoke-Docker -Arguments @('compose', 'version')
+$composeVersion = Invoke-ContabilidadeDocker -Arguments @('compose', 'version') -AllowFailure -Quiet
+if (-not $composeVersion.Success) {
+    throw "[DOCKER_PERMISSION_OR_API_FAILURE] Docker Compose v2 indisponivel. Exit code: $($composeVersion.ExitCode)."
+}
 
 if (-not (Test-Path -LiteralPath $EnvFile)) {
     throw '.env ausente. O deploy on-premise exige um arquivo revisado com segredos reais.'
@@ -180,7 +176,7 @@ try {
     if ($Pull) {
         Write-Section 'Baixando imagens publicadas'
         foreach ($image in $applicationImages) {
-            Invoke-Docker -Arguments @('pull', $image)
+            $null = Invoke-ContabilidadeDocker -Arguments @('pull', $image)
         }
     }
 
@@ -209,7 +205,7 @@ services:
     Write-Utf8NoBomLf $ComposeOverride $override
 
     Write-Section 'Validando Compose sem build'
-    Invoke-Docker -Arguments @(
+    $null = Invoke-ContabilidadeDocker -Arguments @(
         'compose', '--env-file', $EnvFile,
         '-f', $ComposeBase,
         '-f', $ComposeMode,

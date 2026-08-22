@@ -246,6 +246,8 @@ export function validateDockerOrchestration({
   assert.match(sequentialBat, /verify-runtime-images\.ps1/i);
   assert.match(sequentialBat, /\[TRANSITION\] Imagens verificadas/i);
   assert.match(sequentialBat, /start-compose-sequential\.ps1/i);
+  assert.doesNotMatch(sequentialBat, /^\s*docker(?:\.exe)?\s/im,
+    'BAT sequencial nao pode contornar o executor Docker central');
   assert.match(sequential, /Import-Module[^\r\n]*contabilidade-docker\.psm1/i);
   assert.match(sequential, /Import-Module[^\r\n]*startup-probe\.psm1/i);
   assert.match(sequential, /Assert-ContabilidadeDockerAvailable/i);
@@ -288,6 +290,12 @@ export function validateDockerOrchestration({
     preservesSelectedOnPremiseImages(deploy),
     true,
     'deploy deve iniciar o Compose diretamente com o override de imagens ja validado',
+  );
+  assert.match(deploy, /Import-Module[^\r\n]*contabilidade-docker\.psm1/i);
+  assert.deepEqual(
+    findDirectPowerShellDockerInvocations(deploy),
+    [],
+    'deploy on-premise deve usar somente o executor Docker canonico',
   );
   assert.equal(containsDockerBuildCommand(deploy), false, 'deploy on-premise nao pode executar docker build/buildx');
   assert.doesNotMatch(deploy, /buildx|docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
