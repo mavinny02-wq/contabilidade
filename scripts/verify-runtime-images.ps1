@@ -15,9 +15,11 @@ function Get-RuntimeImageDiagnostic {
     param([Parameter(Mandatory = $true)]$Result)
 
     $parts = @(
-        [string]$Result.StdErr
-        [string]$Result.StdOut
-    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+        @(
+            [string]$Result.StdErr
+            [string]$Result.StdOut
+        ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    )
 
     if ($parts.Count -eq 0) {
         return 'O comando de validacao encerrou sem produzir stdout ou stderr.'
