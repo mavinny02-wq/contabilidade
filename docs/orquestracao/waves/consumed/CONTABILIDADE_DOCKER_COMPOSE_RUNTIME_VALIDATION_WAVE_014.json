@@ -1,7 +1,7 @@
 {
   "schemaVersion": "2.0",
   "waveId": "CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_VALIDATION_WAVE_014",
-  "state": "RELEASED_FOR_EXECUTION",
+  "state": "CONSUMED",
   "baseline": {
     "branch": "codex/bootstrap-deepseek-runner",
     "commit": "4098068daa809b547944e9d47f010000356da7e8"
@@ -24,6 +24,5 @@
       "dispatchKey": "5145943ba86319ae4f5b5244d417cb5d4987d601d6c09db5a9e43dbfb9a6d184"
     }
   ],
-  "launcherPath": "docs/orquestracao/waves/released/CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_VALIDATION_WAVE_014_LAUNCHERS.txt",
-  "previousManifest": "docs/orquestracao/waves/prepared/CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_VALIDATION_WAVE_014.json"
+  "previousManifest": "docs/orquestracao/waves/released/CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_VALIDATION_WAVE_014.json"
 }

@@ -1,10 +1,11 @@
 # VAL-P0-CONTABILIDADE-DOCKER-COMPOSE-RUNTIME-001
 
 **Classificação:** `CANONICAL_RELEASED_VALIDATION_SHARD`
-**Status:** `RELEASED_FOR_EXECUTION`
+**Status:** `CONSUMED_ENVIRONMENT_LIMITATION`
 **Baseline mínimo:** `codex/bootstrap-deepseek-runner@4098068daa809b547944e9d47f010000356da7e8`
 **Owner:** `DOCKER_COMPOSE_CLOUD_RUNTIME_VALIDATION_SERIAL`
 **Limite:** `CODEX100-ON`, no máximo uma hora, zero LLM externo
+**Successor:** `VAL-P0-CONTABILIDADE-DOCKER-COMPOSE-RUNTIME-002`
 
 ## Objetivo
 
@@ -79,3 +80,10 @@ O único owner persistente desta execução é
 
 O host que liberou este launcher não possui Docker CLI; portanto, este documento não reivindica
 startup, health, readiness, idempotência ou deploy executados.
+
+## Resultado consumido
+
+O checkout Cloud recebido não continha o source/launcher liberado nem remote para obtê-lo. O
+resultado governado está em
+`../../implementacao/VAL_P0_CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_001_RESULT.md`; nenhuma prova
+runtime foi iniciada.

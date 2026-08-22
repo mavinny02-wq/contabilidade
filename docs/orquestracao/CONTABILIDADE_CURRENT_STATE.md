@@ -32,9 +32,12 @@
 - o architecture guard agora produz a mesma ordenação e os mesmos bytes de inventário em Windows
   e Linux; o grafo local permanece em 601 arestas e zero findings;
 - essas evidências são locais e não substituem integração em `main` nem o gate Windows P0.
-- a Wave 014 liberou no branch local, a partir de `4098068daa809b547944e9d47f010000356da7e8`,
-  a validação Cloud Docker/Compose serial, com produção/configuração read-only; o host de liberação
-  não possui Docker CLI e nenhuma prova runtime foi reivindicada.
+- a Wave 014 foi consumida como `ENVIRONMENT_LIMITATION`: o checkout Cloud recebido estava em
+  `bb55cbb9f019914ca454871776f23d886a811b6b`, sem remote e sem launcher/shard, portanto nenhum
+  runtime foi iniciado;
+- a Wave 015 liberou bootstrap não destrutivo apenas do HEAD remoto atual de
+  `mavinny02-wq/contabilidade` em `codex/bootstrap-deepseek-runner`, seguido pela mesma validação
+  Cloud; o SHA observado será evidência, não gate fixo ou `BASELINE_DRIFT`.
 
 ## Ações oficiais
 
@@ -79,7 +82,7 @@ SYNTHETIC_FIXTURE_REQUIRED_CI = LOCAL_BRANCH_GREEN
 ARCHITECTURE_GUARD_CROSS_PLATFORM = LOCAL_BRANCH_GREEN
 WINDOWS_DEV_STACK = NOT_PROVEN_AFTER_FIX
 WINDOWS_SECOND_START_REUSE = NOT_PROVEN
-CLOUD_DOCKER_COMPOSE_RUNTIME = RELEASED_NOT_EXECUTED
+CLOUD_DOCKER_COMPOSE_RUNTIME = SOURCE_BOOTSTRAP_RELEASED_NOT_EXECUTED
 ONPREMISE_KEYCLOAK = BLOCKED_UNTIL_DEV_GREEN
 ```
 
@@ -112,7 +115,7 @@ worker e frontend saudáveis, probe ausente e evidência redigida pinada ao SHA.
 ```text
 NORMAL_WAVE_SELECTION = DENIED
 P0_RUNTIME_VALIDATION = REQUIRED
-P0_CLOUD_RUNTIME_VALIDATION = RELEASED_ON_LOCAL_BRANCH
+P0_CLOUD_RUNTIME_VALIDATION = SUCCESSOR_WAVE_015_RELEASED
 MIGRATION_OWNER = NONE
 REAL_EXTERNAL_PROVIDERS = NOT_AUTHORIZED
 ```

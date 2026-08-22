@@ -23,7 +23,7 @@ raiz, escolha o objetivo e abra somente os documentos indicados.
 
 - startup oficial: `orquestracao/STARTUP_RELIABILITY_GATE.md`;
 - validação Cloud Docker/Compose liberada:
-  `testing/plans/VAL_P0_CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_001.md`;
+  `testing/plans/VAL_P0_CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_002.md`;
 - ledger de testes: `testing/MASTER_TEST_ORCHESTRATION.md`;
 - locks: `decisoes/CONTABILIDADE_LOCKS_OPERACIONAIS.md`;
 - owners/hotspots: `orquestracao/CONTABILIDADE_EXECUTION_OWNER_MATRIX.md`;
