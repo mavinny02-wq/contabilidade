@@ -79,3 +79,6 @@ jobs:
       - name: Validate module exports, import order and project command references
         shell: powershell
         run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/tests/assert-startup-powershell-contract.ps1
+      - name: Validate PRIMA-style read-only preflight and Docker inspect argument transport
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/tests/assert-prima-startup-contract.ps1

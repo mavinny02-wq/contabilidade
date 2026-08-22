@@ -43,6 +43,8 @@ $requiredCommands = @{
     'contabilidade-docker' = @(
         'Invoke-ContabilidadeNativeCommand',
         'Write-ContabilidadeNativeOutput',
+        'Convert-ContabilidadeDockerFormatArgument',
+        'Convert-ContabilidadeDockerArguments',
         'Invoke-ContabilidadeDocker',
         'Invoke-ContabilidadeCompose',
         'Test-ContabilidadeDockerContainerAbsent',
@@ -141,7 +143,7 @@ foreach ($file in $files) {
         if ([string]::IsNullOrWhiteSpace($commandName)) {
             continue
         }
-        if ($commandName -notmatch '^(Assert|Get|Invoke|New|Remove|Start|Test|Write)-(Contabilidade|Startup)') {
+        if ($commandName -notmatch '^(Assert|Convert|Get|Invoke|New|Remove|Start|Test|Write)-(Contabilidade|Startup)') {
             continue
         }
 

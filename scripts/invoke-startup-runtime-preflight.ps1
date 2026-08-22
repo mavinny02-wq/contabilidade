@@ -78,6 +78,8 @@ Import-Module $NativeProcessModulePath -Force -ErrorAction Stop
 
 Assert-StartupModuleContract -ModuleName 'contabilidade-docker' -RequiredCommands @(
     'Invoke-ContabilidadeNativeCommand',
+    'Convert-ContabilidadeDockerFormatArgument',
+    'Convert-ContabilidadeDockerArguments',
     'Invoke-ContabilidadeDocker',
     'Invoke-ContabilidadeCompose',
     'Test-ContabilidadeDockerContainerAbsent',
@@ -110,6 +112,7 @@ Assert-ContabilidadeDockerAvailable
 $context = Get-ContabilidadeActiveDockerContext
 Write-Host "[STARTUP-PREFLIGHT] Contexto Docker preservado: $context"
 
-$cleanup = Remove-ContabilidadeStartupProbe
-Write-Host "[STARTUP-PREFLIGHT][PROBE] category=$($cleanup.Category) exit=$($cleanup.ExitCode) status=$($cleanup.Status)"
+# PRIMA contract: preflight validates prerequisites and leaves application containers untouched.
+# Probe lifecycle belongs exclusively to the sequential startup, after every build succeeded.
+Write-Host '[STARTUP-PREFLIGHT] Read-only: nenhum container da aplicacao foi criado, inspecionado, parado ou removido.'
 Write-Host '[STARTUP-PREFLIGHT] Concluido antes de qualquer build.' -ForegroundColor Green

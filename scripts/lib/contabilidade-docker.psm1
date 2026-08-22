@@ -47,6 +47,61 @@ function Write-ContabilidadeNativeOutput {
     }
 }
 
+function Convert-ContabilidadeDockerFormatArgument {
+    [CmdletBinding()]
+    param([AllowNull()][string]$Template)
+
+    if ($null -eq $Template) {
+        return $null
+    }
+
+    # PRIMA's BAT files quote Go-template string literals with \" because CMD consumes
+    # the escaping layer. A PowerShell string-array invocation has no shell layer, so the
+    # same backslashes reach Docker and can make `docker inspect` exit with usage code 64.
+    # Go templates support raw string literals delimited by backticks; those survive the
+    # Windows PowerShell 5.1 native binder unchanged.
+    $escapedQuote = '\"'
+    $occurrenceCount = ([regex]::Matches($Template, [regex]::Escape($escapedQuote))).Count
+    if ($occurrenceCount -eq 0) {
+        return $Template
+    }
+    if (($occurrenceCount % 2) -ne 0) {
+        throw '[DOCKER_FORMAT_INVALID_ESCAPE] Template Docker possui quantidade impar de aspas escapadas.'
+    }
+
+    $rawStringDelimiter = [string][char]96
+    return $Template.Replace($escapedQuote, $rawStringDelimiter)
+}
+
+function Convert-ContabilidadeDockerArguments {
+    [CmdletBinding()]
+    param([Parameter(Mandatory = $true)][string[]]$Arguments)
+
+    $normalized = New-Object 'System.Collections.Generic.List[string]'
+    for ($index = 0; $index -lt $Arguments.Count; $index++) {
+        $argument = [string]$Arguments[$index]
+        if ($argument -eq '--format') {
+            $normalized.Add($argument)
+            if (($index + 1) -ge $Arguments.Count) {
+                throw '[DOCKER_FORMAT_ARGUMENT_MISSING] --format exige um template.'
+            }
+            $index++
+            $normalized.Add((Convert-ContabilidadeDockerFormatArgument -Template ([string]$Arguments[$index])))
+            continue
+        }
+
+        if ($argument.StartsWith('--format=', [StringComparison]::Ordinal)) {
+            $template = $argument.Substring('--format='.Length)
+            $normalized.Add('--format=' + (Convert-ContabilidadeDockerFormatArgument -Template $template))
+            continue
+        }
+
+        $normalized.Add($argument)
+    }
+
+    return [string[]]$normalized.ToArray()
+}
+
 function Invoke-ContabilidadeDocker {
     [CmdletBinding()]
     param(
@@ -80,7 +135,8 @@ function Invoke-ContabilidadeDocker {
     else {
         $dockerCommand.Path
     }
-    $result = Invoke-ContabilidadeNativeCommand -FilePath $dockerPath -Arguments $Arguments
+    $normalizedArguments = @(Convert-ContabilidadeDockerArguments -Arguments $Arguments)
+    $result = Invoke-ContabilidadeNativeCommand -FilePath $dockerPath -Arguments $normalizedArguments
     if (-not $Quiet) {
         Write-ContabilidadeNativeOutput -Result $result
     }
@@ -339,6 +395,8 @@ function Get-ContabilidadeFailedRegistryHost {
 Export-ModuleMember -Function @(
     'Invoke-ContabilidadeNativeCommand',
     'Write-ContabilidadeNativeOutput',
+    'Convert-ContabilidadeDockerFormatArgument',
+    'Convert-ContabilidadeDockerArguments',
     'Invoke-ContabilidadeDocker',
     'Invoke-ContabilidadeCompose',
     'Test-ContabilidadeDockerContainerAbsent',
