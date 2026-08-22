@@ -1,7 +1,10 @@
 import copy
+import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from validate_required_ci import MANDATORY, WORKFLOW, load_yaml, validate
 
@@ -13,22 +16,32 @@ class RequiredCiContractTest(unittest.TestCase):
     def validate_mutation(self, mutate):
         document = copy.deepcopy(self.workflow)
         mutate(document)
-        with tempfile.NamedTemporaryFile("w", suffix=".yml") as stream:
+        with tempfile.TemporaryDirectory() as directory:
             # JSON is a valid YAML document and avoids a test-only YAML emitter dependency.
-            import json
-            json.dump(document, stream)
-            stream.flush()
-            return validate(Path(stream.name))
+            path = Path(directory) / "workflow.yml"
+            path.write_text(json.dumps(document), encoding="utf-8")
+            return validate(path)
 
     def test_canonical_workflow_is_valid_yaml_and_satisfies_contract(self):
         self.assertEqual([], validate())
+
+    def test_yaml_loader_does_not_spawn_an_external_parser(self):
+        with patch.object(subprocess, "run", side_effect=AssertionError("external parser")):
+            self.assertEqual("Required CI", load_yaml(WORKFLOW)["name"])
+
+    def test_yaml_loader_rejects_malformed_inline_sequence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "invalid.yml"
+            path.write_text("name: [unterminated\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "unterminated inline sequence"):
+                load_yaml(path)
 
     def test_rejects_changed_workflow_name(self):
         self.assertTrue(self.validate_mutation(lambda doc: doc.update(name="Renamed")))
 
     def test_rejects_missing_required_trigger_or_path_filter(self):
-        self.assertTrue(self.validate_mutation(lambda doc: doc.get("on", doc["true"]).pop("push")))
-        self.assertTrue(self.validate_mutation(lambda doc: doc.get("on", doc["true"])["pull_request"].update(paths=["backend/**"])))
+        self.assertTrue(self.validate_mutation(lambda doc: doc["on"].pop("push")))
+        self.assertTrue(self.validate_mutation(lambda doc: doc["on"]["pull_request"].update(paths=["backend/**"])))
 
     def test_rejects_each_missing_lane(self):
         for lane in MANDATORY:
