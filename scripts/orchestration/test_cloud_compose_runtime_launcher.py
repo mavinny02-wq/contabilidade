@@ -9,6 +9,7 @@ ROOT = Path(__file__).resolve().parents[2]
 LAUNCHER = ROOT / "docs/orquestracao/waves/released/CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_BOOTSTRAP_WAVE_015_LAUNCHERS.txt"
 SHARD = ROOT / "docs/testing/plans/VAL_P0_CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_002.md"
 WORKFLOW = ROOT / ".github/workflows/startup-reliability.yml"
+COMPOSE = ROOT / "compose.yaml"
 DEV_COMPOSE = ROOT / "compose.dev.yaml"
 FRONTEND_NGINX = ROOT / "frontend/nginx.conf"
 
@@ -31,6 +32,7 @@ class CloudComposeRuntimeLauncherTest(unittest.TestCase):
 
     def test_linux_runtime_is_executable_on_a_docker_enabled_hosted_runner(self) -> None:
         workflow = WORKFLOW.read_text(encoding="utf-8")
+        compose = COMPOSE.read_text(encoding="utf-8")
         dev_compose = DEV_COMPOSE.read_text(encoding="utf-8")
         frontend_nginx = FRONTEND_NGINX.read_text(encoding="utf-8")
 
@@ -66,6 +68,11 @@ class CloudComposeRuntimeLauncherTest(unittest.TestCase):
         )
         self.assertNotIn("proxy_pass http://keycloak:8080/auth/;", frontend_nginx)
         self.assertIn("--format '{{json .State.Health}}'", workflow)
+        self.assertIn(
+            'test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/healthz"]',
+            compose,
+        )
+        self.assertNotIn("http://localhost:8080/healthz", compose)
         self.assertRegex(
             dev_compose,
             re.compile(

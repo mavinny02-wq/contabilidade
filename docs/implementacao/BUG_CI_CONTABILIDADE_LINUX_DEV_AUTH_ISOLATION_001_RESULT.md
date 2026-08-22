@@ -1,7 +1,7 @@
 # Linux Compose dev auth isolation result
 
 - **Item:** `BUG-CI-CONTABILIDADE-LINUX-DEV-AUTH-ISOLATION-001`
-- **Status:** `BLOCKED_RUNTIME_FRONTEND_HEALTH_DETAIL_PENDING`
+- **Status:** `CORRECTION_IMPLEMENTED_RUNTIME_REVALIDATION_PENDING`
 - **Classificação:** `PRODUCT_REGRESSION`
 - **Baseline:** `a1b3c1afbc727f92b3a411131dcfe4a4c5d22782`
 - **Run analisado:** `32581886001`, job `97052395642`
@@ -27,6 +27,13 @@ O rerun `32583021160`, no SHA
 permaneceu `Up`, mas o healthcheck ficou vermelho; PostgreSQL, backend e worker continuaram
 saudáveis. A segunda inicialização foi corretamente omitida após a falha da primeira.
 
+O diagnóstico bounded foi então executado no run `32594475262`, job `97083183590`, SHA
+`1c03141fad960f71d944c9efc950c1bce419aa59`. O frontend permaneceu `Up`, mas as 20 tentativas do
+healthcheck terminaram com `ExitCode=1` e `wget: can't connect to remote host: Connection refused`.
+O probe usava `localhost:8080`, enquanto o único listener do Nginx é `listen 8080`, sem listener
+IPv6. No container Linux, `localhost` também pode resolver para loopback IPv6; o probe não fixava o
+mesmo loopback IPv4 em que o Nginx escuta.
+
 ## Correção e regressão
 
 `compose.dev.yaml` agora substitui, em vez de mesclar, os `depends_on` de backend e frontend. O job
@@ -35,7 +42,8 @@ container Keycloak/bootstrap existir. O proxy `/auth` do frontend agora usa o DN
 resolução tardia; assim, a ausência dev não impede o Nginx de iniciar e o mesmo config continua
 encaminhando `/auth` quando Keycloak existir no modo on-premise. A regressão estrutural exige os
 overrides, o mesmo service scope nas duas inicializações, as duas verificações de ausência e proíbe
-o upstream Keycloak estático no Nginx.
+o upstream Keycloak estático no Nginx. O healthcheck do frontend agora usa explicitamente
+`127.0.0.1:8080/healthz`; a regressão proíbe reintroduzir `localhost` nesse probe.
 
 ## Evidência
 
@@ -48,9 +56,9 @@ o upstream Keycloak estático no Nginx.
 - context governance e orchestration governance: **PASS**, zero warnings;
 - `git diff --check`: **PASS**.
 
-O diagnóstico do run registrou somente `compose ps`; ele não preservou as tentativas/saídas do
-healthcheck do frontend. O workflow agora captura apenas `.State.Health` desse container em caso de
-falha, sem abrir logs da aplicação. Não foi aberta uma quarta execução sem essa evidência bounded.
+O workflow captura apenas `.State.Health` do frontend em caso de falha, sem abrir logs da
+aplicação. A correção do loopback ainda precisa de reexecução isolada para provar as duas
+inicializações, os health endpoints reais e o reuso do container/volume PostgreSQL.
 
 Actions foi restaurado para `disabled`. Nenhum reset, cleanup, remoção de volume, segredo, provider
 ou deploy externo foi executado. O runtime Cloud continua pendente e esta evidência não substitui o
