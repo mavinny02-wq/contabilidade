@@ -74,7 +74,9 @@ $stringCommands = @(
         $node -is [System.Management.Automation.Language.StringConstantExpressionAst]
     }, $true) |
         ForEach-Object { $_.Value } |
-        Where-Object { $_ -match 'APP_AUTH_ENABLED=|test -f /app|node_modules/playwright' }
+        Where-Object {
+            $_ -match 'APP_AUTH_ENABLED=|test -f /app|test -x /usr/sbin/nginx|node_modules/playwright'
+        }
 )
 Assert-Contract ($stringCommands.Count -eq 5) `
     "Quantidade inesperada de comandos runtime: $($stringCommands.Count); esperado: 5."
