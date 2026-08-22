@@ -6,6 +6,7 @@ import {
   containsDockerBuildCommand,
   findAmbiguousPowerShellVariableColon,
   findDirectPowerShellDockerInvocations,
+  preservesSelectedOnPremiseImages,
   requiresPester5FailClosed,
   usesPowerShell51SafeStepMaterialization,
 } from './validate-docker-orchestration.mjs';
@@ -111,4 +112,15 @@ Invoke-Pester -Script $testPaths -PassThru -Show Summary
 
   assert.equal(requiresPester5FailClosed(valid), true);
   assert.equal(requiresPester5FailClosed(legacy), false);
+});
+
+test('deploy preserva imagens selecionadas sem revalidar tags locais no BAT', () => {
+  const valid = `$RuntimeImageVerifier = Join-Path $PSScriptRoot 'verify-runtime-images.ps1'
+$SequentialScript = Join-Path $PSScriptRoot 'start-compose-sequential.ps1'
+& $RuntimeImageVerifier -BackendImage $backendImage -FrontendImage $frontendImage -WorkerImage $workerImage
+& $SequentialScript -Mode onpremise -NoExit`;
+  const stale = '& $env:ComSpec /c "call start-compose-sequential.bat onpremise"';
+
+  assert.equal(preservesSelectedOnPremiseImages(valid), true);
+  assert.equal(preservesSelectedOnPremiseImages(stale), false);
 });

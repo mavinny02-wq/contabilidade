@@ -58,6 +58,16 @@ export function requiresPester5FailClosed(source) {
     && !/Invoke-Pester[^\r\n]*-Show\b/i.test(source);
 }
 
+export function preservesSelectedOnPremiseImages(source) {
+  const verifier = source.search(/&\s*\$RuntimeImageVerifier[\s\S]*?-BackendImage\s+\$backendImage[\s\S]*?-FrontendImage\s+\$frontendImage[\s\S]*?-WorkerImage\s+\$workerImage/i);
+  const sequential = source.search(/&\s*\$SequentialScript\s+-Mode\s+onpremise\s+-NoExit/i);
+  return /\$RuntimeImageVerifier\s*=[^\r\n]*verify-runtime-images\.ps1/i.test(source)
+    && /\$SequentialScript\s*=[^\r\n]*start-compose-sequential\.ps1/i.test(source)
+    && verifier >= 0
+    && sequential > verifier
+    && !/start-compose-sequential\.bat/i.test(source);
+}
+
 export function validateDockerOrchestration({
   rootBat,
   startupRuntimePreflight,
@@ -274,7 +284,11 @@ export function validateDockerOrchestration({
   assert.match(databaseValidation, /goto :validate_flyway/i);
 
   assert.match(deploy, /build:\s+null/i);
-  assert.match(deploy, /start-compose-sequential\.bat/i);
+  assert.equal(
+    preservesSelectedOnPremiseImages(deploy),
+    true,
+    'deploy deve iniciar o Compose diretamente com o override de imagens ja validado',
+  );
   assert.equal(containsDockerBuildCommand(deploy), false, 'deploy on-premise nao pode executar docker build/buildx');
   assert.doesNotMatch(deploy, /buildx|docker\s+(?:system|volume)\s+prune|compose\s+down\s+-v/i);
 

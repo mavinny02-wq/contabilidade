@@ -15,7 +15,8 @@ $ComposeBase = Join-Path $ProjectDir 'compose.yaml'
 $ComposeMode = Join-Path $ProjectDir 'compose.onpremise.yaml'
 $OverrideDir = Join-Path $ProjectDir '.docker-local\artifact-build'
 $ComposeOverride = Join-Path $OverrideDir 'compose.local-artifacts.yaml'
-$SequentialBat = Join-Path $PSScriptRoot 'start-compose-sequential.bat'
+$SequentialScript = Join-Path $PSScriptRoot 'start-compose-sequential.ps1'
+$RuntimeImageVerifier = Join-Path $PSScriptRoot 'verify-runtime-images.ps1'
 $LockPath = Join-Path $OverrideDir 'deploy-onpremise.lock'
 
 function Write-Section {
@@ -105,7 +106,14 @@ Nenhum build sera executado neste servidor.
     }
 }
 
-foreach ($required in @($VersionFile, $EnvExample, $ComposeBase, $ComposeMode, $SequentialBat)) {
+foreach ($required in @(
+    $VersionFile,
+    $EnvExample,
+    $ComposeBase,
+    $ComposeMode,
+    $SequentialScript,
+    $RuntimeImageVerifier
+)) {
     if (-not (Test-Path -LiteralPath $required)) {
         throw "Arquivo obrigatorio ausente: $required"
     }
@@ -180,6 +188,12 @@ try {
         Assert-ImageAvailable $image
     }
 
+    Write-Section 'Verificando conteudo das imagens selecionadas'
+    & $RuntimeImageVerifier `
+        -BackendImage $backendImage `
+        -FrontendImage $frontendImage `
+        -WorkerImage $workerImage
+
     $override = @"
 services:
   backend:
@@ -204,10 +218,9 @@ services:
     )
 
     Write-Section 'Iniciando stack com imagens pre-construidas'
-    & $env:ComSpec /d /c "call `"$SequentialBat`" onpremise"
-    $exitCode = $LASTEXITCODE
-    if ($exitCode -ne 0) {
-        throw "Startup sequencial on-premise falhou. Exit code: $exitCode."
+    $startup = & $SequentialScript -Mode onpremise -NoExit
+    if ($null -eq $startup) {
+        throw 'Startup sequencial on-premise nao retornou evidencia de conclusao.'
     }
 
     Write-Ok 'Deploy on-premise concluido sem executar Docker build ou limpar cache.'
