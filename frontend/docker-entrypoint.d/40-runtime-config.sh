@@ -38,7 +38,7 @@ location /auth/ {
 EOF_AUTH
 else
   cat > "$auth_location_file" <<'EOF_AUTH_DISABLED'
-# APP_AUTH_ENABLED=false: Keycloak proxy intentionally omitted in development.
+# APP_AUTH_ENABLED=false: authentication proxy intentionally omitted in development.
 EOF_AUTH_DISABLED
 fi
 

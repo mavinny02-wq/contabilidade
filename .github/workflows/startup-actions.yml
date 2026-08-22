@@ -93,3 +93,6 @@ jobs:
       - name: Validate PRIMA-style read-only preflight and Docker inspect argument transport
         shell: powershell
         run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/tests/assert-prima-startup-contract.ps1
+      - name: Validate binder-safe runtime image verification and post-start Nginx authority
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/tests/assert-runtime-image-verification-contract.ps1
