@@ -44,8 +44,9 @@ Describe 'Startup PowerShell parser preflight' {
         { Invoke-StartupPowerShellPreflight -ScriptsPath $fixtureRoot } |
             Should -Throw '*Build nao iniciado*'
 
-        ($events -join "`n") | Should -Match ([regex]::Escape($invalidPath))
-        ($events -join "`n") | Should -Match ':1:\d+:'
+        $eventsText = $events -join "`n"
+        $eventsText | Should -Match ([regex]::Escape($invalidPath))
+        $eventsText | Should -Match ([regex]::Escape($invalidPath) + ':\d+:\d+:')
         $events | Should -Not -Contain 'tool'
         Assert-MockCalled Get-Command -Times 0
     }
@@ -61,5 +62,10 @@ Describe 'Startup PowerShell parser preflight' {
         $parseIndex | Should -BeLessThan $startup.IndexOf("@('-B', 'clean', 'package'")
         $parseIndex | Should -BeLessThan $startup.IndexOf("@('run', 'build')")
         $startup | Should -Not -Match "docker\s+(?:context|buildx)\s+use"
+    }
+
+    It 'keeps all startup module exports visible in the production import order' {
+        $contractPath = Join-Path $PSScriptRoot 'assert-startup-powershell-contract.ps1'
+        { & $contractPath } | Should -Not -Throw
     }
 }
