@@ -14,6 +14,20 @@ Describe 'Startup PowerShell parser preflight' {
         { Invoke-StartupPowerShellPreflight -ScriptsPath $fixtureRoot } | Should -Not -Throw
     }
 
+    It 'parses the real verify-backup script without errors' {
+        $verifyBackupPath = Join-Path $PSScriptRoot '..\verify-backup.ps1'
+        $tokens = $null
+        $parseErrors = $null
+
+        [void][System.Management.Automation.Language.Parser]::ParseFile(
+            $verifyBackupPath,
+            [ref]$tokens,
+            [ref]$parseErrors
+        )
+
+        $parseErrors.Count | Should -Be 0
+    }
+
     It 'reports file, line and column and fails before tools or builds can run' {
         $events = New-Object System.Collections.Generic.List[string]
         $invalidPath = Join-Path $fixtureRoot 'invalid script.ps1'
