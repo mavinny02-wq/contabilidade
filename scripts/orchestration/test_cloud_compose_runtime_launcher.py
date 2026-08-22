@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 LAUNCHER = ROOT / "docs/orquestracao/waves/released/CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_BOOTSTRAP_WAVE_015_LAUNCHERS.txt"
 SHARD = ROOT / "docs/testing/plans/VAL_P0_CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_002.md"
+WORKFLOW = ROOT / ".github/workflows/startup-reliability.yml"
 
 
 class CloudComposeRuntimeLauncherTest(unittest.TestCase):
@@ -24,6 +25,20 @@ class CloudComposeRuntimeLauncherTest(unittest.TestCase):
         self.assertNotIn("PowerShell disponível", combined)
         self.assertNotIn("start-compose-sequential.ps1", combined)
         self.assertNotIn("START_CONTABILIDADE.bat dev", combined)
+
+    def test_linux_runtime_is_executable_on_a_docker_enabled_hosted_runner(self) -> None:
+        workflow = WORKFLOW.read_text(encoding="utf-8")
+
+        self.assertIn("Linux Docker Compose runtime twice", workflow)
+        self.assertIn("runs-on: ubuntu-latest", workflow)
+        self.assertIn('up -d --build --wait --wait-timeout 900', workflow)
+        self.assertIn('up -d --wait --wait-timeout 900', workflow)
+        self.assertIn("PG_CONTAINER_FIRST", workflow)
+        self.assertIn("PG_VOLUME_FIRST", workflow)
+        self.assertIn("/actuator/health/readiness", workflow)
+        self.assertIn("flyway_schema_history", workflow)
+        self.assertNotIn("docker compose down", workflow)
+        self.assertNotIn("docker system prune", workflow)
 
 
 if __name__ == "__main__":
