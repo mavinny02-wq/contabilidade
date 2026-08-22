@@ -76,13 +76,23 @@ Assert-Contract ($preflightSource -notmatch '\bGet-ContabilidadeStartupProbeStat
 # would fail this contract immediately.
 $fixtureRoot = Join-Path ([IO.Path]::GetTempPath()) ('contabilidade-prima-startup-' + [guid]::NewGuid().ToString('N'))
 $fakeDockerPath = Join-Path $fixtureRoot 'docker.cmd'
+$formatCapturePath = Join-Path $fixtureRoot 'format-argument.txt'
 $previousPath = $env:Path
+$previousCapturePath = $env:CONTABILIDADE_FAKE_DOCKER_CAPTURE
 New-Item -ItemType Directory -Force -Path $fixtureRoot | Out-Null
 
 $fakeDocker = @'
 @echo off
 setlocal EnableExtensions
 if /i "%~1"=="container" if /i "%~2"=="inspect" (
+  if /i "%~3"=="--format" (
+    if not "%~5"=="format-probe" (
+      >&2 echo unexpected formatted inspect target: %~5
+      exit /b 94
+    )
+    > "%CONTABILIDADE_FAKE_DOCKER_CAPTURE%" echo %~4
+    exit /b 0
+  )
   if /i "%~3"=="owned-probe" (
     if not "%~4"=="" (
       >&2 echo unexpected extra Docker argument: %~4
@@ -103,10 +113,24 @@ if /i "%~1"=="container" if /i "%~2"=="inspect" (
 >&2 echo unexpected Docker arguments: %*
 exit /b 93
 '@
+# CMD does not use backslash to escape quotes. Remove the JSON-only escapes from the
+# fixture payload while keeping the PowerShell source itself easy to read.
+$fakeDocker = $fakeDocker.Replace('\"', '"')
 [IO.File]::WriteAllText($fakeDockerPath, $fakeDocker, (New-Object Text.ASCIIEncoding))
 
 try {
     $env:Path = $fixtureRoot + [IO.Path]::PathSeparator + $previousPath
+    $env:CONTABILIDADE_FAKE_DOCKER_CAPTURE = $formatCapturePath
+
+    $formatCall = Invoke-ContabilidadeDocker -Arguments @(
+        'container', 'inspect', '--format', $legacyLabelTemplate, 'format-probe'
+    ) -AllowFailure -Quiet
+    Assert-Contract $formatCall.Success 'Executor Docker rejeitou o template depois da normalizacao.'
+    Assert-Contract (Test-Path -LiteralPath $formatCapturePath -PathType Leaf) `
+        'Fixture Docker nao capturou o argumento --format.'
+    $capturedFormat = (Get-Content -LiteralPath $formatCapturePath -Raw).Trim()
+    Assert-Contract ($capturedFormat -eq $expectedLabelTemplate) `
+        'Windows native binder nao recebeu o template Go normalizado.'
 
     $owned = Get-ContabilidadeStartupProbeState -Name 'owned-probe'
     Assert-Contract $owned.Exists 'Probe JSON existente nao foi reconhecido.'
@@ -133,6 +157,12 @@ try {
 }
 finally {
     $env:Path = $previousPath
+    if ($null -eq $previousCapturePath) {
+        Remove-Item Env:CONTABILIDADE_FAKE_DOCKER_CAPTURE -ErrorAction SilentlyContinue
+    }
+    else {
+        $env:CONTABILIDADE_FAKE_DOCKER_CAPTURE = $previousCapturePath
+    }
     Remove-Item -LiteralPath $fixtureRoot -Recurse -Force -ErrorAction SilentlyContinue
 }
 
