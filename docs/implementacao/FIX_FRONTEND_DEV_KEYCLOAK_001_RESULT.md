@@ -60,12 +60,18 @@ do processo principal e antes do restart loop.
 
 ### Verificação de imagem runtime
 
-`scripts/verify-runtime-images.ps1` agora executa dentro da imagem frontend:
+`scripts/verify-runtime-images.ps1` agora executa dentro da imagem frontend, sem depender do DNS da
+stack:
 
-- renderização com autenticação desabilitada;
-- `nginx -t` sem Keycloak presente;
-- comprovação de que o include desabilitado não referencia Keycloak;
-- renderização do bloco autenticado e comprovação do `proxy_pass` esperado.
+- renderização offline com autenticação desabilitada;
+- comprovação de que o include desabilitado não contém upstream Keycloak;
+- renderização offline do bloco autenticado;
+- comprovação do `proxy_pass` esperado.
+
+A validação completa de `nginx -t` ocorre separadamente no Required CI, com hosts sintéticos para os
+upstreams obrigatórios `backend`, `automation-worker` e, apenas no modo autenticado, `keycloak`. No
+runtime real, o entrypoint executa `nginx -t` depois que o startup sequencial já disponibilizou os
+serviços exigidos pelo modo selecionado.
 
 ## Testes adicionados
 
@@ -76,8 +82,8 @@ do processo principal e antes do restart loop.
 - valor inválido é recusado;
 - a configuração Nginx base não pode reintroduzir Keycloak incondicional.
 
-O Required CI executa ainda `nginx:1.27-alpine` nos dois modos. No modo autenticado, um host sintético
-`keycloak` é fornecido somente para validar a sintaxe. O workflow Windows de contratos de startup também
+O Required CI executa ainda `nginx:1.27-alpine` nos dois modos. Hosts sintéticos são usados somente para
+validar a sintaxe e não representam serviços reais. O workflow Windows de contratos de startup também
 executa o teste de renderização.
 
 ## Escopo preservado
