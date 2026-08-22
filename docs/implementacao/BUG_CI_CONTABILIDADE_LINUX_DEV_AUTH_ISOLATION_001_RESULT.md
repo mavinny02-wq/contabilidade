@@ -17,12 +17,20 @@ dev e preservava os `depends_on` on-premise de backend/frontend. O contrato acei
 PostgreSQL, backend, worker e frontend no modo dev; corrigir apenas o healthcheck do Keycloak faria a
 campanha validar a stack errada.
 
+O rerun isolado `32582778203` comprovou a primeira correção: PostgreSQL, backend e worker ficaram
+saudáveis sem Keycloak/bootstrap. Ele também revelou um segundo defeito no mesmo fluxo: o Nginx do
+frontend resolvia `keycloak` estaticamente ao iniciar e entrava em restart quando o serviço
+intencionalmente ausente não tinha endereço DNS.
+
 ## Correção e regressão
 
 `compose.dev.yaml` agora substitui, em vez de mesclar, os `depends_on` de backend e frontend. O job
 Linux sobe explicitamente apenas os quatro serviços dev nas duas tentativas e falha se qualquer
-container Keycloak/bootstrap existir. A regressão estrutural exige os overrides, o mesmo service
-scope nas duas inicializações e as duas verificações de ausência.
+container Keycloak/bootstrap existir. O proxy `/auth` do frontend agora usa o DNS interno Docker com
+resolução tardia; assim, a ausência dev não impede o Nginx de iniciar e o mesmo config continua
+encaminhando `/auth` quando Keycloak existir no modo on-premise. A regressão estrutural exige os
+overrides, o mesmo service scope nas duas inicializações, as duas verificações de ausência e proíbe
+o upstream Keycloak estático no Nginx.
 
 ## Evidência
 

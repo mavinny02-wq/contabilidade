@@ -10,6 +10,7 @@ LAUNCHER = ROOT / "docs/orquestracao/waves/released/CONTABILIDADE_DOCKER_COMPOSE
 SHARD = ROOT / "docs/testing/plans/VAL_P0_CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_002.md"
 WORKFLOW = ROOT / ".github/workflows/startup-reliability.yml"
 DEV_COMPOSE = ROOT / "compose.dev.yaml"
+FRONTEND_NGINX = ROOT / "frontend/nginx.conf"
 
 
 class CloudComposeRuntimeLauncherTest(unittest.TestCase):
@@ -31,6 +32,7 @@ class CloudComposeRuntimeLauncherTest(unittest.TestCase):
     def test_linux_runtime_is_executable_on_a_docker_enabled_hosted_runner(self) -> None:
         workflow = WORKFLOW.read_text(encoding="utf-8")
         dev_compose = DEV_COMPOSE.read_text(encoding="utf-8")
+        frontend_nginx = FRONTEND_NGINX.read_text(encoding="utf-8")
 
         self.assertIn("Linux Docker Compose runtime twice", workflow)
         self.assertIn("runs-on: ubuntu-latest", workflow)
@@ -57,6 +59,12 @@ class CloudComposeRuntimeLauncherTest(unittest.TestCase):
                 re.MULTILINE | re.DOTALL,
             ),
         )
+        self.assertIn("resolver 127.0.0.11 ipv6=off", frontend_nginx)
+        self.assertIn(
+            "proxy_pass http://$contabilidade_keycloak_upstream$request_uri;",
+            frontend_nginx,
+        )
+        self.assertNotIn("proxy_pass http://keycloak:8080/auth/;", frontend_nginx)
         self.assertRegex(
             dev_compose,
             re.compile(
