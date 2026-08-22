@@ -1,10 +1,11 @@
 # Linux Compose dev auth isolation result
 
 - **Item:** `BUG-CI-CONTABILIDADE-LINUX-DEV-AUTH-ISOLATION-001`
-- **Status:** `CORRECTION_IMPLEMENTED_RUNTIME_REVALIDATION_PENDING`
+- **Status:** `PASS_CLOUD_LINUX_DOCKER_COMPOSE_RUNTIME`
 - **Classificação:** `PRODUCT_REGRESSION`
 - **Baseline:** `a1b3c1afbc727f92b3a411131dcfe4a4c5d22782`
 - **Run analisado:** `32581886001`, job `97052395642`
+- **Run aprovado:** `32594952949`, job `97084331756`
 
 ## Causa provada
 
@@ -56,10 +57,18 @@ o upstream Keycloak estático no Nginx. O healthcheck do frontend agora usa expl
 - context governance e orchestration governance: **PASS**, zero warnings;
 - `git diff --check`: **PASS**.
 
+O run isolado `32594952949`, job `97084331756`, validou o SHA
+`c345e24f89a393667936627b6b31aaa0455db52b` em **2m54s**. A primeira e a segunda inicialização
+passaram. Em ambas, PostgreSQL, backend, automation-worker e frontend atingiram health; liveness e
+readiness do backend, health do worker, `/healthz` e `/api/info` do frontend responderam. O
+histórico Flyway terminou em `V12`; Keycloak e postgres-bootstrap permaneceram ausentes no modo dev.
+O segundo startup comprovou o mesmo container PostgreSQL
+`0c0b952796d4c4fb49a193960127380616d1f1674fc38e40356425f63d40b13c` e o mesmo volume
+`contabilidade_postgres_data`, sem cleanup entre as inicializações.
+
 O workflow captura apenas `.State.Health` do frontend em caso de falha, sem abrir logs da
-aplicação. A correção do loopback ainda precisa de reexecução isolada para provar as duas
-inicializações, os health endpoints reais e o reuso do container/volume PostgreSQL.
+aplicação. O diagnóstico bounded e a reexecução aprovada não expuseram logs amplos nem segredos.
 
 Actions foi restaurado para `disabled`. Nenhum reset, cleanup, remoção de volume, segredo, provider
-ou deploy externo foi executado. O runtime Cloud continua pendente e esta evidência não substitui o
-gate Windows de `LOCK-STARTUP-001`.
+ou deploy externo foi executado. O runtime Cloud Linux está aprovado; esta evidência não substitui
+o gate Windows de `LOCK-STARTUP-001`, que permaneceu deliberadamente omitido.
