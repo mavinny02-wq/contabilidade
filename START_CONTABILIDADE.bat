@@ -32,7 +32,8 @@ goto :usage_and_finish
 set "CONTABILIDADE_BUILD_ONLY="
 echo ============================================================
 echo CONTABILIDADE - DESENVOLVIMENTO: BUILD + START
-echo Compila, cria/verifica imagens e inicia PostgreSQL, backend, worker e frontend.
+echo Compila, cria/verifica imagens e sobe a stack completa:
+echo PostgreSQL, bootstrap, Keycloak, backend, worker e frontend.
 echo Use "start" para subir imagens existentes sem Maven/npm/compilacao.
 echo ============================================================
 call :runtime_preflight
@@ -57,7 +58,8 @@ goto :finish
 set "CONTABILIDADE_BUILD_ONLY="
 echo ============================================================
 echo CONTABILIDADE - START SOMENTE
-echo Usa imagens existentes. Nao executa Maven, npm, typecheck ou docker build.
+echo Usa imagens existentes e sobe a stack completa pelo Compose.
+echo Nao executa Maven, npm, typecheck ou docker build.
 echo ============================================================
 call :runtime_preflight
 if not "%RC%"=="0" goto :finish
@@ -112,9 +114,9 @@ goto :finish
 :usage
 echo ============================================================
 echo CONTABILIDADE - UNICO BAT OFICIAL
- echo ============================================================
+echo ============================================================
 echo.
-echo Build + start de desenvolvimento ^(compatibilidade^):
+echo Build + start de desenvolvimento, com stack completa:
 echo   START_CONTABILIDADE.bat
 echo   START_CONTABILIDADE.bat dev
 echo.
@@ -127,7 +129,7 @@ echo.
 echo Compilar e criar/verificar imagens, sem iniciar Compose:
 echo   START_CONTABILIDADE.bat build
 echo.
-echo Iniciar imagens existentes, sem Maven/npm/compilacao:
+echo Iniciar a stack completa com imagens existentes:
 echo   START_CONTABILIDADE.bat start
 echo.
 echo Producao on-premise com imagens publicadas:
