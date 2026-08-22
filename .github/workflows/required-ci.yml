@@ -113,7 +113,10 @@ jobs:
         shell: bash
         run: |
           for auth_enabled in false true; do
-            extra_args=()
+            extra_args=(
+              --add-host backend:127.0.0.1
+              --add-host automation-worker:127.0.0.1
+            )
             if [ "$auth_enabled" = "true" ]; then
               extra_args+=(--add-host keycloak:127.0.0.1)
             fi
