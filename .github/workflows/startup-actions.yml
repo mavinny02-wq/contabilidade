@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - "START_CONTABILIDADE.bat"
+      - "frontend/Dockerfile"
+      - "frontend/nginx.conf"
+      - "frontend/docker-entrypoint.d/40-runtime-config.sh"
+      - "frontend/scripts/test-runtime-nginx-auth.sh"
       - "scripts/start-contabilidade-core.bat"
       - "scripts/start-contabilidade-resilient.ps1"
       - "scripts/start-compose-sequential.*"
@@ -21,6 +25,10 @@ on:
     branches: [main]
     paths:
       - "START_CONTABILIDADE.bat"
+      - "frontend/Dockerfile"
+      - "frontend/nginx.conf"
+      - "frontend/docker-entrypoint.d/40-runtime-config.sh"
+      - "frontend/scripts/test-runtime-nginx-auth.sh"
       - "scripts/start-contabilidade-core.bat"
       - "scripts/start-contabilidade-resilient.ps1"
       - "scripts/start-compose-sequential.*"
@@ -50,6 +58,9 @@ jobs:
         run: node scripts/codex/validate-startup-actions.mjs
       - name: Test action regressions
         run: node --test scripts/codex/validate-startup-actions.test.mjs
+      - name: Validate frontend Nginx auth-mode rendering
+        shell: bash
+        run: bash frontend/scripts/test-runtime-nginx-auth.sh
       - name: Parse every operational PowerShell file with Windows PowerShell 5.1
         shell: powershell
         run: |
