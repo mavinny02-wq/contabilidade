@@ -78,6 +78,8 @@ Import-Module $NativeProcessModulePath -Force -ErrorAction Stop
 
 Assert-StartupModuleContract -ModuleName 'contabilidade-docker' -RequiredCommands @(
     'Invoke-ContabilidadeNativeCommand',
+    'Convert-ContabilidadeDockerFormatArgument',
+    'Convert-ContabilidadeDockerArguments',
     'Invoke-ContabilidadeDocker',
     'Invoke-ContabilidadeCompose',
     'Test-ContabilidadeDockerContainerAbsent',
