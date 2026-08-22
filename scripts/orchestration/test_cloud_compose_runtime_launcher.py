@@ -65,6 +65,7 @@ class CloudComposeRuntimeLauncherTest(unittest.TestCase):
             frontend_nginx,
         )
         self.assertNotIn("proxy_pass http://keycloak:8080/auth/;", frontend_nginx)
+        self.assertIn("--format '{{json .State.Health}}'", workflow)
         self.assertRegex(
             dev_compose,
             re.compile(

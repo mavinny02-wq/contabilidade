@@ -1,7 +1,7 @@
 # Linux Compose dev auth isolation result
 
 - **Item:** `BUG-CI-CONTABILIDADE-LINUX-DEV-AUTH-ISOLATION-001`
-- **Status:** `IMPLEMENTED_STRUCTURAL_GREEN_RUNTIME_RERUN_PENDING`
+- **Status:** `BLOCKED_RUNTIME_FRONTEND_HEALTH_DETAIL_PENDING`
 - **Classificação:** `PRODUCT_REGRESSION`
 - **Baseline:** `a1b3c1afbc727f92b3a411131dcfe4a4c5d22782`
 - **Run analisado:** `32581886001`, job `97052395642`
@@ -21,6 +21,11 @@ O rerun isolado `32582778203` comprovou a primeira correção: PostgreSQL, backe
 saudáveis sem Keycloak/bootstrap. Ele também revelou um segundo defeito no mesmo fluxo: o Nginx do
 frontend resolvia `keycloak` estaticamente ao iniciar e entrava em restart quando o serviço
 intencionalmente ausente não tinha endereço DNS.
+
+O rerun `32583021160`, no SHA
+`e04b96e90099db05a1de0dddd2328074930ac6b8`, comprovou que o frontend deixou de reiniciar. Ele
+permaneceu `Up`, mas o healthcheck ficou vermelho; PostgreSQL, backend e worker continuaram
+saudáveis. A segunda inicialização foi corretamente omitida após a falha da primeira.
 
 ## Correção e regressão
 
@@ -43,6 +48,10 @@ o upstream Keycloak estático no Nginx.
 - context governance e orchestration governance: **PASS**, zero warnings;
 - `git diff --check`: **PASS**.
 
-O host local não possui Docker; o novo run isolado ainda será registrado no fechamento. Nenhum
-reset, cleanup, remoção de volume, segredo, provider ou deploy externo faz parte da correção. O
-runtime ainda não é declarado verde neste estado intermediário.
+O diagnóstico do run registrou somente `compose ps`; ele não preservou as tentativas/saídas do
+healthcheck do frontend. O workflow agora captura apenas `.State.Health` desse container em caso de
+falha, sem abrir logs da aplicação. Não foi aberta uma quarta execução sem essa evidência bounded.
+
+Actions foi restaurado para `disabled`. Nenhum reset, cleanup, remoção de volume, segredo, provider
+ou deploy externo foi executado. O runtime Cloud continua pendente e esta evidência não substitui o
+gate Windows de `LOCK-STARTUP-001`.

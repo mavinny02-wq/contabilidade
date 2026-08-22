@@ -117,7 +117,12 @@ jobs:
         if: failure()
         shell: bash
         run: |
-          docker compose --env-file "$ENV_FILE" -f compose.yaml -f compose.dev.yaml ps --all || true
+          compose=(docker compose --env-file "$ENV_FILE" -f compose.yaml -f compose.dev.yaml)
+          "${compose[@]}" ps --all || true
+          frontend_id="$("${compose[@]}" ps -q frontend)"
+          if [ -n "$frontend_id" ]; then
+            docker inspect "$frontend_id" --format '{{json .State.Health}}' || true
+          fi
 
   windows-powershell51-contracts:
     name: Windows PowerShell 5.1 contracts
