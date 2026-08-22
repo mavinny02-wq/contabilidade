@@ -3,7 +3,7 @@ Set-StrictMode -Version Latest
 $dockerModulePath = Join-Path $PSScriptRoot 'contabilidade-docker.psm1'
 # Do not force-reload a dependency from inside another module. In Windows PowerShell 5.1,
 # a nested Import-Module -Force can remove commands that the caller imported from the same
-# module, which made Assert-ContabilidadeDockerAvailable disappear after startup-probe loaded.
+# module.
 Import-Module $dockerModulePath -ErrorAction Stop
 
 foreach ($requiredCommand in @(
@@ -19,6 +19,95 @@ foreach ($requiredCommand in @(
 $script:DefaultProbeName = 'contabilidade-startup-probe'
 $script:DefaultProbeLabelKey = 'contabilidade.local.startup-probe'
 $script:DefaultProbeLabelValue = 'true'
+
+function Get-ContabilidadeProbeFailureDetail {
+    [CmdletBinding()]
+    param([Parameter(Mandatory = $true)]$Result)
+
+    $detail = (([string]$Result.StdErr) + [Environment]::NewLine + ([string]$Result.StdOut)).Trim()
+    if ([string]::IsNullOrWhiteSpace($detail)) {
+        return 'sem detalhe do Docker'
+    }
+
+    $detail = [regex]::Replace($detail, '(?i)\b(password|passwd|token|secret|client_secret)\s*[:=]\s*[^\s;]+', '$1=[REDACTED]')
+    $detail = [regex]::Replace($detail, '(?i)(https?://)[^\s/@:]+:[^\s/@]+@', '$1[REDACTED]@')
+    $detail = [regex]::Replace($detail, '[\r\n]+', ' ').Trim()
+    if ($detail.Length -gt 600) {
+        return $detail.Substring(0, 600) + '...'
+    }
+    return $detail
+}
+
+function ConvertFrom-ContabilidadeProbeInspectOutput {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)][string]$RawOutput,
+        [Parameter(Mandatory = $true)][string]$LabelKey
+    )
+
+    $raw = $RawOutput.Trim()
+    if ([string]::IsNullOrWhiteSpace($raw)) {
+        throw '[DOCKER_INSPECT_INVALID_OUTPUT] Docker retornou inspect vazio para o probe.'
+    }
+
+    # Runtime authority: parse the regular JSON returned by `docker container inspect`.
+    # This avoids Go-template strings with embedded quotes, which are not transported
+    # reliably by the legacy native argument binder in Windows PowerShell 5.1.
+    if ($raw.StartsWith('[') -or $raw.StartsWith('{')) {
+        try {
+            $containers = @($raw | ConvertFrom-Json -ErrorAction Stop)
+        }
+        catch {
+            throw "[DOCKER_INSPECT_INVALID_JSON] Docker retornou JSON invalido para o probe: $($_.Exception.Message)"
+        }
+
+        if ($containers.Count -lt 1 -or $null -eq $containers[0]) {
+            throw '[DOCKER_INSPECT_INVALID_JSON] Docker nao retornou um objeto de container para o probe.'
+        }
+
+        $container = $containers[0]
+        $containerId = [string]$container.Id
+        $status = [string]$container.State.Status
+        if ([string]::IsNullOrWhiteSpace($containerId) -or [string]::IsNullOrWhiteSpace($status)) {
+            throw '[DOCKER_INSPECT_INVALID_JSON] Docker omitiu Id ou State.Status no inspect do probe.'
+        }
+
+        $actualLabelValue = ''
+        if ($null -ne $container.Config -and $null -ne $container.Config.Labels) {
+            $labelProperty = $container.Config.Labels.PSObject.Properties[$LabelKey]
+            if ($null -ne $labelProperty -and $null -ne $labelProperty.Value) {
+                $actualLabelValue = [string]$labelProperty.Value
+            }
+        }
+
+        return [pscustomobject]@{
+            ContainerId = $containerId.Trim()
+            Status = $status.Trim()
+            LabelValue = $actualLabelValue.Trim()
+            Source = 'DOCKER_INSPECT_JSON'
+        }
+    }
+
+    # Compatibility with the focused unit fixtures that predate the JSON authority.
+    # Production Docker is never invoked with --format by this module anymore.
+    $line = @(
+        $raw -split '\r?\n' |
+            ForEach-Object { $_.Trim() } |
+            Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+    ) | Select-Object -First 1
+    $parts = @($line -split '\|', 3)
+    if ($parts.Count -lt 2 -or [string]::IsNullOrWhiteSpace($parts[0]) -or
+        [string]::IsNullOrWhiteSpace($parts[1])) {
+        throw '[DOCKER_INSPECT_INVALID_OUTPUT] Estado legado invalido retornado para o probe.'
+    }
+
+    return [pscustomobject]@{
+        ContainerId = $parts[0].Trim()
+        Status = $parts[1].Trim()
+        LabelValue = $(if ($parts.Count -ge 3) { $parts[2].Trim() } else { '' })
+        Source = 'LEGACY_TEST_FIXTURE'
+    }
+}
 
 function New-ContabilidadeStartupProbeResult {
     [CmdletBinding()]
@@ -53,9 +142,8 @@ function Get-ContabilidadeStartupProbeState {
         [string]$LabelValue = $script:DefaultProbeLabelValue
     )
 
-    $format = '{{.Id}}|{{.State.Status}}|{{index .Config.Labels "' + $LabelKey + '"}}'
     $inspect = Invoke-ContabilidadeDocker `
-        -Arguments @('container', 'inspect', '--format', $format, $Name) `
+        -Arguments @('container', 'inspect', $Name) `
         -AllowFailure `
         -Quiet
 
@@ -70,38 +158,29 @@ function Get-ContabilidadeStartupProbeState {
                 LabelValue = $null
                 Category = 'CONTAINER_ABSENT_EXPECTED'
                 ExitCode = $inspect.ExitCode
+                InspectSource = 'DOCKER_INSPECT_JSON'
             }
         }
 
         $category = Get-ContabilidadeDockerFailureCategory -Content $inspect.Output
-        throw "[$category] Nao foi possivel inspecionar o probe '$Name'. Exit code: $($inspect.ExitCode)."
+        $detail = Get-ContabilidadeProbeFailureDetail -Result $inspect
+        throw "[$category] Nao foi possivel inspecionar o probe '$Name'. Exit code: $($inspect.ExitCode). Docker: $detail"
     }
 
-    $line = @(
-        $inspect.StdOut -split '\r?\n' |
-            ForEach-Object { $_.Trim() } |
-            Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-    ) | Select-Object -First 1
+    $facts = ConvertFrom-ContabilidadeProbeInspectOutput `
+        -RawOutput $inspect.StdOut `
+        -LabelKey $LabelKey
 
-    if ([string]::IsNullOrWhiteSpace($line)) {
-        throw "[DOCKER_PERMISSION_OR_API_FAILURE] Docker nao retornou estado para o probe '$Name'."
-    }
-
-    $parts = @($line -split '\|', 3)
-    if ($parts.Count -lt 2 -or [string]::IsNullOrWhiteSpace($parts[0])) {
-        throw "[DOCKER_PERMISSION_OR_API_FAILURE] Estado invalido retornado para o probe '$Name'."
-    }
-
-    $actualLabelValue = if ($parts.Count -ge 3) { $parts[2].Trim() } else { '' }
     return [pscustomobject]@{
         Name = $Name
         Exists = $true
-        Owned = ($actualLabelValue -eq $LabelValue)
-        ContainerId = $parts[0].Trim()
-        Status = $parts[1].Trim()
-        LabelValue = $actualLabelValue
+        Owned = ($facts.LabelValue -eq $LabelValue)
+        ContainerId = $facts.ContainerId
+        Status = $facts.Status
+        LabelValue = $facts.LabelValue
         Category = 'CONTAINER_PRESENT'
         ExitCode = $inspect.ExitCode
+        InspectSource = $facts.Source
     }
 }
 
@@ -148,7 +227,8 @@ function Remove-ContabilidadeStartupProbe {
         }
 
         $failureCategory = Get-ContabilidadeDockerFailureCategory -Content $remove.Output
-        throw "[PROBE_REMOVE_FAILED][$failureCategory] Falha real ao remover o probe '$Name'. Exit code: $($remove.ExitCode)."
+        $detail = Get-ContabilidadeProbeFailureDetail -Result $remove
+        throw "[PROBE_REMOVE_FAILED][$failureCategory] Falha real ao remover o probe '$Name'. Exit code: $($remove.ExitCode). Docker: $detail"
     }
 
     $after = Get-ContabilidadeStartupProbeState -Name $Name -LabelKey $LabelKey -LabelValue $LabelValue
@@ -204,7 +284,8 @@ function Start-ContabilidadeStartupProbe {
     $create = Invoke-ContabilidadeDocker -Arguments $arguments -AllowFailure -Quiet
     if (-not $create.Success) {
         $category = Get-ContabilidadeDockerFailureCategory -Content $create.Output
-        throw "[PROBE_CREATE_FAILED][$category] Nao foi possivel criar o probe '$Name'. Exit code: $($create.ExitCode)."
+        $detail = Get-ContabilidadeProbeFailureDetail -Result $create
+        throw "[PROBE_CREATE_FAILED][$category] Nao foi possivel criar o probe '$Name'. Exit code: $($create.ExitCode). Docker: $detail"
     }
 
     $state = Get-ContabilidadeStartupProbeState -Name $Name -LabelKey $LabelKey -LabelValue $LabelValue
