@@ -21,7 +21,7 @@ $checks = @(
     [pscustomobject]@{
         Name = 'frontend'
         Image = $FrontendImage
-        Command = 'test -x /usr/sbin/nginx && test -f /usr/share/nginx/html/index.html'
+        Command = 'test -x /usr/sbin/nginx && test -f /usr/share/nginx/html/index.html && APP_AUTH_ENABLED=false CONTABILIDADE_NGINX_VALIDATE=false /docker-entrypoint.d/40-runtime-config.sh && ! grep -q keycloak /etc/nginx/contabilidade/auth-location.conf && APP_AUTH_ENABLED=true CONTABILIDADE_NGINX_VALIDATE=false /docker-entrypoint.d/40-runtime-config.sh && grep -q "proxy_pass http://keycloak:8080/auth/;" /etc/nginx/contabilidade/auth-location.conf'
     },
     [pscustomobject]@{
         Name = 'automation-worker'

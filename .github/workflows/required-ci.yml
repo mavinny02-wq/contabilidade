@@ -106,6 +106,29 @@ jobs:
         working-directory: frontend
       - run: npm run locale:validate
         working-directory: frontend
+      - name: Validate frontend Nginx auth-mode rendering
+        working-directory: frontend
+        run: bash scripts/test-runtime-nginx-auth.sh
+      - name: Validate frontend Nginx runtime in dev and auth modes
+        shell: bash
+        run: |
+          for auth_enabled in false true; do
+            extra_args=(
+              --add-host backend:127.0.0.1
+              --add-host automation-worker:127.0.0.1
+            )
+            if [ "$auth_enabled" = "true" ]; then
+              extra_args+=(--add-host keycloak:127.0.0.1)
+            fi
+            docker run --rm \
+              "${extra_args[@]}" \
+              -e APP_AUTH_ENABLED="$auth_enabled" \
+              -v "$GITHUB_WORKSPACE/frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+              -v "$GITHUB_WORKSPACE/frontend/docker-entrypoint.d/40-runtime-config.sh:/runtime-config.sh:ro" \
+              --entrypoint /bin/sh \
+              nginx:1.27-alpine \
+              -c 'sh /runtime-config.sh && nginx -t'
+          done
       - run: npm run typecheck
         working-directory: frontend
       - run: npm run test:coverage
