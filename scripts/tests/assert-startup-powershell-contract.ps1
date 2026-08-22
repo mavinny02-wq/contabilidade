@@ -27,7 +27,7 @@ function Assert-VisibleModuleCommands {
     Assert-Contract ($null -ne $module) "Modulo nao carregado: $ModuleName"
 
     foreach ($commandName in $Commands) {
-        Assert-Contract $module.ExportedCommands.ContainsKey($commandName) `
+        Assert-Contract ($module.ExportedCommands.ContainsKey($commandName)) `
             "$ModuleName nao exporta $commandName"
 
         $visible = Get-Command -Name $commandName -ErrorAction SilentlyContinue |
@@ -74,8 +74,12 @@ foreach ($path in $modulePaths.Values) {
 # Reproduce the production import order without invoking Docker. The original regression
 # occurred when startup-probe force-reloaded contabilidade-docker and removed its commands
 # from the caller's Windows PowerShell 5.1 session state.
-Remove-Module startup-probe, contabilidade-docker, startup-preflight, native-process `
-    -Force -ErrorAction SilentlyContinue
+Remove-Module -Name @(
+    'startup-probe',
+    'contabilidade-docker',
+    'startup-preflight',
+    'native-process'
+) -Force -ErrorAction SilentlyContinue
 Import-Module $modulePaths['startup-preflight'] -Force -ErrorAction Stop
 Import-Module $modulePaths['contabilidade-docker'] -Force -ErrorAction Stop
 Assert-VisibleModuleCommands 'contabilidade-docker' $requiredCommands['contabilidade-docker']
