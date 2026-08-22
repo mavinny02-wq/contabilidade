@@ -65,11 +65,11 @@ jobs:
             )
             foreach ($parseError in $errors) {
               $failureCount++
-              Write-Error ("{0}:{1}:{2} {3}" -f
+              Write-Host ("[ERROR] {0}:{1}:{2} {3}" -f
                 $file.FullName,
                 $parseError.Extent.StartLineNumber,
                 $parseError.Extent.StartColumnNumber,
-                $parseError.Message)
+                $parseError.Message) -ForegroundColor Red
             }
           }
           if ($failureCount -gt 0) {
