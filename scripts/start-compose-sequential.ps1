@@ -8,6 +8,8 @@ param(
 
     [string[]]$AdditionalComposeFiles = @(),
 
+    # Retained for backward-compatible harness invocation. The PRIMA-style
+    # startup no longer creates a readiness probe container.
     [string]$ProbeContainerName = 'contabilidade-startup-probe',
 
     [string]$FrontendHealthUrl = 'http://localhost:8088/healthz',
@@ -37,8 +39,7 @@ else {
     Join-Path $ProjectDir 'compose.onpremise.yaml'
 }
 
-Import-Module (Join-Path $PSScriptRoot 'lib\contabilidade-docker.psm1') -Force
-Import-Module (Join-Path $PSScriptRoot 'lib\startup-probe.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'lib\contabilidade-docker.psm1') -Force -ErrorAction Stop
 
 function Write-Step {
     param([string]$Message)
@@ -64,7 +65,7 @@ function Get-DotEnvValue {
         return $processValue.Trim()
     }
 
-    if (Test-Path -LiteralPath $EnvFile) {
+    if (Test-Path -LiteralPath $EnvFile -PathType Leaf) {
         foreach ($line in Get-Content -LiteralPath $EnvFile) {
             if ($line -match '^\s*#') {
                 continue
@@ -88,7 +89,7 @@ function Get-DotEnvValue {
 function Get-PositiveInt {
     param([string]$Name, [int]$DefaultValue)
 
-    $raw = Get-DotEnvValue $Name ([string]$DefaultValue)
+    $raw = Get-DotEnvValue -Name $Name -DefaultValue ([string]$DefaultValue)
     $parsed = 0
     if (-not [int]::TryParse($raw, [ref]$parsed) -or $parsed -lt 1) {
         Write-Warn "$Name invalido ('$raw'); usando $DefaultValue."
@@ -97,10 +98,9 @@ function Get-PositiveInt {
     return $parsed
 }
 
-$PollSeconds = Get-PositiveInt 'STARTUP_POLL_SECONDS' 3
-$ServiceTimeoutSeconds = Get-PositiveInt 'SERVICE_STARTUP_TIMEOUT_SECONDS' 240
-$KeycloakTimeoutSeconds = Get-PositiveInt 'KEYCLOAK_STARTUP_TIMEOUT_SECONDS' 600
-$ReportEverySeconds = 15
+$ComposeWaitTimeoutSeconds = Get-PositiveInt -Name 'COMPOSE_STARTUP_WAIT_TIMEOUT_SECONDS' -DefaultValue 720
+$ServiceTimeoutSeconds = Get-PositiveInt -Name 'SERVICE_STARTUP_TIMEOUT_SECONDS' -DefaultValue 240
+$PollSeconds = Get-PositiveInt -Name 'STARTUP_POLL_SECONDS' -DefaultValue 3
 
 $composePrefix = @('compose')
 if (-not [string]::IsNullOrWhiteSpace($ComposeProjectName)) {
@@ -118,7 +118,6 @@ foreach ($additionalFile in $AdditionalComposeFiles) {
     }
 }
 $script:ComposePrefix = $composePrefix
-$script:ProbeCleanupRequired = $false
 
 function Invoke-Compose {
     param(
@@ -134,404 +133,258 @@ function Invoke-Compose {
         -Quiet:$Quiet
 }
 
-function Get-ServiceContainerId {
-    param([string]$Service)
+function Get-CommandDiagnostic {
+    param([Parameter(Mandatory = $true)]$Result)
 
-    $result = Invoke-Compose -Arguments @('ps', '-a', '-q', $Service) -AllowFailure -Quiet
-    if (-not $result.Success) {
-        $category = Get-ContabilidadeDockerFailureCategory -Content $result.Output
-        throw "[$category] Nao foi possivel localizar o container do servico '$Service'. Exit code: $($result.ExitCode)."
+    $parts = @(
+        [string]$Result.StdErr
+        [string]$Result.StdOut
+    ) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
+
+    if ($parts.Count -eq 0) {
+        return 'sem stdout/stderr'
     }
 
-    $ids = @(
-        $result.StdOut -split '\r?\n' |
+    $detail = ($parts -join [Environment]::NewLine).Trim()
+    $detail = [regex]::Replace(
+        $detail,
+        '(?i)\b(password|passwd|token|secret|client_secret)\s*[:=]\s*[^\s;]+',
+        '$1=[REDACTED]'
+    )
+    $detail = [regex]::Replace(
+        $detail,
+        '(?i)(https?://)[^\s/@:]+:[^\s/@]+@',
+        '$1[REDACTED]@'
+    )
+    if ($detail.Length -gt 1600) {
+        return $detail.Substring(0, 1600) + '...'
+    }
+    return $detail
+}
+
+function Show-ComposeEvidence {
+    Write-Host ''
+    Write-Host '---- ESTADO DA STACK ----' -ForegroundColor Yellow
+    $null = Invoke-Compose -Arguments @('ps', '-a') -AllowFailure
+
+    Write-Host ''
+    Write-Host '---- LOGS DA STACK (ULTIMAS 250 LINHAS) ----' -ForegroundColor Yellow
+    $null = Invoke-Compose -Arguments @(
+        'logs', '--no-color', '--tail', '250',
+        'postgres', 'postgres-bootstrap', 'keycloak',
+        'backend', 'automation-worker', 'frontend'
+    ) -AllowFailure
+}
+
+function Assert-ComposeServices {
+    $servicesResult = Invoke-Compose -Arguments @('config', '--services') -AllowFailure -Quiet
+    if (-not $servicesResult.Success) {
+        throw "Configuracao Compose invalida. Exit code: $($servicesResult.ExitCode). $(Get-CommandDiagnostic -Result $servicesResult)"
+    }
+
+    $services = @(
+        $servicesResult.StdOut -split '\r?\n' |
             ForEach-Object { $_.Trim() } |
             Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
     )
-    if ($ids.Count -eq 0) {
-        return $null
-    }
-    return [string]$ids[0]
-}
-
-function Get-ContainerState {
-    param([AllowNull()][string]$ContainerId)
-
-    if ([string]::IsNullOrWhiteSpace($ContainerId)) {
-        return [pscustomobject]@{ Status = 'missing'; Health = 'none'; ExitCode = $null }
-    }
-
-    $format = '{{.State.Status}}|{{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}}|{{.State.ExitCode}}'
-    $result = Invoke-ContabilidadeDocker `
-        -Arguments @('container', 'inspect', '--format', $format, $ContainerId) `
-        -AllowFailure `
-        -Quiet
-
-    if (-not $result.Success) {
-        if (Test-ContabilidadeDockerContainerAbsent -Content $result.Output) {
-            return [pscustomobject]@{ Status = 'missing'; Health = 'none'; ExitCode = $null }
+    foreach ($requiredService in @(
+        'postgres',
+        'postgres-bootstrap',
+        'keycloak',
+        'backend',
+        'automation-worker',
+        'frontend'
+    )) {
+        if ($services -notcontains $requiredService) {
+            throw "Servico obrigatorio ausente do Compose efetivo: $requiredService"
         }
-        $category = Get-ContabilidadeDockerFailureCategory -Content $result.Output
-        throw "[$category] Falha ao inspecionar container '$ContainerId'. Exit code: $($result.ExitCode)."
-    }
-
-    $line = @(
-        $result.StdOut -split '\r?\n' |
-            ForEach-Object { $_.Trim() } |
-            Where-Object { -not [string]::IsNullOrWhiteSpace($_) }
-    ) | Select-Object -First 1
-    $parts = @($line -split '\|', 3)
-    if ($parts.Count -lt 3) {
-        throw "[DOCKER_PERMISSION_OR_API_FAILURE] Estado Docker invalido para '$ContainerId'."
-    }
-
-    $exitCode = 0
-    [void][int]::TryParse($parts[2], [ref]$exitCode)
-    return [pscustomobject]@{
-        Status = $parts[0]
-        Health = $parts[1]
-        ExitCode = $exitCode
     }
 }
 
-function Show-ServiceLogs {
-    param([string[]]$Services, [int]$Tail = 250)
-
-    $arguments = @('logs', '--no-color', '--tail', [string]$Tail) + $Services
-    $result = Invoke-Compose -Arguments $arguments -AllowFailure
-    if (-not $result.Success) {
-        Write-Warn "Nao foi possivel coletar todos os logs solicitados. Exit code: $($result.ExitCode)."
-    }
-}
-
-function Wait-ServiceHealthy {
+function Wait-ComposeCommand {
     param(
-        [string]$Service,
-        [int]$TimeoutSeconds,
-        [string]$DisplayName
+        [Parameter(Mandatory = $true)][string]$Description,
+        [Parameter(Mandatory = $true)][string[]]$Arguments,
+        [int]$TimeoutSeconds = $ServiceTimeoutSeconds
     )
 
     $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
-    $nextReport = Get-Date
-    $lastSignature = ''
-
+    $lastResult = $null
     while ((Get-Date) -lt $deadline) {
-        $state = Get-ContainerState (Get-ServiceContainerId $Service)
-        $signature = "$($state.Status)/$($state.Health)"
-
-        if ($state.Status -eq 'running' -and ($state.Health -eq 'healthy' -or $state.Health -eq 'none')) {
-            Write-Ok "$DisplayName pronto."
-            return
-        }
-
-        if ($state.Status -eq 'exited' -or $state.Status -eq 'dead') {
-            Show-ServiceLogs -Services @($Service)
-            throw "$DisplayName encerrou antes de ficar pronto. Status=$($state.Status), exit=$($state.ExitCode)."
-        }
-
-        if ($signature -ne $lastSignature -or (Get-Date) -ge $nextReport) {
-            $remaining = [Math]::Max(0, [int][Math]::Ceiling(($deadline - (Get-Date)).TotalSeconds))
-            Write-Host "${DisplayName}: status=$($state.Status) health=$($state.Health) - limite restante ${remaining}s"
-            $lastSignature = $signature
-            $nextReport = (Get-Date).AddSeconds($ReportEverySeconds)
-        }
-
-        Start-Sleep -Seconds $PollSeconds
-    }
-
-    Show-ServiceLogs -Services @($Service)
-    throw "Tempo esgotado aguardando $DisplayName apos ${TimeoutSeconds}s."
-}
-
-function Wait-OneShotSuccess {
-    param(
-        [string]$Service,
-        [int]$TimeoutSeconds,
-        [string]$DisplayName
-    )
-
-    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
-    while ((Get-Date) -lt $deadline) {
-        $state = Get-ContainerState (Get-ServiceContainerId $Service)
-        if ($state.Status -eq 'exited') {
-            if ($state.ExitCode -eq 0) {
-                Write-Ok "$DisplayName concluido com exit code 0."
-                return
-            }
-            Show-ServiceLogs -Services @($Service)
-            throw "$DisplayName falhou com exit code $($state.ExitCode)."
-        }
-        if ($state.Status -eq 'dead') {
-            Show-ServiceLogs -Services @($Service)
-            throw "$DisplayName terminou em estado dead."
-        }
-        Start-Sleep -Seconds $PollSeconds
-    }
-
-    Show-ServiceLogs -Services @($Service)
-    throw "Tempo esgotado aguardando $DisplayName."
-}
-
-function Remove-Probe {
-    param([string]$Phase)
-
-    $result = Remove-ContabilidadeStartupProbe -Name $ProbeContainerName
-    Write-Host "[PROBE][$Phase] category=$($result.Category) exit=$($result.ExitCode) status=$($result.Status)"
-    return $result
-}
-
-function Start-Probe {
-    $null = Remove-Probe -Phase 'before-create'
-    Write-Step '[PROBE] Iniciando sonda unica de readiness na rede Compose...'
-    $result = Start-ContabilidadeStartupProbe `
-        -ComposePrefix $script:ComposePrefix `
-        -Name $ProbeContainerName
-    Write-Ok "Sonda pronta: $ProbeContainerName ($($result.ContainerId))."
-}
-
-function Wait-ProbeUrl {
-    param(
-        [string]$Url,
-        [int]$TimeoutSeconds,
-        [string]$Description,
-        [string]$ServiceForLogs
-    )
-
-    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
-    $nextReport = Get-Date
-
-    while ((Get-Date) -lt $deadline) {
-        $request = Invoke-ContabilidadeStartupProbeRequest `
-            -Name $ProbeContainerName `
-            -Url $Url `
-            -TimeoutSeconds 5
-        if ($request.Success) {
+        $lastResult = Invoke-Compose -Arguments $Arguments -AllowFailure -Quiet
+        if ($lastResult.Success) {
             Write-Ok $Description
             return
         }
-
-        if (-not [string]::IsNullOrWhiteSpace($ServiceForLogs)) {
-            $state = Get-ContainerState (Get-ServiceContainerId $ServiceForLogs)
-            if ($state.Status -eq 'exited' -or $state.Status -eq 'dead') {
-                Show-ServiceLogs -Services @($ServiceForLogs)
-                throw "$ServiceForLogs encerrou antes de responder readiness."
-            }
-        }
-
-        if ((Get-Date) -ge $nextReport) {
-            Write-Host "$Description ainda indisponivel... category=$($request.Category) exit=$($request.ExitCode)"
-            $nextReport = (Get-Date).AddSeconds($ReportEverySeconds)
-        }
         Start-Sleep -Seconds $PollSeconds
     }
 
-    if (-not [string]::IsNullOrWhiteSpace($ServiceForLogs)) {
-        Show-ServiceLogs -Services @($ServiceForLogs)
+    $detail = if ($null -eq $lastResult) {
+        'comando nao executado'
     }
-    throw "Tempo esgotado aguardando: $Description"
+    else {
+        Get-CommandDiagnostic -Result $lastResult
+    }
+    throw "Tempo esgotado aguardando $Description. $detail"
 }
 
-function Wait-WorkerHealth {
-    $deadline = (Get-Date).AddSeconds($ServiceTimeoutSeconds)
-    while ((Get-Date) -lt $deadline) {
-        $result = Invoke-Compose -Arguments @(
-            'exec', '-T', 'automation-worker',
-            'node', '-e',
-            "fetch('http://localhost:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-        ) -AllowFailure -Quiet
-        if ($result.Success) {
-            Write-Ok 'Automation worker saudavel.'
-            return
-        }
+function Wait-Http200 {
+    param(
+        [Parameter(Mandatory = $true)][string]$Url,
+        [Parameter(Mandatory = $true)][string]$Description,
+        [int]$TimeoutSeconds = $ServiceTimeoutSeconds
+    )
 
-        $state = Get-ContainerState (Get-ServiceContainerId 'automation-worker')
-        if ($state.Status -eq 'exited' -or $state.Status -eq 'dead') {
-            Show-ServiceLogs -Services @('automation-worker')
-            throw 'Automation worker encerrou durante a inicializacao.'
-        }
-        Start-Sleep -Seconds $PollSeconds
-    }
-
-    Show-ServiceLogs -Services @('automation-worker')
-    throw 'Tempo esgotado aguardando o automation worker.'
-}
-
-function Wait-FrontendHealth {
-    $deadline = (Get-Date).AddSeconds($ServiceTimeoutSeconds)
+    $deadline = (Get-Date).AddSeconds($TimeoutSeconds)
+    $lastError = ''
     while ((Get-Date) -lt $deadline) {
         try {
-            $response = Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 $FrontendHealthUrl
+            $response = Invoke-WebRequest -UseBasicParsing -TimeoutSec 5 -Uri $Url
             if ($response.StatusCode -eq 200) {
-                Write-Ok "Frontend saudavel em $FrontendHealthUrl."
-                return
+                Write-Ok "$Description ($Url)"
+                return $response
             }
+            $lastError = "HTTP $($response.StatusCode)"
         }
         catch {
-            # Continua aguardando; o estado do container abaixo define falha terminal.
-        }
-
-        $state = Get-ContainerState (Get-ServiceContainerId 'frontend')
-        if ($state.Status -eq 'exited' -or $state.Status -eq 'dead') {
-            Show-ServiceLogs -Services @('frontend')
-            throw 'Frontend encerrou durante a inicializacao.'
+            $lastError = $_.Exception.Message
         }
         Start-Sleep -Seconds $PollSeconds
     }
 
-    Show-ServiceLogs -Services @('frontend')
-    throw 'Tempo esgotado aguardando o frontend.'
-}
-
-function Remove-DevAuthContainers {
-    Write-Step '[DEV] Mantendo somente os servicos necessarios...'
-    $stop = Invoke-Compose -Arguments @('stop', 'keycloak', 'postgres-bootstrap') -AllowFailure -Quiet
-    if (-not $stop.Success -and -not (Test-ContabilidadeDockerContainerAbsent -Content $stop.Output)) {
-        $category = Get-ContabilidadeDockerFailureCategory -Content $stop.Output
-        throw "[$category] Falha ao parar servicos de autenticacao omitidos no modo dev. Exit code: $($stop.ExitCode)."
-    }
-
-    $remove = Invoke-Compose -Arguments @('rm', '-f', '-s', 'keycloak', 'postgres-bootstrap') -AllowFailure -Quiet
-    if (-not $remove.Success -and -not (Test-ContabilidadeDockerContainerAbsent -Content $remove.Output)) {
-        $category = Get-ContabilidadeDockerFailureCategory -Content $remove.Output
-        throw "[$category] Falha ao remover containers de autenticacao omitidos no modo dev. Exit code: $($remove.ExitCode)."
-    }
-    Write-Ok 'Keycloak e bootstrap omitidos: APP_SECURITY_ENABLED=false no modo dev.'
+    throw "Tempo esgotado aguardando $Description em '$Url'. Ultimo erro: $lastError"
 }
 
 function Validate-DatabaseSchemas {
     if ($SkipDatabaseValidation) {
         if ([string]::IsNullOrWhiteSpace($ComposeProjectName) -or
             $ComposeProjectName -notmatch '^contabilidade-startup-it-[a-z0-9-]+$') {
-            throw 'SkipDatabaseValidation so e permitido em projeto efemero contabilidade-startup-it-*.'
+            throw 'SkipDatabaseValidation so e permitido em projeto efemero contabilidade-startup-it-*'
         }
-        Write-Warn 'Validacao BAT do banco omitida somente no harness efemero; o harness validara Flyway diretamente.'
+        Write-Warn 'Validacao BAT do banco omitida somente no harness efemero.'
         return
     }
 
-    Write-Step '[VALIDATE] Validando banco e migrations...'
+    Write-Step '[VALIDATE] Validando schemas PostgreSQL, Keycloak e Flyway...'
     $validationBat = Join-Path $PSScriptRoot 'validate-database-state.bat'
     $commandLine = 'call "' + $validationBat + '" "' + $Mode + '"'
     $result = Invoke-ContabilidadeNativeCommand `
         -FilePath $env:ComSpec `
         -Arguments @('/d', '/c', $commandLine)
     Write-ContabilidadeNativeOutput -Result $result
-
     if (-not $result.Success) {
-        if ($Mode -eq 'dev') {
-            Show-ServiceLogs -Services @('postgres', 'backend') -Tail 200
-        }
-        else {
-            Show-ServiceLogs -Services @('postgres', 'postgres-bootstrap', 'keycloak', 'backend') -Tail 200
-        }
-        throw "Validacao dos schemas PostgreSQL falhou. Exit code: $($result.ExitCode)."
+        throw "Validacao dos schemas falhou. Exit code: $($result.ExitCode)."
     }
 }
 
-function Invoke-SequentialStartup {
+function Invoke-PrimaComposeStartup {
     foreach ($required in (@($EnvFile, $ComposeBase, $ComposeMode, $ComposeOverride) + $AdditionalComposeFiles)) {
-        if (-not (Test-Path -LiteralPath $required)) {
+        if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
             throw "Arquivo obrigatorio ausente: $required"
         }
     }
 
     Assert-ContabilidadeDockerAvailable
-    $script:ProbeCleanupRequired = $true
-    $null = Remove-Probe -Phase 'initial'
+    Assert-ComposeServices
 
-    $config = Invoke-Compose -Arguments @('config', '--quiet') -AllowFailure -Quiet
-    if (-not $config.Success) {
-        throw "Configuracao Compose invalida. Exit code: $($config.ExitCode)."
+    Write-Step '[START] Subindo a stack completa em uma unica transicao Docker Compose (modelo PRIMA)...'
+    Write-Host 'Servicos: PostgreSQL, bootstrap, Keycloak, backend, automation-worker e frontend.'
+    Write-Host "Timeout Compose: ${ComposeWaitTimeoutSeconds}s"
+    $up = Invoke-Compose -Arguments @(
+        'up',
+        '--no-build',
+        '-d',
+        '--remove-orphans',
+        '--wait',
+        '--wait-timeout', [string]$ComposeWaitTimeoutSeconds
+    ) -AllowFailure
+    if (-not $up.Success) {
+        throw "Docker Compose up --wait falhou. Exit code: $($up.ExitCode). $(Get-CommandDiagnostic -Result $up)"
+    }
+    Write-Ok 'Docker Compose declarou a stack pronta.'
+
+    # Post-start authority. These checks execute inside the actual Compose network.
+    $nginx = Invoke-Compose -Arguments @('exec', '-T', 'frontend', 'nginx', '-t') -AllowFailure
+    if (-not $nginx.Success) {
+        throw "Configuracao Nginx invalida depois do startup. Exit code: $($nginx.ExitCode). $(Get-CommandDiagnostic -Result $nginx)"
+    }
+    Write-Ok 'Nginx validado dentro da rede Compose.'
+
+    Wait-ComposeCommand `
+        -Description 'Backend readiness pela rede Compose' `
+        -Arguments @(
+            'exec', '-T', 'frontend',
+            'wget', '-q', '-T', '5', '-O', '-',
+            'http://backend:8080/actuator/health/readiness'
+        )
+
+    Wait-ComposeCommand `
+        -Description 'Automation worker health' `
+        -Arguments @(
+            'exec', '-T', 'automation-worker',
+            'node', '-e',
+            "fetch('http://localhost:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+        )
+
+    $frontendBaseUrl = $FrontendHealthUrl -replace '/healthz/?$', ''
+    if ([string]::IsNullOrWhiteSpace($frontendBaseUrl)) {
+        throw "FrontendHealthUrl invalida: $FrontendHealthUrl"
     }
 
-    if ($Mode -eq 'dev') {
-        Remove-DevAuthContainers
+    $null = Wait-Http200 `
+        -Url $FrontendHealthUrl `
+        -Description 'Frontend healthz'
+    $home = Wait-Http200 `
+        -Url ($frontendBaseUrl + '/') `
+        -Description 'Frontend SPA'
+    if ([string]$home.Content -notmatch '(?is)<(?:!doctype\s+html|html\b)') {
+        throw 'Frontend respondeu HTTP 200, mas nao retornou um documento HTML.'
     }
-
-    Write-Step '[START 1] PostgreSQL...'
-    $null = Invoke-Compose -Arguments @('up', '--no-build', '--no-deps', '-d', 'postgres')
-    Wait-ServiceHealthy -Service 'postgres' -TimeoutSeconds $ServiceTimeoutSeconds -DisplayName 'PostgreSQL'
-
-    if ($Mode -eq 'onpremise') {
-        Write-Step '[START 2] Bootstrap do banco Keycloak...'
-        $null = Invoke-Compose -Arguments @('up', '--no-build', '--no-deps', '-d', 'postgres-bootstrap')
-        Wait-OneShotSuccess -Service 'postgres-bootstrap' -TimeoutSeconds $ServiceTimeoutSeconds -DisplayName 'Bootstrap PostgreSQL/Keycloak'
-
-        Write-Step '[START 3] Keycloak...'
-        $null = Invoke-Compose -Arguments @('up', '--no-build', '--no-deps', '-d', 'keycloak')
-        Wait-ServiceHealthy -Service 'keycloak' -TimeoutSeconds $KeycloakTimeoutSeconds -DisplayName 'Keycloak'
-    }
-    else {
-        Write-Host '[SKIP] Bootstrap e Keycloak nao sao necessarios no modo dev.' -ForegroundColor DarkGray
-    }
-
-    Start-Probe
-
-    Write-Step '[START] Backend...'
-    $null = Invoke-Compose -Arguments @('up', '--no-build', '--no-deps', '-d', '--force-recreate', 'backend')
-    Wait-ProbeUrl `
-        -Url 'http://backend:8080/actuator/health/readiness' `
-        -TimeoutSeconds $ServiceTimeoutSeconds `
-        -Description 'Backend readiness' `
-        -ServiceForLogs 'backend'
-    $null = Remove-Probe -Phase 'after-backend-readiness'
+    $null = Wait-Http200 `
+        -Url ($frontendBaseUrl + '/api/info') `
+        -Description 'Proxy frontend para /api/info'
+    $null = Wait-Http200 `
+        -Url ($frontendBaseUrl + '/auth/realms/contabilidade/.well-known/openid-configuration') `
+        -Description 'Keycloak realm pelo proxy frontend'
 
     Validate-DatabaseSchemas
 
-    Write-Step '[START] Automation worker...'
-    $null = Invoke-Compose -Arguments @('up', '--no-build', '--no-deps', '-d', '--force-recreate', 'automation-worker')
-    Wait-WorkerHealth
-
-    Write-Step '[START] Frontend...'
-    $null = Invoke-Compose -Arguments @('up', '--no-build', '--no-deps', '-d', '--force-recreate', 'frontend')
-    Wait-FrontendHealth
-
-    $null = Invoke-Compose -Arguments @('exec', '-T', 'frontend', 'nginx', '-t')
-
     $state = Invoke-Compose -Arguments @('ps', '-a') -AllowFailure -Quiet
     if (-not $state.Success) {
-        throw "Nao foi possivel exibir o estado final da stack. Exit code: $($state.ExitCode)."
+        throw "Nao foi possivel consultar o estado final da stack. Exit code: $($state.ExitCode)."
     }
-    if (-not [string]::IsNullOrWhiteSpace($state.StdOut)) {
-        Write-Host ''
-        Write-Host $state.StdOut.TrimEnd()
-    }
+    Write-Host ''
+    Write-Host $state.StdOut.TrimEnd()
 
     return [pscustomobject]@{
         Mode = $Mode
-        ApplicationUrl = $FrontendHealthUrl -replace '/healthz$', ''
+        ApplicationUrl = $frontendBaseUrl
         ComposeProjectName = $ComposeProjectName
+        Services = @(
+            'postgres',
+            'postgres-bootstrap',
+            'keycloak',
+            'backend',
+            'automation-worker',
+            'frontend'
+        )
+        StartupModel = 'PRIMA_SINGLE_COMPOSE_UP_WAIT'
+        LegacyProbeName = $ProbeContainerName
     }
 }
 
 Set-Location $ProjectDir
 
 try {
-    $outcome = Invoke-ContabilidadeWithProbeCleanup `
-        -Operation { Invoke-SequentialStartup } `
-        -Cleanup {
-            if ($script:ProbeCleanupRequired) {
-                return Remove-Probe -Phase 'finally'
-            }
-            return [pscustomobject]@{
-                Category = 'CLEANUP_NOT_REQUIRED'
-                ExitCode = 0
-                Status = 'not-entered'
-            }
-        }
+    $summary = Invoke-PrimaComposeStartup
 
-    $summary = $outcome.Result
     Write-Host ''
     Write-Host '============================================================' -ForegroundColor Green
-    Write-Host 'STACK PRONTA' -ForegroundColor Green
+    Write-Host 'STACK COMPLETA PRONTA' -ForegroundColor Green
     Write-Host "Modo:       $($summary.Mode)"
     Write-Host "Aplicacao:  $($summary.ApplicationUrl)"
-    if ($Mode -eq 'dev') {
-        Write-Host 'Servicos:   PostgreSQL, backend, worker e frontend'
-        Write-Host 'Autenticacao: desabilitada; Keycloak nao foi iniciado'
-    }
-    else {
-        Write-Host 'Servicos:   PostgreSQL, bootstrap, Keycloak, backend, worker e frontend'
-    }
+    Write-Host 'Servicos:   PostgreSQL, bootstrap, Keycloak, backend, worker e frontend'
+    Write-Host 'Startup:    Compose unico com depends_on, healthchecks e --wait'
     Write-Host '============================================================' -ForegroundColor Green
 
     if ($NoExit) {
@@ -540,9 +393,10 @@ try {
     exit 0
 }
 catch {
+    Show-ComposeEvidence
     Write-Host ''
     Write-Host '============================================================' -ForegroundColor Red
-    Write-Host 'STARTUP SEQUENCIAL FALHOU' -ForegroundColor Red
+    Write-Host 'STARTUP DA STACK COMPLETA FALHOU' -ForegroundColor Red
     Write-Host $_.Exception.Message -ForegroundColor Red
     Write-Host '============================================================' -ForegroundColor Red
 

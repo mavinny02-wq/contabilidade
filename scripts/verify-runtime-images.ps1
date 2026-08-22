@@ -46,7 +46,7 @@ Assert-ContabilidadeDockerAvailable
 
 # Keep each contract small and free from embedded quote-bearing shell arguments.
 # Windows PowerShell 5.1 can alter nested quotes while binding a string argument to docker.exe.
-# Nginx syntax is validated after Compose starts, where backend/worker/Keycloak DNS is authoritative.
+# Nginx syntax and HTTP root are validated after Compose starts in the real application network.
 $checks = @(
     [pscustomobject]@{
         Name = 'backend-files'
@@ -56,7 +56,7 @@ $checks = @(
     [pscustomobject]@{
         Name = 'frontend-files'
         Image = $FrontendImage
-        Command = 'test -x /usr/sbin/nginx && test -f /usr/share/nginx/html/index.html && test -x /docker-entrypoint.d/40-runtime-config.sh && grep -Fq auth-location.conf /etc/nginx/conf.d/default.conf'
+        Command = 'test -x /usr/sbin/nginx && test -f /usr/share/nginx/html/index.html && test -x /docker-entrypoint.d/40-runtime-config.sh && grep -Fq auth-location.conf /etc/nginx/conf.d/default.conf && grep -Fq /usr/share/nginx/html /etc/nginx/conf.d/default.conf && grep -Fq index.html /etc/nginx/conf.d/default.conf'
     },
     [pscustomobject]@{
         Name = 'frontend-dev-config'

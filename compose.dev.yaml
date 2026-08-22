@@ -6,13 +6,14 @@ services:
   backend:
     environment:
       SPRING_PROFILES_ACTIVE: local
-      APP_SECURITY_ENABLED: "false"
+      APP_ENVIRONMENT: LOCAL
+      APP_SECURITY_ENABLED: "true"
     ports:
       - "8080:8080"
 
   frontend:
     environment:
-      APP_AUTH_ENABLED: "false"
+      APP_AUTH_ENABLED: "true"
 
   automation-worker:
     environment:

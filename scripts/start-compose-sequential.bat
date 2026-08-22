@@ -29,7 +29,7 @@ set "FRONTEND_IMAGE=contabilidade-frontend:%VERSION%"
 set "WORKER_IMAGE=contabilidade-automation-worker:%VERSION%"
 
 echo.
-echo [RUNTIME-IMAGE] Verificacao estruturada antes do startup sequencial...
+echo [RUNTIME-IMAGE] Verificacao estruturada antes da transicao Compose...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0verify-runtime-images.ps1" ^
   -BackendImage "%BACKEND_IMAGE%" ^
   -FrontendImage "%FRONTEND_IMAGE%" ^
@@ -40,7 +40,7 @@ if not "%VERIFY_RC%"=="0" (
   exit /b %VERIFY_RC%
 )
 
-echo [TRANSITION] Imagens verificadas. Iniciando Docker Compose sequencial...
+echo [TRANSITION] Imagens verificadas. Subindo a stack completa pelo Docker Compose no modelo PRIMA...
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0start-compose-sequential.ps1" -Mode "%MODE%"
 set "RC=%ERRORLEVEL%"
 
