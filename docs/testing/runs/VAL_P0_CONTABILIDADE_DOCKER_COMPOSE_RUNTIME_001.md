@@ -7,16 +7,16 @@
 - **Status:** `BLOCKED`.
 - **Classificação:** `BASELINE_DRIFT`.
 - **Baseline exigido pelo dispatch:** `9ead0c44481d643daa7a90bd8ca6d58d32045d25`.
-- **Baseline disponível no checkout:** `bb55cbb9f019914ca454871776f23d886a811b6b`.
+- **Baseline disponível no checkout:** `bea02260016ef8be86a54f33e660e480f3b7b084`.
 - **Owner alterado:** somente este `RESULT_MD`.
 - **Produto:** read-only; nenhum Compose, script, código, configuração, dependência, lockfile ou
   migration foi alterado.
 
 ## Resultado executivo
 
-A execução ficou bloqueada antes do launcher. O objeto Git exigido pelo dispatch não existe no
+A reexecução ficou bloqueada antes do launcher. O objeto Git exigido pelo dispatch não existe no
 checkout e não há remote Git configurado para recuperá-lo. Os dois artefatos canônicos informados
-pelo dispatch também não existem no baseline disponível:
+pelo dispatch também não existem no baseline agora disponível:
 
 - `docs/orquestracao/waves/released/CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_VALIDATION_WAVE_014_LAUNCHERS.txt`;
 - `docs/testing/plans/VAL_P0_CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_001.md`.
@@ -30,8 +30,8 @@ não atribui aprovação nem reprovação ao runtime Docker Compose.
 
 | Comando | Exit code | Resultado |
 |---|---:|---|
-| `git rev-parse HEAD` | 0 | retornou `bb55cbb9f019914ca454871776f23d886a811b6b`, diferente do baseline exigido |
-| `git show --stat --oneline 9ead0c44481d643daa7a90bd8ca6d58d32045d25 --` | 128 | `fatal: bad object`; o commit do dispatch não está no object database local |
+| `git rev-parse HEAD` | 0 | retornou `bea02260016ef8be86a54f33e660e480f3b7b084`, diferente do baseline exigido |
+| `git cat-file -e 9ead0c44481d643daa7a90bd8ca6d58d32045d25^{commit}` | 128 | `Not a valid object name`; o commit do dispatch não está no object database local |
 | `git remote -v` | 0 | nenhuma saída; não existe remote configurado para buscar o commit publicado |
 | `cat docs/orquestracao/waves/released/CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_VALIDATION_WAVE_014_LAUNCHERS.txt` | 1 | launcher ausente no checkout |
 | `cat docs/testing/plans/VAL_P0_CONTABILIDADE_DOCKER_COMPOSE_RUNTIME_001.md` | 1 | shard canônico ausente no checkout |
